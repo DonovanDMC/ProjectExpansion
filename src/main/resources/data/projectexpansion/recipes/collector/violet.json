@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"group": "projectexpansion:matter/violet",
+	"ingredients": [
+		{
+			"item": "projectexpansion:purple_collector"
+		},
+		{
+			"item": "projectexpansion:violet_matter"
+		}
+	],
+	"result": {
+		"item": "projectexpansion:violet_collector"
+	}
+}
