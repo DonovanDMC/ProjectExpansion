@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FVF",
+    "VTV",
+    "FVF"
+  ],
+  "key": {
+    "T": {
+      "item": "projecte:transmutation_tablet"
+    },
+    "V": {
+      "item": "projectexpansion:violet_matter"
+    },
+    "F": {
+      "item": "projectexpansion:fading_matter"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:arcane_tablet"
+  }
+}
