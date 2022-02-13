@@ -7,6 +7,10 @@ This is based on [ProjectEX](https://www.curseforge.com/minecraft/mc-mods/projec
 
 ## Features
 
+### EMC Display
+Your current emc and overall gain/loss will be displayed in the top left corner.
+![EMC Display](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/emc_display.gif)
+
 ### Power Flowers
 These passively generate emc, once every second by default. There are 16 tiers.
 ![Power Flowers](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/power_flowers.png)
@@ -44,9 +48,5 @@ These do nothing special yet, they're just about the same as ProjectE's versions
 Due to the huge emc values that are present here, we shorten any emc values over one million. You can hold shift to show the real value.
 ![EMC Short](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/emc_short.png)
 ![EMC Long](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/emc_long.png)
-
-### EMC Display
-Your current emc and overall gain/loss will be displayed in the top left corner.
-![EMC Display](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/emc_display.gif)
 
 Use JEI or something similar for recipes.
