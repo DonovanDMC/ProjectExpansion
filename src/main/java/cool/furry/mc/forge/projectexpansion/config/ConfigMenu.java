@@ -57,6 +57,12 @@ public class ConfigMenu extends Screen {
                 (__, newValue) -> Config.fullNumberNames.set(newValue)
         ));
 
+        this.optionsRowList.addOption(new BooleanOption(
+                "gui.projectexpansion.config.emc_display",
+                __ -> Config.formatEMC.get() && Config.emcDisplay.get(),
+                (__, newValue) -> Config.emcDisplay.set(newValue)
+        ));
+
         this.addButton(new Button((this.width - BUTTON_WIDTH) / 2, this.height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), button -> this.minecraft.displayGuiScreen(parentScreen)
         ));
     }

@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion;
 
+import cool.furry.mc.forge.projectexpansion.gui.EMCDisplay;
 import cool.furry.mc.forge.projectexpansion.init.Blocks;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.config.Config;
@@ -17,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -66,6 +68,7 @@ public class Main {
         Fuel.registerAll();
         Matter.registerAll();
         Star.registerAll();
+        MinecraftForge.EVENT_BUS.register(EMCDisplay.class);
     }
 
     void replaceEMCFormatter() {
@@ -77,10 +80,5 @@ public class Main {
             modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
             field.set(null, EMCFormat.INSTANCE);
         } catch (NoSuchFieldException | IllegalAccessException ignore) {}
-    }
-
-    @SubscribeEvent
-    public void onRenderGUI(RenderGameOverlayEvent.Post event) {
-
     }
 }
