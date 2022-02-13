@@ -9,40 +9,44 @@ This is based on [ProjectEX](https://www.curseforge.com/minecraft/mc-mods/projec
 
 ### Power Flowers
 These passively generate emc, once every second by default. There are 16 tiers.
-![Power Flowers](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/power_flowers.png)
+![Power Flowers](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/power_flowers.png)
 
 ### Matter
 We've got quite a bit of our own matter. These are used in crafting recipes.
-![Matter](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/matter.png)
+![Matter](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/matter.png)
 
 ### Fuel
 Used for crafting, also has accompanying blocks. Several of these hit the integer limit for burn times, which is somewhere around 40 months total. (these values might be changed in the future)
-![Fuel Items](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/fuel.png)
-![Fuel Blocks](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/fuel_blocks.png)
+![Fuel Items](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/fuel.png)
+![Fuel Blocks](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/fuel_blocks.png)
 
 ### Collectors
 The same as ProjectE's collectors, but with more tiers.
-![Collectors](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/collectors.png)
+![Collectors](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/collectors.png)
 
 ### Anti Matter Relays
 The same as ProjectE's relays, but with more tiers.
-![Anti Matter Relays](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/relays.png)
+![Anti Matter Relays](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/relays.png)
 
 ### Stars
 Like ProjectE's Klien stars, the last one has a total value of 422.21 Trillion (422,212,465,065,984)
-![Stars](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/stars.png)
+![Stars](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/stars.png)
 
 ### Final Star
 The shard is a crafting ingredient, the Final Star does not have any uses currently but bragging about the 648.79 Quadrillion (648,793,397,761,517,310) it takes to get one.
-![Final Star](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/final.png)
+![Final Star](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/final.png)
 
 ### Arcane Table/Tablet
 These do nothing special yet, they're just about the same as ProjectE's versions.
-![Arcane Table/Tablet](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/table.png)
+![Arcane Table/Tablet](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/table.png)
 
 ### EMC Values
 Due to the huge emc values that are present here, we shorten any emc values over one million. You can hold shift to show the real value.
-![EMC Short](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/emc_short.png)
-![EMC Long](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/aed1f167ceb75be87157c683a0c66aa51bcff011/images/emc_long.png)
+![EMC Short](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/emc_short.png)
+![EMC Long](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/emc_long.png)
+
+### EMC Display
+Your current emc and overall gain/loss will be displayed in the top left corner.
+![EMC Display](https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/36eb5e3fe4662b459a562753bfcc007342e23142/images/emc_display.gif)
 
 Use JEI or something similar for recipes.
