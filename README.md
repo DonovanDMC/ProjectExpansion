@@ -9,44 +9,44 @@ This is based on [ProjectEX](https://www.curseforge.com/minecraft/mc-mods/projec
 
 ### EMC Display
 Your current emc and overall gain/loss will be displayed in the top left corner.
-![EMC Display](https://media.forgecdn.net/attachments/432/327/emc_display.gif)
+![EMC Display](https://butts-are.cool/mc/project-expansion/emc_display.gif)
 
 ### Power Flowers
 These passively generate emc, once every second by default. There are 16 tiers.
-![Power Flowers](https://media.forgecdn.net/attachments/432/343/power_flowers.png)
+![Power Flowers](https://butts-are.cool/mc/project-expansion/power_flowers.png)
 
 ### Matter
 We've got quite a bit of our own matter. These are used in crafting recipes.
-![Matter](https://media.forgecdn.net/attachments/432/342/matter.png)
+![Matter](https://butts-are.cool/mc/project-expansion/matter.png)
 
 ### Fuel
 Used for crafting, also has accompanying blocks. Several of these hit the integer limit for burn times, which is somewhere around 40 months total. (these values might be changed in the future)
-![Fuel Items](https://media.forgecdn.net/attachments/432/340/fuel.png)
-![Fuel Blocks](https://media.forgecdn.net/attachments/432/341/fuel_blocks.png)
+![Fuel Items](https://butts-are.cool/mc/project-expansion/fuel.png)
+![Fuel Blocks](https://butts-are.cool/mc/project-expansion/fuel_blocks.png)
 
 ### Collectors
 The same as ProjectE's collectors, but with more tiers.
-![Collectors](https://media.forgecdn.net/attachments/432/326/collectors.png)
+![Collectors](https://butts-are.cool/mc/project-expansion/collectors.png)
 
 ### Anti Matter Relays
 The same as ProjectE's relays, but with more tiers.
-![Anti Matter Relays](https://media.forgecdn.net/attachments/432/344/relays.png)
+![Anti Matter Relays](https://butts-are.cool/mc/project-expansion/relays.png)
 
 ### Stars
 Like ProjectE's Klien stars, the last one has a total value of 422.21 Trillion (422,212,465,065,984)
-![Stars](https://media.forgecdn.net/attachments/432/345/stars.png)
+![Stars](https://butts-are.cool/mc/project-expansion/stars.png)
 
 ### Final Star
 The shard is a crafting ingredient, the Final Star does not have any uses currently but bragging about the 648.79 Quadrillion (648,793,397,761,517,310) it takes to get one.
-![Final Star](https://media.forgecdn.net/attachments/432/339/final.png)
+![Final Star](https://butts-are.cool/mc/project-expansion/final.png)
 
 ### Arcane Table/Tablet
 These do nothing special yet, they're just about the same as ProjectE's versions.
-![Arcane Table/Tablet](https://media.forgecdn.net/attachments/432/346/table.png)
+![Arcane Table/Tablet](https://butts-are.cool/mc/project-expansion/table.png)
 
 ### EMC Values
 Due to the huge emc values that are present here, we shorten any emc values over one million. You can hold shift to show the real value.
-![EMC Short](https://media.forgecdn.net/attachments/432/338/emc_short.png)
-![EMC Long](https://media.forgecdn.net/attachments/432/337/emc_long.png)
+![EMC Short](https://butts-are.cool/mc/project-expansion/emc_short.png)
+![EMC Long](https://butts-are.cool/mc/project-expansion/emc_long.png)
 
 Use JEI or something similar for recipes.
