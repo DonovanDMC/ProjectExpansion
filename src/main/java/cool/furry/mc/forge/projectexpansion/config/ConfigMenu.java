@@ -63,6 +63,14 @@ public class ConfigMenu extends Screen {
                 (__, newValue) -> Config.emcDisplay.set(newValue)
         ));
 
+        this.optionsRowList.addOption(new SliderPercentageOption(
+                "gui.projectexpansion.config.powerflower_multiplier",
+                1, 20, 1,
+                __ -> (double) Config.powerflowerMultiplier.get(),
+                (__, newValue) -> Config.powerflowerMultiplier.set(newValue.intValue()),
+                (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.powerflower_multiplier").appendSibling(new StringTextComponent(String.format(": %s", option.get(gs))))
+        ));
+
         this.addButton(new Button((this.width - BUTTON_WIDTH) / 2, this.height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), button -> this.minecraft.displayGuiScreen(parentScreen)
         ));
     }

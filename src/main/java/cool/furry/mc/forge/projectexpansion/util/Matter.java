@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.BlockCollector;
 import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.block.BlockRelay;
+import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.Blocks;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemCompressedEnergyCollector;
@@ -105,7 +106,7 @@ public enum Matter {
                     Math.multiplyExact(
                             relayBonus, 30L
                     )
-            );
+            ) * Config.powerflowerMultiplier.get();
         } catch (ArithmeticException err) {
             return Long.MAX_VALUE;
         }

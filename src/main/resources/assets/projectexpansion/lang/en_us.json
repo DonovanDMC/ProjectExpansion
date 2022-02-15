@@ -9,6 +9,8 @@
   "gui.projectexpansion.config.full_number_names.desc": "If full number names (Million/Billion/Trillion) should be used instead of abbreviations",
   "gui.projectexpansion.config.emc_display": "EMC Display",
   "gui.projectexpansion.config.emc_display.desc": "Displays your current emc and gained emc per second in the top left corner.",
+  "gui.projectexpansion.config.powerflower_multiplier": "Power Flower Multiplier",
+  "gui.projectexpansion.config.powerflower_multiplier.desc": "Multiplies the output of Power Flowers.",
   "gui.projectexpansion.personal_link": "Personal Link",
   "gui.projectexpansion.emc_gain": "EMC Gain",
   "item.projectexpansion.magenta_matter": "Magenta Matter",
