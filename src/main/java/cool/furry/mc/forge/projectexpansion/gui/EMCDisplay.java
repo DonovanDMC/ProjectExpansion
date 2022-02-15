@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.gui;
 
+import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -11,9 +12,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class EMCDisplay {
     private static BigInteger emc = BigInteger.ZERO;
     private static BigInteger lastEMC = BigInteger.ZERO;

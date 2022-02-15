@@ -1,32 +1,25 @@
 package cool.furry.mc.forge.projectexpansion;
 
-import cool.furry.mc.forge.projectexpansion.gui.EMCDisplay;
-import cool.furry.mc.forge.projectexpansion.init.Blocks;
-import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.config.ConfigMenu;
+import cool.furry.mc.forge.projectexpansion.init.Blocks;
+import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.Star;
 import moze_intel.projecte.gameObjs.registration.impl.ItemDeferredRegister;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 
@@ -68,7 +61,6 @@ public class Main {
         Fuel.registerAll();
         Matter.registerAll();
         Star.registerAll();
-        MinecraftForge.EVENT_BUS.register(EMCDisplay.class);
     }
 
     void replaceEMCFormatter() {

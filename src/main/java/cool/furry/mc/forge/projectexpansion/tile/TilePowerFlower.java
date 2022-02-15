@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.PowerFlowerCollector;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.block.BlockState;
@@ -72,10 +73,11 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
             IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
 
             if(provider != null) {
-                provider.setEmc(provider.getEmc().add(emc).add(BigInteger.valueOf(res)));
+                PowerFlowerCollector.add(player, emc.add(BigInteger.valueOf(res)));
+                // provider.setEmc(provider.getEmc().add(emc).add(BigInteger.valueOf(res)));
                 markDirty();
                 emc = BigInteger.ZERO;
-                provider.syncEmc(player);
+                // provider.syncEmc(player);
             } else {
                 emc = emc.add(BigInteger.valueOf(res));
                 markDirty();
