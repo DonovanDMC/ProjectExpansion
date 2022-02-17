@@ -1,4 +1,4 @@
-const { writeFileSync, readFileSync, mkdirSync, existsSync } = require("fs");
+const { writeFileSync, readFileSync, mkdirSync, existsSync, readdirSync } = require("fs");
 const { resolve } = require("path");
 
 const MATTER_TIERS = module.exports.MATTER_TIERS = [
@@ -45,6 +45,20 @@ module.exports.generic = function generic(outDir, name, base, exclude = []) {
         writeFileSync(`${outDir}/${tier}_${name}.json`, readFileSync(base).toString().replace(/\$TIER\$/g, tier)),
         [base, `${outDir}/${tier}_${name}.json`]
     ));
+}
+
+module.exports.genericLanguage = function genericLanguage(outDir, name, dir) {
+    const lang = {};
+    function read(d) {
+        readdirSync(d, { withFileTypes: true }).forEach(dd => {
+            if(dd.isDirectory()) return read(`${d}/${dd.name}`);
+            else Object.assign(lang, JSON.parse(readFileSync(`${d}/${dd.name}`)));
+        });
+    }
+
+    read(dir);
+    writeFileSync(`${outDir}/${name}.json`, JSON.stringify(lang, null, "\t"));
+    return [[`${name}.js`, `${outDir}/${name}.json`]];
 }
 
 module.exports.assetsDir = resolve(`${__dirname}/../resources/assets/projectexpansion`);

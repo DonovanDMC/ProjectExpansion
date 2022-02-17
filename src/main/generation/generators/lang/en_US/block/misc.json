@@ -1,0 +1,5 @@
+{
+    "block.projectexpansion.arcane_table": "Arcane Table",
+    "block.projectexpansion.personal_link": "Personal Link",
+    "block.projectexpansion.personal_link.tooltip": "This block will transfer emc from nearby blocks into your transmutation inventory."
+}
