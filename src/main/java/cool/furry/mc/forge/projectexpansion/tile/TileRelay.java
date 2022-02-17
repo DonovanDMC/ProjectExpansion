@@ -52,7 +52,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
         // we can't use a user defined value due to emc duplication possibilities
         if(tick >= 20) {
             tick = 0;
-            long transfer = ((BlockRelay) getBlockState().getBlock()).matter.getCollectorOutputForTicks(Config.tickDelay.get());
+            long transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get());
             List<IEmcStorage> temp = new ArrayList<>(1);
 
             for (Direction dir : DIRECTIONS) {
@@ -120,7 +120,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     }
 
     public void addBonus() {
-        if(getBlockState().getBlock() instanceof BlockRelay) insertEmc(((BlockRelay) getBlockState().getBlock()).matter.getRelayBonus(), EmcAction.EXECUTE);
+        if(getBlockState().getBlock() instanceof BlockRelay) insertEmc(((BlockRelay) getBlockState().getBlock()).getMatter().getRelayBonus(), EmcAction.EXECUTE);
     }
 
     @Override

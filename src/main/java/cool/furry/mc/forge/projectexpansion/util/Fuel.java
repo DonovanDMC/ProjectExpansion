@@ -45,6 +45,14 @@ public enum Fuel {
 
     public static final Fuel[] VALUES = values();
 
+    public Fuel prev() {
+        return VALUES[(ordinal() - 1  + VALUES.length) % VALUES.length];
+    }
+
+    public Fuel next() {
+        return VALUES[(ordinal() + 1) % VALUES.length];
+    }
+
     public final String name;
     public final boolean hasItem;
     public final int level;

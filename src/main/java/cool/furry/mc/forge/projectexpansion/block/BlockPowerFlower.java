@@ -1,8 +1,9 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.tile.TilePowerFlower;
+import cool.furry.mc.forge.projectexpansion.util.HasMatter;
+import cool.furry.mc.forge.projectexpansion.util.Matter;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -33,7 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockPowerFlower extends Block {
+public class BlockPowerFlower extends Block implements HasMatter {
     public static final VoxelShape SHAPE = VoxelShapes.or(
             makeCuboidShape(0, 0, 0, 16, 1, 16),
             makeCuboidShape(3.5, 4, 6.5, 12.5, 13, 9.5),
@@ -43,11 +44,16 @@ public class BlockPowerFlower extends Block {
             makeCuboidShape(3.5, 7, 3.5, 12.5, 10, 12.5),
             makeCuboidShape(0.5, 7, 6.5, 15.5, 10, 9.5)
     );
-    public final Matter matter;
+    private final Matter matter;
 
     public BlockPowerFlower(Matter matter) {
         super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(1F));
         this.matter = matter;
+    }
+
+    @Override
+    public Matter getMatter () {
+        return matter;
     }
 
     @Override

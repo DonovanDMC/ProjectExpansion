@@ -1,8 +1,9 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.tile.TileCollector;
+import cool.furry.mc.forge.projectexpansion.util.HasMatter;
+import cool.furry.mc.forge.projectexpansion.util.Matter;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -22,12 +23,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockCollector extends Block {
-    public final Matter matter;
+public class BlockCollector extends Block implements HasMatter {
+    private final Matter matter;
 
     public BlockCollector(Matter matter) {
         super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
         this.matter = matter;
+    }
+
+    @Override
+    public Matter getMatter () {
+        return matter;
     }
 
     @Override

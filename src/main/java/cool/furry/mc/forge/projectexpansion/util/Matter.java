@@ -8,8 +8,8 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.Blocks;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemCompressedEnergyCollector;
+import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
@@ -41,6 +41,14 @@ public enum Matter {
 
     public static final Matter[] VALUES = values();
 
+    public Matter prev() {
+        return VALUES[(ordinal() - 1  + VALUES.length) % VALUES.length];
+    }
+
+    public Matter next() {
+        return VALUES[(ordinal() + 1) % VALUES.length];
+    }
+
     public final String name;
     public final boolean hasItem;
     public final int level;
@@ -53,19 +61,25 @@ public enum Matter {
     @Nullable
     private RegistryObject<Item> itemMatter = null;
     @Nullable
-    private RegistryObject<Block> powerFlower = null;
+    private RegistryObject<BlockPowerFlower> powerFlower = null;
     @Nullable
     private RegistryObject<BlockItem> itemPowerFlower = null;
     @Nullable
-    private RegistryObject<Block> collector = null;
+    private RegistryObject<BlockCollector> collector = null;
     @Nullable
     private RegistryObject<BlockItem> itemCollector = null;
     @Nullable
-    private RegistryObject<Item> itemCompressedCollector = null;
+    private RegistryObject<ItemCompressedEnergyCollector> itemCompressedCollector = null;
     @Nullable
-    private RegistryObject<Block> relay = null;
+    private RegistryObject<BlockRelay> relay = null;
     @Nullable
     private RegistryObject<BlockItem> itemRelay = null;
+    @Nullable
+    private RegistryObject<ItemUpgrade> itemCollectorUpgrade = null;
+    @Nullable
+    private RegistryObject<ItemUpgrade> itemPowerFlowerUpgrade = null;
+    @Nullable
+    private RegistryObject<ItemUpgrade> itemRelayUpgrade = null;
     Matter(String name, boolean hasItem, int level, @Nullable Supplier<Item> existingItem) {
         this.name = name;
         this.hasItem = hasItem;
@@ -150,7 +164,7 @@ public enum Matter {
         return itemMatter == null ? null : itemMatter.get();
     }
 
-    public @Nullable Block getPowerFlower() {
+    public @Nullable BlockPowerFlower getPowerFlower() {
         return powerFlower == null ? null : powerFlower.get();
     }
 
@@ -158,7 +172,7 @@ public enum Matter {
         return itemPowerFlower == null ? null : itemPowerFlower.get();
     }
 
-    public @Nullable Block getRelay() {
+    public @Nullable BlockRelay getRelay() {
         return relay == null ? null : relay.get();
     }
 
@@ -166,7 +180,7 @@ public enum Matter {
         return itemRelay == null ? null : itemRelay.get();
     }
 
-    public @Nullable Block getCollector() {
+    public @Nullable BlockCollector getCollector() {
         return collector == null ? null : collector.get();
     }
 
@@ -174,8 +188,20 @@ public enum Matter {
         return itemCollector == null ? null : itemCollector.get();
     }
 
-    public @Nullable Item getCompressedCollectorItem() {
+    public @Nullable ItemCompressedEnergyCollector getCompressedCollectorItem() {
         return itemCompressedCollector == null ? null : itemCompressedCollector.get();
+    }
+
+    public @Nullable ItemUpgrade getCollectorUpgrade() {
+        return itemCollectorUpgrade == null ? null : itemCollectorUpgrade.get();
+    }
+
+    public @Nullable ItemUpgrade getPowerFlowerUpgrade() {
+        return itemPowerFlowerUpgrade == null ? null : itemPowerFlowerUpgrade.get();
+    }
+
+    public @Nullable ItemUpgrade getRelayUpgrade() {
+        return itemRelayUpgrade == null ? null : itemRelayUpgrade.get();
     }
 
     public static final int UNCOMMON_THRESHOLD = 4;
@@ -186,12 +212,6 @@ public enum Matter {
         switch(reg) {
             case MATTER: {
                 if(hasItem) itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().group(Main.group).rarity(this.rarity)));
-                break;
-            }
-
-            case POWER_FLOWER: {
-                powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(this));
-                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
                 break;
             }
 
@@ -206,10 +226,34 @@ public enum Matter {
                 break;
             }
 
-            case RELAY: {
+            case POWER_FLOWER: {
+                powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(this));
+                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                break;
+            }
 
+            case RELAY: {
                 relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(this));
                 itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                break;
+            }
+
+            case UPGRADE_COLLECTOR: {
+                if(this == FINAL) return;
+                itemCollectorUpgrade = Items.Registry.register(String.format("%s_collector_upgrade", name), () -> new ItemUpgrade(this, ItemUpgrade.UpgradeType.COLLECTOR));
+                break;
+            }
+
+            case UPGRADE_POWER_FLOWER: {
+                if(this == FINAL) return;
+                itemPowerFlowerUpgrade = Items.Registry.register(String.format("%s_power_flower_upgrade", name), () -> new ItemUpgrade(this, ItemUpgrade.UpgradeType.POWER_FLOWER));
+                break;
+            }
+
+            case UPGRADE_RELAY: {
+                if(this == FINAL) return;
+                itemRelayUpgrade = Items.Registry.register(String.format("%s_relay_upgrade", name), () -> new ItemUpgrade(this, ItemUpgrade.UpgradeType.RELAY));
+                break;
             }
         }
     }
@@ -222,9 +266,12 @@ public enum Matter {
 
     private enum RegistrationType {
         MATTER,
-        POWER_FLOWER,
         COLLECTOR,
         COMPRESSED_COLLECTOR,
-        RELAY
+        POWER_FLOWER,
+        RELAY,
+        UPGRADE_COLLECTOR,
+        UPGRADE_POWER_FLOWER,
+        UPGRADE_RELAY
     }
 }

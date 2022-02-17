@@ -3,7 +3,6 @@ package cool.furry.mc.forge.projectexpansion.util;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemColossalStar;
 import cool.furry.mc.forge.projectexpansion.item.ItemMagnumStar;
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -19,6 +18,14 @@ public enum Star {
     OMEGA("omega");
 
     public static final Star[] VALUES = values();
+
+    public Star prev() {
+        return VALUES[(ordinal() - 1  + VALUES.length) % VALUES.length];
+    }
+
+    public Star next() {
+        return VALUES[(ordinal() + 1) % VALUES.length];
+    }
 
     public final String name;
     @Nullable

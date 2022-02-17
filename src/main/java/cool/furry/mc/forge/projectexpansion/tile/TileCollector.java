@@ -53,7 +53,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
         // we can't use a user defined value due to emc duplication possibilities
         if(tick >= 20) {
             tick = 0;
-            emc += ((BlockCollector) getBlockState().getBlock()).matter.getCollectorOutputForTicks(Config.tickDelay.get());
+            emc += ((BlockCollector) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get());
             List<IEmcStorage> temp = new ArrayList<>(1);
 
             for (Direction dir : DIRECTIONS) {
