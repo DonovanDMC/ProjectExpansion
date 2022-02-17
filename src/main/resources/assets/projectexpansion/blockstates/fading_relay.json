@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "": { "model":  "projectexpansion:block/relay/fading" }
-  }
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/relay/fading"
+		}
+	}
 }

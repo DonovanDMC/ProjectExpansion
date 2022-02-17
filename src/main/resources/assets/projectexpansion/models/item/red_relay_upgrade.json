@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "projectexpansion:item/upgrade/relay/red"
-  }
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "projectexpansion:item/upgrade/relay/red"
+    }
 }

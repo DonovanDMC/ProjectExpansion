@@ -1,23 +1,23 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/cyan",
-	"pattern": [
-		"CLC",
-		"RRR",
-		"RRR"
-	],
-	"key": {
-		"L": {
-			"item": "projectexpansion:personal_link"
-		},
-		"C": {
-			"item": "projectexpansion:cyan_compressed_collector"
-		},
-		"R": {
-			"item": "projectexpansion:cyan_relay"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:cyan_power_flower"
-	}
+    "type": "minecraft:crafting_shaped",
+    "group": "projectexpansion:matter/cyan",
+    "pattern": [
+        "CLC",
+        "RRR",
+        "RRR"
+    ],
+    "key": {
+        "L": {
+            "item": "projectexpansion:personal_link"
+        },
+        "C": {
+            "item": "projectexpansion:cyan_compressed_collector"
+        },
+        "R": {
+            "item": "projectexpansion:cyan_relay"
+        }
+    },
+    "result": {
+        "item": "projectexpansion:cyan_power_flower"
+    }
 }

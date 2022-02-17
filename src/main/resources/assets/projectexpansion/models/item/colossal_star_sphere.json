@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "projectexpansion:item/star/colossal/sphere"
-  }
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "projectexpansion:item/star/colossal/sphere"
+    }
 }

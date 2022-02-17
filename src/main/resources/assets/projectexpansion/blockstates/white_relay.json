@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "": { "model":  "projectexpansion:block/relay/white" }
-  }
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/relay/white"
+		}
+	}
 }

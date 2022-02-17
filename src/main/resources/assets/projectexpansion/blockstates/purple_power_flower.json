@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "": { "model":  "projectexpansion:block/power_flower/purple" }
-  }
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/power_flower/purple"
+		}
+	}
 }

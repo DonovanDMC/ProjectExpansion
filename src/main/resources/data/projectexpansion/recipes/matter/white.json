@@ -1,20 +1,20 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "group": "projectexpansion:matter/white",
-  "pattern": [
-    "FMF",
-    "FMF",
-    "FMF"
-  ],
-  "key": {
-    "F": {
-      "item": "projectexpansion:orange_fuel"
+    "type": "minecraft:crafting_shaped",
+    "group": "projectexpansion:matter/white",
+    "pattern": [
+        "FMF",
+        "FMF",
+        "FMF"
+    ],
+    "key": {
+        "F": {
+            "item": "projectexpansion:orange_fuel"
+        },
+        "M": {
+            "item": "projectexpansion:orange_matter"
+        }
     },
-    "M": {
-      "item": "projectexpansion:orange_matter"
+    "result": {
+        "item": "projectexpansion:white_matter"
     }
-  },
-  "result": {
-    "item": "projectexpansion:white_matter"
-  }
 }

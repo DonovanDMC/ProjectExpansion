@@ -1,15 +1,15 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"group": "projectexpansion:matter/fading",
-	"ingredients": [
-		{
-			"item": "projectexpansion:white_collector"
-		},
-		{
-			"item": "projectexpansion:fading_matter"
-		}
-	],
-	"result": {
-		"item": "projectexpansion:fading_collector"
-	}
+    "type": "minecraft:crafting_shapeless",
+    "group": "projectexpansion:matter/fading",
+    "ingredients": [
+        {
+            "item": "projectexpansion:white_collector"
+        },
+        {
+            "item": "projectexpansion:fading_matter"
+        }
+    ],
+    "result": {
+        "item": "projectexpansion:fading_collector"
+    }
 }

@@ -79,6 +79,7 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.23'
     implementation fg.deobf("curse.maven:projecte-226410:3223221")
+    implementation fg.deobf("curse.maven:jei-238222:3650568")
 }
 
 jar {

@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "": { "model":  "projectexpansion:block/fuel/violet" }
-  }
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/fuel/violet"
+		}
+	}
 }

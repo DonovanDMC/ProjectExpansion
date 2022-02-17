@@ -120,3 +120,4 @@ run/
 ideas/
 src/main/resources/assets/projectexpansion/textures/block/hue
 bin/
+generated/resources/.cache

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "projectexpansion:block/collector/purple"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/collector/purple"
+		}
+	}
 }

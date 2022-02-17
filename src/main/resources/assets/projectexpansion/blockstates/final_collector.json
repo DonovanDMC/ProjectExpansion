@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "": { "model":  "projectexpansion:block/collector/final" }
-  }
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/collector/final"
+		}
+	}
 }
