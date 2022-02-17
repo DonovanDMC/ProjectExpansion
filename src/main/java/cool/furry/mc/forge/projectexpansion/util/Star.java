@@ -38,12 +38,30 @@ public enum Star {
     public @Nullable ItemMagnumStar asMagnumItem() { return itemMagnum == null ? null : itemMagnum.get(); }
     public @Nullable ItemColossalStar asColossalItem() { return itemColossal == null ? null : itemColossal.get(); }
 
-    private void register() {
-        itemMagnum = Items.Registry.register(String.format("magnum_star_%s", name), () -> new ItemMagnumStar(this));
-        itemColossal = Items.Registry.register(String.format("colossal_star_%s", name), () -> new ItemColossalStar(this));
+    private void registerMagnum() {
+    }
+    private void register(RegistrationType reg) {
+        switch(reg) {
+            case MAGNUM: {
+                itemMagnum = Items.Registry.register(String.format("magnum_star_%s", name), () -> new ItemMagnumStar(this));
+                break;
+            }
+
+            case COLOSSAL: {
+                itemColossal = Items.Registry.register(String.format("colossal_star_%s", name), () -> new ItemColossalStar(this));
+                break;
+            }
+        }
     }
 
     public static void registerAll() {
-        Arrays.stream(VALUES).forEach(Star::register);
+        Arrays.stream(Star.RegistrationType.values()).forEach(type -> {
+            Arrays.stream(VALUES).forEach(val -> val.register(type));
+        });
+    }
+
+    private enum RegistrationType {
+        MAGNUM,
+        COLOSSAL
     }
 }

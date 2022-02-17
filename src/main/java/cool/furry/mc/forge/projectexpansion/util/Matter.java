@@ -182,18 +182,49 @@ public enum Matter {
     public static final int RARE_THRESHOLD = 15;
     public static final int EPIC_THRESHOLD = 16;
 
-    private void register() {
-        if(hasItem) itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().group(Main.group).rarity(this.rarity)));
-        powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(this));
-        itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
-        collector = Blocks.Registry.register(String.format("%s_collector", name), () -> new BlockCollector(this));
-        itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(collector).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
-        itemCompressedCollector = Items.Registry.register(String.format("%s_compressed_collector", name), () -> new ItemCompressedEnergyCollector(this));
-        relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(this));
-        itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+    private void register(RegistrationType reg) {
+        switch(reg) {
+            case MATTER: {
+                if(hasItem) itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().group(Main.group).rarity(this.rarity)));
+                break;
+            }
+
+            case POWER_FLOWER: {
+                powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(this));
+                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                break;
+            }
+
+            case COLLECTOR: {
+                collector = Blocks.Registry.register(String.format("%s_collector", name), () -> new BlockCollector(this));
+                itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(collector).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                break;
+            }
+
+            case COMPRESSED_COLLECTOR: {
+                itemCompressedCollector = Items.Registry.register(String.format("%s_compressed_collector", name), () -> new ItemCompressedEnergyCollector(this));
+                break;
+            }
+
+            case RELAY: {
+
+                relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(this));
+                itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+            }
+        }
     }
 
     public static void registerAll() {
-        Arrays.stream(VALUES).forEach(Matter::register);
+        Arrays.stream(RegistrationType.values()).forEach(type -> {
+            Arrays.stream(VALUES).forEach(val -> val.register(type));
+        });
+    }
+
+    private enum RegistrationType {
+        MATTER,
+        POWER_FLOWER,
+        COLLECTOR,
+        COMPRESSED_COLLECTOR,
+        RELAY
     }
 }

@@ -97,14 +97,30 @@ public enum Fuel {
         return blockItem == null ? null : blockItem.get();
     }
 
-    private void register() {
+    private void register(RegistrationType reg) {
         if(!hasItem) return;
-        item = Items.Registry.register(String.format("%s_fuel", name), () -> new ItemFuel(this));
-        block = Blocks.Registry.register(String.format("%s_fuel_block", name), () -> new Block(AbstractBlock.Properties.create(Material.ROCK).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(0.5F, 1.5F)));
-        blockItem = Items.Registry.register(String.format("%s_fuel_block", name), () -> new BlockFuelItem(this));
+        switch(reg) {
+            case ITEM: {
+                item = Items.Registry.register(String.format("%s_fuel", name), () -> new ItemFuel(this));
+                break;
+            }
+
+            case BLOCK: {
+                block = Blocks.Registry.register(String.format("%s_fuel_block", name), () -> new Block(AbstractBlock.Properties.create(Material.ROCK).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(0.5F, 1.5F)));
+                blockItem = Items.Registry.register(String.format("%s_fuel_block", name), () -> new BlockFuelItem(this));
+                break;
+            }
+        }
     }
 
     public static void registerAll() {
-        Arrays.stream(VALUES).forEach(Fuel::register);
+        Arrays.stream(Fuel.RegistrationType.values()).forEach(type -> {
+            Arrays.stream(VALUES).forEach(val -> val.register(type));
+        });
+    }
+
+    private enum RegistrationType {
+        ITEM,
+        BLOCK
     }
 }
