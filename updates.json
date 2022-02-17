@@ -3,10 +3,11 @@
   "1.16.5": {
     "1.0.0": "Initial Release",
     "1.0.1": "EMC Display In Top Left",
-    "1.0.2": "PowerFlower Multiplier & Fix For Transmutation Table Hang"
+    "1.0.2": "PowerFlower Multiplier & Fix For Transmutation Table Hang",
+    "1.0.3": "Sort Creative Items & Dynamically Generate Internal Data"
   },
   "promos": {
-    "1.16.5-latest": "1.0.2",
-    "1.16.5-recommended": "1.0.2"
+    "1.16.5-latest": "1.0.3",
+    "1.16.5-recommended": "1.0.3"
   }
 }
