@@ -32,7 +32,17 @@ public class ItemUpgrade extends Item implements HasMatter {
     public enum UpgradeType {
         COLLECTOR,
         POWER_FLOWER,
-        RELAY
+        RELAY;
+
+        public String getName() {
+            switch(this) {
+                case COLLECTOR: return "Collector";
+                case POWER_FLOWER: return "Power Flower";
+                case RELAY: return "Relay";
+            }
+
+            return "Unknown";
+        }
     }
     private final Matter matter;
     private final UpgradeType type;
@@ -55,7 +65,8 @@ public class ItemUpgrade extends Item implements HasMatter {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
-        list.add(new TranslationTextComponent("text.projectexpansion.wip").mergeStyle(TextFormatting.RED));
+        list.add(new TranslationTextComponent("text.projectexpansion.upgrade_tooltip", type.getName()).mergeStyle(TextFormatting.GRAY));
+        list.add(new TranslationTextComponent("text.projectexpansion.upgrade_wip").mergeStyle(TextFormatting.RED));
     }
 
     @Override
