@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 
 group = 'furry.cool.mc.forge'
-version = '1.0.3'
+version = '1.0.4'
 
 java {
     archivesBaseName = 'ProjectExpansion'
