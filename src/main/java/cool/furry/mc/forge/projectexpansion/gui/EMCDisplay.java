@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.text.TextFormatting;
@@ -18,7 +19,6 @@ import net.minecraftforge.fml.common.Mod;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -38,9 +38,10 @@ public class EMCDisplay {
         if(!Config.emcDisplay.get()) return;
         ClientPlayerEntity player = getPlayer();
         tick++;
-        if(event.phase == TickEvent.Phase.END && player != null && tick >= 20) {
+        if(event.phase == TickEvent.Phase.END && player != null && tick >= 10) {
             tick = 0;
-            emc = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID()).getEmc();
+            @Nullable IKnowledgeProvider provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
+            emc = provider == null ? BigInteger.ZERO : provider.getEmc();
             System.arraycopy(emcHistory, 1, emcHistory, 0, emcHistory.length - 1);
             emcHistory[emcHistory.length - 1] = emc.subtract(lastEMC);
             lastEMC = emc;
