@@ -141,7 +141,7 @@ public class ItemUpgrade extends Item {
             world.setTileEntity(pos, newTile);
         }
 
-        provider.setEmc(provider.getEmc().subtract(BigInteger.valueOf(newEmc.longValue())));
+        provider.setEmc(newEmc);
         player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.done", EMCFormat.INSTANCE.format(BigInteger.valueOf(diff))).mergeStyle(TextFormatting.WHITE), true);
         return ActionResultType.SUCCESS;
     }
