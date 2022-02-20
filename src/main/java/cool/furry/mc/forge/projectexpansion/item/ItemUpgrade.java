@@ -4,11 +4,16 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.tile.TileCollector;
 import cool.furry.mc.forge.projectexpansion.tile.TilePowerFlower;
 import cool.furry.mc.forge.projectexpansion.tile.TileRelay;
+import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.HasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -28,55 +33,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class ItemUpgrade extends Item implements HasMatter {
-    public enum UpgradeType {
-        COLLECTOR,
-        POWER_FLOWER,
-        RELAY;
-
-        public String getName() {
-            switch(this) {
-                case COLLECTOR: return "Collector";
-                case POWER_FLOWER: return "Power Flower";
-                case RELAY: return "Relay";
-            }
-
-            return "Unknown";
-        }
-    }
-    private final Matter matter;
-    private final UpgradeType type;
-    public ItemUpgrade(Matter matter, UpgradeType type) {
+public class ItemUpgrade extends Item {
+    public ItemUpgrade() {
         super(new Item.Properties().group(Main.group));
-        this.matter = matter;
-        this.type = type;
-    }
-
-    @Override
-    public Matter getMatter() {
-        return matter;
-    }
-
-    public UpgradeType getType() {
-        return type;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
-        list.add(new TranslationTextComponent("text.projectexpansion.upgrade_tooltip", type.getName()).mergeStyle(TextFormatting.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.upgrade_wip").mergeStyle(TextFormatting.RED));
+        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip").mergeStyle(TextFormatting.GRAY));
+        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip2").mergeStyle(TextFormatting.GREEN));
+        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip_creative").mergeStyle(TextFormatting.RED));
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        Main.Logger.info(String.format("onItemUseFirst %s %s %s %s", this, stack, getMatter(), getType()));
         @Nullable PlayerEntity player = context.getPlayer();
         BlockPos pos = context.getPos();
         World world = context.getWorld();
         ItemStack itemStack = context.getItem();
-        ItemUpgrade upgrade = (ItemUpgrade) itemStack.getItem();
 
         if (world.isRemote || player == null) return ActionResultType.PASS;
 
@@ -92,47 +68,70 @@ public class ItemUpgrade extends Item implements HasMatter {
         else return ActionResultType.PASS;
 
         if (matter == Matter.FINAL) {
-            player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.max_upgrade").mergeStyle(TextFormatting.RED), true);
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.max_upgrade").mergeStyle(TextFormatting.RED), true);
             return ActionResultType.FAIL;
         }
+
+        @Nullable IKnowledgeProvider provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
+        IEMCProxy proxy = ProjectEAPI.getEMCProxy();
+        if(provider == null) {
+            player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.provider_error").mergeStyle(TextFormatting.RED), true);
+            return ActionResultType.FAIL;
+        }
+
+        @Nullable BlockItem upgrade = null;
+        @Nullable Block upgradeBlock = null;
         @Nullable UUID owner = null;
         @Nullable String ownerName = null;
         @Nullable BigInteger emc = null;
+
+        if(tile instanceof TileCollector) {
+            upgrade = Objects.requireNonNull(upgradeTo.getCollectorItem());
+            upgradeBlock = Objects.requireNonNull(upgradeTo.getCollector());
+        }
+
         if(tile instanceof TilePowerFlower) {
             TilePowerFlower tilePowerFlower = (TilePowerFlower) tile;
+            upgrade = Objects.requireNonNull(upgradeTo.getPowerFlowerItem());
+            upgradeBlock = Objects.requireNonNull(upgradeTo.getPowerFlower());
             owner = tilePowerFlower.owner;
             ownerName = tilePowerFlower.ownerName;
             emc = tilePowerFlower.emc;
             if(owner == null) return ActionResultType.FAIL;
             if(owner != player.getUniqueID()) {
-                    player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.upgrade_not_owner").mergeStyle(TextFormatting.RED), true);
-                    return ActionResultType.FAIL;
-                }
+                player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_owner").mergeStyle(TextFormatting.RED), true);
+                return ActionResultType.FAIL;
+            }
         }
 
-        if(tile instanceof TileCollector) {
-            if(upgrade.type != UpgradeType.COLLECTOR) {
-                player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.incorrect_upgrade").mergeStyle(TextFormatting.RED), true);
-                return ActionResultType.FAIL;
-            }
-            if(itemStack.getItem() != upgradeTo.getCollectorUpgrade()) {
-                player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.incorrect_upgrade_tier").mergeStyle(TextFormatting.RED), true);
-                return ActionResultType.FAIL;
-            }
-            world.removeBlock(pos, false);
-            world.setBlockState(pos, Objects.requireNonNull(upgradeTo.getCollector()).getDefaultState());
+        if(tile instanceof TileRelay) {
+            upgrade = Objects.requireNonNull(upgradeTo.getRelayItem());
+            upgradeBlock = Objects.requireNonNull(upgradeTo.getRelay());
         }
-        else if(tile instanceof TilePowerFlower && ownerName != null && emc != null) {
-            if(upgrade.type != UpgradeType.POWER_FLOWER) {
-                player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.incorrect_upgrade").mergeStyle(TextFormatting.RED), true);
+
+        if(!provider.hasKnowledge(new ItemStack(upgrade))) {
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_learned", new TranslationTextComponent(upgrade.getTranslationKey())).mergeStyle(TextFormatting.RED), true);
+            return ActionResultType.FAIL;
+        }
+
+        long prevValue = proxy.getValue(block);
+        long emcValue = proxy.getValue(Objects.requireNonNull(upgrade));
+        long diff = emcValue - prevValue;
+        if(player.abilities.isCreativeMode) diff = 0;
+        BigInteger newEmc = provider.getEmc().subtract(BigInteger.valueOf(diff));
+        if(newEmc.compareTo(BigInteger.ZERO) < 0) {
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_enough_emc", EMCFormat.INSTANCE.format(BigInteger.valueOf(diff))).mergeStyle(TextFormatting.RED), true);
+            return ActionResultType.FAIL;
+        }
+
+        world.removeBlock(pos, false);
+        world.setBlockState(pos, upgradeBlock.getDefaultState());
+
+        if(tile instanceof TilePowerFlower) {
+            if(owner == null || ownerName == null || emc == null) {
                 return ActionResultType.FAIL;
             }
-            if(itemStack.getItem() != upgradeTo.getPowerFlowerUpgrade()) {
-                player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.incorrect_upgrade_tier").mergeStyle(TextFormatting.RED), true);
-                return ActionResultType.FAIL;
-            }
-            world.removeBlock(pos, false);
-            world.setBlockState(pos, Objects.requireNonNull(upgradeTo.getPowerFlower()).getDefaultState());
+
             TilePowerFlower newTile = new TilePowerFlower();
             newTile.owner = owner;
             newTile.ownerName = ownerName;
@@ -141,21 +140,9 @@ public class ItemUpgrade extends Item implements HasMatter {
             world.removeTileEntity(pos);
             world.setTileEntity(pos, newTile);
         }
-        else if(tile instanceof TileRelay) {
-            if(upgrade.type != UpgradeType.RELAY) {
-                player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.incorrect_upgrade").mergeStyle(TextFormatting.RED), true);
-                return ActionResultType.FAIL;
-            }
-            if(itemStack.getItem() != upgradeTo.getRelayUpgrade()) {
-                player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.incorrect_upgrade_tier").mergeStyle(TextFormatting.RED), true);
-                return ActionResultType.FAIL;
-            }
-            world.removeBlock(pos, false);
-            world.setBlockState(pos, Objects.requireNonNull(upgradeTo.getRelay()).getDefaultState());
-        }
-        else return ActionResultType.FAIL;
 
-        if(!player.abilities.isCreativeMode) itemStack.shrink(1);
+        provider.setEmc(provider.getEmc().subtract(BigInteger.valueOf(newEmc.longValue())));
+        player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.done", EMCFormat.INSTANCE.format(BigInteger.valueOf(diff))).mergeStyle(TextFormatting.WHITE), true);
         return ActionResultType.SUCCESS;
     }
 }

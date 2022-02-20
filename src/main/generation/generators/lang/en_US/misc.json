@@ -1,8 +1,5 @@
 {
     "itemGroup.projectexpansion": "Project Expansion",
     "text.projectexpansion.wip": "WIP!",
-    "text.projectexpansion.upgrade_not_owner": "You do not own this.",
-    "text.projectexpansion.incorrect_upgrade_tier": "Wrong Upgrade Tier.",
-    "text.projectexpansion.max_upgrade": "This block has been maxed out.",
-    "text.projectexpansion.incorrect_upgrade": "This upgrade is not for this block."
+    "text.projectexpansion.provider_error": "Failed to fetch ProjectE provider."
 }

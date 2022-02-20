@@ -8,7 +8,6 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.Blocks;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemCompressedEnergyCollector;
-import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -74,12 +73,6 @@ public enum Matter {
     private RegistryObject<BlockRelay> relay = null;
     @Nullable
     private RegistryObject<BlockItem> itemRelay = null;
-    @Nullable
-    private RegistryObject<ItemUpgrade> itemCollectorUpgrade = null;
-    @Nullable
-    private RegistryObject<ItemUpgrade> itemPowerFlowerUpgrade = null;
-    @Nullable
-    private RegistryObject<ItemUpgrade> itemRelayUpgrade = null;
     Matter(String name, boolean hasItem, int level, @Nullable Supplier<Item> existingItem) {
         this.name = name;
         this.hasItem = hasItem;
@@ -192,18 +185,6 @@ public enum Matter {
         return itemCompressedCollector == null ? null : itemCompressedCollector.get();
     }
 
-    public @Nullable ItemUpgrade getCollectorUpgrade() {
-        return itemCollectorUpgrade == null ? null : itemCollectorUpgrade.get();
-    }
-
-    public @Nullable ItemUpgrade getPowerFlowerUpgrade() {
-        return itemPowerFlowerUpgrade == null ? null : itemPowerFlowerUpgrade.get();
-    }
-
-    public @Nullable ItemUpgrade getRelayUpgrade() {
-        return itemRelayUpgrade == null ? null : itemRelayUpgrade.get();
-    }
-
     public static final int UNCOMMON_THRESHOLD = 4;
     public static final int RARE_THRESHOLD = 15;
     public static final int EPIC_THRESHOLD = 16;
@@ -235,24 +216,6 @@ public enum Matter {
             case RELAY: {
                 relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(this));
                 itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
-                break;
-            }
-
-            case UPGRADE_COLLECTOR: {
-                if(this == FINAL) return;
-                itemCollectorUpgrade = Items.Registry.register(String.format("%s_collector_upgrade", name), () -> new ItemUpgrade(this, ItemUpgrade.UpgradeType.COLLECTOR));
-                break;
-            }
-
-            case UPGRADE_POWER_FLOWER: {
-                if(this == FINAL) return;
-                itemPowerFlowerUpgrade = Items.Registry.register(String.format("%s_power_flower_upgrade", name), () -> new ItemUpgrade(this, ItemUpgrade.UpgradeType.POWER_FLOWER));
-                break;
-            }
-
-            case UPGRADE_RELAY: {
-                if(this == FINAL) return;
-                itemRelayUpgrade = Items.Registry.register(String.format("%s_relay_upgrade", name), () -> new ItemUpgrade(this, ItemUpgrade.UpgradeType.RELAY));
                 break;
             }
         }

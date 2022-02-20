@@ -1,6 +1,0 @@
-{
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "projectexpansion:item/upgrade/collector/cyan"
-    }
-}

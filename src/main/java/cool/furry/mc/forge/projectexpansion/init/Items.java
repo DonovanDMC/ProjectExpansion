@@ -1,8 +1,9 @@
 package cool.furry.mc.forge.projectexpansion.init;
 
-import cool.furry.mc.forge.projectexpansion.util.Star;
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.item.*;
+import cool.furry.mc.forge.projectexpansion.item.ItemArcaneTablet;
+import cool.furry.mc.forge.projectexpansion.item.ItemFinalStar;
+import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
@@ -21,4 +22,5 @@ public class Items {
     public static final RegistryObject<Item> PERSONAL_LINK = Registry.register("personal_link", () -> new BlockItem(Blocks.PERSONAL_LINK.get(), new Item.Properties().group(Main.group)));
     public static final RegistryObject<Item> FINAL_STAR_SHARD = Registry.register("final_star_shard", () -> new Item(new Item.Properties().maxStackSize(1).rarity(Rarity.RARE).group(Main.group)));
     public static final RegistryObject<Item> FINAL_STAR = Registry.register("final_star", ItemFinalStar::new);
+    public static final RegistryObject<Item> MATTER_UPGRADER = Registry.register("matter_upgrader", ItemUpgrade::new);
 }
