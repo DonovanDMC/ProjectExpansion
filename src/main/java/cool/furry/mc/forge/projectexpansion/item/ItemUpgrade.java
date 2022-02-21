@@ -109,7 +109,7 @@ public class ItemUpgrade extends Item {
             upgradeBlock = Objects.requireNonNull(upgradeTo.getRelay());
         }
 
-        if(!provider.hasKnowledge(new ItemStack(upgrade))) {
+        if(!provider.hasKnowledge(new ItemStack(upgrade)) && !player.abilities.isCreativeMode) {
             player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_learned", new TranslationTextComponent(upgrade.getTranslationKey())).mergeStyle(TextFormatting.RED), true);
             return ActionResultType.FAIL;
         }
