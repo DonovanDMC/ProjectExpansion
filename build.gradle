@@ -9,6 +9,7 @@ buildscript {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'signing'
 
 group = 'furry.cool.mc.forge'
 version = '1.0.5'
@@ -79,7 +80,6 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.23'
     implementation fg.deobf("curse.maven:projecte-226410:3223221")
-    // implementation fg.deobf("curse.maven:jei-238222:3650568")
 }
 
 jar {
@@ -94,6 +94,26 @@ jar {
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+}
+
+Properties secrets = new Properties();
+file("gradle.secrets").withReader {
+    secrets.load(it)
+}
+
+task signJar(dependsOn: 'reobfJar') {
+    def dir  = new File("$buildDir/libs/signed")
+    dir.mkdirs()
+    ant.signjar(
+        destDir:              dir.absolutePath,
+        jar:                  jar.archiveFile.get(),
+        alias:                secrets.keyAlias,
+        storetype:            "jks",
+        keystore:             secrets.keyStore,
+        storepass:            secrets.storePass,
+        verbose:              true,
+        preservelastmodified: true
+    )
 }
 
 jar.finalizedBy('reobfJar')

@@ -121,3 +121,4 @@ ideas/
 src/main/resources/assets/projectexpansion/textures/block/hue
 bin/
 src/generated/resources/.cache
+gradle.secrets
