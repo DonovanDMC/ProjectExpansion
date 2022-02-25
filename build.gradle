@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'signing'
 
 group = 'furry.cool.mc.forge'
-version = getProperty("mcVersion") + "-" + getProperty("releaseType") + "." + getProperty("localVersion")
+version = getProperty("mcVersion") + "-" + getProperty("localVersion")
 
 java {
     archivesBaseName = 'ProjectExpansion'
