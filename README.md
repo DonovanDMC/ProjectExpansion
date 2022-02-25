@@ -1,7 +1,7 @@
 # Project Expansion
 An unofficial expansion of [ProjectE](https://www.curseforge.com/minecraft/mc-mods/projecte).
 ## This mod is not officially supported or endorsed by ProjectE
-Do not contact them for support. If you want support, comment on the [curseforge](https://www.curseforge.com/minecraft/mc-mods/project-expansion), or [open an issue](https://github.com/DonovanDMC/ProjectExpansion/issues/new);
+Do not contact them for support. If you want support, comment on the [curseforge](https://www.curseforge.com/minecraft/mc-mods/project-expansion), or [open an issue](https://github.com/DonovanDMC/ProjectExpansion/issues/new) - make sure to mention what version of the mod you're using!
 
 This is based on [ProjectEX](https://www.curseforge.com/minecraft/mc-mods/projectex-forge), which seems to be mostly abandoned at this point. This has been rewritten from the ground up, and has some new things.
 
