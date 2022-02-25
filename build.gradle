@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'signing'
 
 group = 'furry.cool.mc.forge'
-version = '1.0.5'
+version = getProperty("mcVersion") + "-" + getProperty("releaseType") + "." + getProperty("localVersion")
 
 java {
     archivesBaseName = 'ProjectExpansion'
@@ -20,7 +20,7 @@ java {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20210309-1.16.5'
+    mappings channel: 'snapshot', version: "${getProperty("mappingsVersion")}-${getProperty("mcVersion")}"
 
     runs {
         client {
@@ -78,8 +78,8 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.23'
-    implementation fg.deobf("curse.maven:projecte-226410:3223221")
+    minecraft "net.minecraftforge:forge:${getProperty("mcVersion")}-${getProperty("forgeVersion")}"
+    implementation fg.deobf("curse.maven:projecte-226410:${getProperty("projecteVersion")}")
 }
 
 jar {
@@ -94,26 +94,6 @@ jar {
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-}
-
-Properties secrets = new Properties();
-file("gradle.secrets").withReader {
-    secrets.load(it)
-}
-
-task signJar(dependsOn: 'reobfJar') {
-    def dir  = new File("$buildDir/libs/signed")
-    dir.mkdirs()
-    ant.signjar(
-        destDir:              dir.absolutePath,
-        jar:                  jar.archiveFile.get(),
-        alias:                secrets.keyAlias,
-        storetype:            "jks",
-        keystore:             secrets.keyStore,
-        storepass:            secrets.storePass,
-        verbose:              true,
-        preservelastmodified: true
-    )
 }
 
 jar.finalizedBy('reobfJar')
