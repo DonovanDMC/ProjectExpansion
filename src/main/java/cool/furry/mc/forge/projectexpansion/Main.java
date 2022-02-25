@@ -9,7 +9,6 @@ import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.Star;
-import moze_intel.projecte.gameObjs.registration.impl.ItemDeferredRegister;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -31,15 +30,11 @@ import java.lang.reflect.Modifier;
 public class Main {
     public static final String MOD_ID = "projectexpansion";
     public static ItemGroup group;
-    public static ItemGroup peGroup;
 
     @SuppressWarnings("unused")
     public static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger();
 
-    public Main() throws NoSuchFieldException, IllegalAccessException {
-        Field f = ItemDeferredRegister.class.getDeclaredField("creativeTab");
-        f.setAccessible(true);
-        peGroup = (ItemGroup) f.get(ItemDeferredRegister.class);
+    public Main() {
         group = new ItemGroup(MOD_ID) {
 
             @Override
