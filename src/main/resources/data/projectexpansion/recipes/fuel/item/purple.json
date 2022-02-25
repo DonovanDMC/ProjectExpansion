@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "group": "projectexpansion:fuel/purple",
+    "ingredients": [
+        {
+            "item": "projectexpansion:pink_fuel"
+        },
+        {
+            "item": "projectexpansion:pink_fuel"
+        },
+        {
+            "item": "projectexpansion:pink_fuel"
+        },
+        {
+            "item": "projectexpansion:pink_fuel"
+        }
+    ],
+    "result": {
+        "item": "projectexpansion:purple_fuel"
+    }
+}

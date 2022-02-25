@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "group": "projectexpansion:matter/cyan",
+    "ingredients": [
+        {
+            "item": "projectexpansion:blue_relay"
+        },
+        {
+            "item": "projectexpansion:cyan_matter"
+        }
+    ],
+    "result": {
+        "item": "projectexpansion:cyan_relay"
+    }
+}

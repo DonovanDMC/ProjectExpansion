@@ -1,0 +1,10 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/project-expansion",
+  "1.15.2": {
+    "1.15.2-1.0.6": "Initial Release"
+  },
+  "promos": {
+    "1.15.2-latest": "1.15.2-1.0.6",
+    "1.15.2-recommended": "1.15.2-1.0.6"
+  }
+}
