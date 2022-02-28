@@ -52,7 +52,7 @@ public class BlockPowerFlower extends Block implements HasMatter {
     }
 
     @Override
-    public Matter getMatter () {
+    public Matter getMatter() {
         return matter;
     }
 
@@ -83,6 +83,7 @@ public class BlockPowerFlower extends Block implements HasMatter {
     }
 
     @Deprecated
+    @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
         if (world.isRemote) return ActionResultType.SUCCESS;
         TileEntity tile = world.getTileEntity(pos);

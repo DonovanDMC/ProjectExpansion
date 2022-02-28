@@ -32,7 +32,7 @@ public class BlockRelay extends Block implements HasMatter {
     }
 
     @Override
-    public Matter getMatter () {
+    public Matter getMatter() {
         return matter;
     }
 

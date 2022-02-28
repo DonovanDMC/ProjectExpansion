@@ -117,8 +117,6 @@ run/
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
-ideas/
-src/main/resources/assets/projectexpansion/textures/block/hue
 bin/
 src/generated/resources/.cache
 scripts/secrets.sh
