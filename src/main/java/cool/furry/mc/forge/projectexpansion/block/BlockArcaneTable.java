@@ -65,7 +65,8 @@ public class BlockArcaneTable extends DirectionalBlock implements IWaterLoggable
 
     @Nonnull
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
+    @Override
+    public ActionResultType func_225533_a_(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult rtr) {
         if (!world.isRemote) {
             NetworkHooks.openGui((ServerPlayerEntity)player, new ArcaneContainer(hand), (b) -> {
                 b.writeEnumValue(Hand.OFF_HAND);
