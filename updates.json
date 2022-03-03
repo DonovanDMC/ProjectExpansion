@@ -3,10 +3,11 @@
   "1.15.2": {
     "1.15.2-1.0.6": "Initial Release",
     "1.15.2-1.0.7": "Only load config gui on client side (fix for server usage)",
-    "1.15.2-1.0.8": "New Icon & Fix Forge Dependency Version"
+    "1.15.2-1.0.8": "New Icon & Fix Forge Dependency Version",
+    "1.15.2-1.0.9": "Fix config runner & fix arcane table activation"
   },
   "promos": {
-    "1.15.2-latest": "1.15.2-1.0.8",
-    "1.15.2-recommended": "1.15.2-1.0.8"
+    "1.15.2-latest": "1.15.2-1.0.9",
+    "1.15.2-recommended": "1.15.2-1.0.9"
   }
 }
