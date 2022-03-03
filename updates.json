@@ -8,10 +8,11 @@
     "1.0.4": "Fix EMCDisplay crash with null provider, add wip note on upgrade items.",
     "1.0.5": "Fixed EMCDisplay tick rate & added Matter Upgrader",
     "1.16.5-1.0.6": "No changes, we're doing some new versioning.",
-    "1.16.5-1.0.7": "Only load config gui on client side (fix for server usage)"
+    "1.16.5-1.0.7": "Only load config gui on client side (fix for server usage)",
+    "1.16.5-1.0.8": "New Icon & new display url"
   },
   "promos": {
-    "1.16.5-latest": "1.16.5-1.0.7",
-    "1.16.5-recommended": "1.16.5-1.0.7"
+    "1.16.5-latest": "1.16.5-1.0.8",
+    "1.16.5-recommended": "1.16.5-1.0.8"
   }
 }
