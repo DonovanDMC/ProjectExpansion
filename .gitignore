@@ -120,3 +120,6 @@ run/
 bin/
 src/generated/resources/.cache
 scripts/secrets.sh
+**/*/node_modules
+scripts/js/secrets.json
+scripts/js/*.jar
