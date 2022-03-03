@@ -16,7 +16,7 @@ An unofficial expansion of ProjectE.
 [[dependencies.projectexpansion]]
 modId="forge"
 mandatory=true
-versionRange="[36,)"
+versionRange="[31,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.projectexpansion]]
