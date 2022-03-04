@@ -120,3 +120,4 @@ run/
 bin/
 src/generated/resources/.cache
 scripts/secrets.sh
+scripts/publish
