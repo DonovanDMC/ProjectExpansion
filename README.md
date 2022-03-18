@@ -11,6 +11,18 @@ This is based on [ProjectEX](https://www.curseforge.com/minecraft/mc-mods/projec
 Your current emc and overall gain/loss will be displayed in the top left corner.
 ![EMC Display](https://butts-are.cool/mc/project-expansion/emc_display.gif)
 
+### Management Commands
+Useful commands to make managing emc as easy as can be.
+
+This can be used on yourself
+![CMD Set](https://butts-are.cool/mc/project-expansion/cmd_set.png)
+
+This can be used from console (and players), and will notify the player of changes
+![CMD Console](https://butts-are.cool/mc/project-expansion/cmd_console.png)
+
+We've got several useful subcommands here.
+![CMD List](https://butts-are.cool/mc/project-expansion/cmd_list.png)
+
 ### Power Flowers
 These passively generate emc, once every second by default. There are 16 tiers.
 ![Power Flowers](https://butts-are.cool/mc/project-expansion/power_flowers.png)
