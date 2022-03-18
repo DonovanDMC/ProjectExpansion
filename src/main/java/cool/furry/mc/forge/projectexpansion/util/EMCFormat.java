@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
+import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import net.minecraft.client.gui.screen.Screen;
 
@@ -10,12 +11,15 @@ import java.text.FieldPosition;
 import java.util.Arrays;
 
 public class EMCFormat extends DecimalFormat {
-    public static EMCFormat INSTANCE = new EMCFormat();
+    public static EMCFormat INSTANCE = new EMCFormat(false);
+    public static EMCFormat INSTANCE_IGNORE_SHIFT = new EMCFormat(true);
     public static final double FORMAT_START = 1e6;
+    private final boolean ignoreShift;
 
-    private EMCFormat() {
+    private EMCFormat(boolean ignoreShift) {
         super("#,###");
         setRoundingMode(RoundingMode.DOWN);
+        this.ignoreShift = ignoreShift;
     }
 
     private static final Object[][] list = {
@@ -42,7 +46,7 @@ public class EMCFormat extends DecimalFormat {
 
     @Override
     public StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition) {
-        if(Config.formatEMC.get() && number > FORMAT_START && !Screen.hasShiftDown()) {
+        if(Config.formatEMC.get() && number > FORMAT_START && (ignoreShift || !Screen.hasShiftDown())) {
             Object[] res = Arrays.stream(list).filter((p) -> number >= (double) p[0]).findFirst().orElse(new Object[]{ number, "", "" });
             double num = number;
             @Nullable
@@ -59,6 +63,8 @@ public class EMCFormat extends DecimalFormat {
             if(abr != null && full != null) str.append(Config.fullNumberNames.get() ? String.format(" %s", full) : abr);
             return str;
         }
+
+        Main.Logger.info(number);
 
         return super.format(number, result, fieldPosition);
     }
