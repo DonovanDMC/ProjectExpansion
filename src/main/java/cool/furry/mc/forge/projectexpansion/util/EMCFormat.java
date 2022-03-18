@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import net.minecraft.client.gui.screen.Screen;
 
@@ -63,8 +62,6 @@ public class EMCFormat extends DecimalFormat {
             if(abr != null && full != null) str.append(Config.fullNumberNames.get() ? String.format(" %s", full) : abr);
             return str;
         }
-
-        Main.Logger.info(number);
 
         return super.format(number, result, fieldPosition);
     }
