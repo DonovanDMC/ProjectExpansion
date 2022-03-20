@@ -82,7 +82,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
                     if(action > 0L) {
                         emc -= action;
                         markDirty();
-                        if(emc < action) break;
+                        if(emc < div) break;
                     }
                 }
             }

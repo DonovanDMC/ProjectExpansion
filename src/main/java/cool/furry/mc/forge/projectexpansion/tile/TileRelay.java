@@ -1,11 +1,9 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.block.BlockRelay;
-import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
-import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -52,12 +50,13 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
         // we can't use a user defined value due to emc duplication possibilities
         if(tick >= 20) {
             tick = 0;
-            long transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get());
+            long transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getRelayTransfer();
             List<IEmcStorage> temp = new ArrayList<>(1);
 
             for (Direction dir : DIRECTIONS) {
                 TileEntity tile = world.getTileEntity(pos.offset(dir));
                 @Nullable IEmcStorage storage = tile == null ? null : tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).orElse(null);
+
                 if(storage != null && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);
                 }
@@ -71,7 +70,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
                     if(action > 0L) {
                         emc -= action;
                         markDirty();
-                        if(emc < action) break;
+                        if(emc < div) break;
                     }
                 }
             }
