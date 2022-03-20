@@ -63,9 +63,6 @@ public class EMCFormat extends DecimalFormat {
             if(abr != null && full != null) str.append(Config.fullNumberNames.get() ? String.format(" %s", full) : abr);
             return str;
         }
-
-        Main.Logger.info(number);
-
         return super.format(number, result, fieldPosition);
     }
 

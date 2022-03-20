@@ -73,6 +73,12 @@ public class ConfigMenu extends Screen {
                 (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.powerflower_multiplier"), option.get(gs))
         ));
 
+        this.optionsRowList.func_214333_a(new BooleanOption(
+                "gui.projectexpansion.config.notify_emc_changes",
+                __ -> Config.notifyEMCChanges.get(),
+                (__, newValue) -> Config.notifyEMCChanges.set(newValue)
+        ));
+
         this.addButton(new Button((this.width - BUTTON_WIDTH) / 2, this.height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, I18n.format("gui.done"), button -> this.minecraft.displayGuiScreen(parentScreen)
         ));
     }
