@@ -62,22 +62,9 @@ public class Main {
         TileEntityTypes.Registry.register(bus);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.Spec, "project-expansion.toml");
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ConfigMenu(screen)));
 
-        replaceEMCFormatter();
         Fuel.registerAll();
         Matter.registerAll();
         Star.registerAll();
-    }
-
-    void replaceEMCFormatter() {
-        try {
-            Field field = Constants.class.getDeclaredField("EMC_FORMATTER");
-            field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-            field.set(null, EMCFormat.INSTANCE);
-        } catch (NoSuchFieldException | IllegalAccessException ignore) {}
     }
 }

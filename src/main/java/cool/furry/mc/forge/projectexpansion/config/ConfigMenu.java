@@ -8,7 +8,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.BooleanOption;
 import net.minecraft.client.settings.SliderPercentageOption;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ConfigMenu extends Screen {
     private static final int TITLE_HEIGHT = 8;
     private static final int OPTIONS_LIST_TOP_HEIGHT = 24;
