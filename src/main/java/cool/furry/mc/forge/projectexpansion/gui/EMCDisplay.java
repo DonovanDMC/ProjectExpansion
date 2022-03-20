@@ -65,7 +65,7 @@ public class EMCDisplay {
     public static void onRenderGUI(RenderGameOverlayEvent.Text event) {
         if(!Config.emcDisplay.get()) return;
         String str = EMCFormat.INSTANCE.format(emc.doubleValue());
-        if(!change.equals(BigInteger.ZERO)) str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.INSTANCE.format(change.doubleValue()) + "/s";
+        if(!change.equals(BigInteger.ZERO)) str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.INSTANCE.format(Math.abs(change.doubleValue())) + "/s";
         event.getLeft().add(String.format("EMC: %s", str));
     }
 }
