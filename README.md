@@ -5,6 +5,8 @@ Do not contact them for support. If you want support, comment on the [curseforge
 
 This is based on [ProjectEX](https://www.curseforge.com/minecraft/mc-mods/projectex-forge), which seems to be mostly abandoned at this point. This has been rewritten from the ground up, and has some new things.
 
+If you want to get updates instantly or just generally chat with developers, come see us in our [Discord Server](https://discord.gg/SwxbbmMKQH).
+
 ## Features
 
 ### EMC Display
