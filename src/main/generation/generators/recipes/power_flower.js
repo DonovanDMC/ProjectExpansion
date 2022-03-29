@@ -8,5 +8,5 @@ module.exports = function run(outDir) {
     return MATTER_TIERS.map((tier, index, arr) => {
         writeFileSync(`${outDir}/power_flower/${tier}.json`, base.replace(/\$TIER\$/g, tier));
         return [BASE, `${outDir}/power_flower/${tier}.json`];
-    });compressed_collector
+    });
 }
