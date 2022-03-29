@@ -3,7 +3,7 @@
     "group": "projectexpansion:matter/pink",
     "ingredients": [
         {
-            "item": "projectexpansion:basic_relay"
+            "item": "projectexpansion:magenta_relay"
         },
         {
             "item": "projectexpansion:pink_matter"
