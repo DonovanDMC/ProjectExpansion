@@ -5,7 +5,6 @@ import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -14,7 +13,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -25,23 +23,24 @@ import java.math.BigInteger;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TilePersonalLink extends TileEntity implements ITickableTileEntity, IEmcStorage {
+public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmcStorage {
     public UUID owner = new UUID(0L, 0L);
     public String ownerName = "";
     public BigInteger emc = BigInteger.ZERO;
     public int tick = 0;
     private LazyOptional<IEmcStorage> emcStorageCapability;
-    public TilePersonalLink() {
-        super(TileEntityTypes.PERSONAL_LINK.get());
+
+    public TileEMCLink() {
+        super(TileEntityTypes.EMC_LINK.get());
     }
 
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
-        if(nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
-        if(nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
-        if(nbt.contains("Tick", Constants.NBT.TAG_BYTE)) tick = nbt.getByte("Tick") & 0xFF;
-        if(nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
+        if (nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
+        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
+        if (nbt.contains("Tick", Constants.NBT.TAG_BYTE)) tick = nbt.getByte("Tick") & 0xFF;
+        if (nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
     }
 
     @Nonnull

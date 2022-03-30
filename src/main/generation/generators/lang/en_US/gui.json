@@ -12,6 +12,6 @@
     "gui.projectexpansion.config.powerflower_multiplier.desc": "Multiplies the output of Power Flowers.",
     "gui.projectexpansion.config.notify_emc_changes": "Notify EMC Changes",
     "gui.projectexpansion.config.notify_emc_changes.desc": "Notify users when their emc is changed via /emc add|remove|set",
-    "gui.projectexpansion.personal_link": "Personal Link",
+    "gui.projectexpansion.emc_link": "Personal Link",
     "gui.projectexpansion.emc_gain": "EMC Gain"
 }
