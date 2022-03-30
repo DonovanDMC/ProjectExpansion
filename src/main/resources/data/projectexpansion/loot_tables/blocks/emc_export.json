@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "projectexpansion:personal_link"
+          "name": "projectexpansion:emc_export"
         }
       ],
       "conditions": [

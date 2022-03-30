@@ -19,10 +19,10 @@
       "tag": "forge:stone"
     },
     "R": {
-      "item": "projecte:red_matter"
+      "item": "projectexpansion:purple_matter"
     }
   },
   "result": {
-    "item": "projectexpansion:personal_link"
+    "item": "projectexpansion:emc_export"
   }
 }

@@ -15,8 +15,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -27,23 +25,24 @@ import java.math.BigInteger;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TilePersonalLink extends TileEntity implements ITickableTileEntity, IEmcStorage {
+public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmcStorage {
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
     public BigInteger emc = BigInteger.ZERO;
     public int tick = 0;
     private LazyOptional<IEmcStorage> emcStorageCapability;
-    public TilePersonalLink() {
-        super(TileEntityTypes.PERSONAL_LINK.get());
+
+    public TileEMCLink() {
+        super(TileEntityTypes.emc_link.get());
     }
 
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if(nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
-        if(nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
-        if(nbt.contains("Tick", Constants.NBT.TAG_BYTE)) tick = nbt.getByte("Tick") & 0xFF;
-        if(nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
+        if (nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
+        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
+        if (nbt.contains("Tick", Constants.NBT.TAG_BYTE)) tick = nbt.getByte("Tick") & 0xFF;
+        if (nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
     }
 
     @Nonnull
@@ -74,8 +73,8 @@ public class TilePersonalLink extends TileEntity implements ITickableTileEntity,
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        if(emc > 0L) {
-            if(action.execute()) this.emc = this.emc.add(BigInteger.valueOf(emc));
+        if (emc > 0L) {
+            if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(emc));
 
             return emc;
         }
@@ -86,15 +85,15 @@ public class TilePersonalLink extends TileEntity implements ITickableTileEntity,
     @Override
     public void tick() {
 
-        if(world == null || world.isRemote()) return;
+        if (world == null || world.isRemote()) return;
         tick++;
-        if(tick >= Config.tickDelay.get()) {
+        if (tick >= Config.tickDelay.get()) {
             tick = 0;
-            if(emc.equals(BigInteger.ZERO)) return;
+            if (emc.equals(BigInteger.ZERO)) return;
             ServerPlayerEntity player = Objects.requireNonNull(world.getServer()).getPlayerList().getPlayerByUUID(owner);
             IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
 
-            if(provider != null) {
+            if (provider != null) {
                 provider.setEmc(provider.getEmc().add(emc));
                 markDirty();
                 emc = BigInteger.ZERO;
@@ -110,7 +109,7 @@ public class TilePersonalLink extends TileEntity implements ITickableTileEntity,
     }
 
     public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
-        if(livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
+        if (livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
     }
 
     @Override

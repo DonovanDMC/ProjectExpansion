@@ -1,6 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
-import cool.furry.mc.forge.projectexpansion.tile.TilePersonalLink;
+import cool.furry.mc.forge.projectexpansion.tile.TileEMCLink;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -27,8 +27,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockPersonalLink extends Block {
-    public BlockPersonalLink() {
+public class BlockEMCLink extends Block {
+    public BlockEMCLink() {
         super(AbstractBlock.Properties.create(Material.ROCK).setRequiresTool().hardnessAndResistance(5F).sound(SoundType.STONE));
     }
 
@@ -39,14 +39,14 @@ public class BlockPersonalLink extends Block {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TilePersonalLink();
+        return new TileEMCLink();
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, level, list, flag);
-        list.add((new TranslationTextComponent("block.projectexpansion.personal_link.tooltip")).mergeStyle(TextFormatting.GRAY));
+        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.tooltip")).mergeStyle(TextFormatting.GRAY));
     }
 
     @Deprecated
@@ -54,13 +54,14 @@ public class BlockPersonalLink extends Block {
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
         if (world.isRemote) return ActionResultType.SUCCESS;
         TileEntity tile = world.getTileEntity(pos);
-        if(tile instanceof TilePersonalLink) player.sendStatusMessage(new StringTextComponent(((TilePersonalLink) tile).ownerName), true);
+        if (tile instanceof TileEMCLink)
+            player.sendStatusMessage(new StringTextComponent(((TileEMCLink) tile).ownerName), true);
         return super.onBlockActivated(state, world, pos, player, hand, ray);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         TileEntity tile = world.getTileEntity(pos);
-        if(tile instanceof TilePersonalLink) ((TilePersonalLink) tile).wasPlaced(livingEntity, stack);
+        if (tile instanceof TileEMCLink) ((TileEMCLink) tile).wasPlaced(livingEntity, stack);
     }
 }

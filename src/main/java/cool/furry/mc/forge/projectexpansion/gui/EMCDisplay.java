@@ -13,6 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -47,24 +48,34 @@ public class EMCDisplay {
             lastEMC = emc;
 
             change = BigInteger.ZERO;
-            for(BigInteger h : emcHistory) change = change.add(h);
+            for (BigInteger h : emcHistory) change = change.add(h);
             change = change.divide(BigInteger.valueOf(emcHistory.length));
         }
     }
 
-    @SubscribeEvent
-    public static void clientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event) {
-        if(!Config.emcDisplay.get()) return;
+    private static void reset() {
+        if (!Config.emcDisplay.get()) return;
         emc = lastEMC = change = BigInteger.ZERO;
         Arrays.fill(emcHistory, BigInteger.ZERO);
         tick = 0;
     }
 
     @SubscribeEvent
+    public static void clientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+        reset();
+    }
+
+    @SubscribeEvent
+    public static void worldUnload(WorldEvent.Unload event) {
+        reset();
+    }
+
+    @SubscribeEvent
     public static void onRenderGUI(RenderGameOverlayEvent.Text event) {
-        if(!Config.emcDisplay.get()) return;
+        if (!Config.emcDisplay.get()) return;
         String str = EMCFormat.INSTANCE.format(emc.doubleValue());
-        if(!change.equals(BigInteger.ZERO)) str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.INSTANCE.format(Math.abs(change.doubleValue())) + "/s";
+        if (!change.equals(BigInteger.ZERO))
+            str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.INSTANCE.format(Math.abs(change.doubleValue())) + "/s";
         event.getLeft().add(String.format("EMC: %s", str));
     }
 }

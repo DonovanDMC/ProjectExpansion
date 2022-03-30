@@ -1,8 +1,12 @@
 package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.config.ConfigMenu;
+import cool.furry.mc.forge.projectexpansion.gui.GUIEMCExport;
+import cool.furry.mc.forge.projectexpansion.gui.GUIEMCImport;
+import cool.furry.mc.forge.projectexpansion.init.ContainerTypes;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import moze_intel.projecte.utils.Constants;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
@@ -19,6 +23,8 @@ public class ClientHandler {
     public static void clientSetup(FMLClientSetupEvent event) {
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ConfigMenu(screen));
         replaceEMCFormatter();
+        ScreenManager.registerFactory(ContainerTypes.EMC_EXPORT.get(), GUIEMCExport::new);
+        ScreenManager.registerFactory(ContainerTypes.EMC_IMPORT.get(), GUIEMCImport::new);
     }
 
     static void replaceEMCFormatter() {

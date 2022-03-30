@@ -10,7 +10,7 @@ settings.logErroringRecipes = true
 onEvent("recipes", event => {
     event.remove({mod: "projectex"});
 
-    event.shapeless("projectexpansion:personal_link", ["projectex:energy_link"]);
+    event.shapeless("projectexpansion:emc_link", ["projectex:energy_link"]);
     event.shapeless("projectexpansion:arcane_tablet", ["projectex:arcane_tablet"]);
 
     event.shapeless("projectexpansion:final_star_shard", ["projectex:final_star_shard"]);
