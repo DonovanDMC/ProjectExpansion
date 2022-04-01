@@ -25,6 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -35,16 +36,13 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public class TileEMCExport extends TileEntityInventoryHelper implements ITickableTileEntity, INamedContainerProvider, IItemHandler {
+public class TileEMCExport extends TileEntityInventoryHelper implements ITickableTileEntity, INamedContainerProvider, IItemHandler, ICapabilityProvider {
     private static final int[] SLOTS = new int[]{0, 1};
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private @Nullable
     IEMCProxy proxy = null;
-    // make sure we aren't double charging or doing something else funky, we can still have
-    // random race conditions though
-    private boolean isRefilling = false;
 
     public TileEMCExport() {
         super(TileEntityTypes.EMC_EXPORT.get(), 2);
@@ -81,6 +79,10 @@ public class TileEMCExport extends TileEntityInventoryHelper implements ITickabl
         if (proxy == null) proxy = ProjectEAPI.getEMCProxy();
         return proxy;
     }
+
+    // make sure we aren't double charging or doing something else funky, we can still have
+    // random race conditions though
+    private boolean isRefilling = false;
 
     private void refill() {
         if (isRefilling) return;

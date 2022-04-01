@@ -4,7 +4,7 @@
     "0": "projectexpansion:block/arcane_table/top",
     "1": "projectexpansion:block/arcane_table/bottom",
     "2": "projectexpansion:block/arcane_table/side",
-    "particle": "projectexpansion:block/arcane/top"
+    "particle": "projectexpansion:block/arcane_table/top"
   },
   "elements": [
     {
