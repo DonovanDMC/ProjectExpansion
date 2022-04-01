@@ -10,14 +10,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /* Graciously borrowed from Mob Grinding Utils
  * https://github.com/vadis365/Mob-Grinding-Utils/blob/7ed8a22343e0ef0498941472c6eb5dc0ea329af3/MobGrindingUtils/MobGrindingUtils/src/main/java/mob_grinding_utils/tile/TileEntityInventoryHelper.java
  */
 
-public abstract class TileEntityInventoryHelper extends TileEntity implements ISidedInventory {
+public abstract class TileEntityInventoryHelper extends TileEntity implements ISidedInventory, IItemHandler {
 
     private NonNullList<ItemStack> inventory;
 
@@ -31,6 +33,7 @@ public abstract class TileEntityInventoryHelper extends TileEntity implements IS
         return inventory.size();
     }
 
+    @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
         return inventory.get(slot);
@@ -49,7 +52,7 @@ public abstract class TileEntityInventoryHelper extends TileEntity implements IS
     }
 
     @Override
-    public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
+    public void setInventorySlotContents(int index, ItemStack stack) {
         inventory.set(index, stack);
         if (stack.getCount() > this.getInventoryStackLimit())
             stack.setCount(this.getInventoryStackLimit());
@@ -90,7 +93,7 @@ public abstract class TileEntityInventoryHelper extends TileEntity implements IS
     }
 
     public void loadFromNbt(CompoundNBT compound) {
-        inventory = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
+        inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
         if (compound.contains("Items", 9))
             ItemStackHelper.loadAllItems(compound, inventory);
     }

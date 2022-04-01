@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CTC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:coal"
+    },
+    "T": {
+      "item": "projecte:transmutation_tablet"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:infinite_fuel"
+  }
+}
