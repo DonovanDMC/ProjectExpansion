@@ -22,4 +22,5 @@ public class Items {
     public static final RegistryObject<Item> MATTER_UPGRADER = Registry.register("matter_upgrader", ItemUpgrade::new);
     public static final RegistryObject<BlockItem> EMC_EXPORT = Registry.register("emc_export", () -> new BlockItem(Blocks.EMC_EXPORT.get(), new Item.Properties().group(Main.group)));
     public static final RegistryObject<BlockItem> EMC_Import = Registry.register("emc_import", () -> new BlockItem(Blocks.EMC_IMPORT.get(), new Item.Properties().group(Main.group)));
+    public static final RegistryObject<BlockItem> TRANSMUTATION_INTERFACE = Registry.register("transmutation_interface", () -> new BlockItem(Blocks.TRANSMUTATION_INTERFACE.get(), new Item.Properties().group(Main.group).rarity(Rarity.EPIC)));
 }

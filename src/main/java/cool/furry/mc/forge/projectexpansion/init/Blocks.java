@@ -17,4 +17,5 @@ public class Blocks {
     public static final RegistryObject<BlockEMCLink> EMC_LINK = Registry.register("emc_link", BlockEMCLink::new);
     public static final RegistryObject<BlockEMCExport> EMC_EXPORT = Registry.register("emc_export", BlockEMCExport::new);
     public static final RegistryObject<BlockEMCImport> EMC_IMPORT = Registry.register("emc_import", BlockEMCImport::new);
+    public static final RegistryObject<BlockTransmutationInterface> TRANSMUTATION_INTERFACE = Registry.register("transmutation_interface", BlockTransmutationInterface::new);
 }
