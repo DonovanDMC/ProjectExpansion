@@ -7,5 +7,7 @@
   "block.projectexpansion.emc_export.not_owner": "You are not the owner of this, %s is.",
   "block.projectexpansion.emc_import": "EMC Import",
   "block.projectexpansion.emc_import.tooltip": "Import items directly into your emc.",
-  "block.projectexpansion.emc_import.not_owner": "You are not the owner of this, %s is."
+  "block.projectexpansion.emc_import.not_owner": "You are not the owner of this, %s is.",
+  "block.projectexpansion.transmutation_interface": "Transmutation Interface",
+  "block.projectexpansion.transmutation_interface.tooltip": "This can be used with compatible mods like Refined Storage to access your transmutation inventory."
 }
