@@ -1,10 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.init;
 
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.block.BlockArcaneTable;
-import cool.furry.mc.forge.projectexpansion.block.BlockEMCExport;
-import cool.furry.mc.forge.projectexpansion.block.BlockEMCImport;
-import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
+import cool.furry.mc.forge.projectexpansion.block.*;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;

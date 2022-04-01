@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EIE",
+    "ILI",
+    "EIE"
+  ],
+  "key": {
+    "L": {
+      "item": "projectexpansion:emc_link"
+    },
+    "I": {
+      "item": "projectexpansion:emc_import"
+    },
+    "E": {
+      "item": "projectexpansion:emc_export"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:transmutation_interface"
+  }
+}

@@ -46,7 +46,7 @@ public class TileEMCImport extends TileEntityInventoryHelper implements ITickabl
     };
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
-    private LazyOptional<IItemHandler> itemHandlerCapability;
+    private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private @Nullable
     IEMCProxy proxy = null;
     private boolean isProcessing = false;
@@ -175,18 +175,16 @@ public class TileEMCImport extends TileEntityInventoryHelper implements ITickabl
         return new TranslationTextComponent("block.projectexpansion.emc_import");
     }
 
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (itemHandlerCapability == null || !itemHandlerCapability.isPresent()) {
-                itemHandlerCapability = LazyOptional.of(() -> this);
-            }
+        return (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() : super.getCapability(cap, side);
+    }
 
-            return itemHandlerCapability.cast();
-        }
-
-        return super.getCapability(cap, side);
+    @Override
+    protected void invalidateCaps() {
+        this.itemHandlerCapability.invalidate();
     }
 
     @Override
