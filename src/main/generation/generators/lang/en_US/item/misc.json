@@ -1,12 +1,12 @@
 {
-    "item.projectexpansion.arcane_tablet": "Arcane Tablet",
-    "item.projectexpansion.final_star_shard": "Final Star Shard",
-    "item.projectexpansion.final_star": "Final Star",
-    "item.projectexpansion.final_star.tooltip": "This does nothing, it exists to show off.",
-    "item.projectexpansion.infinite_fuel": "Infinite Fuel",
-    "item.projectexpansion.infinite_fuel.tooltip": "This item will not be consumed, fuel will be provided via your emc.",
-    "item.projectexpansion.infinite_fuel.not_enough_emc": "You do not have enough emc to use this, you need %s.",
-    "item.projectexpansion.infinite_steak": "Infinite Steak",
-    "item.projectexpansion.infinite_steak.tooltip": "Infinite food via your emc.",
-    "item.projectexpansion.infinite_steak.not_enough_emc": "You do not have enough emc to use this, you need %s."
+  "item.projectexpansion.arcane_tablet": "Arcane Tablet",
+  "item.projectexpansion.final_star_shard": "Final Star Shard",
+  "item.projectexpansion.final_star": "Final Star",
+  "item.projectexpansion.final_star.tooltip": "This does nothing, it exists to show off.",
+  "item.projectexpansion.infinite_fuel": "Infinite Fuel",
+  "item.projectexpansion.infinite_fuel.tooltip": "This item will not be consumed, fuel will be provided via your emc.",
+  "item.projectexpansion.infinite_fuel.not_enough_emc": "You do not have enough emc to use this, you need %s.",
+  "item.projectexpansion.infinite_steak": "Infinite Steak",
+  "item.projectexpansion.infinite_steak.tooltip": "Infinite food via your emc.",
+  "item.projectexpansion.infinite_steak.not_enough_emc": "You do not have enough emc to use this, you need %s."
 }

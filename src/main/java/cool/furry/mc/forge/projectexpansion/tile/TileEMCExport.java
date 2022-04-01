@@ -40,7 +40,7 @@ public class TileEMCExport extends TileEntityInventoryHelper implements ITickabl
     private static final int[] SLOTS = new int[]{0, 1};
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
-    private LazyOptional<IItemHandler> itemHandlerCapability;
+    private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private @Nullable
     IEMCProxy proxy = null;
 
@@ -187,15 +187,12 @@ public class TileEMCExport extends TileEntityInventoryHelper implements ITickabl
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (itemHandlerCapability == null || !itemHandlerCapability.isPresent()) {
-                itemHandlerCapability = LazyOptional.of(() -> this);
-            }
+        return (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() : super.getCapability(cap, side);
+    }
 
-            return itemHandlerCapability.cast();
-        }
-
-        return super.getCapability(cap, side);
+    @Override
+    protected void invalidateCaps() {
+        this.itemHandlerCapability.invalidate();
     }
 
     @Override
