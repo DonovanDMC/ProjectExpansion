@@ -33,7 +33,6 @@ We've got several useful subcommands here.
 ![CMD List](https://butts-are.cool/mc/project-expansion/cmd_list.png)
 
 ### Power Flowers
-
 These passively generate emc, once every second by default. There are 16 tiers.
 ![Power Flowers](https://butts-are.cool/mc/project-expansion/power_flowers.png)
 
@@ -46,19 +45,16 @@ These passively generate emc, once every second by default. There are 16 tiers.
 * 3: EMC Import, imports items into your emc
 
 ### Storage Integrations
-
-![Transmutation Interface](https://butts-are.cool/mc/project-expansion/transmutation_interface.png)
-
 Via the Transmutation Interface, you can integrate with mods like Refined Storage to access your transmutation
 inventory.
+![Transmutation Interface](https://butts-are.cool/mc/project-expansion/transmutation_interface.png)
 
 ### Matter
-
 We've got quite a bit of our own matter. These are used in crafting recipes.
+
 ![Matter](https://butts-are.cool/mc/project-expansion/matter.png)
 
 ### Fuel
-
 Used for crafting, also has accompanying blocks. Several of these hit the integer limit for burn times, which is
 somewhere around 40 months total. (these values might be changed in the future)
 ![Fuel Items](https://butts-are.cool/mc/project-expansion/fuel.png)
