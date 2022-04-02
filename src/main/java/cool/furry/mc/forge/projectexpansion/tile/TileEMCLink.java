@@ -33,7 +33,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     private LazyOptional<IEmcStorage> emcStorageCapability;
 
     public TileEMCLink() {
-        super(TileEntityTypes.emc_link.get());
+        super(TileEntityTypes.EMC_LINK.get());
     }
 
     @Override
