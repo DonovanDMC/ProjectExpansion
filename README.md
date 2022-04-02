@@ -45,6 +45,13 @@ These passively generate emc, once every second by default. There are 16 tiers.
 * 2: EMC Export, exports items using your emc
 * 3: EMC Import, imports items into your emc
 
+### Storage Integrations
+
+![Transmutation Interface](https://butts-are.cool/mc/project-expansion/transmutation_interface.png)
+
+Via the Transmutation Interface, you can integrate with mods like Refined Storage to access your transmutation
+inventory.
+
 ### Matter
 
 We've got quite a bit of our own matter. These are used in crafting recipes.
