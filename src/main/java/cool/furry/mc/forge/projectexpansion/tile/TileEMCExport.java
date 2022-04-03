@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.container.ContainerEMCExport;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.TileEntityInventoryHelper;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import io.netty.buffer.Unpooled;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -20,7 +21,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -51,7 +51,7 @@ public class TileEMCExport extends TileEntityInventoryHelper implements ITickabl
     @Nullable
     private ServerPlayerEntity getOwnerPlayer() {
         World world = getWorld();
-        if (world == null || world.isRemote) return null;
+        if (Util.isWorldRemoteOrNull(getWorld())) return null;
         return (ServerPlayerEntity) world.getPlayerByUuid(owner);
     }
 
@@ -86,7 +86,7 @@ public class TileEMCExport extends TileEntityInventoryHelper implements ITickabl
 
     private void refill() {
         if (isRefilling) return;
-        if (getWorld() == null || getWorld().isRemote()) return;
+        if (Util.isWorldRemoteOrNull(getWorld())) return;
         isRefilling = true;
 
         ItemStack input = getStackInSlot(0);

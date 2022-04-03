@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.PowerFlowerCollector;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.block.BlockState;
@@ -14,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Util;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -64,12 +64,12 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
 
     @Override
     public void tick() {
-        if(world == null || world.isRemote()) return;
+        if (Util.isWorldRemoteOrNull(getWorld())) return;
         tick++;
         long res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
         if(tick >= Config.tickDelay.get()) {
             tick = 0;
-            ServerPlayerEntity player = Objects.requireNonNull(world.getServer()).getPlayerList().getPlayerByUUID(owner);
+            ServerPlayerEntity player = Objects.requireNonNull(getWorld().getServer()).getPlayerList().getPlayerByUUID(owner);
             IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
 
             if(provider != null) {

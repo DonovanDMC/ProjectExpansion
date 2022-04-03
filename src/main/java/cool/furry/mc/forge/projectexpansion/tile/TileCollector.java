@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockCollector;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
@@ -47,7 +48,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
 
     @Override
     public void tick() {
-        if(world == null || world.isRemote()) return;
+        if (Util.isWorldRemoteOrNull(getWorld())) return;
         tick++;
 
         // we can't use a user defined value due to emc duplication possibilities
@@ -57,7 +58,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
             List<IEmcStorage> temp = new ArrayList<>(1);
 
             for (Direction dir : DIRECTIONS) {
-                TileEntity tile = world.getTileEntity(pos.offset(dir));
+                TileEntity tile = getWorld().getTileEntity(pos.offset(dir));
                 @Nullable IEmcStorage storage = tile == null ? null : tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).orElse(null);
                 if(storage != null && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);

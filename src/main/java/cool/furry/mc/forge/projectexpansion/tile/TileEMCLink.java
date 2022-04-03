@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
@@ -14,7 +15,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -85,12 +85,12 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public void tick() {
 
-        if (world == null || world.isRemote()) return;
+        if (Util.isWorldRemoteOrNull(getWorld())) return;
         tick++;
         if (tick >= Config.tickDelay.get()) {
             tick = 0;
             if (emc.equals(BigInteger.ZERO)) return;
-            ServerPlayerEntity player = Objects.requireNonNull(world.getServer()).getPlayerList().getPlayerByUUID(owner);
+            ServerPlayerEntity player = Objects.requireNonNull(getWorld().getServer()).getPlayerList().getPlayerByUUID(owner);
             IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
 
             if (provider != null) {

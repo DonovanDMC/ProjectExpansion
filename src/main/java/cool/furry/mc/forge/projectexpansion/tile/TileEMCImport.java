@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.container.ContainerEMCImport;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.TileEntityInventoryHelper;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import io.netty.buffer.Unpooled;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -20,10 +21,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -57,9 +56,8 @@ public class TileEMCImport extends TileEntityInventoryHelper implements ITickabl
 
     @Nullable
     private ServerPlayerEntity getOwnerPlayer() {
-        World world = getWorld();
-        if (world == null || world.isRemote) return null;
-        return (ServerPlayerEntity) world.getPlayerByUuid(owner);
+        if (Util.isWorldRemoteOrNull(getWorld())) return null;
+        return (ServerPlayerEntity) getWorld().getPlayerByUuid(owner);
     }
 
     @Override
@@ -89,8 +87,7 @@ public class TileEMCImport extends TileEntityInventoryHelper implements ITickabl
 
     private void process() {
         if (isProcessing) return;
-
-        if (getWorld() == null || getWorld().isRemote) return;
+        if (Util.isWorldRemoteOrNull(getWorld())) return;
         isProcessing = true;
 
         IKnowledgeProvider provider = getProvider();
