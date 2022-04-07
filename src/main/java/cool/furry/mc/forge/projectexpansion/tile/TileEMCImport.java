@@ -28,7 +28,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -100,21 +99,16 @@ public class TileEMCImport extends TileEntityInventoryHelper implements ITickabl
                 index++;
                 continue;
             }
-            Main.Logger.printf(Level.INFO, "slot:%s contents:%s", index, stack);
             gain = gain.add(BigInteger.valueOf(getEMC().getValue(stack.getItem()) * stack.getCount()));
             setInventorySlotContents(index, ItemStack.EMPTY);
             index++;
         }
-
-        // Main.Logger.printf(Level.INFO, "%s %s %s", provider.getEmc(), gain, player == null);
 
         if (gain.equals(BigInteger.ZERO)) {
             isProcessing = false;
             return;
         }
 
-        // the emc isn't changing????
-        Main.Logger.printf(Level.INFO, "%s %s %s %s %s", provider.getEmc(), gain, provider.getEmc().add(gain), owner, player);
         provider.setEmc(provider.getEmc().add(gain));
         Main.Logger.info(provider.getEmc());
         if (player != null) provider.syncEmc(player);
