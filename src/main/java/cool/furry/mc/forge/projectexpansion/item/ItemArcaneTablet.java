@@ -23,7 +23,7 @@ public class ItemArcaneTablet extends Item {
     @Nonnull
     public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if (!world.isRemote) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, new ArcaneContainer(hand), (buf) -> buf.writeEnumValue(hand));
+            NetworkHooks.openGui((ServerPlayerEntity) player, new ArcaneContainer());
         }
 
         return ActionResult.resultSuccess(player.getHeldItem(hand));
