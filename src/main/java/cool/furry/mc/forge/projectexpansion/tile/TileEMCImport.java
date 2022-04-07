@@ -45,8 +45,6 @@ public class TileEMCImport extends TileEntityInventoryHelper implements ITickabl
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
-    private @Nullable
-    IEMCProxy proxy = null;
     private boolean isProcessing = false;
 
     public TileEMCImport() {
@@ -80,8 +78,7 @@ public class TileEMCImport extends TileEntityInventoryHelper implements ITickabl
     }
 
     private IEMCProxy getEMC() {
-        if (proxy == null) proxy = ProjectEAPI.getEMCProxy();
-        return proxy;
+        return ProjectEAPI.getEMCProxy();
     }
 
     private void process() {
@@ -165,7 +162,6 @@ public class TileEMCImport extends TileEntityInventoryHelper implements ITickabl
     public ITextComponent getDisplayName() {
         return new TranslationTextComponent("block.projectexpansion.emc_import");
     }
-
 
     @Nonnull
     @Override

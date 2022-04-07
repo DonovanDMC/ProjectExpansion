@@ -41,8 +41,7 @@ public class TileEMCExport extends TileEntityInventoryHelper implements ITickabl
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
-    private @Nullable
-    IEMCProxy proxy = null;
+
 
     public TileEMCExport() {
         super(TileEntityTypes.EMC_EXPORT.get(), 2);
@@ -76,8 +75,7 @@ public class TileEMCExport extends TileEntityInventoryHelper implements ITickabl
     }
 
     private IEMCProxy getEMC() {
-        if (proxy == null) proxy = ProjectEAPI.getEMCProxy();
-        return proxy;
+        return ProjectEAPI.getEMCProxy();
     }
 
     // make sure we aren't double charging or doing something else funky, we can still have
