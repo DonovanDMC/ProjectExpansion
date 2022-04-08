@@ -33,18 +33,21 @@ We've got several useful subcommands here.
 ![CMD List](https://butts-are.cool/mc/project-expansion/cmd_list.png)
 
 ### Power Flowers
+
 These passively generate emc, once every second by default. There are 16 tiers.
 ![Power Flowers](https://butts-are.cool/mc/project-expansion/power_flowers.png)
 
-### Various EMC Based Blocks
+### EMC Link
 
-![EMC Blocks](https://butts-are.cool/mc/project-expansion/emc_blocks.png)
+These can be used to import items, export items, and import emc from nearby sources.
 
-* 1: EMC Link, imports emc from nearby collectors and the like
-* 2: EMC Export, exports items using your emc
-* 3: EMC Import, imports items into your emc
+* right click with an item to set the export item
+* shift right click with an empty hand to clear the export item
+* right click with an empty hand to get as many (up to the max stack size) of the export item as you can afford
+  ![EMC Blocks](https://butts-are.cool/mc/project-expansion/emc_link.png)
 
 ### Storage Integrations
+
 Via the Transmutation Interface, you can integrate with mods like Refined Storage to access your transmutation
 inventory.
 ![Transmutation Interface](https://butts-are.cool/mc/project-expansion/transmutation_interface.png)
