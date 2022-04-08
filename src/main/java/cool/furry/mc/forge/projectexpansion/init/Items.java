@@ -14,10 +14,6 @@ public class Items {
 
     public static final RegistryObject<Item> ARCANE_TABLET = Registry.register("arcane_tablet", ItemArcaneTablet::new);
     public static final RegistryObject<BlockItem> ARCANE_TABLE = Registry.register("arcane_table", () -> new BlockItem(Blocks.ARCANE_TABLE.get(), new Item.Properties().group(Main.group).rarity(Rarity.RARE)));
-    public static final RegistryObject<BlockItem> EMC_LINK = Registry.register("emc_link", () -> new BlockItem(Blocks.EMC_LINK.get(), new Item.Properties().group(Main.group)));
-    ;
-    public static final RegistryObject<BlockItem> EMC_EXPORT = Registry.register("emc_export", () -> new BlockItem(Blocks.EMC_EXPORT.get(), new Item.Properties().group(Main.group)));
-    public static final RegistryObject<BlockItem> EMC_IMPORT = Registry.register("emc_import", () -> new BlockItem(Blocks.EMC_IMPORT.get(), new Item.Properties().group(Main.group)));
     public static final RegistryObject<Item> FINAL_STAR_SHARD = Registry.register("final_star_shard", () -> new Item(new Item.Properties().maxStackSize(1).rarity(Rarity.RARE).group(Main.group)));
     public static final RegistryObject<Item> FINAL_STAR = Registry.register("final_star", ItemFinalStar::new);
     public static final RegistryObject<Item> MATTER_UPGRADER = Registry.register("matter_upgrader", ItemUpgrade::new);

@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.container;
 
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

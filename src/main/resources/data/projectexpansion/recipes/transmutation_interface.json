@@ -1,19 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "EIE",
-    "ILI",
-    "EIE"
+    "TTT",
+    "TTT",
+    "TTT"
   ],
   "key": {
-    "L": {
-      "item": "projectexpansion:emc_link"
-    },
-    "I": {
-      "item": "projectexpansion:emc_import"
-    },
-    "E": {
-      "item": "projectexpansion:emc_export"
+    "T": {
+      "item": "projecte:transmutation_tablet"
     }
   },
   "result": {
