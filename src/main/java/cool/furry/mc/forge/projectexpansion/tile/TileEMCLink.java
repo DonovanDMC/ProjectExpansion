@@ -1,8 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
-import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
-import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.HasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
@@ -11,17 +8,13 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.Property;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -32,19 +25,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.Objects;
 import java.util.UUID;
 
 public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmcStorage, IItemHandler, HasMatter {
@@ -283,26 +273,39 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         ItemStack stack = player.getHeldItem(hand);
         if(!owner.equals(player.getUniqueID())) {
             player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.RED), true);
-            return ActionResultType.PASS;
+            return ActionResultType.FAIL;
         }
         if(player.isCrouching()) {
             // error if no item & crouching
-            if(item == null) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.already_set").mergeStyle(TextFormatting.RED), true);
-                return ActionResultType.PASS;
+            if (stack.isEmpty()) {
+                if (item == null) {
+                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").mergeStyle(TextFormatting.RED), true);
+                    return ActionResultType.FAIL;
+                } else {
+                    // clear if no item & crouching
+                    item = null;
+                    markDirty();
+                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").mergeStyle(TextFormatting.RED), true);
+                    return ActionResultType.SUCCESS;
+                }
             } else {
-                // clear if no item & crouching
-                item = null;
-                markDirty();
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").mergeStyle(TextFormatting.RED), true);
-                return ActionResultType.SUCCESS;
+                if (item == null) {
+                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.already_set").mergeStyle(TextFormatting.RED), true);
+                    return ActionResultType.FAIL;
+                } else {
+                    // set if no item & non-empty hand (crouching irrelevant)
+                    item = stack.getItem();
+                    markDirty();
+                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(item.getTranslationKey()).mergeStyle(TextFormatting.BLUE)).mergeStyle(TextFormatting.GREEN), true);
+                    return ActionResultType.SUCCESS;
+                }
             }
         } else {
             if(stack.isEmpty()) {
                 // error if no item & empty hand
                 if(item == null) {
                     player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").mergeStyle(TextFormatting.RED), true);
-                    return ActionResultType.PASS;
+                    return ActionResultType.FAIL;
                 } else {
                     // give if item present & empty hand
                     IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
@@ -312,7 +315,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
                     if(count > item.getMaxStackSize()) count = item.getMaxStackSize();
                     if(count < 1) {
                         player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(cost)).mergeStyle(TextFormatting.GREEN)).mergeStyle(TextFormatting.RED), true);
-                        return ActionResultType.PASS;
+                        return ActionResultType.FAIL;
                     }
                     provider.setEmc(emc.subtract(BigInteger.valueOf(cost * count)));
                     if(player instanceof ServerPlayerEntity) provider.sync((ServerPlayerEntity) player);
@@ -328,9 +331,9 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
                     player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(item.getTranslationKey()).mergeStyle(TextFormatting.BLUE)).mergeStyle(TextFormatting.GREEN), true);
                     return ActionResultType.SUCCESS;
                 } else {
-                    // error if no item & empty hand
-                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").mergeStyle(TextFormatting.RED), true);
-                    return ActionResultType.PASS;
+                    // error if item & non-empty hand
+                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").mergeStyle(TextFormatting.RED), true);
+                    return ActionResultType.FAIL;
                 }
             }
         }
