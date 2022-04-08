@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.util;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.BlockCollector;
+import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.block.BlockRelay;
 import cool.furry.mc.forge.projectexpansion.config.Config;
@@ -13,6 +14,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 import net.minecraftforge.fml.RegistryObject;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -73,6 +75,10 @@ public enum Matter {
     private RegistryObject<BlockRelay> relay = null;
     @Nullable
     private RegistryObject<BlockItem> itemRelay = null;
+    @Nullable
+    private RegistryObject<BlockEMCLink> emcLink = null;
+    @Nullable
+    private RegistryObject<BlockItem> itemEMCLink = null;
     Matter(String name, boolean hasItem, int level, @Nullable Supplier<Item> existingItem) {
         this.name = name;
         this.hasItem = hasItem;
@@ -153,6 +159,26 @@ public enum Matter {
         return getRelayTransfer();
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public int getEMCLinkInventorySize() {
+        return level * 3;
+    }
+
+    public long getEMCLimit() {
+        return (long) Math.pow(16, level);
+    }
+
+    public int getItemLimit() {
+        return (int) Math.pow(2, level - 1);
+    }
+
+    public String getItemLimitString() {
+        return level == 16 ? "INFINITY" : String.valueOf(getItemLimit());
+    }
+
     public @Nullable Item getMatter() {
         return itemMatter == null ? null : itemMatter.get();
     }
@@ -183,6 +209,14 @@ public enum Matter {
 
     public @Nullable ItemCompressedEnergyCollector getCompressedCollectorItem() {
         return itemCompressedCollector == null ? null : itemCompressedCollector.get();
+    }
+
+    public @Nullable BlockEMCLink getEMCLink() {
+        return emcLink == null ? null : emcLink.get();
+    }
+
+    public @Nullable BlockItem getEMCLinkItem() {
+        return itemEMCLink == null ? null : itemEMCLink.get();
     }
 
     public static final int UNCOMMON_THRESHOLD = 4;
@@ -218,6 +252,12 @@ public enum Matter {
                 itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
                 break;
             }
+
+            case EMC_LINK: {
+                emcLink = Blocks.Registry.register(String.format("%s_emc_link", name), () -> new BlockEMCLink(this));
+                itemEMCLink = Items.Registry.register(String.format("%s_emc_link", name), () -> new BlockItem(Objects.requireNonNull(emcLink).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                break;
+            }
         }
     }
 
@@ -233,8 +273,7 @@ public enum Matter {
         COMPRESSED_COLLECTOR,
         POWER_FLOWER,
         RELAY,
-        UPGRADE_COLLECTOR,
-        UPGRADE_POWER_FLOWER,
-        UPGRADE_RELAY
+        EMC_LINK
+
     }
 }

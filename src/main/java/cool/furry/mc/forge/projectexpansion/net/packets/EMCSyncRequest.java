@@ -20,16 +20,11 @@ public class EMCSyncRequest implements IPacket {
 
     public static EMCSyncRequest decode(PacketBuffer buf) {
         UUID uuid = buf.readUniqueId();
-        Main.Logger.printf(Level.INFO, "decode %s", uuid);
         return new EMCSyncRequest(uuid);
     }
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers().forEach(pl -> {
-            Main.Logger.info(pl.getUniqueID());
-            Main.Logger.info(pl.getUniqueID().equals(player));
-        });
         ServerPlayerEntity playerEntity = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(player);
         if (playerEntity == null) {
             Main.Logger.printf(Level.INFO, "EMC sync request failed for player %s, getPlayerByUUID returned null.", player.toString());
@@ -41,7 +36,6 @@ public class EMCSyncRequest implements IPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        Main.Logger.printf(Level.INFO, "encode %s", player);
         buffer.writeUniqueId(player);
     }
 }

@@ -56,8 +56,6 @@ public class ItemInfiniteSteak extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        Main.Logger.info("onItemRightClick");
-        Main.Logger.info(stack);
         // @TODO wolves???
         if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID()).getEmc().compareTo(COST.get()) < 0)
             return ActionResult.resultFail(stack);
@@ -67,8 +65,6 @@ public class ItemInfiniteSteak extends Item {
 
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entity) {
-        Main.Logger.info("onItemUseFinish");
-        Main.Logger.info(entity);
         if (!(entity instanceof ServerPlayerEntity)) return stack;
         ServerPlayerEntity player = (ServerPlayerEntity) entity;
         if (world.isRemote) return stack;

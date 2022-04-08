@@ -1,0 +1,29 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/dark",
+	"pattern": [
+		"LMH",
+		"SPS",
+		"HML"
+	],
+	"key": {
+		"L": {
+			"item": "projecte:low_covalence_dust"
+		},
+		"M": {
+			"item": "projecte:medium_covalence_dust"
+		},
+		"H": {
+			"item": "projecte:high_covalence_dust"
+		},
+		"S": {
+			"item": "projectexpansion:final_star_shard"
+		},
+		"P": {
+			"item": "projectexpansion:dark_emc_link"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:final_emc_link"
+	}
+}
