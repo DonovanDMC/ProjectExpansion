@@ -64,7 +64,7 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
 
     @Override
     public void tick() {
-        if (Util.isWorldRemoteOrNull(getWorld())) return;
+        if (world == null || world.isRemote) return;
         tick++;
         long res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
         if(tick >= Config.tickDelay.get()) {

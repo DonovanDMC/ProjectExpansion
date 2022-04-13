@@ -137,7 +137,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
         BigInteger totalEmcValue = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(count));
         provider.setEmc(provider.getEmc().add(totalEmcValue));
 
-        if (Util.isWorldRemoteOrNull(getWorld())) {
+        if (!(world == null || world.isRemote)) {
             ServerPlayerEntity player = Util.getPlayer(getWorld(), this.owner);
             if (player != null) {
                 if (provider.addKnowledge(stack)) provider.sync(player);
@@ -165,7 +165,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
         BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(this.owner);
         provider.setEmc(provider.getEmc().subtract(totalEmcCost));
-        if (Util.isWorldRemoteOrNull(getWorld())) {
+        if (world == null || world.isRemote) {
             ServerPlayerEntity player = Util.getPlayer(getWorld(), this.owner);
             if (player != null) provider.syncEmc(player);
         }
