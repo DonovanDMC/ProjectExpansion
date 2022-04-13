@@ -225,17 +225,20 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if(slot != 0 || remainingExport <= 0 || owner == null || item == null || Util.isWorldRemoteOrNull(getWorld())) return ItemStack.EMPTY;
+        if (slot != 0 || remainingExport <= 0 || owner == null || item == null || Util.isWorldRemoteOrNull(getWorld()))
+            return ItemStack.EMPTY;
         long cost = ProjectEAPI.getEMCProxy().getValue(item);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger emc = provider.getEmc();
-        int count = emc.divide(BigInteger.valueOf(cost)).intValue();
-        if(count < 1) return ItemStack.EMPTY;
-        if(count > remainingExport) count = remainingExport;
-        if(!simulate) {
+        if (emc.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
+        int count = amount;
+        long max = emc.divide(BigInteger.valueOf(cost)).longValue();
+        if (max < 1) return ItemStack.EMPTY;
+        if (count > remainingExport) count = remainingExport;
+        if (!simulate) {
             provider.setEmc(emc.subtract(BigInteger.valueOf(cost * count)));
             ServerPlayerEntity player = Util.getPlayer(owner);
-            if(player != null) provider.syncEmc(player);
+            if (player != null) provider.sync(player);
             remainingExport -= count;
         }
         return new ItemStack(item, count);
