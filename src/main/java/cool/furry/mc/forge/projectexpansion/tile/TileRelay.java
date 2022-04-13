@@ -55,7 +55,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
             List<IEmcStorage> temp = new ArrayList<>(1);
 
             for (Direction dir : DIRECTIONS) {
-                TileEntity tile = getWorld().getTileEntity(pos.offset(dir));
+                TileEntity tile = world.getTileEntity(pos.offset(dir));
                 @Nullable IEmcStorage storage = tile == null ? null : tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).orElse(null);
 
                 if(storage != null && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {

@@ -109,7 +109,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
             resetLimits();
             if (emc.equals(BigInteger.ZERO)) return;
-            ServerPlayerEntity player = Util.getPlayer(getWorld(), owner);
+            ServerPlayerEntity player = Util.getPlayer(world, owner);
             IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
 
             provider.setEmc(provider.getEmc().add(emc));

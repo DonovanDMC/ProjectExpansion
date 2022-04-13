@@ -69,7 +69,7 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
         long res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
         if(tick >= Config.tickDelay.get()) {
             tick = 0;
-            ServerPlayerEntity player = Objects.requireNonNull(getWorld().getServer()).getPlayerList().getPlayerByUUID(owner);
+            ServerPlayerEntity player = Objects.requireNonNull(world.getServer()).getPlayerList().getPlayerByUUID(owner);
             IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
 
             if(provider != null) {
