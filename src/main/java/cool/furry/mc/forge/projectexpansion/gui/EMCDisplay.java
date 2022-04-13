@@ -39,7 +39,7 @@ public class EMCDisplay {
         if(!Config.emcDisplay.get()) return;
         ClientPlayerEntity player = getPlayer();
         tick++;
-        if(event.phase == TickEvent.Phase.END && player != null && tick >= 20) {
+        if (event.phase == TickEvent.Phase.END && player != null && tick >= 20 && emcHistory.length != 0) {
             tick = 0;
             @Nullable IKnowledgeProvider provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
             emc = provider == null ? BigInteger.ZERO : provider.getEmc();
