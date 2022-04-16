@@ -99,7 +99,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public void tick() {
-        if (Util.isWorldRemoteOrNull(getWorld())) return;
+        if (world == null || world.isRemote) return;
         tick++;
         // due to the nature of per second this block follows, using the
         // config value isn't really possible
@@ -108,7 +108,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
             resetLimits();
             if (emc.equals(BigInteger.ZERO)) return;
-            ServerPlayerEntity player = Util.getPlayer(getWorld(), owner);
+            ServerPlayerEntity player = Util.getPlayer(world, owner);
             IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
 
             provider.setEmc(provider.getEmc().add(emc));
@@ -201,7 +201,8 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if(slot == 0 || remainingImport <= 0 || owner == null || !ProjectEAPI.getEMCProxy().hasValue(stack) || stack.isEmpty() || Util.isWorldRemoteOrNull(getWorld())) return stack;
+        if (slot == 0 || remainingImport <= 0 || owner == null || !ProjectEAPI.getEMCProxy().hasValue(stack) || stack.isEmpty() || world == null || world.isRemote)
+            return stack;
         int count = stack.getCount();
         if(count > remainingImport) count = remainingImport;
         if(!simulate) {
@@ -223,7 +224,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot != 0 || remainingExport <= 0 || owner == null || item == null || Util.isWorldRemoteOrNull(getWorld()))
+        if (slot != 0 || remainingExport <= 0 || owner == null || item == null || world == null || world.isRemote)
             return ItemStack.EMPTY;
         long cost = ProjectEAPI.getEMCProxy().getValue(item);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);

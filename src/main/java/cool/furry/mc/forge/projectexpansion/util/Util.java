@@ -31,10 +31,6 @@ public class Util {
         return world == null || world.getServer() == null ? null : world.getServer().getPlayerList().getPlayerByUUID(uuid);
     }
 
-    public static boolean isWorldRemoteOrNull(@Nullable World world) {
-        return world == null || world.isRemote;
-    }
-
     public static ItemStack cleanStack(ItemStack stack) {
         if (stack.isEmpty()) return ItemStack.EMPTY;
         ItemStack stackCopy = ItemHandlerHelper.copyStackWithSize(stack, 1);
