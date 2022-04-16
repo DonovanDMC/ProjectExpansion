@@ -8,13 +8,21 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.HoverEvent;
 
 import java.math.BigDecimal;
@@ -59,6 +67,13 @@ public class CommandEMC {
                 .then(Commands.literal("clearKnowledge")
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(CommandEMC::clearKnowledge)
+                        )
+                )
+                .then(Commands.literal("learn")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("item", ItemArgument.item())
+                                        .executes(CommandEMC::learn)
+                                )
                         )
                 );
 
@@ -109,7 +124,8 @@ public class CommandEMC {
                 if(compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.add.successSelf", formatEMC(value), formatEMC(newEMC)), false);
                 else {
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.add.success", formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
-                    if(Config.notifyEMCChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.add.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), ChatType.CHAT);
+                    if (Config.notifyCommandChanges.get())
+                        player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.add.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), ChatType.CHAT);
                 }
                 break;
             }
@@ -119,7 +135,8 @@ public class CommandEMC {
                 if(compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.successSelf", formatEMC(value), formatEMC(newEMC)), false);
                 else {
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.success", formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)), true);
-                    if(Config.notifyEMCChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.remove.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), ChatType.CHAT);
+                    if (Config.notifyCommandChanges.get())
+                        player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.remove.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), ChatType.CHAT);
                 }
                 break;
             }
@@ -129,7 +146,8 @@ public class CommandEMC {
                 if(compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.set.successSelf", formatEMC(value), formatEMC(newEMC)), false);
                 else {
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.set.success", player.getDisplayName(), formatEMC(newEMC)), true);
-                    if(Config.notifyEMCChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.set.notification", formatEMC(newEMC), getSourceName(ctx.getSource())), ChatType.CHAT);
+                    if (Config.notifyCommandChanges.get())
+                        player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.set.notification", formatEMC(newEMC), getSourceName(ctx.getSource())), ChatType.CHAT);
                 }
                 break;
             }
@@ -154,10 +172,40 @@ public class CommandEMC {
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
         provider.clearKnowledge();
         provider.sync(player);
-        if(compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.clearKnowledge.successSelf"), false);
+        if (compareUUID(ctx.getSource(), player))
+            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.clearKnowledge.successSelf"), false);
         else {
             ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.clearKnowledge.success", player.getDisplayName()), true);
             player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.clearKnowledge.notification", getSourceName(ctx.getSource())), ChatType.CHAT);
+        }
+        return 1;
+    }
+
+    private static int learn(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        Item item = ItemArgument.getItem(ctx, "item").getItem();
+
+        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
+        IEMCProxy proxy = ProjectEAPI.getEMCProxy();
+        if (!proxy.hasValue(item)) {
+            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.invalidItem"), false);
+            return 0;
+        }
+        boolean isSelf = compareUUID(ctx.getSource(), player);
+        if (!provider.addKnowledge(ItemInfo.fromItem(item))) {
+            if (isSelf)
+                ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.failSelf", new ItemStack(item).getTextComponent()).setStyle(ColorStyle.RED), false);
+            else
+                ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).setStyle(ColorStyle.RED), true);
+            return 0;
+        }
+        provider.sync(player);
+        if (isSelf)
+            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.successSelf", new ItemStack(item).getTextComponent()).setStyle(ColorStyle.GREEN), false);
+        else {
+            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).setStyle(ColorStyle.GRAY), true);
+            if (Config.notifyCommandChanges.get())
+                player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.learn.notification", new ItemStack(item).getTextComponent(), getSourceName(ctx.getSource())).setStyle(ColorStyle.GRAY), ChatType.CHAT);
         }
         return 1;
     }
