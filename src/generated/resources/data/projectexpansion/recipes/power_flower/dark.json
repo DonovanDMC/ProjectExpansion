@@ -1,23 +1,23 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "group": "projectexpansion:matter/dark",
-  "pattern": [
-    "CLC",
-    "RRR",
-    "RRR"
-  ],
-  "key": {
-    "L": {
-      "item": "projectexpansion:dark_emc_link"
+    "type": "minecraft:crafting_shaped",
+    "group": "projectexpansion:matter/dark",
+    "pattern": [
+        "CLC",
+        "RRR",
+        "RRR"
+    ],
+    "key": {
+        "L": {
+            "item": "projectexpansion:dark_emc_link"
+        },
+        "C": {
+            "item": "projectexpansion:dark_compressed_collector"
+        },
+        "R": {
+            "item": "projectexpansion:dark_relay"
+        }
     },
-    "C": {
-      "item": "projectexpansion:dark_compressed_collector"
-    },
-    "R": {
-      "item": "projectexpansion:dark_relay"
+    "result": {
+        "item": "projectexpansion:dark_power_flower"
     }
-  },
-  "result": {
-    "item": "projectexpansion:dark_power_flower"
-  }
 }

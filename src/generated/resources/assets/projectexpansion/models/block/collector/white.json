@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "projectexpansion:block/collector/white"
-  }
+    "parent": "minecraft:block/cube_all",
+    "textures": {
+        "all": "projectexpansion:block/collector/white"
+    }
 }

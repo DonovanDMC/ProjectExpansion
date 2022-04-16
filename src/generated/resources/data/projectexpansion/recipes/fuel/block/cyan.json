@@ -1,36 +1,36 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "projectexpansion:fuel/cyan",
-  "ingredients": [
-    {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    {
-      "item": "projectexpansion:cyan_fuel"
+    "type": "minecraft:crafting_shapeless",
+    "group": "projectexpansion:fuel/cyan",
+    "ingredients": [
+        {
+            "item": "projectexpansion:cyan_fuel"
+        },
+        {
+            "item": "projectexpansion:cyan_fuel"
+        },
+        {
+            "item": "projectexpansion:cyan_fuel"
+        },
+        {
+            "item": "projectexpansion:cyan_fuel"
+        },
+        {
+            "item": "projectexpansion:cyan_fuel"
+        },
+        {
+            "item": "projectexpansion:cyan_fuel"
+        },
+        {
+            "item": "projectexpansion:cyan_fuel"
+        },
+        {
+            "item": "projectexpansion:cyan_fuel"
+        },
+        {
+            "item": "projectexpansion:cyan_fuel"
+        }
+    ],
+    "result": {
+        "item": "projectexpansion:cyan_fuel_block"
     }
-  ],
-  "result": {
-    "item": "projectexpansion:cyan_fuel_block"
-  }
 }

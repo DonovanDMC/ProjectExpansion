@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "projectexpansion:item/matter/violet"
-  }
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "projectexpansion:item/matter/violet"
+    }
 }

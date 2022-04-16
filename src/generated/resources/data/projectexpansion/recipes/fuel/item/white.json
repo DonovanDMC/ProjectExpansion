@@ -1,21 +1,21 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "projectexpansion:fuel/white",
-  "ingredients": [
-    {
-      "item": "projectexpansion:orange_fuel"
-    },
-    {
-      "item": "projectexpansion:orange_fuel"
-    },
-    {
-      "item": "projectexpansion:orange_fuel"
-    },
-    {
-      "item": "projectexpansion:orange_fuel"
+    "type": "minecraft:crafting_shapeless",
+    "group": "projectexpansion:fuel/white",
+    "ingredients": [
+        {
+            "item": "projectexpansion:orange_fuel"
+        },
+        {
+            "item": "projectexpansion:orange_fuel"
+        },
+        {
+            "item": "projectexpansion:orange_fuel"
+        },
+        {
+            "item": "projectexpansion:orange_fuel"
+        }
+    ],
+    "result": {
+        "item": "projectexpansion:white_fuel"
     }
-  ],
-  "result": {
-    "item": "projectexpansion:white_fuel"
-  }
 }

@@ -1,21 +1,21 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "projectexpansion:fuel/magenta",
-  "ingredients": [
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
+    "type": "minecraft:crafting_shapeless",
+    "group": "projectexpansion:fuel/magenta",
+    "ingredients": [
+        {
+            "item": "projecte:aeternalis_fuel"
+        },
+        {
+            "item": "projecte:aeternalis_fuel"
+        },
+        {
+            "item": "projecte:aeternalis_fuel"
+        },
+        {
+            "item": "projecte:aeternalis_fuel"
+        }
+    ],
+    "result": {
+        "item": "projectexpansion:magenta_fuel"
     }
-  ],
-  "result": {
-    "item": "projectexpansion:magenta_fuel"
-  }
 }

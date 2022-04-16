@@ -1,21 +1,21 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "projectexpansion:fuel/violet",
-  "ingredients": [
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
+    "type": "minecraft:crafting_shapeless",
+    "group": "projectexpansion:fuel/violet",
+    "ingredients": [
+        {
+            "item": "projectexpansion:purple_fuel"
+        },
+        {
+            "item": "projectexpansion:purple_fuel"
+        },
+        {
+            "item": "projectexpansion:purple_fuel"
+        },
+        {
+            "item": "projectexpansion:purple_fuel"
+        }
+    ],
+    "result": {
+        "item": "projectexpansion:violet_fuel"
     }
-  ],
-  "result": {
-    "item": "projectexpansion:violet_fuel"
-  }
 }
