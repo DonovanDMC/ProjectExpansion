@@ -75,9 +75,9 @@ public class ConfigMenu extends Screen {
         ));
 
         this.optionsRowList.addOption(new BooleanOption(
-                "gui.projectexpansion.config.notify_emc_changes",
-                __ -> Config.notifyEMCChanges.get(),
-                (__, newValue) -> Config.notifyEMCChanges.set(newValue)
+                "gui.projectexpansion.config.notify_command_changes",
+                __ -> Config.notifyCommandChanges.get(),
+                (__, newValue) -> Config.notifyCommandChanges.set(newValue)
         ));
 
         this.addButton(new Button((this.width - BUTTON_WIDTH) / 2, this.height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), button -> this.minecraft.displayGuiScreen(parentScreen)

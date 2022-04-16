@@ -10,8 +10,8 @@
   "gui.projectexpansion.config.emc_display.desc": "Displays your current emc and gained emc per second in the top left corner.",
   "gui.projectexpansion.config.powerflower_multiplier": "Power Flower Multiplier",
   "gui.projectexpansion.config.powerflower_multiplier.desc": "Multiplies the output of Power Flowers.",
-  "gui.projectexpansion.config.notify_emc_changes": "Notify EMC Changes",
-  "gui.projectexpansion.config.notify_emc_changes.desc": "Notify users when their emc is changed via /emc add|remove|set",
+  "gui.projectexpansion.config.notify_command_changes": "Notify Command Changes",
+  "gui.projectexpansion.config.notify_command_changes.desc": "Notify users something is changed about them via /emc.",
   "gui.projectexpansion.emc_link": "Personal Link",
   "gui.projectexpansion.emc_gain": "EMC Gain"
 }
