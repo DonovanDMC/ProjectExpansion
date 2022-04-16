@@ -3,7 +3,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 import cool.furry.mc.forge.projectexpansion.tile.TileEMCLink;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import cool.furry.mc.forge.projectexpansion.util.HasMatter;
+import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -32,8 +32,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockEMCLink extends HorizontalBlock implements HasMatter {
+public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
     private final Matter matter;
+
     public BlockEMCLink(Matter matter) {
         super(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
         this.matter = matter;

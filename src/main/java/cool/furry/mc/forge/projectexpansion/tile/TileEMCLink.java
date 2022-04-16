@@ -2,7 +2,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.HasMatter;
+import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmcStorage, IItemHandler, HasMatter {
+public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
     public BigInteger emc = BigInteger.ZERO;
@@ -45,8 +45,8 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private @Nullable Item item = null;
     private final Matter matter;
-    private long remainingEMC    = 0L;
-    private int remainingImport  = 0;
+    private long remainingEMC = 0L;
+    private int remainingImport = 0;
     private int remainingExport = 0;
 
     public TileEMCLink() {

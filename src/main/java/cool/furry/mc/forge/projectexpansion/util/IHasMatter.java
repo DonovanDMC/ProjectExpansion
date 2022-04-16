@@ -1,5 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
-public interface HasMatter {
+public interface IHasMatter {
     Matter getMatter();
 }
