@@ -44,7 +44,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
 
     @Override
     public void tick() {
-        if(world == null || world.isRemote()) return;
+        if (emc <= 0 || world == null || world.isRemote) return;
         tick++;
 
         // we can't use a user defined value due to emc duplication possibilities
@@ -57,7 +57,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
                 TileEntity tile = world.getTileEntity(pos.offset(dir));
                 @Nullable IEmcStorage storage = tile == null ? null : tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).orElse(null);
 
-                if(storage != null && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
+                if (storage != null && !storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);
                 }
             }
@@ -102,10 +102,10 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        long v = Math.min(this.emc, emc);
+        long v = Math.min(getMaximumEmc() - this.emc, emc);
 
         if (v < 0L) {
-            return insertEmc(-v, action);
+            return extractEmc(-v, action);
         } else if (action.execute()) {
             this.emc += v;
         }
