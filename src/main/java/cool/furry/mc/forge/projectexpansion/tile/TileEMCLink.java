@@ -8,7 +8,6 @@ import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -169,7 +168,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         return emc < 0L ? insertEmc(-emc, action) : 0L;
     }
 
-    // @TODO make sure this is actually working properly
     @Override
     public long insertEmc(long emc, EmcAction action) {
         if (emc > 0L) {
@@ -225,17 +223,20 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if(slot != 0 || remainingExport <= 0 || owner == null || item == null || Util.isWorldRemoteOrNull(getWorld())) return ItemStack.EMPTY;
+        if (slot != 0 || remainingExport <= 0 || owner == null || item == null || Util.isWorldRemoteOrNull(getWorld()))
+            return ItemStack.EMPTY;
         long cost = ProjectEAPI.getEMCProxy().getValue(item);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger emc = provider.getEmc();
-        int count = emc.divide(BigInteger.valueOf(cost)).intValue();
-        if(count < 1) return ItemStack.EMPTY;
-        if(count > remainingExport) count = remainingExport;
-        if(!simulate) {
+        if (emc.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
+        int count = amount;
+        long max = emc.divide(BigInteger.valueOf(cost)).longValue();
+        if (max < 1) return ItemStack.EMPTY;
+        if (count > remainingExport) count = remainingExport;
+        if (!simulate) {
             provider.setEmc(emc.subtract(BigInteger.valueOf(cost * count)));
             ServerPlayerEntity player = Util.getPlayer(owner);
-            if(player != null) provider.sync(player);
+            if (player != null) provider.sync(player);
             remainingExport -= count;
         }
         return new ItemStack(item, count);
