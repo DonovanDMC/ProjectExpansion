@@ -5,7 +5,7 @@ import cool.furry.mc.forge.projectexpansion.tile.TileCollector;
 import cool.furry.mc.forge.projectexpansion.tile.TilePowerFlower;
 import cool.furry.mc.forge.projectexpansion.tile.TileRelay;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import cool.furry.mc.forge.projectexpansion.util.HasMatter;
+import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -61,11 +61,10 @@ public class ItemUpgrade extends Item {
 
         Matter matter;
         Matter upgradeTo;
-        if(block instanceof HasMatter) {
-            matter = ((HasMatter) block).getMatter();
+        if (block instanceof IHasMatter) {
+            matter = ((IHasMatter) block).getMatter();
             upgradeTo = matter.next();
-        }
-        else return ActionResultType.PASS;
+        } else return ActionResultType.PASS;
 
         if (matter == Matter.FINAL) {
             player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.max_upgrade").mergeStyle(TextFormatting.RED), true);

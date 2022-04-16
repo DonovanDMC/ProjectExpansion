@@ -2,7 +2,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.tile.TilePowerFlower;
-import cool.furry.mc.forge.projectexpansion.util.HasMatter;
+import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.block.AbstractBlock;
@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockPowerFlower extends Block implements HasMatter {
+public class BlockPowerFlower extends Block implements IHasMatter {
     public static final VoxelShape SHAPE = VoxelShapes.or(
             makeCuboidShape(0, 0, 0, 16, 1, 16),
             makeCuboidShape(3.5, 4, 6.5, 12.5, 13, 9.5),

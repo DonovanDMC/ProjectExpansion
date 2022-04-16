@@ -2,7 +2,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.tile.TileCollector;
-import cool.furry.mc.forge.projectexpansion.util.HasMatter;
+import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.block.AbstractBlock;
@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockCollector extends Block implements HasMatter {
+public class BlockCollector extends Block implements IHasMatter {
     private final Matter matter;
 
     public BlockCollector(Matter matter) {
