@@ -51,7 +51,7 @@ module.exports.genericLanguage = function genericLanguage(outDir, name, dir) {
     const lang = {};
     function read(d) {
         readdirSync(d, { withFileTypes: true }).forEach(dd => {
-            if(dd.isDirectory()) return read(`${d}/${dd.name}`);
+            if (dd.isDirectory()) return read(`${d}/${dd.name}`);
             else Object.assign(lang, JSON.parse(readFileSync(`${d}/${dd.name}`)));
         });
     }
@@ -61,5 +61,5 @@ module.exports.genericLanguage = function genericLanguage(outDir, name, dir) {
     return [[`${name}.js`, `${outDir}/${name}.json`]];
 }
 
-module.exports.assetsDir = resolve(`${__dirname}/../resources/assets/projectexpansion`);
-module.exports.dataDir = resolve(`${__dirname}/../resources/data/projectexpansion`);
+module.exports.assetsDir = resolve(`${__dirname}/../../generated/resources/assets/projectexpansion`);
+module.exports.dataDir = resolve(`${__dirname}/../../generated/resources/data/projectexpansion`);

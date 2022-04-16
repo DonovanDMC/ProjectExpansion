@@ -169,7 +169,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         return emc < 0L ? insertEmc(-emc, action) : 0L;
     }
 
-    // @TODO make sure this is actually working properly
     @Override
     public long insertEmc(long emc, EmcAction action) {
         if (emc > 0L) {
