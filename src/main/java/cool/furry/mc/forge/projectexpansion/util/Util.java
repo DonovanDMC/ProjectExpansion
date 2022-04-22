@@ -14,6 +14,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.UUID;
 
 public class Util {
@@ -58,6 +59,22 @@ public class Util {
         }
 
         return AddKnowledgeResult.UNKNOWN;
+    }
+
+    public static int safeIntValue(BigInteger val) {
+        try {
+            return val.intValueExact();
+        } catch (ArithmeticException ignore) {
+            return Integer.MAX_VALUE;
+        }
+    }
+
+    public static long safeLongValue(BigInteger val) {
+        try {
+            return val.longValueExact();
+        } catch (ArithmeticException ignore) {
+            return Long.MAX_VALUE;
+        }
     }
 
 
