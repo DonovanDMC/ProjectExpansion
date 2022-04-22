@@ -42,7 +42,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
     public BigInteger emc = BigInteger.ZERO;
-    public int tick = 0;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private @Nullable Item item = null;
@@ -72,7 +71,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         super.read(state, nbt);
         if (nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
         if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
-        if (nbt.contains("Tick", Constants.NBT.TAG_BYTE)) tick = nbt.getByte("Tick") & 0xFF;
         if (nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
         if (nbt.contains("Item", Constants.NBT.TAG_STRING)) item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(nbt.getString("Item")));
         if(nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE)) remainingEMC = (long) nbt.getDouble("RemainingEMC");
@@ -86,7 +84,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         super.write(nbt);
         nbt.putUniqueId("Owner", this.owner);
         nbt.putString("OwnerName", this.ownerName);
-        nbt.putByte("Tick", (byte) tick);
         nbt.putString("EMC", emc.toString());
         if(item != null) nbt.putString("Item", item.toString());
         nbt.putDouble("RemainingEMC", remainingEMC);
@@ -101,23 +98,17 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public void tick() {
-        if (world == null || world.isRemote) return;
-        tick++;
-        // due to the nature of per second this block follows, using the
-        // config value isn't really possible
-        if (tick >= 20) {
-            tick = 0;
+        // we can't use the user defined value due to emc duplication possibilities
+        if (world == null || world.isRemote || (world.getGameTime() % 20) != 0) return;
+        resetLimits();
+        if (emc.equals(BigInteger.ZERO)) return;
+        ServerPlayerEntity player = Util.getPlayer(world, owner);
+        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
 
-            resetLimits();
-            if (emc.equals(BigInteger.ZERO)) return;
-            ServerPlayerEntity player = Util.getPlayer(world, owner);
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
-
-            provider.setEmc(provider.getEmc().add(emc));
-            if(player != null) provider.syncEmc(player);
-            markDirty();
-            emc = BigInteger.ZERO;
-        }
+        provider.setEmc(provider.getEmc().add(emc));
+        if (player != null) provider.syncEmc(player);
+        markDirty();
+        emc = BigInteger.ZERO;
     }
 
     private void resetLimits() {

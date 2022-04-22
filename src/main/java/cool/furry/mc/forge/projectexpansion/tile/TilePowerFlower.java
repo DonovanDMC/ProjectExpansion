@@ -27,7 +27,6 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
     public BigInteger emc = BigInteger.ZERO;
-    public int tick = 0;
     public TilePowerFlower() {
         super(TileEntityTypes.POWER_FLOWER.get());
     }
@@ -37,7 +36,6 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
         super.read(state, nbt);
         if(nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
         if(nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
-        if(nbt.contains("Tick", Constants.NBT.TAG_BYTE)) tick = nbt.getByte("Tick") & 0xFF;
         if(nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
     }
 
@@ -47,7 +45,6 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
         super.write(nbt);
         nbt.putUniqueId("Owner", this.owner);
         nbt.putString("OwnerName", this.ownerName);
-        nbt.putByte("Tick", (byte) tick);
         nbt.putString("EMC", emc.toString());
         return nbt;
     }
@@ -64,24 +61,20 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
 
     @Override
     public void tick() {
-        if (world == null || world.isRemote) return;
-        tick++;
+        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != 0) return;
         long res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
-        if(tick >= Config.tickDelay.get()) {
-            tick = 0;
-            ServerPlayerEntity player = Objects.requireNonNull(world.getServer()).getPlayerList().getPlayerByUUID(owner);
-            IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
+        ServerPlayerEntity player = Objects.requireNonNull(world.getServer()).getPlayerList().getPlayerByUUID(owner);
+        IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
 
-            if(provider != null) {
-                PowerFlowerCollector.add(player, emc.add(BigInteger.valueOf(res)));
-                // provider.setEmc(provider.getEmc().add(emc).add(BigInteger.valueOf(res)));
-                markDirty();
-                emc = BigInteger.ZERO;
-                // provider.syncEmc(player);
-            } else {
-                emc = emc.add(BigInteger.valueOf(res));
-                markDirty();
-            }
+        if (provider != null) {
+            PowerFlowerCollector.add(player, emc.add(BigInteger.valueOf(res)));
+            // provider.setEmc(provider.getEmc().add(emc).add(BigInteger.valueOf(res)));
+            markDirty();
+            emc = BigInteger.ZERO;
+            // provider.syncEmc(player);
+        } else {
+            emc = emc.add(BigInteger.valueOf(res));
+            markDirty();
         }
     }
 }
