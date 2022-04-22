@@ -14,6 +14,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -230,7 +231,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         long cost = ProjectEAPI.getEMCProxy().getValue(item);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger emc = provider.getEmc();
-        if (emc.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
+        if (emc.equals(BigInteger.ZERO) || cost == 0) return ItemStack.EMPTY;
         int count = amount;
         long max = emc.divide(BigInteger.valueOf(cost)).longValue();
         if (max < 1) return ItemStack.EMPTY;
@@ -276,14 +277,15 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         ItemStack stack = player.getHeldItem(hand);
         if(!owner.equals(player.getUniqueID())) {
             player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.RED), true);
-            return ActionResultType.FAIL;
+            return ActionResultType.CONSUME;
         }
+        boolean empty = stack.isEmpty() || stack.getItem().equals(Items.AIR);
         if(player.isCrouching()) {
             // error if no item & crouching
-            if (stack.isEmpty()) {
+            if (empty) {
                 if (item == null) {
                     player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").mergeStyle(TextFormatting.RED), true);
-                    return ActionResultType.FAIL;
+                    return ActionResultType.CONSUME;
                 } else {
                     // clear if no item & crouching
                     item = null;
@@ -294,7 +296,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
             } else {
                 if (item == null) {
                     player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.already_set").mergeStyle(TextFormatting.RED), true);
-                    return ActionResultType.FAIL;
+                    return ActionResultType.CONSUME;
                 } else {
                     // set if no item & non-empty hand (crouching irrelevant)
                     item = stack.getItem();
@@ -304,11 +306,11 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
                 }
             }
         } else {
-            if(stack.isEmpty()) {
+            if (empty) {
                 // error if no item & empty hand
-                if(item == null) {
+                if (item == null) {
                     player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").mergeStyle(TextFormatting.RED), true);
-                    return ActionResultType.FAIL;
+                    return ActionResultType.CONSUME;
                 } else {
                     // give if item present & empty hand
                     IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
@@ -318,7 +320,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
                     if(count > item.getMaxStackSize()) count = item.getMaxStackSize();
                     if(count < 1) {
                         player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(cost)).mergeStyle(TextFormatting.GREEN)).mergeStyle(TextFormatting.RED), true);
-                        return ActionResultType.FAIL;
+                        return ActionResultType.CONSUME;
                     }
                     provider.setEmc(emc.subtract(BigInteger.valueOf(cost * count)));
                     if(player instanceof ServerPlayerEntity) provider.sync((ServerPlayerEntity) player);
@@ -329,6 +331,11 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
             } else {
                 // set if no item & non-empty hand
                 if(item == null) {
+                    long cost = ProjectEAPI.getEMCProxy().getValue(stack);
+                    if (cost == 0) {
+                        player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_emc_value", new TranslationTextComponent(stack.getTranslationKey()).mergeStyle(TextFormatting.BLUE)).mergeStyle(TextFormatting.GREEN), true);
+                        return ActionResultType.CONSUME;
+                    }
                     item = stack.getItem();
                     markDirty();
                     player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(item.getTranslationKey()).mergeStyle(TextFormatting.BLUE)).mergeStyle(TextFormatting.GREEN), true);
@@ -336,7 +343,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
                 } else {
                     // error if item & non-empty hand
                     player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").mergeStyle(TextFormatting.RED), true);
-                    return ActionResultType.FAIL;
+                    return ActionResultType.CONSUME;
                 }
             }
         }
