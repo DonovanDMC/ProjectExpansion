@@ -315,7 +315,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
                     IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
                     long cost = ProjectEAPI.getEMCProxy().getValue(item);
                     BigInteger emc = provider.getEmc();
-                    int count = emc.divide(BigInteger.valueOf(cost)).intValue();
+                    int count = Util.safeIntValue(emc.divide(BigInteger.valueOf(cost)));
                     if(count > item.getMaxStackSize()) count = item.getMaxStackSize();
                     if(count < 1) {
                         player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(cost)).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
