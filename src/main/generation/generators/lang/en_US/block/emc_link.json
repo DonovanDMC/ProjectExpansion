@@ -9,6 +9,7 @@
   "block.projectexpansion.emc_link.cleared": "Export item has been cleared.",
   "block.projectexpansion.emc_link.not_enough_emc": "You do not have enough emc to purchase this, you need %s.",
   "block.projectexpansion.emc_link.set": "Export item has been set to %s.",
+  "block.projectexpansion.emc_link.no_emc_value": "%s does not have an emc value.",
   "block.projectexpansion.basic_emc_link": "Basic EMC Link [MK 1]",
   "block.projectexpansion.dark_emc_link": "Dark EMC Link [MK 2]",
   "block.projectexpansion.red_emc_link": "Red EMC Link [MK 3]",
