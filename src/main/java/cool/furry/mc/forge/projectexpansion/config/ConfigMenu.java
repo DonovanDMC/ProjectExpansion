@@ -80,6 +80,12 @@ public class ConfigMenu extends Screen {
                 (__, newValue) -> Config.notifyCommandChanges.set(newValue)
         ));
 
+        this.optionsRowList.addOption(new BooleanOption(
+                "gui.projectexpansion.config.limit_emc_link_vendor",
+                __ -> Config.limitEmcLinkVendor.get(),
+                (__, newValue) -> Config.limitEmcLinkVendor.set(newValue)
+        ));
+
         this.addButton(new Button((this.width - BUTTON_WIDTH) / 2, this.height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), button -> this.minecraft.displayGuiScreen(parentScreen)
         ));
     }

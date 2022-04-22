@@ -77,6 +77,10 @@ public class Util {
         }
     }
 
+    public static int mod(int a, int b) {
+        a = a % b;
+        return a < 0 ? a + b : a;
+    }
 
     public enum AddKnowledgeResult {
         FAIL,
