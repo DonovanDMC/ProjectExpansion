@@ -26,24 +26,13 @@ import java.math.BigInteger;
 import java.util.UUID;
 
 public class TileTransmutationInterface extends TileEntity implements IItemHandler, ITickableTileEntity {
-    private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
+    private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private ItemInfo[] info;
 
     public TileTransmutationInterface() {
         super(TileEntityTypes.TRANSMUTATION_INTERFACE.get());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() : super.getCapability(cap, side);
-    }
-
-    @Override
-    protected void invalidateCaps() {
-        itemHandlerCapability.invalidate();
     }
 
     @Override
@@ -166,5 +155,22 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return ProjectEAPI.getEMCProxy().hasValue(stack);
+    }
+
+    /****************
+     * Capabilities *
+     ****************/
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return
+                (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
+                        super.getCapability(cap, side);
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        this.itemHandlerCapability.invalidate();
     }
 }

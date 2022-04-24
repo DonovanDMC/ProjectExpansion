@@ -268,24 +268,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         return ProjectEAPI.getEMCProxy().hasValue(stack);
     }
 
-    /****************
-     * Capabilities *
-     ****************/
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return
-                (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
-                        (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
-                                super.getCapability(cap, side);
-    }
-
-    @Override
-    protected void invalidateCaps() {
-        this.itemHandlerCapability.invalidate();
-    }
-
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
         ItemStack inHand = player.getHeldItem(hand);
         if (!owner.equals(player.getUniqueID())) {
@@ -334,5 +316,24 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
         player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").setStyle(ColorStyle.RED), true);
         return ActionResultType.CONSUME;
+    }
+
+    /****************
+     * Capabilities *
+     ****************/
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return
+                (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
+                        (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
+                                super.getCapability(cap, side);
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        this.emcStorageCapability.invalidate();
+        this.itemHandlerCapability.invalidate();
     }
 }
