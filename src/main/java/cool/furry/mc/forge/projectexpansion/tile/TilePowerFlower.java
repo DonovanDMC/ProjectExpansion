@@ -68,10 +68,8 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
 
         if (provider != null) {
             PowerFlowerCollector.add(player, emc.add(BigInteger.valueOf(res)));
-            // provider.setEmc(provider.getEmc().add(emc).add(BigInteger.valueOf(res)));
             markDirty();
             emc = BigInteger.ZERO;
-            // provider.syncEmc(player);
         } else {
             emc = emc.add(BigInteger.valueOf(res));
             markDirty();

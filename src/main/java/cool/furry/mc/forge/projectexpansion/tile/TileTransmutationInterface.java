@@ -37,17 +37,6 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
         super(TileEntityTypes.TRANSMUTATION_INTERFACE.get());
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() : super.getCapability(cap, side);
-    }
-
-    @Override
-    protected void invalidateCaps() {
-        itemHandlerCapability.invalidate();
-    }
-
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
@@ -75,8 +64,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     }
 
     private ItemInfo[] fetchKnowledge() {
-        if (info != null)
-            return info;
+        if (info != null) return info;
         return info = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getKnowledge().toArray(new ItemInfo[0]);
     }
 
@@ -112,8 +100,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty())
-            return stack;
+        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty()) return stack;
         fetchKnowledge();
 
         ItemInfo info = ItemInfo.fromStack(stack);
@@ -170,5 +157,22 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return ProjectEAPI.getEMCProxy().hasValue(stack);
+    }
+
+    /****************
+     * Capabilities *
+     ****************/
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return
+                (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
+                        super.getCapability(cap, side);
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        this.itemHandlerCapability.invalidate();
     }
 }

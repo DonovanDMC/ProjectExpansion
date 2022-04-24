@@ -23,7 +23,7 @@ import java.util.List;
 
 public class TileCollector extends TileEntity implements ITickableTileEntity, IEmcStorage {
     public long emc = 0L;
-    private LazyOptional<IEmcStorage> emcStorageCapability;
+    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     public static final Direction[] DIRECTIONS = Direction.values();
     public TileCollector() {
         super(TileEntityTypes.ENERGY_COLLECTOR.get());
@@ -57,9 +57,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
                 temp.add(storage);
 
                 if (tile instanceof RelayMK1Tile) {
-                    for (int i = 0; i < 20; i++) {
-                        ((RelayMK1Tile) tile).addBonus();
-                    }
+                    for (int i = 0; i < 20; i++) ((RelayMK1Tile) tile).addBonus();
                     tile.markDirty();
                 } else if (tile instanceof TileRelay) {
                     ((TileRelay) tile).addBonus();
@@ -96,11 +94,8 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     public long extractEmc(long emc, EmcAction action) {
         long change = Math.min(this.emc, emc);
 
-        if (change < 0L) {
-            return insertEmc(-change, action);
-        } else if (action.execute()) {
-            this.emc -= change;
-        }
+        if (change < 0L) return insertEmc(-change, action);
+        else if (action.execute()) this.emc -= change;
 
         return change;
     }
@@ -110,27 +105,20 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
         return 0L;
     }
 
-    @Override
+    /****************
+     * Capabilities *
+     ****************/
+
     @Nonnull
+    @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) {
-            if (emcStorageCapability == null || !emcStorageCapability.isPresent()) {
-                emcStorageCapability = LazyOptional.of(() -> this);
-            }
-
-            return emcStorageCapability.cast();
-        }
-
-        return super.getCapability(cap, side);
+        return
+                (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
+                        super.getCapability(cap, side);
     }
 
     @Override
     protected void invalidateCaps() {
-        super.invalidateCaps();
-
-        if (emcStorageCapability != null && emcStorageCapability.isPresent()) {
-            emcStorageCapability.invalidate();
-            emcStorageCapability = null;
-        }
+        this.emcStorageCapability.invalidate();
     }
 }

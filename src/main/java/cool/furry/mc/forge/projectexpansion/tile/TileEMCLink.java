@@ -11,23 +11,17 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -37,7 +31,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -145,10 +138,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         this.matter = matter;
     }
 
-    public Direction getDirection() {
-        return getBlockState().get(BlockStateProperties.HORIZONTAL_FACING);
-    }
-
     /*******
      * EMC *
      *******/
@@ -193,13 +182,11 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        if (slot != 0 || itemStack.isEmpty())
-            return ItemStack.EMPTY;
+        if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger maxCount = provider.getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack))).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int count = maxCount.intValueExact();
-        if (count <= 0)
-            return ItemStack.EMPTY;
+        if (count <= 0) return ItemStack.EMPTY;
 
         ItemStack stack = itemStack.copy();
         stack.setCount(count);
@@ -216,8 +203,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         int count = stack.getCount();
         stack.setCount(1);
 
-        if (count <= 0)
-            return stack;
+        if (count <= 0) return stack;
 
         int insertCount = Math.min(count, remainingImport);
         if (!simulate) {
@@ -227,18 +213,15 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
             provider.setEmc(provider.getEmc().add(totalValue));
             ServerPlayerEntity player = Util.getPlayer(owner);
             if (player != null) {
-                if (provider.addKnowledge(stack)) {
+                if (provider.addKnowledge(stack))
                     provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromStack(stack)), true);
-                }
                 provider.syncEmc(player);
             }
             remainingImport -= insertCount;
             markDirty();
         }
 
-        if (insertCount == count) {
-            return ItemStack.EMPTY;
-        }
+        if (insertCount == count) return ItemStack.EMPTY;
 
         stack.setCount(count - insertCount);
         return stack;
@@ -251,15 +234,13 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     }
 
     public ItemStack extractItemInternal(int slot, int amount, boolean simulate, boolean limit) {
-        if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty())
-            return ItemStack.EMPTY;
+        if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty()) return ItemStack.EMPTY;
 
         BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int extractCount = Math.min(amount, limit ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
-        if (extractCount <= 0)
-            return ItemStack.EMPTY;
+        if (extractCount <= 0) return ItemStack.EMPTY;
 
         ItemStack r = itemStack.copy();
         r.setCount(extractCount);
@@ -268,8 +249,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         BigInteger totalPrice = itemValue.multiply(BigInteger.valueOf(extractCount));
         provider.setEmc(provider.getEmc().subtract(totalPrice));
         ServerPlayerEntity player = Util.getPlayer(owner);
-        if (player != null)
-            provider.syncEmc(player);
+        if (player != null) provider.syncEmc(player);
 
         if (limit) remainingExport -= extractCount;
         markDirty();
@@ -284,24 +264,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return ProjectEAPI.getEMCProxy().hasValue(stack);
-    }
-
-    /****************
-     * Capabilities *
-     ****************/
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return
-            (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
-            (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
-                super.getCapability(cap, side);
-    }
-
-    @Override
-    protected void invalidateCaps() {
-        this.itemHandlerCapability.invalidate();
     }
 
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
@@ -352,5 +314,24 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
         player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").mergeStyle(TextFormatting.RED), true);
         return ActionResultType.CONSUME;
+    }
+
+    /****************
+     * Capabilities *
+     ****************/
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return
+                (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
+                        (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
+                                super.getCapability(cap, side);
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        this.emcStorageCapability.invalidate();
+        this.itemHandlerCapability.invalidate();
     }
 }
