@@ -1,15 +1,15 @@
-const { execSync } = require("child_process");
-const { readdirSync, existsSync, mkdirSync, readFileSync } = require("fs");
-const { basename } = require("path");
-const { assetsDir } = require("./util");
+const {execSync} = require("child_process");
+const {readdirSync, existsSync, mkdirSync, rmdirSync} = require("fs");
 
 const inDir = `${__dirname}/generators`;
 const outDir = `${__dirname}/out`;
-if(existsSync(outDir)) execSync(`rm -rf ${outDir}`);
+if (existsSync(outDir)) execSync(`rm -rf ${outDir}`);
+
 mkdirSync(outDir);
+
 function run(dir) {
-    const { format, outDir: out } = require(`${dir}/index.js`);
-    if(existsSync(out)) execSync(`rm -rf ${out}`);
+    const {format, outDir: out} = require(`${dir}/index.js`);
+    if (existsSync(out)) execSync(`rm -rf ${out}`);
     execSync(`mkdir -p ${out}`);
     readdirSync(dir, { withFileTypes: true }).forEach(gen => {
         if(gen.isDirectory() || !gen.name.endsWith(".js") || gen.name === "index.js") return;
@@ -23,3 +23,4 @@ function run(dir) {
 }
 
 readdirSync(inDir).map(dir => run(`${inDir}/${dir}`));
+rmdirSync(outDir);
