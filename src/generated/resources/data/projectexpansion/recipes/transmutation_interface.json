@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TTT",
+    "TTT",
+    "TTT"
+  ],
+  "key": {
+    "T": {
+      "item": "projecte:transmutation_tablet"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:transmutation_interface"
+  }
+}
