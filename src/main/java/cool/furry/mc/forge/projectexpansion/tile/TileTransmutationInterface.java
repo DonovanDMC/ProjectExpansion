@@ -29,7 +29,6 @@ import java.util.UUID;
 public class TileTransmutationInterface extends TileEntity implements IItemHandler, ITickableTileEntity {
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
-    public int tick = 0;
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
 
     private ItemInfo[] info;
@@ -41,35 +40,33 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() : super.getCapability(cap, side);
+        return (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() : super.getCapability(cap, side);
     }
 
     @Override
     protected void invalidateCaps() {
-        this.itemHandlerCapability.invalidate();
+        itemHandlerCapability.invalidate();
     }
 
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
-        if (nbt.contains("Tick", Constants.NBT.TAG_BYTE)) tick = nbt.getByte("Tick") & 0xFF;
+        if (nbt.hasUniqueId("Owner")) owner = nbt.getUniqueId("Owner");
+        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) ownerName = nbt.getString("OwnerName");
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putUniqueId("Owner", this.owner);
-        nbt.putString("OwnerName", this.ownerName);
-        nbt.putByte("Tick", (byte) tick);
+        nbt.putUniqueId("Owner", owner);
+        nbt.putString("OwnerName", ownerName);
         return nbt;
     }
 
     public void setOwner(PlayerEntity player) {
-        this.owner = player.getUniqueID();
-        this.ownerName = player.getScoreboardName();
+        owner = player.getUniqueID();
+        ownerName = player.getScoreboardName();
         markDirty();
     }
 
@@ -78,22 +75,18 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     }
 
     private ItemInfo[] fetchKnowledge() {
-        if (this.info != null)
-            return this.info;
-        return this.info = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(this.owner).getKnowledge().toArray(new ItemInfo[0]);
+        if (info != null)
+            return info;
+        return info = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getKnowledge().toArray(new ItemInfo[0]);
     }
 
     private int getMaxCount(int slot) {
-        try {
-            return ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(this.owner).getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]))).intValueExact();
-        } catch (ArithmeticException e) {
-            return Integer.MAX_VALUE;
-        }
+        return ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]))).min(BigInteger.valueOf(Integer.MAX_VALUE)).intValueExact();
     }
 
     @Override
     public void tick() {
-        this.info = null;
+        info = null;
     }
 
     @Override
@@ -104,14 +97,14 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        if (this.owner == null) return ItemStack.EMPTY;
+        if (owner == null) return ItemStack.EMPTY;
         fetchKnowledge();
 
-        if (slot <= 0 || this.info.length < slot) return ItemStack.EMPTY;
+        if (slot <= 0 || info.length < slot) return ItemStack.EMPTY;
         int maxCount = getMaxCount(slot - 1);
         if (maxCount <= 0) return ItemStack.EMPTY;
 
-        ItemStack item = this.info[slot - 1].createStack();
+        ItemStack item = info[slot - 1].createStack();
         item.setCount(maxCount);
         return item;
     }
@@ -119,7 +112,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot != 0 || this.owner == null || !ProjectEAPI.getEMCProxy().hasValue(stack) || stack.isEmpty())
+        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty())
             return stack;
         fetchKnowledge();
 
@@ -133,16 +126,14 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
         if (simulate) return ItemStack.EMPTY;
 
         long emcValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(this.owner);
+        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger totalEmcValue = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(count));
         provider.setEmc(provider.getEmc().add(totalEmcValue));
 
-        if (world != null && !world.isRemote) {
-            ServerPlayerEntity player = Util.getPlayer(world, this.owner);
-            if (player != null) {
-                if (provider.addKnowledge(stack)) provider.sync(player);
-                provider.syncEmc(player);
-            }
+        ServerPlayerEntity player = Util.getPlayer(world, owner);
+        if (player != null) {
+            if (provider.addKnowledge(stack)) provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
+            provider.syncEmc(player);
         }
 
         return ItemStack.EMPTY;
@@ -151,24 +142,22 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot <= 0 || this.owner == null || this.info.length < slot) return ItemStack.EMPTY;
+        if (slot <= 0 || owner == null || info.length < slot) return ItemStack.EMPTY;
         fetchKnowledge();
 
         amount = Math.min(amount, getMaxCount(slot - 1));
 
         if (amount <= 0) return ItemStack.EMPTY;
-        ItemStack item = this.info[slot - 1].createStack();
+        ItemStack item = info[slot - 1].createStack();
         item.setCount(amount);
 
         if (simulate) return item;
-        long emcValue = ProjectEAPI.getEMCProxy().getValue(this.info[slot - 1]);
+        long emcValue = ProjectEAPI.getEMCProxy().getValue(info[slot - 1]);
         BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(this.owner);
+        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         provider.setEmc(provider.getEmc().subtract(totalEmcCost));
-        if (world != null && !world.isRemote) {
-            ServerPlayerEntity player = Util.getPlayer(world, this.owner);
-            if (player != null) provider.syncEmc(player);
-        }
+        ServerPlayerEntity player = Util.getPlayer(world, owner);
+        if (player != null) provider.syncEmc(player);
 
         return item;
     }
