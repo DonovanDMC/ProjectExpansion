@@ -1,20 +1,21 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
+import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
+import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.Util;
+import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
+import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -22,7 +23,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -30,7 +30,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,22 +43,15 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
-    private @Nullable Item item = null;
-    private final Matter matter;
+    private ItemStack itemStack;
+    private Matter matter;
     private long remainingEMC = 0L;
     private int remainingImport = 0;
     private int remainingExport = 0;
 
     public TileEMCLink() {
         super(TileEntityTypes.EMC_LINK.get());
-        this.matter = Matter.BASIC;
-        resetLimits();
-    }
-
-    public TileEMCLink(Matter matter) {
-        super(TileEntityTypes.EMC_LINK.get());
-        this.matter = matter;
-        resetLimits();
+        this.itemStack = ItemStack.EMPTY;
     }
 
     /*******
@@ -70,8 +63,9 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         super.read(nbt);
         if (nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
         if (nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
-        if (nbt.contains("Item", Constants.NBT.TAG_STRING)) item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(nbt.getString("Item")));
-        if(nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE)) remainingEMC = (long) nbt.getDouble("RemainingEMC");
+        if (nbt.contains("Item", Constants.NBT.TAG_COMPOUND))
+            itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound("Item")))).createStack();
+        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE)) remainingEMC = (long) nbt.getDouble("RemainingEMC");
         if(nbt.contains("RemainingImport", Constants.NBT.TAG_INT)) remainingImport = nbt.getInt("RemainingImport");
         if(nbt.contains("RemainingExport", Constants.NBT.TAG_INT)) remainingExport = nbt.getInt("RemainingExport");
     }
@@ -83,7 +77,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         nbt.putUniqueId("Owner", this.owner);
         nbt.putString("OwnerName", this.ownerName);
         nbt.putString("EMC", emc.toString());
-        if(item != null) nbt.putString("Item", item.toString());
+        nbt.put("Item", itemStack.serializeNBT());
         nbt.putDouble("RemainingEMC", remainingEMC);
         nbt.putInt("RemainingImport", remainingImport);
         nbt.putInt("RemainingExport", remainingExport);
@@ -97,13 +91,12 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public void tick() {
         // due to the nature of per second this block follows, using the config value isn't really possible
-        if (world == null || world.isRemote || (world.getGameTime() % 20) != 0) return;
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
     }
 
     private void resetLimits() {
-        if(matter == null) return;
-        remainingEMC = matter.getEMCLimit();
-        remainingImport = remainingExport = matter.getItemLimit();
+        remainingEMC = getMatter().getEMCLimit();
+        remainingImport = remainingExport = getMatter().getItemLimit();
     }
 
     public void setOwner(PlayerEntity player) {
@@ -112,6 +105,12 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         markDirty();
     }
 
+    private void setInternalItem(ItemStack stack) {
+        itemStack = stack;
+        markDirty();
+    }
+
+
     public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
         if (livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
         resetLimits();
@@ -119,12 +118,16 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public Matter getMatter() {
-        return matter;
+        if (world != null) {
+            BlockEMCLink block = (BlockEMCLink) getBlockState().getBlock();
+            if (block.getMatter() != matter) setMatter(block.getMatter());
+            return matter;
+        }
+        return Matter.BASIC;
     }
 
-    @Nullable
-    public Item getItem() {
-        return item;
+    private void setMatter(Matter matter) {
+        this.matter = matter;
     }
 
     public Direction getDirection() {
@@ -142,7 +145,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public long getMaximumEmc() {
-        return matter.getEMCLimit();
+        return getMatter().getEMCLimit();
     }
 
     @Override
@@ -152,17 +155,15 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        if (emc > 0L) {
-            long usableEMC = emc;
-            if(usableEMC > remainingEMC) {
-                usableEMC = remainingEMC;
-            }
-            if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(usableEMC));
+        long v = Math.min(remainingEMC, emc);
 
-            return emc - usableEMC;
-        }
+        if (emc <= 0L)
+            return 0L;
 
-        return 0L;
+        if (action.execute())
+            this.emc = this.emc.add(BigInteger.valueOf(v));
+
+        return v;
     }
 
     /*********
@@ -171,63 +172,95 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public int getSlots() {
-        return matter.getEMCLinkInventorySize();
+        return getMatter().getEMCLinkInventorySize();
     }
 
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return slot == 0 && item != null ? new ItemStack(item, remainingExport) : ItemStack.EMPTY;
+        if (slot != 0 || itemStack.isEmpty())
+            return ItemStack.EMPTY;
+        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        BigInteger maxCount = provider.getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack))).min(BigInteger.valueOf(Integer.MAX_VALUE));
+        int count = maxCount.intValueExact();
+        if (count <= 0)
+            return ItemStack.EMPTY;
+
+        ItemStack stack = itemStack.copy();
+        stack.setCount(count);
+        return stack;
     }
 
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot == 0 || remainingImport <= 0 || owner == null || !ProjectEAPI.getEMCProxy().hasValue(stack) || stack.isEmpty() || world == null || world.isRemote)
+        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack))
             return stack;
+
+        stack = stack.copy();
         int count = stack.getCount();
-        if(count > remainingImport) count = remainingImport;
-        if(!simulate) {
-            long value = ProjectEAPI.getEMCProxy().getValue(stack.getItem()) * count;
+        stack.setCount(1);
+
+        if (count <= 0)
+            return stack;
+
+        int insertCount = Math.min(count, remainingImport);
+        if (!simulate) {
+            long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
             IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+            BigInteger totalValue = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(insertCount));
+            provider.setEmc(provider.getEmc().add(totalValue));
             ServerPlayerEntity player = Util.getPlayer(owner);
-            provider.setEmc(provider.getEmc().add(BigInteger.valueOf(value)));
-            if(player != null) {
+            if (player != null) {
                 provider.addKnowledge(stack);
                 provider.sync(player);
             }
-
-            remainingImport -= count;
+            remainingImport -= insertCount;
+            markDirty();
         }
 
-        return count == stack.getCount() ? ItemStack.EMPTY : new ItemStack(stack.getItem(), count);
+        if (insertCount == count) {
+            return ItemStack.EMPTY;
+        }
+
+        stack.setCount(count - insertCount);
+        return stack;
     }
 
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot != 0 || remainingExport <= 0 || owner == null || item == null || world == null || world.isRemote)
+        return extractItemInternal(slot, amount, simulate, true);
+    }
+
+    public ItemStack extractItemInternal(int slot, int amount, boolean simulate, boolean limit) {
+        if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty())
             return ItemStack.EMPTY;
-        long cost = ProjectEAPI.getEMCProxy().getValue(item);
+
+        BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
-        BigInteger emc = provider.getEmc();
-        if (emc.equals(BigInteger.ZERO) || cost == 0) return ItemStack.EMPTY;
-        int count = amount;
-        long max = emc.divide(BigInteger.valueOf(cost)).longValue();
-        if (max < 1) return ItemStack.EMPTY;
-        if (count > remainingExport) count = remainingExport;
-        if (!simulate) {
-            provider.setEmc(emc.subtract(BigInteger.valueOf(cost * count)));
-            ServerPlayerEntity player = Util.getPlayer(owner);
-            if (player != null) provider.sync(player);
-            remainingExport -= count;
-        }
-        return new ItemStack(item, count);
+        BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
+        int extractCount = Math.min(amount, limit ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
+        if (extractCount <= 0)
+            return ItemStack.EMPTY;
+
+        ItemStack r = itemStack.copy();
+        r.setCount(extractCount);
+        if (simulate) return r;
+
+        BigInteger totalPrice = itemValue.multiply(BigInteger.valueOf(extractCount));
+        provider.setEmc(provider.getEmc().subtract(totalPrice));
+        ServerPlayerEntity player = Util.getPlayer(owner);
+        if (player != null) provider.sync(player);
+
+        if (limit) remainingExport -= extractCount;
+        markDirty();
+        return r;
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        return matter.getItemLimit();
+        return getMatter().getItemLimit();
     }
 
     @Override
@@ -254,78 +287,52 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     }
 
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if(!owner.equals(player.getUniqueID())) {
+        ItemStack inHand = player.getHeldItem(hand);
+        if (!owner.equals(player.getUniqueID())) {
             player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
             return ActionResultType.CONSUME;
         }
-        boolean empty = stack.isEmpty() || stack.getItem().equals(Items.AIR);
-        if(player.isCrouching()) {
-            // error if no item & crouching
-            if (empty) {
-                if (item == null) {
-                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
-                    return ActionResultType.CONSUME;
-                } else {
-                    // clear if no item & crouching
-                    item = null;
-                    markDirty();
-                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").setStyle(ColorStyle.RED), true);
-                    return ActionResultType.SUCCESS;
-                }
-            } else {
-                if (item == null) {
-                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.already_set").setStyle(ColorStyle.RED), true);
-                    return ActionResultType.CONSUME;
-                } else {
-                    // set if no item & non-empty hand (crouching irrelevant)
-                    item = stack.getItem();
-                    markDirty();
-                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(item.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
-                    return ActionResultType.SUCCESS;
-                }
+        if (player.isCrouching()) {
+            if (itemStack.isEmpty()) {
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
+                return ActionResultType.CONSUME;
             }
-        } else {
-            if (empty) {
-                // error if no item & empty hand
-                if (item == null) {
-                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
-                    return ActionResultType.CONSUME;
-                } else {
-                    // give if item present & empty hand
-                    IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
-                    long cost = ProjectEAPI.getEMCProxy().getValue(item);
-                    BigInteger emc = provider.getEmc();
-                    int count = Util.safeIntValue(emc.divide(BigInteger.valueOf(cost)));
-                    if(count > item.getMaxStackSize()) count = item.getMaxStackSize();
-                    if(count < 1) {
-                        player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(cost)).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
-                        return ActionResultType.CONSUME;
-                    }
-                    provider.setEmc(emc.subtract(BigInteger.valueOf(cost * count)));
-                    if(player instanceof ServerPlayerEntity) provider.sync((ServerPlayerEntity) player);
-
-                    player.setItemStackToSlot((hand.equals(Hand.MAIN_HAND) ? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND), new ItemStack(item, count));
-                    return ActionResultType.SUCCESS;
-                }
-            } else {
-                // set if no item & non-empty hand
-                if(item == null) {
-                    long cost = ProjectEAPI.getEMCProxy().getValue(stack);
-                    if (cost == 0) {
-                        player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_emc_value", new TranslationTextComponent(stack.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
-                        return ActionResultType.CONSUME;
-                    }
-                    item = stack.getItem();
-                    markDirty();
-                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(item.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
-                    return ActionResultType.SUCCESS;
-                } else {
-                    // error if item & non-empty hand
-                    player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").setStyle(ColorStyle.RED), true);
-                    return ActionResultType.CONSUME;
-                }
+            if (inHand.isEmpty()) {
+                setInternalItem(ItemStack.EMPTY);
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").setStyle(ColorStyle.RED), true);
+                return ActionResultType.SUCCESS;
             }
         }
+
+        if (itemStack.isEmpty()) {
+            if (inHand.isEmpty()) {
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
+                return ActionResultType.CONSUME;
+            }
+            if (!isItemValid(0, inHand)) {
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_emc_value", new TranslationTextComponent(itemStack.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.RED), true);
+                return ActionResultType.CONSUME;
+            }
+            setInternalItem(inHand);
+            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(itemStack.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
+            return ActionResultType.SUCCESS;
+        }
+
+        if (inHand.isEmpty() || itemStack.isItemEqual(inHand)) {
+            if (Config.limitEmcLinkVendor.get() && remainingExport <= 0) {
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
+                return ActionResultType.CONSUME;
+            }
+            ItemStack extract = extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
+            if (extract.isEmpty()) {
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                return ActionResultType.CONSUME;
+            }
+            ItemHandlerHelper.giveItemToPlayer(player, extract);
+            return ActionResultType.SUCCESS;
+        }
+
+        player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").setStyle(ColorStyle.RED), true);
+        return ActionResultType.CONSUME;
     }
 }

@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.PowerFlowerCollector;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.entity.LivingEntity;
@@ -59,7 +60,8 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
 
     @Override
     public void tick() {
-        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != 0) return;
+        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != Util.mod(hashCode(), Config.tickDelay.get()))
+            return;
         long res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
         ServerPlayerEntity player = Objects.requireNonNull(world.getServer()).getPlayerList().getPlayerByUUID(owner);
         IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);

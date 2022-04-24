@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockCollector;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
@@ -44,7 +45,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     @Override
     public void tick() {
         // we can't use the user defined value due to emc duplication possibilities
-        if (world == null || world.isRemote || (world.getGameTime() % 20) != 0) return;
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
         emc += ((BlockCollector) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get());
         List<IEmcStorage> temp = new ArrayList<>(1);
 
