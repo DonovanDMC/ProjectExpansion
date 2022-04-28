@@ -115,7 +115,8 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     }
 
     private void setInternalItem(ItemStack stack) {
-        itemStack = stack;
+        itemStack = stack.copy();
+        itemStack.setCount(1);
         markDirty();
     }
 
