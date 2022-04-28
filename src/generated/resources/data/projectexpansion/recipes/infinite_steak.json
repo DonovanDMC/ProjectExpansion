@@ -1,19 +1,19 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "SSS",
-    "STS",
-    "SSS"
-  ],
-  "key": {
-    "S": {
-      "item": "minecraft:cooked_beef"
-    },
-    "T": {
-      "item": "projecte:transmutation_tablet"
-    }
-  },
-  "result": {
-    "item": "projectexpansion:infinite_steak"
-  }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"SSS",
+		"STS",
+		"SSS"
+	],
+	"key": {
+		"S": {
+			"item": "minecraft:cooked_beef"
+		},
+		"T": {
+			"item": "projecte:transmutation_tablet"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:infinite_steak"
+	}
 }

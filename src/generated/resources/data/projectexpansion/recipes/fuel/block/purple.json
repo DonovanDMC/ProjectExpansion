@@ -1,36 +1,36 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "projectexpansion:fuel/purple",
-  "ingredients": [
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    },
-    {
-      "item": "projectexpansion:purple_fuel"
-    }
-  ],
-  "result": {
-    "item": "projectexpansion:purple_fuel_block"
-  }
+	"type": "minecraft:crafting_shapeless",
+	"group": "projectexpansion:fuel/purple",
+	"ingredients": [
+		{
+			"item": "projectexpansion:purple_fuel"
+		},
+		{
+			"item": "projectexpansion:purple_fuel"
+		},
+		{
+			"item": "projectexpansion:purple_fuel"
+		},
+		{
+			"item": "projectexpansion:purple_fuel"
+		},
+		{
+			"item": "projectexpansion:purple_fuel"
+		},
+		{
+			"item": "projectexpansion:purple_fuel"
+		},
+		{
+			"item": "projectexpansion:purple_fuel"
+		},
+		{
+			"item": "projectexpansion:purple_fuel"
+		},
+		{
+			"item": "projectexpansion:purple_fuel"
+		}
+	],
+	"result": {
+		"item": "projectexpansion:purple_fuel_block"
+	}
 }

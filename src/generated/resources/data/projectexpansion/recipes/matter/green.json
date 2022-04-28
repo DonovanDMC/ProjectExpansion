@@ -1,20 +1,20 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "group": "projectexpansion:matter/green",
-  "pattern": [
-    "FMF",
-    "FMF",
-    "FMF"
-  ],
-  "key": {
-    "F": {
-      "item": "projectexpansion:cyan_fuel"
-    },
-    "M": {
-      "item": "projectexpansion:cyan_matter"
-    }
-  },
-  "result": {
-    "item": "projectexpansion:green_matter"
-  }
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/green",
+	"pattern": [
+		"FMF",
+		"FMF",
+		"FMF"
+	],
+	"key": {
+		"F": {
+			"item": "projectexpansion:cyan_fuel"
+		},
+		"M": {
+			"item": "projectexpansion:cyan_matter"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:green_matter"
+	}
 }

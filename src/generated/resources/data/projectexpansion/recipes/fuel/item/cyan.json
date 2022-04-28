@@ -1,21 +1,21 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "projectexpansion:fuel/cyan",
-  "ingredients": [
-    {
-      "item": "projectexpansion:blue_fuel"
-    },
-    {
-      "item": "projectexpansion:blue_fuel"
-    },
-    {
-      "item": "projectexpansion:blue_fuel"
-    },
-    {
-      "item": "projectexpansion:blue_fuel"
-    }
-  ],
-  "result": {
-    "item": "projectexpansion:cyan_fuel"
-  }
+	"type": "minecraft:crafting_shapeless",
+	"group": "projectexpansion:fuel/cyan",
+	"ingredients": [
+		{
+			"item": "projectexpansion:blue_fuel"
+		},
+		{
+			"item": "projectexpansion:blue_fuel"
+		},
+		{
+			"item": "projectexpansion:blue_fuel"
+		},
+		{
+			"item": "projectexpansion:blue_fuel"
+		}
+	],
+	"result": {
+		"item": "projectexpansion:cyan_fuel"
+	}
 }

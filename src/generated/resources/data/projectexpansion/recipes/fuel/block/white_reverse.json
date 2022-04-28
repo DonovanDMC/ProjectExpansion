@@ -1,13 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "projectexpansion:fuel/white",
-  "ingredients": [
-    {
-      "item": "projectexpansion:white_fuel_block"
-    }
-  ],
-  "result": {
-    "item": "projectexpansion:white_fuel",
-    "count": 9
-  }
+	"type": "minecraft:crafting_shapeless",
+	"group": "projectexpansion:fuel/white",
+	"ingredients": [
+		{
+			"item": "projectexpansion:white_fuel_block"
+		}
+	],
+	"result": {
+		"item": "projectexpansion:white_fuel",
+		"count": 9
+	}
 }

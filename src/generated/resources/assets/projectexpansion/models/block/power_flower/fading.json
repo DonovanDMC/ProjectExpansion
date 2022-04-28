@@ -1,7 +1,7 @@
 {
-  "parent": "projectexpansion:block/power_flower/base",
-  "textures": {
-    "collector": "projectexpansion:block/collector/fading",
-    "relay": "projectexpansion:block/relay/fading"
-  }
+	"parent": "projectexpansion:block/power_flower/base",
+	"textures": {
+		"collector": "projectexpansion:block/collector/fading",
+		"relay": "projectexpansion:block/relay/fading"
+	}
 }

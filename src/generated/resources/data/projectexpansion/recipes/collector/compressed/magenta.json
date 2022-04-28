@@ -1,17 +1,17 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "group": "projectexpansion:matter/magenta",
-  "pattern": [
-    "CCC",
-    "CCC",
-    "CCC"
-  ],
-  "key": {
-    "C": {
-      "item": "projectexpansion:magenta_collector"
-    }
-  },
-  "result": {
-    "item": "projectexpansion:magenta_compressed_collector"
-  }
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/magenta",
+	"pattern": [
+		"CCC",
+		"CCC",
+		"CCC"
+	],
+	"key": {
+		"C": {
+			"item": "projectexpansion:magenta_collector"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:magenta_compressed_collector"
+	}
 }

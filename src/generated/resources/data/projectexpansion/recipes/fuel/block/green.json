@@ -1,36 +1,36 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "projectexpansion:fuel/green",
-  "ingredients": [
-    {
-      "item": "projectexpansion:green_fuel"
-    },
-    {
-      "item": "projectexpansion:green_fuel"
-    },
-    {
-      "item": "projectexpansion:green_fuel"
-    },
-    {
-      "item": "projectexpansion:green_fuel"
-    },
-    {
-      "item": "projectexpansion:green_fuel"
-    },
-    {
-      "item": "projectexpansion:green_fuel"
-    },
-    {
-      "item": "projectexpansion:green_fuel"
-    },
-    {
-      "item": "projectexpansion:green_fuel"
-    },
-    {
-      "item": "projectexpansion:green_fuel"
-    }
-  ],
-  "result": {
-    "item": "projectexpansion:green_fuel_block"
-  }
+	"type": "minecraft:crafting_shapeless",
+	"group": "projectexpansion:fuel/green",
+	"ingredients": [
+		{
+			"item": "projectexpansion:green_fuel"
+		},
+		{
+			"item": "projectexpansion:green_fuel"
+		},
+		{
+			"item": "projectexpansion:green_fuel"
+		},
+		{
+			"item": "projectexpansion:green_fuel"
+		},
+		{
+			"item": "projectexpansion:green_fuel"
+		},
+		{
+			"item": "projectexpansion:green_fuel"
+		},
+		{
+			"item": "projectexpansion:green_fuel"
+		},
+		{
+			"item": "projectexpansion:green_fuel"
+		},
+		{
+			"item": "projectexpansion:green_fuel"
+		}
+	],
+	"result": {
+		"item": "projectexpansion:green_fuel_block"
+	}
 }

@@ -1,7 +1,7 @@
 {
-  "parent": "projectexpansion:block/power_flower/base",
-  "textures": {
-    "collector": "projectexpansion:block/collector/blue",
-    "relay": "projectexpansion:block/relay/blue"
-  }
+	"parent": "projectexpansion:block/power_flower/base",
+	"textures": {
+		"collector": "projectexpansion:block/collector/blue",
+		"relay": "projectexpansion:block/relay/blue"
+	}
 }

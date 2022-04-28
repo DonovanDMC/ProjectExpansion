@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "projectexpansion:block/collector/orange"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/collector/orange"
+		}
+	}
 }

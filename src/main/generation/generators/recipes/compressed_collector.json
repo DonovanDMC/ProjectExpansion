@@ -1,17 +1,17 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "group": "projectexpansion:matter/$TIER$",
-  "pattern": [
-    "CCC",
-    "CCC",
-    "CCC"
-  ],
-  "key": {
-    "C": {
-      "item": "projectexpansion:$TIER$_collector"
-    }
-  },
-  "result": {
-    "item": "projectexpansion:$TIER$_compressed_collector"
-  }
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/$TIER$",
+	"pattern": [
+		"CCC",
+		"CCC",
+		"CCC"
+	],
+	"key": {
+		"C": {
+			"item": "projectexpansion:$TIER$_collector"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:$TIER$_compressed_collector"
+	}
 }
