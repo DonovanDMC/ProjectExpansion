@@ -1,23 +1,23 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "group": "projectexpansion:matter/pink",
-    "pattern": [
-        "CLC",
-        "RRR",
-        "RRR"
-    ],
-    "key": {
-        "L": {
-            "item": "projectexpansion:pink_emc_link"
-        },
-        "C": {
-            "item": "projectexpansion:pink_compressed_collector"
-        },
-        "R": {
-            "item": "projectexpansion:pink_relay"
-        }
-    },
-    "result": {
-        "item": "projectexpansion:pink_power_flower"
-    }
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/pink",
+	"pattern": [
+		"CLC",
+		"RRR",
+		"RRR"
+	],
+	"key": {
+		"L": {
+			"item": "projectexpansion:pink_emc_link"
+		},
+		"C": {
+			"item": "projectexpansion:pink_compressed_collector"
+		},
+		"R": {
+			"item": "projectexpansion:pink_relay"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:pink_power_flower"
+	}
 }

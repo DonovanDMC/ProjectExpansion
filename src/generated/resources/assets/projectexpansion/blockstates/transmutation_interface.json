@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "projectexpansion:block/transmutation_interface"
-    }
-  }
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/transmutation_interface"
+		}
+	}
 }

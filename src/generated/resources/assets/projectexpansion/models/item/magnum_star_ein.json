@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "projectexpansion:item/star/magnum/ein"
-    }
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "projectexpansion:item/star/magnum/ein"
+	}
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "projectexpansion:item/infinite_steak"
-  }
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "projectexpansion:item/infinite_steak"
+	}
 }

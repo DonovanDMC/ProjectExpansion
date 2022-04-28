@@ -1,17 +1,17 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "group": "projectexpansion:matter/blue",
-    "pattern": [
-        "CCC",
-        "CCC",
-        "CCC"
-    ],
-    "key": {
-        "C": {
-            "item": "projectexpansion:blue_collector"
-        }
-    },
-    "result": {
-        "item": "projectexpansion:blue_compressed_collector"
-    }
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/blue",
+	"pattern": [
+		"CCC",
+		"CCC",
+		"CCC"
+	],
+	"key": {
+		"C": {
+			"item": "projectexpansion:blue_collector"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:blue_compressed_collector"
+	}
 }

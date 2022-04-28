@@ -1,20 +1,20 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "group": "projectexpansion:matter/blue",
-    "pattern": [
-        "FMF",
-        "FMF",
-        "FMF"
-    ],
-    "key": {
-        "F": {
-            "item": "projectexpansion:violet_fuel"
-        },
-        "M": {
-            "item": "projectexpansion:violet_matter"
-        }
-    },
-    "result": {
-        "item": "projectexpansion:blue_matter"
-    }
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/blue",
+	"pattern": [
+		"FMF",
+		"FMF",
+		"FMF"
+	],
+	"key": {
+		"F": {
+			"item": "projectexpansion:violet_fuel"
+		},
+		"M": {
+			"item": "projectexpansion:violet_matter"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:blue_matter"
+	}
 }
