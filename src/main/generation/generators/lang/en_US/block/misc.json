@@ -1,5 +1,5 @@
 {
-  "block.projectexpansion.arcane_table": "Arcane Table",
-  "block.projectexpansion.transmutation_interface": "Transmutation Interface",
-  "block.projectexpansion.transmutation_interface.tooltip": "This can be used with compatible mods like Refined Storage to access your transmutation inventory."
+	"block.projectexpansion.arcane_table": "Arcane Table",
+	"block.projectexpansion.transmutation_interface": "Transmutation Interface",
+	"block.projectexpansion.transmutation_interface.tooltip": "This can be used with compatible mods like Refined Storage to access your transmutation inventory."
 }

@@ -1,29 +1,29 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "group": "projectexpansion:matter/lime",
-  "pattern": [
-    "LMH",
-    "CPC",
-    "HML"
-  ],
-  "key": {
-    "L": {
-      "item": "projecte:low_covalence_dust"
-    },
-    "M": {
-      "item": "projecte:medium_covalence_dust"
-    },
-    "H": {
-      "item": "projecte:high_covalence_dust"
-    },
-    "P": {
-      "item": "projectexpansion:green_emc_link"
-    },
-    "C": {
-      "item": "projectexpansion:lime_compressed_collector"
-    }
-  },
-  "result": {
-    "item": "projectexpansion:lime_emc_link"
-  }
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/lime",
+	"pattern": [
+		"LMH",
+		"TCT",
+		"HML"
+	],
+	"key": {
+		"L": {
+			"item": "projecte:low_covalence_dust"
+		},
+		"M": {
+			"item": "projecte:medium_covalence_dust"
+		},
+		"H": {
+			"item": "projecte:high_covalence_dust"
+		},
+		"T": {
+			"item": "projectexpansion:lime_matter"
+		},
+		"C": {
+			"item": "projectexpansion:green_emc_link"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:lime_emc_link"
+	}
 }

@@ -1,15 +1,15 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "group": "projectexpansion:matter/$TIER$",
-    "ingredients": [
-        {
-            "item": "projectexpansion:$PREV$_collector"
-        },
-        {
-            "item": "projectexpansion:$TIER$_matter"
-        }
-    ],
-    "result": {
-        "item": "projectexpansion:$TIER$_collector"
-    }
+	"type": "minecraft:crafting_shapeless",
+	"group": "projectexpansion:matter/$TIER$",
+	"ingredients": [
+		{
+			"item": "projectexpansion:$PREV$_collector"
+		},
+		{
+			"item": "projectexpansion:$TIER$_matter"
+		}
+	],
+	"result": {
+		"item": "projectexpansion:$TIER$_collector"
+	}
 }

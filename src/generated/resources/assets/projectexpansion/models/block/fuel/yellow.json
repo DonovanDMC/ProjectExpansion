@@ -1,6 +1,6 @@
 {
-    "parent": "minecraft:block/cube_all",
-    "textures": {
-        "all": "projectexpansion:block/fuel/yellow"
-    }
+	"parent": "minecraft:block/cube_all",
+	"textures": {
+		"all": "projectexpansion:block/fuel/yellow"
+	}
 }
