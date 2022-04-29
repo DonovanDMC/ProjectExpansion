@@ -1,0 +1,20 @@
+{
+	"block.projectexpansion.power_flower.tooltip": "Generates EMC once per %s tick%s. (20/second)",
+	"block.projectexpansion.power_flower.emc": "Produced EMC: %s/s",
+	"block.projectexpansion.basic_power_flower": "Basic Power Flower [MK 1]",
+	"block.projectexpansion.dark_power_flower": "Dark Power Flower [MK 2]",
+	"block.projectexpansion.red_power_flower": "Red Power Flower [MK 3]",
+	"block.projectexpansion.magenta_power_flower": "Magenta Power Flower [MK 4]",
+	"block.projectexpansion.pink_power_flower": "Pink Power Flower [MK 5]",
+	"block.projectexpansion.purple_power_flower": "Purple Power Flower [MK 6]",
+	"block.projectexpansion.violet_power_flower": "Violet Power Flower [MK 7]",
+	"block.projectexpansion.blue_power_flower": "Blue Power Flower [MK 8]",
+	"block.projectexpansion.cyan_power_flower": "Cyan Power Flower [MK 9]",
+	"block.projectexpansion.green_power_flower": "Green Power Flower [MK 10]",
+	"block.projectexpansion.lime_power_flower": "Lime Power Flower [MK 11]",
+	"block.projectexpansion.yellow_power_flower": "Yellow Power Flower [MK 12]",
+	"block.projectexpansion.orange_power_flower": "Orange Power Flower [MK 13]",
+	"block.projectexpansion.white_power_flower": "White Power Flower [MK 14]",
+	"block.projectexpansion.fading_power_flower": "Fading Power Flower [MK 15]",
+	"block.projectexpansion.final_power_flower": "Final Power Flower [MK 16]"
+}

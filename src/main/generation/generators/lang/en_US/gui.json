@@ -1,0 +1,19 @@
+{
+	"gui.projectexpansion.config.title": "Project Expansion Config",
+	"gui.projectexpansion.config.tick_delay": "Tick Delay",
+	"gui.projectexpansion.config.tick_delay.desc": "The delay between mod operations (in ticks, default 20) - this will slightly effect the amount of emc generated via rounding - increase if you're noticing lag",
+	"gui.projectexpansion.config.format_emc": "Format EMC",
+	"gui.projectexpansion.config.format_emc.desc": "If EMC should be formatted as M/B/T/etc",
+	"gui.projectexpansion.config.full_number_names": "Full Number Names",
+	"gui.projectexpansion.config.full_number_names.desc": "If full number names (Million/Billion/Trillion) should be used instead of abbreviations",
+	"gui.projectexpansion.config.emc_display": "EMC Display",
+	"gui.projectexpansion.config.emc_display.desc": "Displays your current emc and gained emc per second in the top left corner.",
+	"gui.projectexpansion.config.powerflower_multiplier": "Power Flower Multiplier",
+	"gui.projectexpansion.config.powerflower_multiplier.desc": "Multiplies the output of Power Flowers.",
+	"gui.projectexpansion.config.notify_command_changes": "Notify Command Changes",
+	"gui.projectexpansion.config.notify_command_changes.desc": "Notify users something is changed about them via /emc.",
+	"gui.projectexpansion.config.limit_emc_link_vendor": "Limit EMC Link Vendor Output",
+	"gui.projectexpansion.config.limit_emc_link_vendor.desc": "If EMC Link Right-Click functionality should be Limited by Tier or Not.",
+	"gui.projectexpansion.emc_link": "Personal Link",
+	"gui.projectexpansion.emc_gain": "EMC Gain"
+}
