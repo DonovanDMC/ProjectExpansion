@@ -20,7 +20,7 @@ java {
 }
 
 minecraft {
-    mappings channel: 'stable', version: getProperty("mappingsVersion")
+    mappings channel: getProperty("mappingsChannel"), version: getProperty("mappingsVersion")
     runs {
         client {
             workingDirectory project.file('run')
