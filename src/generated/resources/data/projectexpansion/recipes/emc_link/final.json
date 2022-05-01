@@ -1,0 +1,29 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/final",
+	"pattern": [
+		"LMH",
+		"TCT",
+		"HML"
+	],
+	"key": {
+		"L": {
+			"item": "projecte:low_covalence_dust"
+		},
+		"M": {
+			"item": "projecte:medium_covalence_dust"
+		},
+		"H": {
+			"item": "projecte:high_covalence_dust"
+		},
+		"T": {
+			"item": "projectexpansion:final_star_shard"
+		},
+		"C": {
+			"item": "projectexpansion:fading_emc_link"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:final_emc_link"
+	}
+}
