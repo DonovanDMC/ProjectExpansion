@@ -3,7 +3,7 @@
 	"group": "projectexpansion:matter/dark",
 	"pattern": [
 		"LMH",
-		"TPT",
+		"TCT",
 		"HML"
 	],
 	"key": {
@@ -17,9 +17,9 @@
 			"item": "projecte:high_covalence_dust"
 		},
 		"T": {
-			"item": "projecte:transmutation_tablet"
+			"item": "projecte:dark_matter"
 		},
-		"P": {
+		"C": {
 			"item": "projectexpansion:basic_emc_link"
 		}
 	},
