@@ -51,6 +51,7 @@ public class BlockCollector extends Block implements IHasMatter, EntityBlock {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
         list.add(new TranslatableComponent("block.projectexpansion.collector.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
         list.add(new TranslatableComponent("block.projectexpansion.collector.emc", TransmutationEMCFormatter.formatEMC(matter.getCollectorOutputForTicks(Config.tickDelay.get())).copy().setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
     }
 

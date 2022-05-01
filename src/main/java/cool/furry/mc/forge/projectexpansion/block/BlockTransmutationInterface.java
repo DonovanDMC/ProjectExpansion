@@ -47,6 +47,7 @@ public class BlockTransmutationInterface extends Block implements EntityBlock {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
         list.add(new TranslatableComponent("block.projectexpansion.transmutation_interface.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
     @Override

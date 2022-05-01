@@ -1,10 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.init;
 
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.item.ItemFinalStar;
-import cool.furry.mc.forge.projectexpansion.item.ItemInfiniteFuel;
-import cool.furry.mc.forge.projectexpansion.item.ItemInfiniteSteak;
-import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
+import cool.furry.mc.forge.projectexpansion.item.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -16,7 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class Items {
     public static final DeferredRegister<Item> Registry = DeferredRegister.create(ForgeRegistries.ITEMS, Main.MOD_ID);
 
-    public static final RegistryObject<Item> FINAL_STAR_SHARD = Registry.register("final_star_shard", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).tab(Main.tab)));
+    public static final RegistryObject<Item> FINAL_STAR_SHARD = Registry.register("final_star_shard", ItemFinalStarShard::new);
     public static final RegistryObject<Item> FINAL_STAR = Registry.register("final_star", ItemFinalStar::new);
     public static final RegistryObject<Item> MATTER_UPGRADER = Registry.register("matter_upgrader", ItemUpgrade::new);
     public static final RegistryObject<Item> INFINITE_FUEL = Registry.register("infinite_fuel", ItemInfiniteFuel::new);
