@@ -2,7 +2,6 @@ package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.Blocks;
-import cool.furry.mc.forge.projectexpansion.init.ContainerTypes;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;
@@ -45,7 +44,6 @@ public class Main {
         Blocks.Registry.register(bus);
         Items.Registry.register(bus);
         TileEntityTypes.Registry.register(bus);
-        ContainerTypes.Registry.register(bus);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.Spec, "project-expansion.toml");
