@@ -16,7 +16,7 @@ public class TileEntityTypes {
 
     public static final RegistryObject<TileEntityType<TileEMCLink>> EMC_LINK = Registry.register("emc_link", () -> TileEntityType.Builder.create(TileEMCLink::new, Arrays.stream(Matter.VALUES).map(Matter::getEMCLink).toArray(Block[]::new)).build(null));
     public static final RegistryObject<TileEntityType<TilePowerFlower>> POWER_FLOWER = Registry.register("power_flower", () -> TileEntityType.Builder.create(TilePowerFlower::new, Arrays.stream(Matter.VALUES).map(Matter::getPowerFlower).toArray(Block[]::new)).build(null));
-    public static final RegistryObject<TileEntityType<TileCollector>> ENERGY_COLLECTOR = Registry.register("collector", () -> TileEntityType.Builder.create(TileCollector::new, Arrays.stream(Matter.VALUES).map(Matter::getCollector).toArray(Block[]::new)).build(null));
-    public static final RegistryObject<TileEntityType<TileRelay>> ANTI_MATTER_RELAY = Registry.register("relay", () -> TileEntityType.Builder.create(TileRelay::new, Arrays.stream(Matter.VALUES).map(Matter::getRelay).toArray(Block[]::new)).build(null));
+    public static final RegistryObject<TileEntityType<TileCollector>> COLLECTOR = Registry.register("collector", () -> TileEntityType.Builder.create(TileCollector::new, Arrays.stream(Matter.VALUES).map(Matter::getCollector).toArray(Block[]::new)).build(null));
+    public static final RegistryObject<TileEntityType<TileRelay>> RELAY = Registry.register("relay", () -> TileEntityType.Builder.create(TileRelay::new, Arrays.stream(Matter.VALUES).map(Matter::getRelay).toArray(Block[]::new)).build(null));
     public static final RegistryObject<TileEntityType<TileTransmutationInterface>> TRANSMUTATION_INTERFACE = Registry.register("transmutation_interface", () -> TileEntityType.Builder.create(TileTransmutationInterface::new, Blocks.TRANSMUTATION_INTERFACE.get()).build(null));
 }

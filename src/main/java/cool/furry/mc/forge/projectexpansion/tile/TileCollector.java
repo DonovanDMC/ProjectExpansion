@@ -22,17 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TileCollector extends TileEntity implements ITickableTileEntity, IEmcStorage {
-    public long emc = 0L;
-    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     public static final Direction[] DIRECTIONS = Direction.values();
+    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
+    public long emc = 0L;
+
     public TileCollector() {
-        super(TileEntityTypes.ENERGY_COLLECTOR.get());
+        super(TileEntityTypes.COLLECTOR.get());
     }
 
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if(nbt.contains("EMC", Constants.NBT.TAG_LONG)) emc = nbt.getLong(("EMC"));
+        if (nbt.contains("EMC", Constants.NBT.TAG_LONG)) emc = nbt.getLong(("EMC"));
     }
 
     @Nonnull
