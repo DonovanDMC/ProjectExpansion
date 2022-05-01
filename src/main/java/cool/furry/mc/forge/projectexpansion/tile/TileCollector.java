@@ -25,7 +25,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     public static final Direction[] DIRECTIONS = Direction.values();
     public TileCollector() {
-        super(TileEntityTypes.ENERGY_COLLECTOR.get());
+        super(TileEntityTypes.COLLECTOR.get());
     }
 
     @Override

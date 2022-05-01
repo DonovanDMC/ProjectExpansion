@@ -23,7 +23,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     public static final Direction[] DIRECTIONS = Direction.values();
     public TileRelay() {
-        super(TileEntityTypes.ANTI_MATTER_RELAY.get());
+        super(TileEntityTypes.RELAY.get());
     }
 
     @Override
