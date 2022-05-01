@@ -70,7 +70,9 @@ public class BlockEntityTransmutationInterface extends BlockEntity implements II
     }
 
     private int getMaxCount(int slot) {
-        return ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]))).min(BigInteger.valueOf(Integer.MAX_VALUE)).intValueExact();
+        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        if(provider.getEmc().compareTo(BigInteger.ZERO) < 1) return 0;
+        return provider.getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]))).min(BigInteger.valueOf(Integer.MAX_VALUE)).intValueExact();
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
