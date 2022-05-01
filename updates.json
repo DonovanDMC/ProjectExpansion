@@ -1,30 +1,31 @@
 {
-  "homepage": "https://www.curseforge.com/minecraft/mc-mods/project-expansion",
-  "1.16.5": {
-    "1.0.0": "Initial Release",
-    "1.0.1": "EMC Display In Top Left",
-    "1.0.2": "PowerFlower Multiplier & Fix For Transmutation Table Hang",
-    "1.0.3": "Sort Creative Items & Dynamically Generate Internal Data",
-    "1.0.4": "Fix EMCDisplay crash with null provider, add wip note on upgrade items.",
-    "1.0.5": "Fixed EMCDisplay tick rate & added Matter Upgrader",
-    "1.16.5-1.0.6": "No changes, we're doing some new versioning.",
-    "1.16.5-1.0.7": "Only load config gui on client side (fix for server usage)",
-    "1.16.5-1.0.8": "New Icon & new display url",
-    "1.16.5-1.0.9": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.9",
-    "1.16.5-1.0.10": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.10",
-    "1.16.5-1.0.11": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.11",
-    "1.16.5-1.0.12": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.12",
-    "1.16.5-1.0.13": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.13",
-    "1.16.5-1.0.14": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.14",
-    "1.16.5-1.0.15": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.15",
-    "1.16.5-1.0.16": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.16",
-    "1.16.5-1.0.17": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.17",
-    "1.16.5-1.0.18": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.18",
-    "1.16.5-1.0.19": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.19",
-    "1.16.5-1.0.20": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.20"
-  },
-  "promos": {
-    "1.16.5-latest": "1.16.5-1.0.20",
-    "1.16.5-recommended": "1.16.5-1.0.20"
-  }
+	"homepage": "https://www.curseforge.com/minecraft/mc-mods/project-expansion",
+	"1.16.5": {
+		"1.0.0": "Initial Release",
+		"1.0.1": "EMC Display In Top Left",
+		"1.0.2": "PowerFlower Multiplier & Fix For Transmutation Table Hang",
+		"1.0.3": "Sort Creative Items & Dynamically Generate Internal Data",
+		"1.0.4": "Fix EMCDisplay crash with null provider, add wip note on upgrade items.",
+		"1.0.5": "Fixed EMCDisplay tick rate & added Matter Upgrader",
+		"1.16.5-1.0.6": "No changes, we're doing some new versioning.",
+		"1.16.5-1.0.7": "Only load config gui on client side (fix for server usage)",
+		"1.16.5-1.0.8": "New Icon & new display url",
+		"1.16.5-1.0.9": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.9",
+		"1.16.5-1.0.10": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.10",
+		"1.16.5-1.0.11": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.11",
+		"1.16.5-1.0.12": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.12",
+		"1.16.5-1.0.13": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.13",
+		"1.16.5-1.0.14": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.14",
+		"1.16.5-1.0.15": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.15",
+		"1.16.5-1.0.16": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.16",
+		"1.16.5-1.0.17": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.17",
+		"1.16.5-1.0.18": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.18",
+		"1.16.5-1.0.19": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.19",
+		"1.16.5-1.0.20": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.20",
+		"1.16.5-1.0.21": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.21"
+	},
+	"promos": {
+		"1.16.5-latest": "1.16.5-1.0.21",
+		"1.16.5-recommended": "1.16.5-1.0.21"
+	}
 }
