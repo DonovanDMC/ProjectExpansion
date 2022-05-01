@@ -1,14 +1,17 @@
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 
 group = 'furry.cool.mc.forge'
 version = getProperty("mcVersion") + "-" + getProperty("localVersion")
@@ -65,6 +68,11 @@ minecraft {
     }
 }
 
+mixin {
+    add sourceSets.main, "projectexpansion.refmap.json"
+    config "projectexpansion.mixins.json"
+}
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
@@ -79,6 +87,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${getProperty("mcVersion")}-${getProperty("forgeVersion")}"
     implementation fg.deobf("curse.maven:projecte-226410:${getProperty("projecteVersion")}")
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {
