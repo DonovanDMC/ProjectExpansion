@@ -52,6 +52,7 @@ public class BlockCollector extends Block implements IHasMatter {
     public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, level, list, flag);
         list.add(new TranslationTextComponent("block.projectexpansion.collector.tooltip").mergeStyle(TextFormatting.GRAY));
+        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").mergeStyle(TextFormatting.AQUA));
         list.add(new TranslationTextComponent("block.projectexpansion.collector.emc", new StringTextComponent("").appendSibling(TransmutationEMCFormatter.formatEMC(matter.getCollectorOutputForTicks(Config.tickDelay.get()))).mergeStyle(TextFormatting.GREEN)).mergeStyle(TextFormatting.GRAY));
     }
 }

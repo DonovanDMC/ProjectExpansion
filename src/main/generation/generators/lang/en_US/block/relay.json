@@ -1,5 +1,5 @@
 {
-	"block.projectexpansion.relay.tooltip": "Transfers EMC once per second.\nSee the wiki on github for more information.",
+	"block.projectexpansion.relay.tooltip": "Transfers EMC once per second.",
 	"block.projectexpansion.relay.bonus": "Relay Bonus: %s/s",
 	"block.projectexpansion.relay.transfer": "Max EMC Transfer: %s/s",
 	"block.projectexpansion.basic_relay": "Basic Relay [MK 1]",

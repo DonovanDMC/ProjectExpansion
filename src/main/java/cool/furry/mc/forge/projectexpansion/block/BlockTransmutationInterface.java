@@ -48,6 +48,7 @@ public class BlockTransmutationInterface extends Block {
     public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, level, list, flag);
         list.add(new TranslationTextComponent("block.projectexpansion.transmutation_interface.tooltip").mergeStyle(TextFormatting.GRAY));
+        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").mergeStyle(TextFormatting.AQUA));
     }
 
     @Override
@@ -62,7 +63,8 @@ public class BlockTransmutationInterface extends Block {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         TileEntity tile = world.getTileEntity(pos);
-        if(tile instanceof TileTransmutationInterface) ((TileTransmutationInterface) tile).wasPlaced(livingEntity, stack);
+        if (tile instanceof TileTransmutationInterface)
+            ((TileTransmutationInterface) tile).wasPlaced(livingEntity, stack);
     }
 
     @Override

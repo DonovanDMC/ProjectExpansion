@@ -15,8 +15,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemFinalStar extends Item {
-    public ItemFinalStar() {
+public class ItemFinalStarShard extends Item {
+    public ItemFinalStarShard() {
         super(new Item.Properties().maxStackSize(1).rarity(Rarity.EPIC).group(Main.group));
     }
 
@@ -24,11 +24,7 @@ public class ItemFinalStar extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
+        list.add(new TranslationTextComponent("item.projectexpansion.final_star.tooltip").mergeStyle(TextFormatting.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").mergeStyle(TextFormatting.AQUA));
-    }
-
-    @Override
-    public boolean hasEffect(ItemStack stack) {
-        return true;
     }
 }
