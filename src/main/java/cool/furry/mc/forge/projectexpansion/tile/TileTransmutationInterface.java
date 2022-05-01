@@ -27,10 +27,9 @@ import java.math.BigInteger;
 import java.util.UUID;
 
 public class TileTransmutationInterface extends TileEntity implements IItemHandler, ITickableTileEntity {
+    private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
-    private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
-
     private ItemInfo[] info;
 
     public TileTransmutationInterface() {
@@ -60,7 +59,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     }
 
     public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
-        if(livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
+        if (livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
     }
 
     private ItemInfo[] fetchKnowledge() {
@@ -69,7 +68,12 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     }
 
     private int getMaxCount(int slot) {
-        return ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]))).min(BigInteger.valueOf(Integer.MAX_VALUE)).intValueExact();
+        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        BigInteger playerEmc = provider.getEmc();
+        if (playerEmc.compareTo(BigInteger.ZERO) < 1) return 0;
+        BigInteger targetItemEmc = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]));
+        if (targetItemEmc.compareTo(BigInteger.ZERO) < 1) return 0;
+        return playerEmc.divide(targetItemEmc).min(BigInteger.valueOf(Integer.MAX_VALUE)).intValueExact();
     }
 
     @Override
@@ -119,7 +123,8 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
 
         ServerPlayerEntity player = Util.getPlayer(world, owner);
         if (player != null) {
-            if (provider.addKnowledge(stack)) provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
+            if (provider.addKnowledge(stack))
+                provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
             provider.syncEmc(player);
         }
 
