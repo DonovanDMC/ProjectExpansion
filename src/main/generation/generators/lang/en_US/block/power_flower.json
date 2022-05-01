@@ -1,5 +1,5 @@
 {
-	"block.projectexpansion.power_flower.tooltip": "Generates EMC once per %s tick%s. (20/second)",
+	"block.projectexpansion.power_flower.tooltip": "Generates EMC once per %s tick%s. (20/second)\nSee the wiki on github for more information.",
 	"block.projectexpansion.power_flower.emc": "Produced EMC: %s/s",
 	"block.projectexpansion.basic_power_flower": "Basic Power Flower [MK 1]",
 	"block.projectexpansion.dark_power_flower": "Dark Power Flower [MK 2]",
