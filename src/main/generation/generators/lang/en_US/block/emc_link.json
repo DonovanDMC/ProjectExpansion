@@ -1,5 +1,7 @@
 {
-	"block.projectexpansion.emc_link.tooltip": "Imports both emc & items, and exports items.",
+	"block.projectexpansion.emc_link.tooltip": "Can be used to import emc & items, and export items.\nSee the wiki on github for more information.",
+	"block.projectexpansion.emc_link.tooltip_import": "Import items by funneling them in via pipes/hoppers/similar.",
+	"block.projectexpansion.emc_link.tooltip_export": "Exporting:\nset: right click with item\nTo clear: crouch & right click with no item\nTo get: right click with no item, or use pipes/hoppers/similar.",
 	"block.projectexpansion.emc_link.limit_items": "Import/Export Limit: %s/s",
 	"block.projectexpansion.emc_link.limit_emc": "EMC Limit: %s/s",
 	"block.projectexpansion.emc_link.not_owner": "You do not own this, %s does.",
