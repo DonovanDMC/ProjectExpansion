@@ -26,7 +26,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     public long emc = 0L;
 
     public TileCollector() {
-        super(TileEntityTypes.ENERGY_COLLECTOR.get());
+        super(TileEntityTypes.COLLECTOR.get());
     }
 
     @Override

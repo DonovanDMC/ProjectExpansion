@@ -24,7 +24,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     public long emc = 0L;
 
     public TileRelay() {
-        super(TileEntityTypes.ANTI_MATTER_RELAY.get());
+        super(TileEntityTypes.RELAY.get());
     }
 
     @Override
