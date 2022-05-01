@@ -1,5 +1,5 @@
 {
-	"block.projectexpansion.collector.tooltip": "Generates EMC once per second.",
+	"block.projectexpansion.collector.tooltip": "Generates EMC once per second.\nSee the wiki on github for more information.",
 	"block.projectexpansion.collector.emc": "Produced EMC: %s/s",
 	"block.projectexpansion.basic_collector": "Basic Energy Collector [MK 1]",
 	"block.projectexpansion.dark_collector": "Dark Energy Collector [MK 2]",
