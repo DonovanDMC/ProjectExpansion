@@ -60,7 +60,7 @@ public class ItemInfiniteSteak extends Item {
         if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID()).getEmc().compareTo(COST.get()) < 0)
             return ActionResult.func_226251_d_(stack);
         player.setActiveHand(hand);
-        return ActionResult.func_226248_a_(stack);
+        return world.isRemote ? ActionResult.func_226248_a_(stack) : ActionResult.func_226249_b_(stack);;
     }
 
     @Override
