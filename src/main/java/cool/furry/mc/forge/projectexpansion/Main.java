@@ -2,7 +2,6 @@ package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.Blocks;
-import cool.furry.mc.forge.projectexpansion.init.ContainerTypes;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
@@ -30,10 +29,9 @@ import javax.annotation.Nonnull;
 @Mod(Main.MOD_ID)
 public class Main {
     public static final String MOD_ID = "projectexpansion";
-    public static ItemGroup group;
-
     @SuppressWarnings("unused")
     public static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger();
+    public static ItemGroup group;
 
     public Main() {
         group = new ItemGroup(MOD_ID) {
@@ -49,7 +47,6 @@ public class Main {
         Blocks.Registry.register(bus);
         Items.Registry.register(bus);
         TileEntityTypes.Registry.register(bus);
-        ContainerTypes.Registry.register(bus);
         bus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.Spec, "project-expansion.toml");
