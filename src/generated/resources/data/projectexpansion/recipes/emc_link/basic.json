@@ -3,7 +3,7 @@
 	"group": "projectexpansion:matter/basic",
 	"pattern": [
 		"LMH",
-		"TAT",
+		"TCT",
 		"HML"
 	],
 	"key": {
@@ -19,8 +19,8 @@
 		"T": {
 			"item": "projecte:transmutation_tablet"
 		},
-		"A": {
-			"item": "projecte:aeternalis_fuel_block"
+		"C": {
+			"item": "projecte:condenser_mk1"
 		}
 	},
 	"result": {

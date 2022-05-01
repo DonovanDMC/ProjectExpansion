@@ -3,7 +3,7 @@
 	"group": "projectexpansion:matter/magenta",
 	"pattern": [
 		"LMH",
-		"TPT",
+		"TCT",
 		"HML"
 	],
 	"key": {
@@ -17,9 +17,9 @@
 			"item": "projecte:high_covalence_dust"
 		},
 		"T": {
-			"item": "projecte:transmutation_tablet"
+			"item": "projectexpansion:magenta_matter"
 		},
-		"P": {
+		"C": {
 			"item": "projectexpansion:red_emc_link"
 		}
 	},
