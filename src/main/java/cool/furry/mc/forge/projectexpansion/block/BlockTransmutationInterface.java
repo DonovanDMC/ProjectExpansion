@@ -46,6 +46,7 @@ public class BlockTransmutationInterface extends Block {
     public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, level, list, flag);
         list.add(new TranslationTextComponent("block.projectexpansion.transmutation_interface.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
     @Override

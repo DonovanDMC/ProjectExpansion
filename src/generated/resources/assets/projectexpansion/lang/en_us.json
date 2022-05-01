@@ -1,5 +1,5 @@
 {
-	"block.projectexpansion.collector.tooltip": "Generates EMC once per second.\nSee the wiki on github for more information.",
+	"block.projectexpansion.collector.tooltip": "Generates EMC once per second.",
 	"block.projectexpansion.collector.emc": "Produced EMC: %s/s",
 	"block.projectexpansion.basic_collector": "Basic Collector [MK 1]",
 	"block.projectexpansion.dark_collector": "Dark Collector [MK 2]",
@@ -17,7 +17,7 @@
 	"block.projectexpansion.white_collector": "White Collector [MK 14]",
 	"block.projectexpansion.fading_collector": "Fading Collector [MK 15]",
 	"block.projectexpansion.final_collector": "Final Collector [MK 16]",
-	"block.projectexpansion.emc_link.tooltip": "Can be used to import emc & items, and export items.\nSee the wiki on github for more information.",
+	"block.projectexpansion.emc_link.tooltip": "Can be used to import emc & items, and export items.",
 	"block.projectexpansion.emc_link.limit_items": "Import/Export Limit: %s/s",
 	"block.projectexpansion.emc_link.limit_emc": "EMC Limit: %s/s",
 	"block.projectexpansion.emc_link.not_owner": "You do not own this, %s does.",
@@ -59,7 +59,7 @@
 	"block.projectexpansion.arcane_table": "Arcane Table",
 	"block.projectexpansion.transmutation_interface": "Transmutation Interface",
 	"block.projectexpansion.transmutation_interface.tooltip": "This can be used with compatible mods like Refined Storage to access your transmutation inventory.\nSee the wiki on github for more information.",
-	"block.projectexpansion.power_flower.tooltip": "Generates EMC once per %s tick%s. (20/second)\nSee the wiki on github for more information.",
+	"block.projectexpansion.power_flower.tooltip": "Generates EMC once per %s tick%s. (20/second)",
 	"block.projectexpansion.power_flower.emc": "Produced EMC: %s/s",
 	"block.projectexpansion.basic_power_flower": "Basic Power Flower [MK 1]",
 	"block.projectexpansion.dark_power_flower": "Dark Power Flower [MK 2]",
@@ -77,7 +77,7 @@
 	"block.projectexpansion.white_power_flower": "White Power Flower [MK 14]",
 	"block.projectexpansion.fading_power_flower": "Fading Power Flower [MK 15]",
 	"block.projectexpansion.final_power_flower": "Final Power Flower [MK 16]",
-	"block.projectexpansion.relay.tooltip": "Transfers EMC once per second.\nSee the wiki on github for more information.",
+	"block.projectexpansion.relay.tooltip": "Transfers EMC once per second.",
 	"block.projectexpansion.relay.bonus": "Relay Bonus: %s/s",
 	"block.projectexpansion.relay.transfer": "Max EMC Transfer: %s/s",
 	"block.projectexpansion.basic_relay": "Basic Relay [MK 1]",
@@ -186,8 +186,8 @@
 	"item.projectexpansion.matter_upgrader.done_creative": "Upgrade done, no emc has been used.",
 	"item.projectexpansion.arcane_tablet": "Arcane Tablet",
 	"item.projectexpansion.final_star_shard": "Final Star Shard",
+	"item.projectexpansion.final_star_shard.tooltip": "Crafting ingredient.",
 	"item.projectexpansion.final_star": "Final Star",
-	"item.projectexpansion.final_star.tooltip": "This does nothing, it exists to show off.",
 	"item.projectexpansion.infinite_fuel": "Infinite Fuel",
 	"item.projectexpansion.infinite_fuel.tooltip": "This item will not be consumed, fuel will be provided via your emc.",
 	"item.projectexpansion.infinite_fuel.not_enough_emc": "You do not have enough emc to use this, you need %s.",
@@ -208,5 +208,6 @@
 	"item.projectexpansion.colossal_star_omega": "Colossal Star Omega",
 	"itemGroup.projectexpansion": "Project Expansion",
 	"text.projectexpansion.wip": "WIP!",
-	"text.projectexpansion.provider_error": "Failed to fetch ProjectE provider."
+	"text.projectexpansion.provider_error": "Failed to fetch ProjectE provider.",
+	"text.projectexpansion.see_wiki": "See the wiki on github for more information."
 }
