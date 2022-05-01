@@ -59,7 +59,7 @@ public class ItemInfiniteSteak extends Item {
         // @TODO wolves???
         if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID()).getEmc().compareTo(COST.get()) < 0)
             return InteractionResultHolder.fail(stack);
-        return InteractionResultHolder.success(stack);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 
     @Override
