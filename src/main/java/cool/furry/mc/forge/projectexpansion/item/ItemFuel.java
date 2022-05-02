@@ -19,6 +19,6 @@ public class ItemFuel extends Item  {
 
     @Override
     public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {
-        return level.getBurnTime();
+        return level.getBurnTime(recipeType);
     }
 }

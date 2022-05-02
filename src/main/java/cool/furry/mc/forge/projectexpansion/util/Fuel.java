@@ -7,7 +7,9 @@ import cool.furry.mc.forge.projectexpansion.item.ItemFuel;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.RegistryObject;
@@ -35,7 +37,6 @@ public enum Fuel {
     WHITE("white", true, 14, null);
 
 
-    public static final int BASE = 1_600;
     public static final int UNCOMMON_THRESHOLD = 4;
     public static final int RARE_THRESHOLD = 15;
     public static final int EPIC_THRESHOLD = 16;
@@ -45,7 +46,6 @@ public enum Fuel {
     public final String name;
     public final boolean hasItem;
     public final int level;
-    public final int burnTime;
     @Nullable
     public final Supplier<Item> existingItem;
     public final Rarity rarity;
@@ -60,7 +60,6 @@ public enum Fuel {
         this.hasItem = hasItem;
         this.level = level;
         this.existingItem = existingItem;
-        this.burnTime = calcSomeFactorialShitOrSomething(level);
         this.rarity =
             level >= EPIC_THRESHOLD ? Rarity.EPIC :
                 level >= RARE_THRESHOLD ? Rarity.RARE :
@@ -68,18 +67,9 @@ public enum Fuel {
                         Rarity.COMMON;
     }
 
-    private int calcSomeFactorialShitOrSomething(int level) {
-        try {
-            int i = BASE;
-            for(int v = 1; v <= level; v++) i = Math.multiplyExact(i, v);
-            return i;
-        } catch (ArithmeticException err) {
-            return Integer.MAX_VALUE;
-        }
-    }
-
-    public int getBurnTime() {
-        return burnTime;
+    public int getBurnTime() { return getBurnTime(null); }
+    public int getBurnTime(@Nullable RecipeType<?> type) {
+        return item == null ? -1 : PEItems.AETERNALIS_FUEL.get().getBurnTime(new ItemStack(item.get()), type);
     }
 
     public @Nullable Item getItem() {
