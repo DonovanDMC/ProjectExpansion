@@ -41,14 +41,9 @@ public class ItemInfiniteFuel extends Item {
     @Override
     public int getBurnTime(ItemStack stack) {
         @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUniqueId("Owner");
-        if (owner == null) return 0;
-        // this just spams the player with action bar messages
-        /*int res = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().compareTo(COST.get()) < 0 ? 0 : BURN_TIME;
-        if(res == 0) {
-            PlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(owner);
-            if(player != null) player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.infinite_fuel.not_enough_emc", new StringTextComponent(COST.get().toString())).mergeStyle(TextFormatting.RED), true);
-        }
-        return res;*/
+        if (owner == null)
+            return 0;
+
         return ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().compareTo(COST.get()) < 0 ? 0 : BURN_TIME;
     }
 
@@ -60,11 +55,13 @@ public class ItemInfiniteFuel extends Item {
     @Override
     public ItemStack getContainerItem(ItemStack stack) {
         @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUniqueId("Owner");
-        if (owner == null) return stack;
+        if (owner == null)
+            return stack;
         ServerPlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(owner);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         provider.setEmc(provider.getEmc().subtract(COST.get()));
-        if (player != null) provider.sync(player);
+        if (player != null)
+            provider.sync(player);
         return stack;
     }
 }

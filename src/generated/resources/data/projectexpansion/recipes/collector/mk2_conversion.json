@@ -1,12 +1,12 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"group": "projectexpansion:matter/dark",
-	"result": {
-		"item": "projectexpansion:dark_collector"
-	},
-	"ingredients": [
-		{
-			"item": "projecte:collector_mk2"
-		}
-	]
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:matter/dark",
+  "result": {
+    "item": "projectexpansion:dark_collector"
+  },
+  "ingredients": [
+    {
+      "item": "projecte:collector_mk2"
+    }
+  ]
 }

@@ -29,9 +29,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
     private final Matter matter;
 
@@ -54,46 +56,53 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, level, list, flag);
-        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.tooltip").setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
-        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_items", new StringTextComponent(matter.getItemLimitString()).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
-        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", new StringTextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.INSTANCE.format(matter.getEMCLimit())).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.limit_items", new StringTextComponent(matter.getItemLimitString()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", new StringTextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.INSTANCE.format(matter.getEMCLimit())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
     }
 
     @Deprecated
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote) return true;
+        if (world.isRemote)
+            return true;
         TileEntity tile = world.getTileEntity(pos);
-        if (!(tile instanceof TileEMCLink)) return false;
+        if (!(tile instanceof TileEMCLink))
+            return false;
         return ((TileEMCLink) tile).handleActivation(player, hand);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEMCLink) ((TileEMCLink) tile).wasPlaced(livingEntity, stack);
+        if (tile instanceof TileEMCLink)
+            ((TileEMCLink) tile).wasPlaced(livingEntity, stack);
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         return matter;
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite());
+        return getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite());
     }
 
+    @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
+    @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(HORIZONTAL_FACING);
     }
 
     @Override
-    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
+    public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type) {
         return false;
     }
 }

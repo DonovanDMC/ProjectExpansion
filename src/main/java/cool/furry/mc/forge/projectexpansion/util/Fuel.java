@@ -17,8 +17,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-// I couldn't be bothered to come up with some 12 random names so I
-// took the lazy way out
 public enum Fuel {
     ALCHEMICAL("alchemical", false, 1, ObjHandler.alchemicalCoal::asItem),
     MOBIUS("mobius", false, 2, ObjHandler.mobiusFuel::asItem),
@@ -61,26 +59,16 @@ public enum Fuel {
         this.hasItem = hasItem;
         this.level = level;
         this.existingItem = existingItem;
-        this.burnTime = this.calcSomeFactorialShitOrSomething(level);
+        this.burnTime = calcSomeFactorialShitOrSomething(level);
         this.rarity =
-                level >= EPIC_THRESHOLD ? Rarity.EPIC :
-                        level >= RARE_THRESHOLD ? Rarity.RARE :
-                                level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
-                                        Rarity.COMMON;
+            level >= EPIC_THRESHOLD ? Rarity.EPIC :
+                level >= RARE_THRESHOLD ? Rarity.RARE :
+                    level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
+                        Rarity.COMMON;
     }
 
     public static void registerAll() {
-        Arrays.stream(Fuel.RegistrationType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.register(type));
-        });
-    }
-
-    public Fuel prev() {
-        return VALUES[(ordinal() - 1 + VALUES.length) % VALUES.length];
-    }
-
-    public Fuel next() {
-        return VALUES[(ordinal() + 1) % VALUES.length];
+        Arrays.stream(Fuel.RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
     }
 
     private int calcSomeFactorialShitOrSomething(int level) {
@@ -105,6 +93,7 @@ public enum Fuel {
         return block == null ? null : block.get();
     }
 
+    @SuppressWarnings("unused")
     public @Nullable BlockItem getBlockItem() {
         return blockItem == null ? null : blockItem.get();
     }

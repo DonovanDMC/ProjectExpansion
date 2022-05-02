@@ -17,43 +17,47 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcStorage {
+    public long emc = 0L;
     public static final Direction[] DIRECTIONS = Direction.values();
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
-    public long emc = 0L;
 
     public TileRelay() {
-        super(TileEntityTypes.RELAY.get());
+        super(Objects.requireNonNull(TileEntityTypes.RELAY.get()));
     }
 
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
-        if (nbt.contains("EMC", Constants.NBT.TAG_LONG)) emc = nbt.getLong(("EMC"));
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_LONG))
+            emc = nbt.getLong((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putLong("EMC", emc);
+        nbt.putLong(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc);
         return nbt;
     }
 
     @Override
     public void tick() {
         // we can't use the user defined value due to emc duplication possibilities
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20))
+            return;
         long transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getRelayTransfer();
         List<IEmcStorage> temp = new ArrayList<>(1);
 
         for (Direction dir : DIRECTIONS) {
             TileEntity tile = world.getTileEntity(pos.offset(dir));
-            @Nullable IEmcStorage storage = tile == null ? null : tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).orElse(null);
-
-            if (storage != null && !storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L)
-                temp.add(storage);
+            assert tile != null;
+            tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
+                if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L)
+                    temp.add(storage);
+            });
         }
 
         if (!temp.isEmpty() && emc >= temp.size()) {
@@ -84,8 +88,10 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     public long extractEmc(long emc, EmcAction action) {
         long v = Math.min(this.emc, emc);
 
-        if (v < 0L) return insertEmc(-v, action);
-        else if (action.execute()) this.emc -= v;
+        if (v < 0L)
+            return insertEmc(-v, action);
+        else if (action.execute())
+            this.emc -= v;
 
         return v;
     }
@@ -94,8 +100,10 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     public long insertEmc(long emc, EmcAction action) {
         long v = Math.min(getMaximumEmc() - this.emc, emc);
 
-        if (v < 0L) return extractEmc(-v, action);
-        else if (action.execute()) this.emc += v;
+        if (v < 0L)
+            return extractEmc(-v, action);
+        else if (action.execute())
+            this.emc += v;
 
         return v;
     }
@@ -118,12 +126,12 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return
-                (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
-                        super.getCapability(cap, side);
+            (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? emcStorageCapability.cast() :
+                super.getCapability(cap, side);
     }
 
     @Override
     protected void invalidateCaps() {
-        this.emcStorageCapability.invalidate();
+        emcStorageCapability.invalidate();
     }
 }

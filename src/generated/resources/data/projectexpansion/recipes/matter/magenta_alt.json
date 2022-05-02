@@ -1,20 +1,20 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/magenta",
-	"pattern": [
-		"FFF",
-		"MMM",
-		"FFF"
-	],
-	"key": {
-		"F": {
-			"item": "projecte:aeternalis_fuel"
-		},
-		"M": {
-			"item": "projecte:red_matter"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:magenta_matter"
-	}
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/magenta",
+  "pattern": [
+    "FFF",
+    "MMM",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "projecte:aeternalis_fuel"
+    },
+    "M": {
+      "item": "projecte:red_matter"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:magenta_matter"
+  }
 }

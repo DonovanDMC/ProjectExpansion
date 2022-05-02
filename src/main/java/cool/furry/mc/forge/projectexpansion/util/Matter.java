@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-@SuppressWarnings("restriction")
+@SuppressWarnings("unused")
 public enum Matter {
     BASIC("basic", false, 1, () -> net.minecraft.item.Items.DIAMOND_BLOCK),
     DARK("dark", false, 2, ObjHandler.darkMatter::getItem),
@@ -82,20 +82,10 @@ public enum Matter {
         this.relayTransfer = calcSomeFactorialShitOrSomething(TemporaryValues.RELAY_TRANSFER_BASE, level);
         this.existingItem = existingItem;
         this.rarity =
-                level >= EPIC_THRESHOLD ? Rarity.EPIC :
-                        level >= RARE_THRESHOLD ? Rarity.RARE :
-                                level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
-                                        Rarity.COMMON;
-    }
-
-    public static void registerAll() {
-        Arrays.stream(RegistrationType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.register(type));
-        });
-    }
-
-    public Matter prev() {
-        return VALUES[(ordinal() - 1 + VALUES.length) % VALUES.length];
+            level >= EPIC_THRESHOLD ? Rarity.EPIC :
+                level >= RARE_THRESHOLD ? Rarity.RARE :
+                    level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
+                        Rarity.COMMON;
     }
 
     public Matter next() {
@@ -150,7 +140,7 @@ public enum Matter {
         return relayBonus;
     }
 
-    public long getRelayBounsForTicks(int ticks) {
+    public long getRelayBonusForTicks(int ticks) {
         return getRelayBonus();
     }
 
@@ -226,13 +216,13 @@ public enum Matter {
         switch (reg) {
             case MATTER: {
                 if (hasItem)
-                    itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().group(Main.group).rarity(this.rarity)));
+                    itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
 
             case COLLECTOR: {
                 collector = Blocks.Registry.register(String.format("%s_collector", name), () -> new BlockCollector(this));
-                itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(collector).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(Objects.requireNonNull(collector).get()), new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
 
@@ -243,22 +233,26 @@ public enum Matter {
 
             case POWER_FLOWER: {
                 powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(this));
-                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(Objects.requireNonNull(powerFlower).get()), new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
 
             case RELAY: {
                 relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(this));
-                itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(Objects.requireNonNull(relay).get()), new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
 
             case EMC_LINK: {
                 emcLink = Blocks.Registry.register(String.format("%s_emc_link", name), () -> new BlockEMCLink(this));
-                itemEMCLink = Items.Registry.register(String.format("%s_emc_link", name), () -> new BlockItem(Objects.requireNonNull(emcLink).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                itemEMCLink = Items.Registry.register(String.format("%s_emc_link", name), () -> new BlockItem(Objects.requireNonNull(Objects.requireNonNull(emcLink).get()), new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
         }
+    }
+
+    public static void registerAll() {
+        Arrays.stream(RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
     }
 
     private enum RegistrationType {

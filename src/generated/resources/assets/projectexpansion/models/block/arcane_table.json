@@ -1,48 +1,48 @@
 {
-	"parent": "minecraft:block/block",
-	"textures": {
-		"bottom": "projectexpansion:block/arcane_table/bottom",
-		"top": "projectexpansion:block/arcane_table/top",
-		"side": "projectexpansion:block/arcane_table/side",
-		"particle": "projectexpansion:block/arcane_table/top"
-	},
-	"elements": [
-		{
-			"from": [
-				0,
-				0,
-				0
-			],
-			"to": [
-				16,
-				4,
-				16
-			],
-			"faces": {
-				"down": {
-					"texture": "#bottom",
-					"cullface": "down"
-				},
-				"up": {
-					"texture": "#top"
-				},
-				"north": {
-					"texture": "#side",
-					"cullface": "north"
-				},
-				"south": {
-					"texture": "#side",
-					"cullface": "south"
-				},
-				"west": {
-					"texture": "#side",
-					"cullface": "west"
-				},
-				"east": {
-					"texture": "#side",
-					"cullface": "east"
-				}
-			}
-		}
-	]
+  "parent": "minecraft:block/block",
+  "textures": {
+    "bottom": "projectexpansion:block/arcane_table/bottom",
+    "top": "projectexpansion:block/arcane_table/top",
+    "side": "projectexpansion:block/arcane_table/side",
+    "particle": "projectexpansion:block/arcane_table/top"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        4,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#bottom",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "north": {
+          "texture": "#side",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#side",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
 }

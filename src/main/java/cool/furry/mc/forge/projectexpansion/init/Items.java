@@ -11,6 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
+@SuppressWarnings({"unused", "rawtypes"})
 public class Items {
     public static final DeferredRegister<Item> Registry = new DeferredRegister(ForgeRegistries.ITEMS, Main.MOD_ID);
 

@@ -13,6 +13,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -32,6 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockPowerFlower extends Block implements IHasMatter {
     public static final VoxelShape SHAPE = VoxelShapes.or(
             makeCuboidShape(0, 0, 0, 16, 1, 16),
@@ -49,6 +51,7 @@ public class BlockPowerFlower extends Block implements IHasMatter {
         this.matter = matter;
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         return matter;
@@ -84,7 +87,8 @@ public class BlockPowerFlower extends Block implements IHasMatter {
     @Deprecated
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote) return true;
+        if (world.isRemote)
+            return true;
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TilePowerFlower)
             player.sendStatusMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
@@ -94,7 +98,13 @@ public class BlockPowerFlower extends Block implements IHasMatter {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TilePowerFlower) ((TilePowerFlower) tile).wasPlaced(livingEntity, stack);
+        if (tile instanceof TilePowerFlower)
+            ((TilePowerFlower) tile).wasPlaced(livingEntity, stack);
+    }
+
+    @Override
+    public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type) {
+        return false;
     }
 }
 

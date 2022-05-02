@@ -1,20 +1,20 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/pink",
-	"pattern": [
-		"FMF",
-		"FMF",
-		"FMF"
-	],
-	"key": {
-		"F": {
-			"item": "projectexpansion:magenta_fuel"
-		},
-		"M": {
-			"item": "projectexpansion:magenta_matter"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:pink_matter"
-	}
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/pink",
+  "pattern": [
+    "FMF",
+    "FMF",
+    "FMF"
+  ],
+  "key": {
+    "F": {
+      "item": "projectexpansion:magenta_fuel"
+    },
+    "M": {
+      "item": "projectexpansion:magenta_matter"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:pink_matter"
+  }
 }

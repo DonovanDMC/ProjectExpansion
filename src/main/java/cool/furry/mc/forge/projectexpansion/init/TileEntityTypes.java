@@ -11,6 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Arrays;
 
+@SuppressWarnings({"unused", "ConstantConditions", "rawtypes"})
 public class TileEntityTypes {
     public static final DeferredRegister<TileEntityType<?>> Registry = new DeferredRegister(ForgeRegistries.TILE_ENTITIES, Main.MOD_ID);
 

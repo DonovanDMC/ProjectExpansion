@@ -25,14 +25,14 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder {
 
     public final Star tier;
 
-    public ItemMagnumStar(Star t) {
-        this(t, 1);
+    public ItemMagnumStar(Star tier) {
+        this(tier, 1);
     }
 
-    public ItemMagnumStar(Star t, int type) {
-        super(new Properties().maxStackSize(1).group(Main.group).rarity(t == Star.OMEGA ? Rarity.EPIC : type == 1 ? Rarity.UNCOMMON : Rarity.RARE));
+    public ItemMagnumStar(Star tier, int type) {
+        super(new Properties().maxStackSize(1).group(Main.group).rarity(tier == Star.OMEGA ? Rarity.EPIC : type == 1 ? Rarity.UNCOMMON : Rarity.RARE));
 
-        tier = t;
+        this.tier = tier;
         addItemCapability(new EmcHolderItemCapabilityWrapper());
         // not working?
         // addItemCapability("curios", IntegrationHelper.CURIO_CAP_SUPPLIER);
@@ -51,13 +51,12 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder {
 
     @Override
     public long insertEmc(@Nonnull ItemStack stack, long toInsert, IEmcStorage.EmcAction action) {
-        if (toInsert < 0L) {
-            return this.extractEmc(stack, -toInsert, action);
-        } else {
-            long toAdd = Math.min(this.getNeededEmc(stack), toInsert);
-            if (action.execute()) {
+        if (toInsert < 0L)
+            return extractEmc(stack, -toInsert, action);
+        else {
+            long toAdd = Math.min(getNeededEmc(stack), toInsert);
+            if (action.execute())
                 addEmcToStack(stack, toAdd);
-            }
 
             return toAdd;
         }
@@ -66,13 +65,12 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder {
     @Override
     public long extractEmc(@Nonnull ItemStack stack, long toExtract, IEmcStorage.EmcAction action) {
         if (toExtract < 0L) {
-            return this.insertEmc(stack, -toExtract, action);
+            return insertEmc(stack, -toExtract, action);
         } else {
-            long storedEmc = this.getStoredEmc(stack);
+            long storedEmc = getStoredEmc(stack);
             long toRemove = Math.min(storedEmc, toExtract);
-            if (action.execute()) {
+            if (action.execute())
                 setEmc(stack, storedEmc - toRemove);
-            }
 
             return toRemove;
         }

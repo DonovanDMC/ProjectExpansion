@@ -29,12 +29,6 @@ public enum Star {
         this.name = name;
     }
 
-    public static void registerAll() {
-        Arrays.stream(Star.RegistrationType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.register(type));
-        });
-    }
-
     public Star prev() {
         return VALUES[(ordinal() - 1 + VALUES.length) % VALUES.length];
     }
@@ -71,6 +65,10 @@ public enum Star {
                 break;
             }
         }
+    }
+
+    public static void registerAll() {
+        Arrays.stream(Star.RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
     }
 
     private enum RegistrationType {

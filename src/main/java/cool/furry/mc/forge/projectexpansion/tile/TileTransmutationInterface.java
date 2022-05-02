@@ -23,6 +23,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.UUID;
 
 public class TileTransmutationInterface extends TileEntity implements IItemHandler, ITickableTileEntity {
@@ -32,14 +33,16 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     private ItemInfo[] info;
 
     public TileTransmutationInterface() {
-        super(TileEntityTypes.TRANSMUTATION_INTERFACE.get());
+        super(Objects.requireNonNull(TileEntityTypes.TRANSMUTATION_INTERFACE.get()));
     }
 
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
-        if (nbt.hasUniqueId("Owner")) owner = nbt.getUniqueId("Owner");
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) ownerName = nbt.getString("OwnerName");
+        if (nbt.hasUniqueId("Owner"))
+            owner = nbt.getUniqueId("Owner");
+        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING))
+            ownerName = nbt.getString("OwnerName");
     }
 
     @Nonnull
@@ -57,21 +60,26 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
         markDirty();
     }
 
+    @SuppressWarnings("unused")
     public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
+        if (livingEntity instanceof PlayerEntity)
+            setOwner((PlayerEntity) livingEntity);
     }
 
     private ItemInfo[] fetchKnowledge() {
-        if (info != null) return info;
+        if (info != null)
+            return info;
         return info = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getKnowledge().toArray(new ItemInfo[0]);
     }
 
     private int getMaxCount(int slot) {
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger playerEmc = provider.getEmc();
-        if (playerEmc.compareTo(BigInteger.ZERO) < 1) return 0;
+        if (playerEmc.compareTo(BigInteger.ZERO) < 1)
+            return 0;
         BigInteger targetItemEmc = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]));
-        if (targetItemEmc.compareTo(BigInteger.ZERO) < 1) return 0;
+        if (targetItemEmc.compareTo(BigInteger.ZERO) < 1)
+            return 0;
         return playerEmc.divide(targetItemEmc).min(BigInteger.valueOf(Integer.MAX_VALUE)).intValueExact();
     }
 
@@ -88,12 +96,15 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        if (owner == null) return ItemStack.EMPTY;
+        if (owner == null)
+            return ItemStack.EMPTY;
         fetchKnowledge();
 
-        if (slot <= 0 || info.length < slot) return ItemStack.EMPTY;
+        if (slot <= 0 || info.length < slot)
+            return ItemStack.EMPTY;
         int maxCount = getMaxCount(slot - 1);
-        if (maxCount <= 0) return ItemStack.EMPTY;
+        if (maxCount <= 0)
+            return ItemStack.EMPTY;
 
         ItemStack item = info[slot - 1].createStack();
         item.setCount(maxCount);
@@ -103,17 +114,21 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty()) return stack;
+        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty())
+            return stack;
         fetchKnowledge();
 
         ItemInfo info = ItemInfo.fromStack(stack);
-        if (!NBTManager.getPersistentInfo(info).equals(info)) return stack;
+        if (!NBTManager.getPersistentInfo(info).equals(info))
+            return stack;
         stack = stack.copy();
         int count = stack.getCount();
         stack.setCount(1);
 
-        if (count <= 0) return stack;
-        if (simulate) return ItemStack.EMPTY;
+        if (count <= 0)
+            return stack;
+        if (simulate)
+            return ItemStack.EMPTY;
 
         long emcValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
@@ -132,22 +147,26 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot <= 0 || owner == null || info.length < slot) return ItemStack.EMPTY;
+        if (slot <= 0 || owner == null || info.length < slot)
+            return ItemStack.EMPTY;
         fetchKnowledge();
 
         amount = Math.min(amount, getMaxCount(slot - 1));
 
-        if (amount <= 0) return ItemStack.EMPTY;
+        if (amount <= 0)
+            return ItemStack.EMPTY;
         ItemStack item = info[slot - 1].createStack();
         item.setCount(amount);
 
-        if (simulate) return item;
+        if (simulate)
+            return item;
         long emcValue = ProjectEAPI.getEMCProxy().getValue(info[slot - 1]);
         BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         provider.setEmc(provider.getEmc().subtract(totalEmcCost));
         ServerPlayerEntity player = Util.getPlayer(world, owner);
-        if (player != null) provider.sync(player);
+        if (player != null)
+            provider.sync(player);
 
         return item;
     }
@@ -170,12 +189,12 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return
-                (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
-                        super.getCapability(cap, side);
+            (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() :
+                super.getCapability(cap, side);
     }
 
     @Override
     protected void invalidateCaps() {
-        this.itemHandlerCapability.invalidate();
+        itemHandlerCapability.invalidate();
     }
 }

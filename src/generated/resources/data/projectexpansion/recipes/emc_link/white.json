@@ -1,29 +1,29 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/white",
-	"pattern": [
-		"LMH",
-		"TCT",
-		"HML"
-	],
-	"key": {
-		"L": {
-			"item": "projecte:low_covalence_dust"
-		},
-		"M": {
-			"item": "projecte:medium_covalence_dust"
-		},
-		"H": {
-			"item": "projecte:high_covalence_dust"
-		},
-		"T": {
-			"item": "projectexpansion:white_matter"
-		},
-		"C": {
-			"item": "projectexpansion:orange_emc_link"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:white_emc_link"
-	}
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/white",
+  "pattern": [
+    "LMH",
+    "TCT",
+    "HML"
+  ],
+  "key": {
+    "L": {
+      "item": "projecte:low_covalence_dust"
+    },
+    "M": {
+      "item": "projecte:medium_covalence_dust"
+    },
+    "H": {
+      "item": "projecte:high_covalence_dust"
+    },
+    "T": {
+      "item": "projectexpansion:white_matter"
+    },
+    "C": {
+      "item": "projectexpansion:orange_emc_link"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:white_emc_link"
+  }
 }

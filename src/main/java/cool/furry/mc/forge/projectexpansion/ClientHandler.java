@@ -18,7 +18,6 @@ public class ClientHandler {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ConfigMenu(screen));
-        // ClientRegistry.bindTileEntityRenderer(TileEntityTypes.EMC_LINK.get(), RenderTileEMCLink::new);
         replaceEMCFormatter();
     }
 

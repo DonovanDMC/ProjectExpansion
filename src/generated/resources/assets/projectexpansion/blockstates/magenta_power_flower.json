@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "projectexpansion:block/power_flower/magenta"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "projectexpansion:block/power_flower/magenta"
+    }
+  }
 }

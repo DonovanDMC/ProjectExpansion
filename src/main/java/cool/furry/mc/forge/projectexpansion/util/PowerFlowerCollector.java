@@ -29,11 +29,12 @@ public class PowerFlowerCollector {
         tick++;
         if (tick >= (Config.tickDelay.get() + 3)) {
             tick = 0;
-            for (UUID uuid : stored.keySet()) {
+            for(UUID uuid : stored.keySet()) {
                 BigInteger amount = stored.get(uuid);
                 ServerPlayerEntity player = Util.getPlayer(uuid);
-                IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
-                if (provider == null) continue;
+                if (player == null)
+                    continue;
+                IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(uuid);
                 provider.setEmc(provider.getEmc().add(amount));
                 provider.sync(player);
                 stored.remove(uuid);

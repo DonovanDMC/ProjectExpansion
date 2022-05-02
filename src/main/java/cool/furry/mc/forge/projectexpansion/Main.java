@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 @Mod("projectexpansion")
 public class Main {
     public static final String MOD_ID = "projectexpansion";
+    @SuppressWarnings("unused")
     public static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger();
     public static ItemGroup group;
 

@@ -1,19 +1,19 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"pattern": [
-		"CCC",
-		"CGC",
-		"CCC"
-	],
-	"key": {
-		"G": {
-			"item": "projectexpansion:green_matter"
-		},
-		"C": {
-			"item": "projectexpansion:colossal_star_omega"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:matter_upgrader"
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CGC",
+    "CCC"
+  ],
+  "key": {
+    "G": {
+      "item": "projectexpansion:green_matter"
+    },
+    "C": {
+      "item": "projectexpansion:colossal_star_omega"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:matter_upgrader"
+  }
 }

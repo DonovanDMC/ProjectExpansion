@@ -28,6 +28,6 @@ side = "BOTH"
 [[dependencies.projectexpansion]]
 modId = "projecte"
 mandatory = true
-versionRange = "*"
+versionRange = "[1.14.4-PE1.0.1B,)"
 ordering = "AFTER"
 side = "BOTH"

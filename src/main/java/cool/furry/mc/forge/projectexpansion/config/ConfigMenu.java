@@ -31,12 +31,11 @@ public class ConfigMenu extends Screen {
 
     @Override
     protected void init() {
-        assert this.minecraft != null;
-        this.optionsRowList = new OptionsRowList(this.minecraft, this.width, this.height, OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
-        this.children.add(this.optionsRowList);
+        assert minecraft != null;
+        optionsRowList = new OptionsRowList(minecraft, width, height, OPTIONS_LIST_TOP_HEIGHT, height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
+        children.add(optionsRowList);
 
-        // I want to go back to 1.16
-        this.optionsRowList.func_214333_a(new SliderPercentageOption(
+        optionsRowList.func_214333_a(new SliderPercentageOption(
                 "gui.projectexpansion.config.tick_delay",
                 1.0, 200.0,
                 1.0F,
@@ -46,25 +45,25 @@ public class ConfigMenu extends Screen {
                 (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.tick_delay"), option.get(gs))
         ));
 
-        this.optionsRowList.func_214333_a(new BooleanOption(
+        optionsRowList.func_214333_a(new BooleanOption(
                 "gui.projectexpansion.config.format_emc",
                 __ -> Config.formatEMC.get(),
                 (__, newValue) -> Config.formatEMC.set(newValue)
         ));
 
-        this.optionsRowList.func_214333_a(new BooleanOption(
+        optionsRowList.func_214333_a(new BooleanOption(
                 "gui.projectexpansion.config.full_number_names",
                 __ -> Config.formatEMC.get() && Config.fullNumberNames.get(),
                 (__, newValue) -> Config.fullNumberNames.set(newValue)
         ));
 
-        this.optionsRowList.func_214333_a(new BooleanOption(
+        optionsRowList.func_214333_a(new BooleanOption(
                 "gui.projectexpansion.config.emc_display",
                 __ -> Config.formatEMC.get() && Config.emcDisplay.get(),
                 (__, newValue) -> Config.emcDisplay.set(newValue)
         ));
 
-        this.optionsRowList.func_214333_a(new SliderPercentageOption(
+        optionsRowList.func_214333_a(new SliderPercentageOption(
                 "gui.projectexpansion.config.powerflower_multiplier",
                 1, 20, 1,
                 __ -> (double) Config.powerflowerMultiplier.get(),
@@ -72,27 +71,26 @@ public class ConfigMenu extends Screen {
                 (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.powerflower_multiplier"), option.get(gs))
         ));
 
-        this.optionsRowList.func_214333_a(new BooleanOption(
+        optionsRowList.func_214333_a(new BooleanOption(
                 "gui.projectexpansion.config.notify_command_changes",
                 __ -> Config.notifyCommandChanges.get(),
                 (__, newValue) -> Config.notifyCommandChanges.set(newValue)
         ));
 
-        this.addButton(new Button((this.width - BUTTON_WIDTH) / 2, this.height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, I18n.format("gui.done"), button -> this.minecraft.displayGuiScreen(parentScreen)
-        ));
-
-        this.optionsRowList.func_214333_a(new BooleanOption(
+        optionsRowList.func_214333_a(new BooleanOption(
                 "gui.projectexpansion.config.limit_emc_link_vendor",
                 __ -> Config.limitEmcLinkVendor.get(),
                 (__, newValue) -> Config.limitEmcLinkVendor.set(newValue)
         ));
+
+        addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, I18n.format("gui.done"), (button) -> minecraft.displayGuiScreen(parentScreen)));
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
-        this.optionsRowList.render(mouseX, mouseY, partialTicks);
-        drawCenteredString(this.font, this.title.getString(), this.width / 2, TITLE_HEIGHT, 0xFFFFFF);
+        renderBackground();
+        optionsRowList.render(mouseX, mouseY, partialTicks);
+        drawCenteredString(font, title.getString(), width / 2, TITLE_HEIGHT, 0xFFFFFF);
         super.render(mouseX, mouseY, partialTicks);
     }
 }

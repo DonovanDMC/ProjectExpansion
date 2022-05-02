@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.util;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 
+@SuppressWarnings("unused")
 public class ColorStyle {
     public static final Style BLACK = new Style().setColor(TextFormatting.BLACK);
     public static final Style DARK_BLUE = new Style().setColor(TextFormatting.DARK_BLUE);
