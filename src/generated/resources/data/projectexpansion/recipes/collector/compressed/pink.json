@@ -1,17 +1,17 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/pink",
-	"pattern": [
-		"CCC",
-		"CCC",
-		"CCC"
-	],
-	"key": {
-		"C": {
-			"item": "projectexpansion:pink_collector"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:pink_compressed_collector"
-	}
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/pink",
+  "pattern": [
+    "CCC",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "projectexpansion:pink_collector"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:pink_compressed_collector"
+  }
 }

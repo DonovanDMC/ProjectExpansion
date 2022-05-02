@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "projectexpansion:block/fuel/lime"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "projectexpansion:block/fuel/lime"
+    }
+  }
 }

@@ -45,21 +45,21 @@ public class EMCFormat extends DecimalFormat {
 
     @Override
     public StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition) {
-        if(Config.formatEMC.get() && number > FORMAT_START && (ignoreShift || !Screen.hasShiftDown())) {
+        if (Config.formatEMC.get() && number > FORMAT_START && (ignoreShift || !Screen.hasShiftDown())) {
             Object[] res = Arrays.stream(list).filter((p) -> number >= (double) p[0]).findFirst().orElse(new Object[]{ number, "", "" });
             double num = number;
             @Nullable
             String abr = null;
             @Nullable
             String full = null;
-            if(res[1] != "") {
+            if (res[1] != "") {
                 num = number / (double) res[0];
                 abr = (String) res[1];
                 full = (String) res[2];
             }
             StringBuffer str = new StringBuffer();
             str.append(String.format("%.02f", num));
-            if(abr != null && full != null) str.append(Config.fullNumberNames.get() ? String.format(" %s", full) : abr);
+            if (abr != null && full != null) str.append(Config.fullNumberNames.get() ? String.format(" %s", full) : abr);
             return str;
         }
 

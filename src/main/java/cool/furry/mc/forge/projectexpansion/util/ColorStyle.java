@@ -3,8 +3,8 @@ package cool.furry.mc.forge.projectexpansion.util;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 
+@SuppressWarnings("unused")
 public class ColorStyle {
     public static final Style BLACK = Style.EMPTY.withColor(ChatFormatting.BLACK);
     public static final Style DARK_BLUE = Style.EMPTY.withColor(ChatFormatting.DARK_BLUE);

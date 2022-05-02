@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Arrays;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"unused", "ConstantConditions"})
 public class BlockEntityTypes {
     public static final DeferredRegister<BlockEntityType<?>> Registry = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Main.MOD_ID);
 

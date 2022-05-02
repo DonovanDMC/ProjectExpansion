@@ -52,24 +52,28 @@ public class BlockTransmutationInterface extends Block implements EntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide)
+            return InteractionResult.SUCCESS;
         BlockEntity block = level.getBlockEntity(pos);
-        if (block instanceof BlockEntityTransmutationInterface) player.displayClientMessage(new TextComponent(((BlockEntityTransmutationInterface) block).ownerName), true);
+        if (block instanceof BlockEntityTransmutationInterface be)
+            player.displayClientMessage(new TextComponent(be.ownerName), true);
         return super.use(state, level, pos, player, hand, hit);
     }
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if(blockEntity instanceof BlockEntityTransmutationInterface be) be.wasPlaced(entity, stack);
+        if (blockEntity instanceof BlockEntityTransmutationInterface be)
+            be.wasPlaced(entity, stack);
     }
 
-    // @TODO make immovable
+    // TODO: make immovable
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if(type == BlockEntityTypes.TRANSMUTATION_INTERFACE.get() && !level.isClientSide) return BlockEntityTransmutationInterface::tickServer;
+        if (type == BlockEntityTypes.TRANSMUTATION_INTERFACE.get() && !level.isClientSide)
+            return BlockEntityTransmutationInterface::tickServer;
         return null;
     }
 }

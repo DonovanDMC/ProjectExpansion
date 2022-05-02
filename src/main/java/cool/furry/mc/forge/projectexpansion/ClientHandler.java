@@ -9,7 +9,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientHandler {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        // @TODO config menu
-        // emc formatter replacement is done in mixin/EMCFormatterMixin
+        // TODO: config menu
     }
 }

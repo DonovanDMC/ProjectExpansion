@@ -20,13 +20,13 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-@SuppressWarnings("FieldMayBeFinal")
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class EMCDisplay {
     private static BigInteger emc = BigInteger.ZERO;
     private static BigInteger lastEMC = BigInteger.ZERO;
     private static BigInteger change = BigInteger.ZERO;
+    @SuppressWarnings("FieldMayBeFinal")
     private static BigInteger[] emcHistory = new BigInteger[5];
     private static int tick = 0;
 
@@ -36,26 +36,29 @@ public class EMCDisplay {
 
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {
-        if(!Config.emcDisplay.get()) return;
+        if (!Config.emcDisplay.get())
+            return;
         LocalPlayer player = getPlayer();
         tick++;
         if (event.phase == TickEvent.Phase.END && player != null && tick >= 20 && emcHistory.length != 0) {
             tick = 0;
             player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).ifPresent((provider) -> {
-                emc =  provider.getEmc();
+                emc = provider.getEmc();
                 System.arraycopy(emcHistory, 1, emcHistory, 0, emcHistory.length - 1);
                 emcHistory[emcHistory.length - 1] = emc.subtract(lastEMC);
                 lastEMC = emc;
 
                 change = BigInteger.ZERO;
-                for (BigInteger h : emcHistory) change = change.add(h);
+                for (BigInteger h : emcHistory)
+                    change = change.add(h);
                 change = change.divide(BigInteger.valueOf(emcHistory.length));
             });
         }
     }
 
     private static void reset() {
-        if (!Config.emcDisplay.get()) return;
+        if (!Config.emcDisplay.get())
+            return;
         emc = lastEMC = change = BigInteger.ZERO;
         Arrays.fill(emcHistory, BigInteger.ZERO);
         tick = 0;
@@ -73,7 +76,8 @@ public class EMCDisplay {
 
     @SubscribeEvent
     public static void onRenderGUI(RenderGameOverlayEvent.Text event) {
-        if (!Config.emcDisplay.get()) return;
+        if (!Config.emcDisplay.get())
+            return;
         String str = EMCFormat.INSTANCE.format(emc.doubleValue());
         if (!change.equals(BigInteger.ZERO))
             str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (ChatFormatting.GREEN + "+") : (ChatFormatting.RED + "-")) + EMCFormat.INSTANCE.format(Math.abs(change.doubleValue())) + "/s";

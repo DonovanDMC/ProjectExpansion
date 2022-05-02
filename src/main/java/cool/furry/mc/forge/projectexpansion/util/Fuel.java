@@ -60,7 +60,7 @@ public enum Fuel {
         this.hasItem = hasItem;
         this.level = level;
         this.existingItem = existingItem;
-        this.burnTime = this.calcSomeFactorialShitOrSomething(level);
+        this.burnTime = calcSomeFactorialShitOrSomething(level);
         this.rarity =
             level >= EPIC_THRESHOLD ? Rarity.EPIC :
                 level >= RARE_THRESHOLD ? Rarity.RARE :
@@ -95,7 +95,7 @@ public enum Fuel {
     }
 
     private void register(RegistrationType reg) {
-        if(!hasItem) return;
+        if (!hasItem) return;
         switch (reg) {
             case ITEM -> item = Items.Registry.register(String.format("%s_fuel", name), () -> new ItemFuel(this));
             case BLOCK -> {

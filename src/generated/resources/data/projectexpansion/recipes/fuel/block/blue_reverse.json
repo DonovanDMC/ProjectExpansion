@@ -1,13 +1,13 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"group": "projectexpansion:fuel/blue",
-	"ingredients": [
-		{
-			"item": "projectexpansion:blue_fuel_block"
-		}
-	],
-	"result": {
-		"item": "projectexpansion:blue_fuel",
-		"count": 9
-	}
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/blue",
+  "ingredients": [
+    {
+      "item": "projectexpansion:blue_fuel_block"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:blue_fuel",
+    "count": 9
+  }
 }

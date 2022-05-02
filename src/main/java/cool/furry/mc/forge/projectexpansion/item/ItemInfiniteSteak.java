@@ -56,7 +56,7 @@ public class ItemInfiniteSteak extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        // @TODO wolves???
+        // TODO: wolves???
         if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID()).getEmc().compareTo(COST.get()) < 0)
             return InteractionResultHolder.fail(stack);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
@@ -64,8 +64,7 @@ public class ItemInfiniteSteak extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (!(entity instanceof ServerPlayer player)) return stack;
-        if (level.isClientSide) return stack;
+        if (!(entity instanceof ServerPlayer player) || level.isClientSide) return stack;
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
         BigInteger emc = provider.getEmc().subtract(COST.get());
         if (emc.compareTo(BigInteger.ZERO) < 0) {

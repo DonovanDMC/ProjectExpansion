@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
-import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityPowerFlower;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
@@ -35,6 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -56,6 +56,7 @@ public class BlockPowerFlower extends Block implements IHasMatter, EntityBlock {
         this.matter = matter;
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         return matter;
@@ -85,22 +86,26 @@ public class BlockPowerFlower extends Block implements IHasMatter, EntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide)
+            return InteractionResult.SUCCESS;
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if(blockEntity instanceof BlockEntityPowerFlower be) player.displayClientMessage(new TextComponent((be).ownerName), true);
+        if (blockEntity instanceof BlockEntityPowerFlower be)
+            player.displayClientMessage(new TextComponent((be).ownerName), true);
         return super.use(state, level, pos, player, hand, hit);
     }
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if(blockEntity instanceof BlockEntityPowerFlower be) be.wasPlaced(livingEntity, stack);
+        if (blockEntity instanceof BlockEntityPowerFlower be)
+            be.wasPlaced(livingEntity, stack);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if(type == BlockEntityTypes.POWER_FLOWER.get() && !level.isClientSide) return BlockEntityPowerFlower::tickServer;
+        if (type == BlockEntityTypes.POWER_FLOWER.get() && !level.isClientSide)
+            return BlockEntityPowerFlower::tickServer;
         return null;
     }
 }

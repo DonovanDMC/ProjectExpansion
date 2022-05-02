@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
-import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityEMCLink;
 import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
@@ -33,6 +32,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -65,18 +65,22 @@ public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatt
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide)
+            return InteractionResult.SUCCESS;
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityEMCLink be) return be.handleActivation(player, hand);
+        if (blockEntity instanceof BlockEntityEMCLink be)
+            return be.handleActivation(player, hand);
         return InteractionResult.PASS;
     }
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityEMCLink be) be.wasPlaced(livingEntity, stack);
+        if (blockEntity instanceof BlockEntityEMCLink be)
+            be.wasPlaced(livingEntity, stack);
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         return matter;
@@ -85,7 +89,7 @@ public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatt
     @org.jetbrains.annotations.Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-        return this.defaultBlockState().setValue(HORIZONTAL_FACING, ctx.getHorizontalDirection().getOpposite());
+        return defaultBlockState().setValue(HORIZONTAL_FACING, ctx.getHorizontalDirection().getOpposite());
     }
 
     @Override
@@ -94,12 +98,13 @@ public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatt
         super.createBlockStateDefinition(builder);
     }
 
-    // @TODO disallow movement
+    // TODO: disallow movement
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if(type == BlockEntityTypes.EMC_LINK.get() && !level.isClientSide) return BlockEntityEMCLink::tickServer;
+        if (type == BlockEntityTypes.EMC_LINK.get() && !level.isClientSide)
+            return BlockEntityEMCLink::tickServer;
         return null;
     }
 }

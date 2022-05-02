@@ -13,6 +13,7 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import moze_intel.projecte.utils.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -41,9 +42,9 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IItemHandler, IHasMatter {
+    public BigInteger emc = BigInteger.ZERO;
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
-    public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private ItemStack itemStack;
@@ -54,7 +55,7 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
 
     public BlockEntityEMCLink(BlockPos pos, BlockState state) {
         super(BlockEntityTypes.EMC_LINK.get(), pos, state);
-        this.itemStack = ItemStack.EMPTY;
+        itemStack = ItemStack.EMPTY;
     }
 
     /*******
@@ -64,21 +65,28 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
     @Override
     public void load(@Nonnull CompoundTag tag) {
         super.load(tag);
-        if (tag.hasUUID("Owner")) this.owner = tag.getUUID("Owner");
-        if (tag.contains("OwnerName", Tag.TAG_STRING)) this.ownerName = tag.getString("OwnerName");
-        if (tag.contains("EMC", Tag.TAG_STRING)) emc = new BigInteger(tag.getString(("EMC")));
-        if (tag.contains("Item", Tag.TAG_COMPOUND)) itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.of(tag.getCompound("Item")))).createStack();
-        if (tag.contains("RemainingEMC", Tag.TAG_DOUBLE)) remainingEMC = (long) tag.getDouble("RemainingEMC");
-        if (tag.contains("RemainingImport", Tag.TAG_INT)) remainingImport = tag.getInt("RemainingImport");
-        if (tag.contains("RemainingExport", Tag.TAG_INT)) remainingExport = tag.getInt("RemainingExport");
+        if (tag.hasUUID("Owner"))
+            owner = tag.getUUID("Owner");
+        if (tag.contains("OwnerName", Tag.TAG_STRING))
+            ownerName = tag.getString("OwnerName");
+        if (tag.contains(Constants.NBT_KEY_STORED_EMC, Tag.TAG_STRING))
+            emc = new BigInteger(tag.getString((Constants.NBT_KEY_STORED_EMC)));
+        if (tag.contains("Item", Tag.TAG_COMPOUND))
+            itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.of(tag.getCompound("Item")))).createStack();
+        if (tag.contains("RemainingEMC", Tag.TAG_DOUBLE))
+            remainingEMC = (long) tag.getDouble("RemainingEMC");
+        if (tag.contains("RemainingImport", Tag.TAG_INT))
+            remainingImport = tag.getInt("RemainingImport");
+        if (tag.contains("RemainingExport", Tag.TAG_INT))
+            remainingExport = tag.getInt("RemainingExport");
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putUUID("Owner", this.owner);
-        tag.putString("OwnerName", this.ownerName);
-        tag.putString("EMC", emc.toString());
+        tag.putUUID("Owner", owner);
+        tag.putString("OwnerName", ownerName);
+        tag.putString(Constants.NBT_KEY_STORED_EMC, emc.toString());
         tag.put("Item", itemStack.serializeNBT());
         tag.putDouble("RemainingEMC", remainingEMC);
         tag.putInt("RemainingImport", remainingImport);
@@ -94,15 +102,18 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
     }
 
     public void tickServer(Level level, BlockPos pos, BlockState state, BlockEntityEMCLink blockEntity) {
-        // we can't use the user defined value due to emc duplication possibilities
-        if ((level.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
+        // due to the nature of per second this block follows, using the config value isn't really possible
+        if (level.isClientSide || (level.getGameTime() % 20L) != Util.mod(hashCode(), 20))
+            return;
         resetLimits();
-        if (emc.equals(BigInteger.ZERO)) return;
+        if (emc.equals(BigInteger.ZERO))
+            return;
         ServerPlayer player = Util.getPlayer(level, owner);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
 
         provider.setEmc(provider.getEmc().add(emc));
-        if (player != null) provider.syncEmc(player);
+        if (player != null)
+            provider.syncEmc(player);
         Util.markDirty(this);
         emc = BigInteger.ZERO;
     }
@@ -113,8 +124,8 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
     }
 
     public void setOwner(Player player) {
-        this.owner = player.getUUID();
-        this.ownerName = player.getScoreboardName();
+        owner = player.getUUID();
+        ownerName = player.getScoreboardName();
         Util.markDirty(this);
     }
 
@@ -129,6 +140,7 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
         resetLimits();
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         if (level != null) {
@@ -273,7 +285,7 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
 
     public InteractionResult handleActivation(Player player, InteractionHand hand) {
         ItemStack inHand = player.getItemInHand(hand);
-        if(!owner.equals(player.getUUID())) {
+        if (!owner.equals(player.getUUID())) {
             player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_owner", new TextComponent(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
             return InteractionResult.CONSUME;
         }
@@ -329,14 +341,14 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return
-                (cap == PECapabilities.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
-                        (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
+                (cap == PECapabilities.EMC_STORAGE_CAPABILITY) ? emcStorageCapability.cast() :
+                        (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() :
                                 super.getCapability(cap, side);
     }
 
     @Override
     public void invalidateCaps() {
-        this.emcStorageCapability.invalidate();
-        this.itemHandlerCapability.invalidate();
+        emcStorageCapability.invalidate();
+        itemHandlerCapability.invalidate();
     }
 }

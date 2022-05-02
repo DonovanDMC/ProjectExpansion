@@ -24,6 +24,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class BlockCollector extends Block implements IHasMatter, EntityBlock {
         return new BlockEntityCollector(pos, state);
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         return matter;
@@ -58,7 +60,8 @@ public class BlockCollector extends Block implements IHasMatter, EntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if(type == BlockEntityTypes.COLLECTOR.get() && !level.isClientSide) return BlockEntityCollector::tickServer;
+        if (type == BlockEntityTypes.COLLECTOR.get() && !level.isClientSide)
+            return BlockEntityCollector::tickServer;
         return null;
     }
 }

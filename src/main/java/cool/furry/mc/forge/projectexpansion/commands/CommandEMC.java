@@ -152,8 +152,11 @@ public class CommandEMC {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
 
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
-        if(compareUUID(ctx.getSource(), player)) ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
-        else ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
+        if (compareUUID(ctx.getSource(), player))
+            ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
+        else
+            ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
+
         return 1;
     }
 
@@ -169,6 +172,7 @@ public class CommandEMC {
             ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.clearKnowledge.success", player.getDisplayName()), true);
             player.sendMessage(new TranslatableComponent("command.projectexpansion.emc.clearKnowledge.notification", getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
         }
+
         return 1;
     }
 
@@ -198,6 +202,7 @@ public class CommandEMC {
             if (Config.notifyCommandChanges.get())
                 player.sendMessage(new TranslatableComponent("command.projectexpansion.emc.learn.notification", new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())).setStyle(ColorStyle.GRAY), getSourceUUID(ctx.getSource()));
         }
+
         return 1;
     }
 }
