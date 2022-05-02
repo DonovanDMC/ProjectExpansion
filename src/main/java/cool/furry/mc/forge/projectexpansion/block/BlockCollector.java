@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -28,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockCollector extends Block implements IHasMatter, EntityBlock {
     private final Matter matter;
 
@@ -63,5 +65,10 @@ public class BlockCollector extends Block implements IHasMatter, EntityBlock {
         if (type == BlockEntityTypes.COLLECTOR.get() && !level.isClientSide)
             return BlockEntityCollector::tickServer;
         return null;
+    }
+
+    @Override
+    public PushReaction getPistonPushReaction(BlockState state) {
+        return PushReaction.BLOCK;
     }
 }

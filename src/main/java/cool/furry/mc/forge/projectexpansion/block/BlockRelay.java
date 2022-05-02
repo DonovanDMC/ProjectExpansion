@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
-import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityRelay;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockRelay extends Block implements IHasMatter, EntityBlock {
     private final Matter matter;
 
@@ -66,5 +67,10 @@ public class BlockRelay extends Block implements IHasMatter, EntityBlock {
         if (type == BlockEntityTypes.RELAY.get() && !level.isClientSide)
             return BlockEntityRelay::tickServer;
         return null;
+    }
+
+    @Override
+    public PushReaction getPistonPushReaction(BlockState state) {
+        return PushReaction.BLOCK;
     }
 }
