@@ -14,14 +14,13 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 import net.minecraftforge.fml.RegistryObject;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-@SuppressWarnings("restriction")
+@SuppressWarnings("unused")
 public enum Matter {
     BASIC("basic", false, 1, () -> net.minecraft.item.Items.DIAMOND_BLOCK),
     DARK("dark", false, 2, PEItems.DARK_MATTER),
@@ -41,15 +40,9 @@ public enum Matter {
     FINAL("final", false, 16, null);
 
     public static final Matter[] VALUES = values();
-
-    public Matter prev() {
-        return VALUES[(ordinal() - 1  + VALUES.length) % VALUES.length];
-    }
-
-    public Matter next() {
-        return VALUES[(ordinal() + 1) % VALUES.length];
-    }
-
+    public static final int UNCOMMON_THRESHOLD = 4;
+    public static final int RARE_THRESHOLD = 15;
+    public static final int EPIC_THRESHOLD = 16;
     public final String name;
     public final boolean hasItem;
     public final int level;
@@ -79,6 +72,7 @@ public enum Matter {
     private RegistryObject<BlockEMCLink> emcLink = null;
     @Nullable
     private RegistryObject<BlockItem> itemEMCLink = null;
+
     Matter(String name, boolean hasItem, int level, @Nullable Supplier<Item> existingItem) {
         this.name = name;
         this.hasItem = hasItem;
@@ -94,31 +88,38 @@ public enum Matter {
                         Rarity.COMMON;
     }
 
+    public Matter prev() {
+        return VALUES[(ordinal() - 1 + VALUES.length) % VALUES.length];
+    }
+
+    public Matter next() {
+        return VALUES[(ordinal() + 1) % VALUES.length];
+    }
+
+    /*
+    unless we figure out a way to skip ticks or hard code numbers, dynamically changing the
+    tick rate of these 3 will grossly duplicate emc
+    */
+
     private Long calcSomeFactorialShitOrSomething(Long base, int level) {
         try {
             long i = base;
-            for(int v = 1; v <= level; v++) i = Math.multiplyExact(i, Long.valueOf(v));
+            for (int v = 1; v <= level; v++) i = Math.multiplyExact(i, Long.valueOf(v));
             return i;
         } catch (ArithmeticException err) {
             return Long.MAX_VALUE;
         }
     }
 
-    private static final class TemporaryValues {
-        static Long COLLECTOR_BASE = 6L;
-        static Long RELAY_BONUS_BASE = 1L;
-        static Long RELAY_TRANSFER_BASE = 64L;
-    }
-
     public long getPowerFlowerOutput() {
         try {
             return Math.addExact(
-                    Math.multiplyExact(
-                            collectorOutput, 18L
-                    ),
-                    Math.multiplyExact(
-                            relayBonus, 30L
-                    )
+                Math.multiplyExact(
+                    collectorOutput, 18L
+                ),
+                Math.multiplyExact(
+                    relayBonus, 30L
+                )
             ) * Config.powerflowerMultiplier.get();
         } catch (ArithmeticException err) {
             return Long.MAX_VALUE;
@@ -126,15 +127,10 @@ public enum Matter {
     }
 
     public long getPowerFlowerOutputForTicks(int ticks) {
-        if(ticks == 20) return getPowerFlowerOutput();
+        if (ticks == 20) return getPowerFlowerOutput();
         long div20 = getPowerFlowerOutput() / 20;
         return Math.round((double) div20 * ticks);
     }
-
-    /*
-    unless we figure out a way to skip ticks or hard code numbers, dynamically changing the
-    tick rate of these 3 will grossly duplicate emc
-    */
 
     public long getCollectorOutput() {
         return collectorOutput;
@@ -155,6 +151,7 @@ public enum Matter {
     public long getRelayTransfer() {
         return relayTransfer;
     }
+
     public long getRelayTransferForTicks(int ticks) {
         return getRelayTransfer();
     }
@@ -219,20 +216,18 @@ public enum Matter {
         return itemEMCLink == null ? null : itemEMCLink.get();
     }
 
-    public static final int UNCOMMON_THRESHOLD = 4;
-    public static final int RARE_THRESHOLD = 15;
-    public static final int EPIC_THRESHOLD = 16;
-
     private void register(RegistrationType reg) {
-        switch(reg) {
+        switch (reg) {
             case MATTER: {
-                if(hasItem) itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().group(Main.group).rarity(this.rarity)));
+                if (hasItem) {
+                    itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().group(Main.group).rarity(rarity)));
+                }
                 break;
             }
 
             case COLLECTOR: {
                 collector = Blocks.Registry.register(String.format("%s_collector", name), () -> new BlockCollector(this));
-                itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(collector).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(collector).get(), new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
 
@@ -243,28 +238,26 @@ public enum Matter {
 
             case POWER_FLOWER: {
                 powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(this));
-                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
 
             case RELAY: {
                 relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(this));
-                itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
 
             case EMC_LINK: {
                 emcLink = Blocks.Registry.register(String.format("%s_emc_link", name), () -> new BlockEMCLink(this));
-                itemEMCLink = Items.Registry.register(String.format("%s_emc_link", name), () -> new BlockItem(Objects.requireNonNull(emcLink).get(), new Item.Properties().group(Main.group).rarity(this.rarity)));
+                itemEMCLink = Items.Registry.register(String.format("%s_emc_link", name), () -> new BlockItem(Objects.requireNonNull(emcLink).get(), new Item.Properties().group(Main.group).rarity(rarity)));
                 break;
             }
         }
     }
 
     public static void registerAll() {
-        Arrays.stream(RegistrationType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.register(type));
-        });
+        Arrays.stream(RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
     }
 
     private enum RegistrationType {
@@ -274,6 +267,11 @@ public enum Matter {
         POWER_FLOWER,
         RELAY,
         EMC_LINK
+    }
 
+    private static final class TemporaryValues {
+        static Long COLLECTOR_BASE = 6L;
+        static Long RELAY_BONUS_BASE = 1L;
+        static Long RELAY_TRANSFER_BASE = 64L;
     }
 }

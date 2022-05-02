@@ -5,8 +5,6 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.PowerFlowerCollector;
 import cool.furry.mc.forge.projectexpansion.util.Util;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,13 +18,13 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.Objects;
 import java.util.UUID;
 
-public class TilePowerFlower extends TileEntity implements ITickableTileEntity  {
+public class TilePowerFlower extends TileEntity implements ITickableTileEntity {
+    public BigInteger emc = BigInteger.ZERO;
     public UUID owner = Util.DUMMY_UUID;
     public String ownerName = "";
-    public BigInteger emc = BigInteger.ZERO;
+
     public TilePowerFlower() {
         super(TileEntityTypes.POWER_FLOWER.get());
     }
@@ -34,42 +32,49 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if(nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
-        if(nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
-        if(nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
+        if (nbt.hasUniqueId("Owner")) {
+            owner = nbt.getUniqueId("Owner");
+        }
+        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) {
+            ownerName = nbt.getString("OwnerName");
+        }
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) {
+            emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
+        }
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putUniqueId("Owner", this.owner);
-        nbt.putString("OwnerName", this.ownerName);
-        nbt.putString("EMC", emc.toString());
+        nbt.putUniqueId("Owner", owner);
+        nbt.putString("OwnerName", ownerName);
+        nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
         return nbt;
     }
 
     public void setOwner(PlayerEntity player) {
-        this.owner = player.getUniqueID();
-        this.ownerName = player.getScoreboardName();
+        owner = player.getUniqueID();
+        ownerName = player.getScoreboardName();
         markDirty();
     }
 
     public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
-        if(livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
+        if (livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
     }
 
     @Override
     public void tick() {
-        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != Util.mod(hashCode(), Config.tickDelay.get())) return;
+        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != Util.mod(hashCode(), Config.tickDelay.get())) {
+            return;
+        }
         long res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
-        ServerPlayerEntity player = Objects.requireNonNull(world.getServer()).getPlayerList().getPlayerByUUID(owner);
-        IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
+        ServerPlayerEntity player = Util.getPlayer(world, owner);
 
-        if (provider != null) {
+        if (player != null) {
             PowerFlowerCollector.add(player, emc.add(BigInteger.valueOf(res)));
-            markDirty();
             emc = BigInteger.ZERO;
+            markDirty();
         } else {
             emc = emc.add(BigInteger.valueOf(res));
             markDirty();

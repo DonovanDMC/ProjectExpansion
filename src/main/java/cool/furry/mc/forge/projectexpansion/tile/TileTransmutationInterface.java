@@ -123,8 +123,9 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
 
         ServerPlayerEntity player = Util.getPlayer(world, owner);
         if (player != null) {
-            if (provider.addKnowledge(stack))
+            if (provider.addKnowledge(stack)) {
                 provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
+            }
             provider.syncEmc(player);
         }
 
@@ -172,12 +173,12 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return
-                (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
-                        super.getCapability(cap, side);
+            (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() :
+                super.getCapability(cap, side);
     }
 
     @Override
     protected void invalidateCaps() {
-        this.itemHandlerCapability.invalidate();
+        itemHandlerCapability.invalidate();
     }
 }

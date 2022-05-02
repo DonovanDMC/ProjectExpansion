@@ -31,14 +31,16 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.contains("EMC", Constants.NBT.TAG_LONG)) emc = nbt.getLong(("EMC"));
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_LONG)) {
+            emc = nbt.getLong((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC));
+        }
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putLong("EMC", emc);
+        nbt.putLong(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc);
         return nbt;
     }
 
@@ -52,10 +54,12 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
 
         for (Direction dir : DIRECTIONS) {
             TileEntity tile = world.getTileEntity(pos.offset(dir));
-            @Nullable IEmcStorage storage = tile == null ? null : tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).orElse(null);
-
-            if (storage != null && !storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L)
-                temp.add(storage);
+            assert tile != null;
+            tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
+                if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
+                    temp.add(storage);
+                }
+            });
         }
 
         if (!temp.isEmpty() && emc >= temp.size()) {
@@ -86,8 +90,9 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     public long extractEmc(long emc, EmcAction action) {
         long v = Math.min(this.emc, emc);
 
-        if (v < 0L) return insertEmc(-v, action);
-        else if (action.execute()) this.emc -= v;
+        if (v < 0L) {
+            return insertEmc(-v, action);
+        } else if (action.execute()) this.emc -= v;
 
         return v;
     }
@@ -96,8 +101,9 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     public long insertEmc(long emc, EmcAction action) {
         long v = Math.min(getMaximumEmc() - this.emc, emc);
 
-        if (v < 0L) return extractEmc(-v, action);
-        else if (action.execute()) this.emc += v;
+        if (v < 0L) {
+            return extractEmc(-v, action);
+        } else if (action.execute()) this.emc += v;
 
         return v;
     }
@@ -108,8 +114,9 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     }
 
     public void addBonus() {
-        if (getBlockState().getBlock() instanceof BlockRelay)
+        if (getBlockState().getBlock() instanceof BlockRelay) {
             insertEmc(((BlockRelay) getBlockState().getBlock()).getMatter().getRelayBonus(), EmcAction.EXECUTE);
+        }
     }
 
     /****************
@@ -120,12 +127,12 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return
-                (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
-                        super.getCapability(cap, side);
+            (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? emcStorageCapability.cast() :
+                super.getCapability(cap, side);
     }
 
     @Override
     protected void invalidateCaps() {
-        this.emcStorageCapability.invalidate();
+        emcStorageCapability.invalidate();
     }
 }

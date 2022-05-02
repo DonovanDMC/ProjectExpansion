@@ -38,11 +38,11 @@ import java.math.BigInteger;
 import java.util.UUID;
 
 public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
-    public UUID owner = Util.DUMMY_UUID;
-    public String ownerName = "";
-    public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
+    public BigInteger emc = BigInteger.ZERO;
+    public UUID owner = Util.DUMMY_UUID;
+    public String ownerName = "";
     private ItemStack itemStack;
     private Matter matter;
     private long remainingEMC = 0L;
@@ -51,7 +51,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     public TileEMCLink() {
         super(TileEntityTypes.EMC_LINK.get());
-        this.itemStack = ItemStack.EMPTY;
+        itemStack = ItemStack.EMPTY;
     }
 
     /*******
@@ -61,22 +61,37 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.hasUniqueId("Owner")) this.owner = nbt.getUniqueId("Owner");
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) this.ownerName = nbt.getString("OwnerName");
-        if (nbt.contains("EMC", Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(("EMC")));
-        if (nbt.contains("Item", Constants.NBT.TAG_COMPOUND)) itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound("Item")))).createStack();
-        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE)) remainingEMC = (long) nbt.getDouble("RemainingEMC");
-        if (nbt.contains("RemainingImport", Constants.NBT.TAG_INT)) remainingImport = nbt.getInt("RemainingImport");
-        if (nbt.contains("RemainingExport", Constants.NBT.TAG_INT)) remainingExport = nbt.getInt("RemainingExport");
+        if (nbt.hasUniqueId("Owner")) {
+            owner = nbt.getUniqueId("Owner");
+        }
+        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) {
+            ownerName = nbt.getString("OwnerName");
+        }
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) {
+            emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
+        }
+
+        if (nbt.contains("Item", Constants.NBT.TAG_COMPOUND)) {
+            itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound("Item")))).createStack();
+        }
+        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE)) {
+            remainingEMC = (long) nbt.getDouble("RemainingEMC");
+        }
+        if (nbt.contains("RemainingImport", Constants.NBT.TAG_INT)) {
+            remainingImport = nbt.getInt("RemainingImport");
+        }
+        if (nbt.contains("RemainingExport", Constants.NBT.TAG_INT)) {
+            remainingExport = nbt.getInt("RemainingExport");
+        }
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putUniqueId("Owner", this.owner);
-        nbt.putString("OwnerName", this.ownerName);
-        nbt.putString("EMC", emc.toString());
+        nbt.putUniqueId("Owner", owner);
+        nbt.putString("OwnerName", ownerName);
+        nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
         nbt.put("Item", itemStack.serializeNBT());
         nbt.putDouble("RemainingEMC", remainingEMC);
         nbt.putInt("RemainingImport", remainingImport);
@@ -90,15 +105,21 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public void tick() {
-        // we can't use the user defined value due to emc duplication possibilities
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
+        // due to the nature of per second this block follows, using the config value isn't really possible
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) {
+            return;
+        }
         resetLimits();
-        if (emc.equals(BigInteger.ZERO)) return;
+        if (emc.equals(BigInteger.ZERO)) {
+            return;
+        }
         ServerPlayerEntity player = Util.getPlayer(world, owner);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
 
         provider.setEmc(provider.getEmc().add(emc));
-        if (player != null) provider.syncEmc(player);
+        if (player != null) {
+            provider.syncEmc(player);
+        }
         markDirty();
         emc = BigInteger.ZERO;
     }
@@ -109,8 +130,8 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     }
 
     public void setOwner(PlayerEntity player) {
-        this.owner = player.getUniqueID();
-        this.ownerName = player.getScoreboardName();
+        owner = player.getUniqueID();
+        ownerName = player.getScoreboardName();
         markDirty();
     }
 
@@ -125,6 +146,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         resetLimits();
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         if (world != null) {
@@ -162,11 +184,13 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     public long insertEmc(long emc, EmcAction action) {
         long v = Math.min(remainingEMC, emc);
 
-        if (emc <= 0L)
+        if (emc <= 0L) {
             return 0L;
+        }
 
-        if (action.execute())
+        if (action.execute()) {
             this.emc = this.emc.add(BigInteger.valueOf(v));
+        }
 
         return v;
     }
@@ -197,8 +221,9 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack))
+        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack)) {
             return stack;
+        }
 
         stack = stack.copy();
         int count = stack.getCount();
@@ -214,8 +239,9 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
             provider.setEmc(provider.getEmc().add(totalValue));
             ServerPlayerEntity player = Util.getPlayer(owner);
             if (player != null) {
-                if (provider.addKnowledge(stack))
+                if (provider.addKnowledge(stack)) {
                     provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromStack(stack)), true);
+                }
                 provider.syncEmc(player);
             }
             remainingImport -= insertCount;
@@ -269,7 +295,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
         ItemStack inHand = player.getHeldItem(hand);
-        if(!owner.equals(player.getUniqueID())) {
+        if (!owner.equals(player.getUniqueID())) {
             player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.RED), true);
             return ActionResultType.CONSUME;
         }
@@ -325,14 +351,14 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return
-                (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? this.emcStorageCapability.cast() :
-                        (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? this.itemHandlerCapability.cast() :
-                                super.getCapability(cap, side);
+            (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? emcStorageCapability.cast() :
+                (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() :
+                    super.getCapability(cap, side);
     }
 
     @Override
     protected void invalidateCaps() {
-        this.emcStorageCapability.invalidate();
-        this.itemHandlerCapability.invalidate();
+        emcStorageCapability.invalidate();
+        itemHandlerCapability.invalidate();
     }
 }

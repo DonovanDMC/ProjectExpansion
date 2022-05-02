@@ -1,20 +1,20 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/lime",
-	"pattern": [
-		"FMF",
-		"FMF",
-		"FMF"
-	],
-	"key": {
-		"F": {
-			"item": "projectexpansion:green_fuel"
-		},
-		"M": {
-			"item": "projectexpansion:green_matter"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:lime_matter"
-	}
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/lime",
+  "pattern": [
+    "FMF",
+    "FMF",
+    "FMF"
+  ],
+  "key": {
+    "F": {
+      "item": "projectexpansion:green_fuel"
+    },
+    "M": {
+      "item": "projectexpansion:green_matter"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:lime_matter"
+  }
 }

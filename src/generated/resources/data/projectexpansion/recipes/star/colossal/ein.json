@@ -1,21 +1,21 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"group": "projectexpansion:star",
-	"ingredients": [
-		{
-			"item": "projectexpansion:magnum_star_omega"
-		},
-		{
-			"item": "projectexpansion:magnum_star_omega"
-		},
-		{
-			"item": "projectexpansion:magnum_star_omega"
-		},
-		{
-			"item": "projectexpansion:magnum_star_omega"
-		}
-	],
-	"result": {
-		"item": "projectexpansion:colossal_star_ein"
-	}
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:star",
+  "ingredients": [
+    {
+      "item": "projectexpansion:magnum_star_omega"
+    },
+    {
+      "item": "projectexpansion:magnum_star_omega"
+    },
+    {
+      "item": "projectexpansion:magnum_star_omega"
+    },
+    {
+      "item": "projectexpansion:magnum_star_omega"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:colossal_star_ein"
+  }
 }

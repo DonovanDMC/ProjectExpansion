@@ -1,26 +1,26 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/basic",
-	"result": {
-		"item": "projectexpansion:basic_collector"
-	},
-	"pattern": [
-		"GSG",
-		"GAG",
-		"GFG"
-	],
-	"key": {
-		"G": {
-			"item": "minecraft:glowstone"
-		},
-		"A": {
-			"item": "projecte:aeternalis_fuel_block"
-		},
-		"S": {
-			"tag": "forge:glass"
-		},
-		"F": {
-			"item": "minecraft:furnace"
-		}
-	}
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/basic",
+  "result": {
+    "item": "projectexpansion:basic_collector"
+  },
+  "pattern": [
+    "GSG",
+    "GAG",
+    "GFG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "A": {
+      "item": "projecte:aeternalis_fuel_block"
+    },
+    "S": {
+      "tag": "forge:glass"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    }
+  }
 }

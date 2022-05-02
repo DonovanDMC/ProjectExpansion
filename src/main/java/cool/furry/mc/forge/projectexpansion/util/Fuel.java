@@ -44,15 +44,6 @@ public enum Fuel {
     public static final int EPIC_THRESHOLD = 16;
 
     public static final Fuel[] VALUES = values();
-
-    public Fuel prev() {
-        return VALUES[(ordinal() - 1  + VALUES.length) % VALUES.length];
-    }
-
-    public Fuel next() {
-        return VALUES[(ordinal() + 1) % VALUES.length];
-    }
-
     public final String name;
     public final boolean hasItem;
     public final int level;
@@ -66,12 +57,13 @@ public enum Fuel {
     private RegistryObject<Block> block = null;
     @Nullable
     private RegistryObject<BlockItem> blockItem = null;
+
     Fuel(String name, boolean hasItem, int level, @Nullable Supplier<Item> existingItem) {
         this.name = name;
         this.hasItem = hasItem;
         this.level = level;
         this.existingItem = existingItem;
-        this.burnTime = this.calcSomeFactorialShitOrSomething(level);
+        this.burnTime = calcSomeFactorialShitOrSomething(level);
         this.rarity =
             level >= EPIC_THRESHOLD ? Rarity.EPIC :
                 level >= RARE_THRESHOLD ? Rarity.RARE :
@@ -79,10 +71,14 @@ public enum Fuel {
                         Rarity.COMMON;
     }
 
+    public static void registerAll() {
+        Arrays.stream(Fuel.RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
+    }
+
     private int calcSomeFactorialShitOrSomething(int level) {
         try {
             int i = BASE;
-            for(int v = 1; v <= level; v++) i = Math.multiplyExact(i, v);
+            for (int v = 1; v <= level; v++) i = Math.multiplyExact(i, v);
             return i;
         } catch (ArithmeticException err) {
             return Integer.MAX_VALUE;
@@ -101,13 +97,14 @@ public enum Fuel {
         return block == null ? null : block.get();
     }
 
+    @SuppressWarnings("unused")
     public @Nullable BlockItem getBlockItem() {
         return blockItem == null ? null : blockItem.get();
     }
 
     private void register(RegistrationType reg) {
-        if(!hasItem) return;
-        switch(reg) {
+        if (!hasItem) return;
+        switch (reg) {
             case ITEM: {
                 item = Items.Registry.register(String.format("%s_fuel", name), () -> new ItemFuel(this));
                 break;
@@ -119,12 +116,6 @@ public enum Fuel {
                 break;
             }
         }
-    }
-
-    public static void registerAll() {
-        Arrays.stream(Fuel.RegistrationType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.register(type));
-        });
     }
 
     private enum RegistrationType {

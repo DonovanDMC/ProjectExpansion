@@ -18,20 +18,23 @@ import java.util.UUID;
 public class PowerFlowerCollector {
     private static final Map<UUID, BigInteger> stored = new HashMap<>();
     private static int tick = 0;
+
     public static void add(ServerPlayerEntity player, BigInteger amount) {
         UUID uuid = player.getUniqueID();
         stored.put(uuid, stored.containsKey(uuid) ? stored.get(uuid).add(amount) : amount);
     }
+
     @SubscribeEvent
     public static void onTick(TickEvent.ServerTickEvent event) {
         tick++;
-        if(tick >= (Config.tickDelay.get() + 3)) {
+        if (tick >= (Config.tickDelay.get() + 3)) {
             tick = 0;
             for(UUID uuid : stored.keySet()) {
                 BigInteger amount = stored.get(uuid);
                 ServerPlayerEntity player = Util.getPlayer(uuid);
-                IKnowledgeProvider provider = player == null ? null : player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
-                if(provider == null) continue;
+                if (player == null)
+                    continue;
+                IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(uuid);
                 provider.setEmc(provider.getEmc().add(amount));
                 provider.syncEmc(player);
                 stored.remove(uuid);

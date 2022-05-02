@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockTransmutationInterface extends Block {
     public BlockTransmutationInterface() {
         super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(5F));
@@ -53,7 +54,8 @@ public class BlockTransmutationInterface extends Block {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote) return ActionResultType.SUCCESS;
+        if (world.isRemote)
+            return ActionResultType.SUCCESS;
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileTransmutationInterface)
             player.sendStatusMessage(new StringTextComponent(((TileTransmutationInterface) tile).ownerName), true);

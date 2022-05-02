@@ -24,7 +24,7 @@ public class ItemFinalStarShard extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
-        list.add(new TranslationTextComponent("item.projectexpansion.final_star.tooltip").mergeStyle(TextFormatting.GRAY));
+        list.add(new TranslationTextComponent("item.projectexpansion.final_star_shard.tooltip").mergeStyle(TextFormatting.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").mergeStyle(TextFormatting.AQUA));
     }
 }

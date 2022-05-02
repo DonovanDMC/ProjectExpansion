@@ -27,9 +27,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
     private final Matter matter;
 
@@ -73,25 +75,29 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
         if (tile instanceof TileEMCLink) ((TileEMCLink) tile).wasPlaced(livingEntity, stack);
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         return matter;
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite());
+        return getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite());
     }
 
+    @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
+    @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(HORIZONTAL_FACING);
     }
 
     @Override
-    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
+    public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type) {
         return false;
     }
 }
