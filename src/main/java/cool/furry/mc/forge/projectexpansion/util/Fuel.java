@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
@@ -34,7 +35,6 @@ public enum Fuel {
     WHITE("white", true, 14, null);
 
 
-    public static final int BASE = 1_600;
     public static final int UNCOMMON_THRESHOLD = 4;
     public static final int RARE_THRESHOLD = 15;
     public static final int EPIC_THRESHOLD = 16;
@@ -43,7 +43,6 @@ public enum Fuel {
     public final String name;
     public final boolean hasItem;
     public final int level;
-    public final int burnTime;
     @Nullable
     public final Supplier<Item> existingItem;
     public final Rarity rarity;
@@ -59,7 +58,6 @@ public enum Fuel {
         this.hasItem = hasItem;
         this.level = level;
         this.existingItem = existingItem;
-        this.burnTime = calcSomeFactorialShitOrSomething(level);
         this.rarity =
             level >= EPIC_THRESHOLD ? Rarity.EPIC :
                 level >= RARE_THRESHOLD ? Rarity.RARE :
@@ -71,18 +69,8 @@ public enum Fuel {
         Arrays.stream(Fuel.RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
     }
 
-    private int calcSomeFactorialShitOrSomething(int level) {
-        try {
-            int i = BASE;
-            for (int v = 1; v <= level; v++) i = Math.multiplyExact(i, v);
-            return i;
-        } catch (ArithmeticException err) {
-            return Integer.MAX_VALUE;
-        }
-    }
-
     public int getBurnTime() {
-        return burnTime;
+        return item == null ? -1 : ObjHandler.aeternalisFuel.getBurnTime(new ItemStack(item.get()));
     }
 
     public @Nullable Item getItem() {
