@@ -13,6 +13,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -33,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockPowerFlower extends Block implements IHasMatter {
     public static final VoxelShape SHAPE = VoxelShapes.or(
             makeCuboidShape(0, 0, 0, 16, 1, 16),
@@ -50,6 +52,7 @@ public class BlockPowerFlower extends Block implements IHasMatter {
         this.matter = matter;
     }
 
+    @Nonnull
     @Override
     public Matter getMatter() {
         return matter;
@@ -85,16 +88,24 @@ public class BlockPowerFlower extends Block implements IHasMatter {
     @Deprecated
     @Override
     public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote) return ActionResultType.SUCCESS;
+        if (world.isRemote)
+            return ActionResultType.SUCCESS;
         TileEntity tile = world.getTileEntity(pos);
-        if(tile instanceof TilePowerFlower) player.sendStatusMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
+        if (tile instanceof TilePowerFlower)
+            player.sendStatusMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
         return super.func_225533_a_(state, world, pos, player, hand, ray);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         TileEntity tile = world.getTileEntity(pos);
-        if(tile instanceof TilePowerFlower) ((TilePowerFlower) tile).wasPlaced(livingEntity, stack);
+        if (tile instanceof TilePowerFlower)
+            ((TilePowerFlower) tile).wasPlaced(livingEntity, stack);
+    }
+
+    @Override
+    public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type) {
+        return false;
     }
 }
 

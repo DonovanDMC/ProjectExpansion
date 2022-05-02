@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "projectexpansion:block/emc_link/yellow"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "projectexpansion:block/emc_link/yellow"
+    }
+  }
 }

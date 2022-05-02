@@ -26,6 +26,7 @@ public class EMCDisplay {
     private static BigInteger emc = BigInteger.ZERO;
     private static BigInteger lastEMC = BigInteger.ZERO;
     private static BigInteger change = BigInteger.ZERO;
+    @SuppressWarnings("FieldMayBeFinal")
     private static BigInteger[] emcHistory = new BigInteger[5];
     private static int tick = 0;
 
@@ -36,26 +37,30 @@ public class EMCDisplay {
 
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {
-        if(!Config.emcDisplay.get()) return;
+        if (!Config.emcDisplay.get())
+            return;
         ClientPlayerEntity player = getPlayer();
         tick++;
         if (event.phase == TickEvent.Phase.END && player != null && tick >= 20 && emcHistory.length != 0) {
             tick = 0;
-            @Nullable IKnowledgeProvider provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElse(null);
-            emc = provider == null ? BigInteger.ZERO : provider.getEmc();
-            System.arraycopy(emcHistory, 1, emcHistory, 0, emcHistory.length - 1);
-            emcHistory[emcHistory.length - 1] = emc.subtract(lastEMC);
-            lastEMC = emc;
+            player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent((provider) -> {
+                emc = provider.getEmc();
+                System.arraycopy(emcHistory, 1, emcHistory, 0, emcHistory.length - 1);
+                emcHistory[emcHistory.length - 1] = emc.subtract(lastEMC);
+                lastEMC = emc;
 
-            change = BigInteger.ZERO;
-            for (BigInteger h : emcHistory) change = change.add(h);
-            change = change.divide(BigInteger.valueOf(emcHistory.length));
+                change = BigInteger.ZERO;
+                for (BigInteger h : emcHistory)
+                    change = change.add(h);
+                change = change.divide(BigInteger.valueOf(emcHistory.length));
+            });
         }
     }
 
     @SubscribeEvent
     public static void clientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event) {
-        if(!Config.emcDisplay.get()) return;
+        if (!Config.emcDisplay.get())
+            return;
         emc = lastEMC = change = BigInteger.ZERO;
         Arrays.fill(emcHistory, BigInteger.ZERO);
         tick = 0;
@@ -63,9 +68,11 @@ public class EMCDisplay {
 
     @SubscribeEvent
     public static void onRenderGUI(RenderGameOverlayEvent.Text event) {
-        if(!Config.emcDisplay.get()) return;
+        if (!Config.emcDisplay.get())
+            return;
         String str = EMCFormat.INSTANCE.format(emc.doubleValue());
-        if(!change.equals(BigInteger.ZERO)) str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.INSTANCE.format(Math.abs(change.doubleValue())) + "/s";
+        if (!change.equals(BigInteger.ZERO))
+            str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.INSTANCE.format(Math.abs(change.doubleValue())) + "/s";
         event.getLeft().add(String.format("EMC: %s", str));
     }
 }

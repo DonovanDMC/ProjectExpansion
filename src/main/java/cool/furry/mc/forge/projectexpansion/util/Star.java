@@ -63,9 +63,7 @@ public enum Star {
     }
 
     public static void registerAll() {
-        Arrays.stream(Star.RegistrationType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.register(type));
-        });
+        Arrays.stream(Star.RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
     }
 
     private enum RegistrationType {

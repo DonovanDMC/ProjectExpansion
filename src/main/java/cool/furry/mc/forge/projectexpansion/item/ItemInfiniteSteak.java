@@ -56,18 +56,18 @@ public class ItemInfiniteSteak extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        // @TODO wolves???
+        // TODO: wolves???
         if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID()).getEmc().compareTo(COST.get()) < 0)
             return ActionResult.func_226251_d_(stack);
         player.setActiveHand(hand);
-        return world.isRemote ? ActionResult.func_226248_a_(stack) : ActionResult.func_226249_b_(stack);;
+        return world.isRemote ? ActionResult.func_226248_a_(stack) : ActionResult.func_226249_b_(stack);
     }
 
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entity) {
-        if (!(entity instanceof ServerPlayerEntity)) return stack;
+        if (!(entity instanceof ServerPlayerEntity) || world.isRemote)
+            return stack;
         ServerPlayerEntity player = (ServerPlayerEntity) entity;
-        if (world.isRemote) return stack;
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(entity.getUniqueID());
         BigInteger emc = provider.getEmc().subtract(COST.get());
         if (emc.compareTo(BigInteger.ZERO) < 0) {

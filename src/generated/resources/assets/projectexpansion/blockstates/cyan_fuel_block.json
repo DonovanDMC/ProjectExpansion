@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "projectexpansion:block/fuel/cyan"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "projectexpansion:block/fuel/cyan"
+    }
+  }
 }

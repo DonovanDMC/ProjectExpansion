@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "projectexpansion:block/relay/lime"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "projectexpansion:block/relay/lime"
+    }
+  }
 }

@@ -43,14 +43,6 @@ public enum Fuel {
 
     public static final Fuel[] VALUES = values();
 
-    public Fuel prev() {
-        return VALUES[(ordinal() - 1  + VALUES.length) % VALUES.length];
-    }
-
-    public Fuel next() {
-        return VALUES[(ordinal() + 1) % VALUES.length];
-    }
-
     public final String name;
     public final boolean hasItem;
     public final int level;
@@ -69,12 +61,12 @@ public enum Fuel {
         this.hasItem = hasItem;
         this.level = level;
         this.existingItem = existingItem;
-        this.burnTime = this.calcSomeFactorialShitOrSomething(level);
+        this.burnTime = calcSomeFactorialShitOrSomething(level);
         this.rarity =
-                level >= EPIC_THRESHOLD ? Rarity.EPIC :
-                        level >= RARE_THRESHOLD ? Rarity.RARE :
-                                level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
-                                        Rarity.COMMON;
+            level >= EPIC_THRESHOLD ? Rarity.EPIC :
+                level >= RARE_THRESHOLD ? Rarity.RARE :
+                    level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
+                        Rarity.COMMON;
     }
 
     private int calcSomeFactorialShitOrSomething(int level) {
@@ -99,12 +91,13 @@ public enum Fuel {
         return block == null ? null : block.get();
     }
 
+    @SuppressWarnings("unused")
     public @Nullable BlockItem getBlockItem() {
         return blockItem == null ? null : blockItem.get();
     }
 
     private void register(RegistrationType reg) {
-        if(!hasItem) return;
+        if (!hasItem) return;
         switch(reg) {
             case ITEM: {
                 item = Items.Registry.register(String.format("%s_fuel", name), () -> new ItemFuel(this));

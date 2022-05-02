@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "projectexpansion:block/collector/magenta"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "projectexpansion:block/collector/magenta"
+    }
+  }
 }

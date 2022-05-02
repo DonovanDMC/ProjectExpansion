@@ -1,20 +1,20 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/$TIER",
-	"pattern": [
-		"FFF",
-		"MMM",
-		"FFF"
-	],
-	"key": {
-		"F": {
-			"item": "projectexpansion:lime_fuel"
-		},
-		"M": {
-			"item": "projectexpansion:lime_matter"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:yellow_matter"
-	}
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/$TIER",
+  "pattern": [
+    "FFF",
+    "MMM",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "projectexpansion:lime_fuel"
+    },
+    "M": {
+      "item": "projectexpansion:lime_matter"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:yellow_matter"
+  }
 }

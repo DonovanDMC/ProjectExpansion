@@ -1,17 +1,17 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"group": "projectexpansion:matter/yellow",
-	"pattern": [
-		"CCC",
-		"CCC",
-		"CCC"
-	],
-	"key": {
-		"C": {
-			"item": "projectexpansion:yellow_collector"
-		}
-	},
-	"result": {
-		"item": "projectexpansion:yellow_compressed_collector"
-	}
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/yellow",
+  "pattern": [
+    "CCC",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "projectexpansion:yellow_collector"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:yellow_compressed_collector"
+  }
 }

@@ -1,36 +1,36 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"group": "projectexpansion:fuel/violet",
-	"ingredients": [
-		{
-			"item": "projectexpansion:violet_fuel"
-		},
-		{
-			"item": "projectexpansion:violet_fuel"
-		},
-		{
-			"item": "projectexpansion:violet_fuel"
-		},
-		{
-			"item": "projectexpansion:violet_fuel"
-		},
-		{
-			"item": "projectexpansion:violet_fuel"
-		},
-		{
-			"item": "projectexpansion:violet_fuel"
-		},
-		{
-			"item": "projectexpansion:violet_fuel"
-		},
-		{
-			"item": "projectexpansion:violet_fuel"
-		},
-		{
-			"item": "projectexpansion:violet_fuel"
-		}
-	],
-	"result": {
-		"item": "projectexpansion:violet_fuel_block"
-	}
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/violet",
+  "ingredients": [
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:violet_fuel_block"
+  }
 }

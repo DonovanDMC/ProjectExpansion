@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class Util {
     // yes I know this exists in net.minecraft.util.Util but having to either type out that fully or
     // this package to import both is really annoying

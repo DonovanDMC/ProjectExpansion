@@ -1,12 +1,12 @@
 {
-	"item.projectexpansion.matter_upgrader.tooltip": "Upgrades collectors, power flowers, and relays in-place.",
-	"item.projectexpansion.matter_upgrader.tooltip2": "You must have learned the next tier, and have the difference in emc available to upgrade.",
-	"item.projectexpansion.matter_upgrader.tooltip_creative": "The above restriction does not apply if you are in creative.",
-	"item.projectexpansion.matter_upgrader": "Matter Upgrader",
-	"item.projectexpansion.matter_upgrader.not_owner": "You do not own this.",
-	"item.projectexpansion.matter_upgrader.max_upgrade": "This block has been maxed out.",
-	"item.projectexpansion.matter_upgrader.not_learned": "You must learn \"%s\" before upgrading to it.",
-	"item.projectexpansion.matter_upgrader.not_enough_emc": "You do not have enough emc, you need %s.",
-	"item.projectexpansion.matter_upgrader.done": "Upgrade done, %s emc has been used.",
-	"item.projectexpansion.matter_upgrader.done_creative": "Upgrade done, no emc has been used."
+  "item.projectexpansion.matter_upgrader.tooltip": "Upgrades collectors, power flowers, and relays in-place.",
+  "item.projectexpansion.matter_upgrader.tooltip2": "You must have learned the next tier, and have the difference in emc available to upgrade.",
+  "item.projectexpansion.matter_upgrader.tooltip_creative": "The above restriction does not apply if you are in creative.",
+  "item.projectexpansion.matter_upgrader": "Matter Upgrader",
+  "item.projectexpansion.matter_upgrader.not_owner": "You do not own this.",
+  "item.projectexpansion.matter_upgrader.max_upgrade": "This block has been maxed out.",
+  "item.projectexpansion.matter_upgrader.not_learned": "You must learn \"%s\" before upgrading to it.",
+  "item.projectexpansion.matter_upgrader.not_enough_emc": "You do not have enough emc, you need %s.",
+  "item.projectexpansion.matter_upgrader.done": "Upgrade done, %s emc has been used.",
+  "item.projectexpansion.matter_upgrader.done_creative": "Upgrade done, no emc has been used."
 }
