@@ -1,16 +1,13 @@
 package cool.furry.mc.forge.projectexpansion.container.slots;
 
-import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.Util;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.SlotItemHandler;
 
-import java.util.Arrays;
-
-public class SlotMatter extends Slot {
-    public SlotMatter(IInventory inv, int index, int x, int y) {
-        super(inv, index, x, y);
+public class SlotMatter extends SlotItemHandler {
+    public SlotMatter(IItemHandlerModifiable itemHandler, int index, int x, int y) {
+        super(itemHandler, index, x, y);
     }
 
     @Override

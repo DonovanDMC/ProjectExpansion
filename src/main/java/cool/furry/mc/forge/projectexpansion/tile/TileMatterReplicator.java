@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.container.ContainerMatterReplicator;
+import cool.furry.mc.forge.projectexpansion.container.inventory.ItemhandlerMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
@@ -51,6 +52,7 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     public int lockedTicks = 0;
     public boolean isLocked = false;
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
+    public ItemhandlerMatterReplicator containerItemHandler = new ItemhandlerMatterReplicator(this);
 
     public TileMatterReplicator() {
         super(TileEntityTypes.MATTER_REPLICATOR.get());
@@ -150,8 +152,6 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        // FIXME: remove debug log
-        // Main.Logger.printf(Level.INFO, "%s %s %s %s %s %s", slot, verifyLock(), lockedTicks, itemStack.isEmpty(), amount, simulate);
         if(slot != OUTPUT_SLOT || verifyLock() || itemStack.isEmpty()) return ItemStack.EMPTY;
         if(!simulate) lock();
         int limit = getStackLimit();

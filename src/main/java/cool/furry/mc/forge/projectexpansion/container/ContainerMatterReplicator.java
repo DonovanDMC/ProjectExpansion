@@ -1,16 +1,16 @@
 package cool.furry.mc.forge.projectexpansion.container;
 
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.container.inventory.InventoryMatterReplicator;
+import cool.furry.mc.forge.projectexpansion.container.inventory.ItemhandlerMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.container.slots.SlotMatter;
 import cool.furry.mc.forge.projectexpansion.container.slots.SlotUpgrade;
 import cool.furry.mc.forge.projectexpansion.init.ContainerTypes;
+import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
 import cool.furry.mc.forge.projectexpansion.tile.TileMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -39,7 +39,6 @@ public class ContainerMatterReplicator extends Container {
     public static final int ARROW_FILLED_Y = 0;
 
     public TileMatterReplicator tile;
-    private final InventoryMatterReplicator inv;
     public ContainerMatterReplicator(int id, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
         this(id, playerInventory, packetBuffer.readBlockPos());
     }
@@ -48,12 +47,11 @@ public class ContainerMatterReplicator extends Container {
         TileEntity tile = playerInventory.player.getEntityWorld().getTileEntity(pos);
         assert (tile instanceof  TileMatterReplicator);
         this.tile = (TileMatterReplicator) tile;
-        InventoryMatterReplicator inv = this.inv = new InventoryMatterReplicator(this.tile);
         Util.addPlayerInventoryToContainer(this::addSlot, playerInventory, PLAYER_HOTBAR_X, PLAYER_HOTBAR_Y, PLAYER_INVENTORY_X, PLAYER_INVENTORY_Y);
-        addSlot(new SlotUpgrade(inv, 0, UPGRADES_X, UPGRADES_Y, ItemUpgrade.UpgradeType.SPEED));
-        addSlot(new SlotUpgrade(inv, 1, UPGRADES_X + Util.SLOT_SPACING_X, UPGRADES_Y, ItemUpgrade.UpgradeType.STACK));
-        addSlot(new SlotMatter(inv, 2, INPUT_X, INPUT_Y));
-        addSlot(new SlotMatter(inv, 3, OUTPUT_X, OUTPUT_Y));
+        addSlot(new SlotUpgrade(this.tile.containerItemHandler, 0, UPGRADES_X, UPGRADES_Y, ItemUpgrade.UpgradeType.SPEED));
+        addSlot(new SlotUpgrade(this.tile.containerItemHandler, 1, UPGRADES_X + Util.SLOT_SPACING_X, UPGRADES_Y, ItemUpgrade.UpgradeType.STACK));
+        addSlot(new SlotMatter(this.tile.containerItemHandler, 2, INPUT_X, INPUT_Y));
+        addSlot(new SlotMatter(this.tile.containerItemHandler, 3, OUTPUT_X, OUTPUT_Y));
     }
 
     public double percentageToUnlock() {
@@ -76,7 +74,6 @@ public class ContainerMatterReplicator extends Container {
 
         SlotZone zone = SlotZone.getZoneFromIndex(index);
         boolean success = false;
-        Main.Logger.printf(Level.INFO, "%s %s %s %s %s %s", index, stack, zone, tile.isLocked, tile.lockedTicks, tile.getLockedTime());
         switch(zone) {
             case OUTPUT: {
                 success = mergeInto(SlotZone.PLAYER_HOTBAR, stack, true);
@@ -92,12 +89,19 @@ public class ContainerMatterReplicator extends Container {
 
             case PLAYER_HOTBAR:
             case PLAYER_INVENTORY: {
-                if (Util.isMatter(stack))
-                    success = mergeInto(SlotZone.INPUT, stack, false);
+                if (Util.isMatter(stack)) success = mergeInto(SlotZone.INPUT, stack, false);
+                if (!success) success = mergeInto(SlotZone.SPEED_UPGRADE, stack, false);
+                if (!success) success = mergeInto(SlotZone.STACK_UPGRADE, stack, false);
                 if (!success) {
                     if (zone == SlotZone.PLAYER_HOTBAR) success = mergeInto(SlotZone.PLAYER_INVENTORY, stack, false);
                     else success = mergeInto(SlotZone.PLAYER_HOTBAR, stack, false);
                 }
+                break;
+            }
+
+            case SPEED_UPGRADE: {
+                success = mergeInto(SlotZone.PLAYER_HOTBAR, stack, false);
+                if(!success) success = mergeInto(SlotZone.PLAYER_INVENTORY, stack, false);
                 break;
             }
 
@@ -115,6 +119,11 @@ public class ContainerMatterReplicator extends Container {
         return before;
     }
 
+    @Override
+    public void putStackInSlot(int slotID, ItemStack stack) {
+        super.putStackInSlot(slotID, stack);
+    }
+
     /* Borrowed with love from Minecraft By Example
      * https://github.com/TheGreyGhost/MinecraftByExample/blob/master/src/main/java/minecraftbyexample/mbe31_inventory_furnace/ContainerFurnace.java
      */
@@ -126,7 +135,8 @@ public class ContainerMatterReplicator extends Container {
     private enum SlotZone {
         OUTPUT(39, 1),
         INPUT(38, 1),
-        UPGRADES(36, 2),
+        STACK_UPGRADE(37, 1),
+        SPEED_UPGRADE(36, 1),
         PLAYER_INVENTORY(9, 27),
         PLAYER_HOTBAR(0, 9);
 

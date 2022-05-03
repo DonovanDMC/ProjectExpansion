@@ -2,14 +2,14 @@ package cool.furry.mc.forge.projectexpansion.container.slots;
 
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class SlotUpgrade extends Slot {
+public class SlotUpgrade extends SlotItemHandler {
     private final ItemUpgrade.UpgradeType type;
-    public SlotUpgrade(IInventory inv, int index, int x, int y, ItemUpgrade.UpgradeType type) {
-        super(inv, index, x, y);
+    public SlotUpgrade(IItemHandlerModifiable itemHandler, int index, int x, int y, ItemUpgrade.UpgradeType type) {
+        super(itemHandler, index, x, y);
         this.type = type;
     }
 
