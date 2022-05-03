@@ -1,12 +1,10 @@
 package cool.furry.mc.forge.projectexpansion.container;
 
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.container.inventory.ItemhandlerMatterReplicator;
+import cool.furry.mc.forge.projectexpansion.container.inventory.ItemHandlerMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.container.slots.SlotMatter;
 import cool.furry.mc.forge.projectexpansion.container.slots.SlotUpgrade;
 import cool.furry.mc.forge.projectexpansion.init.ContainerTypes;
-import cool.furry.mc.forge.projectexpansion.init.Items;
-import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
 import cool.furry.mc.forge.projectexpansion.tile.TileMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,10 +13,14 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.IIntArray;
+import net.minecraft.util.IntArray;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.logging.log4j.Level;
+
+import static cool.furry.mc.forge.projectexpansion.tile.TileMatterReplicator.TIME_BASE;
+import static cool.furry.mc.forge.projectexpansion.item.ItemUpgrade.UpgradeType;
 
 public class ContainerMatterReplicator extends Container {
     public static final int PLAYER_INVENTORY_X = 8;
@@ -38,26 +40,47 @@ public class ContainerMatterReplicator extends Container {
     public static final int ARROW_FILLED_X = 176;
     public static final int ARROW_FILLED_Y = 0;
 
-    public TileMatterReplicator tile;
+    private final IIntArray data;
+    @SuppressWarnings("unused")
     public ContainerMatterReplicator(int id, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
-        this(id, playerInventory, packetBuffer.readBlockPos());
+        this(id, playerInventory, new IntArray(4));
     }
-    public ContainerMatterReplicator(int id, PlayerInventory playerInventory, BlockPos pos) {
+    public ContainerMatterReplicator(int id, PlayerInventory playerInventory, IIntArray data) {
+        this(id, playerInventory, new ItemHandlerMatterReplicator(data), data);
+    }
+    public ContainerMatterReplicator(int id, PlayerInventory playerInventory, IItemHandlerModifiable itemHandler, IIntArray data) {
         super(ContainerTypes.MATTER_REPLICATOR.get(), id);
-        TileEntity tile = playerInventory.player.getEntityWorld().getTileEntity(pos);
-        assert (tile instanceof  TileMatterReplicator);
-        this.tile = (TileMatterReplicator) tile;
+        this.data = data;
         Util.addPlayerInventoryToContainer(this::addSlot, playerInventory, PLAYER_HOTBAR_X, PLAYER_HOTBAR_Y, PLAYER_INVENTORY_X, PLAYER_INVENTORY_Y);
-        addSlot(new SlotUpgrade(this.tile.containerItemHandler, 0, UPGRADES_X, UPGRADES_Y, ItemUpgrade.UpgradeType.SPEED));
-        addSlot(new SlotUpgrade(this.tile.containerItemHandler, 1, UPGRADES_X + Util.SLOT_SPACING_X, UPGRADES_Y, ItemUpgrade.UpgradeType.STACK));
-        addSlot(new SlotMatter(this.tile.containerItemHandler, 2, INPUT_X, INPUT_Y));
-        addSlot(new SlotMatter(this.tile.containerItemHandler, 3, OUTPUT_X, OUTPUT_Y));
+        addSlot(new SlotUpgrade(itemHandler, 0, UPGRADES_X, UPGRADES_Y, UpgradeType.SPEED));
+        addSlot(new SlotUpgrade(itemHandler, 1, UPGRADES_X + Util.SLOT_SPACING_X, UPGRADES_Y, UpgradeType.STACK));
+        addSlot(new SlotMatter(itemHandler, 2, INPUT_X, INPUT_Y));
+        addSlot(new SlotMatter(itemHandler, 3, OUTPUT_X, OUTPUT_Y));
+        assertIntArraySize(data, 4);
+        trackIntArray(data);
+    }
+
+    public boolean isLocked() {
+        return data.get(TileMatterReplicator.LOCKED) == 1;
+    }
+
+    private int getLockedTicks() {
+        return data.get(TileMatterReplicator.LOCKED_TICKS);
+    }
+
+    private int getSpeedUpgradeCount() {
+        return data.get(TileMatterReplicator.SPEED_UPGRADE_COUNT);
+    }
+
+    private int getGenTime() {
+        int time = TIME_BASE - (getSpeedUpgradeCount() * 10);
+        return Math.max(time, 1);
     }
 
     public double percentageToUnlock() {
-        if(!tile.isLocked) return 100;
-        double div = (double) tile.getLockedTime() / (double) tile.getGenTime();
-        return MathHelper.clamp(div, 0.0, 0.0);
+        if(!isLocked()) return 1.0;
+        double div = (double) getLockedTicks() / (double) getGenTime();
+        return MathHelper.clamp(div, 0.0, 1.0);
     }
 
     @Override

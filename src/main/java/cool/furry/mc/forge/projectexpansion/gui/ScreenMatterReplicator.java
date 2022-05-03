@@ -8,11 +8,12 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
+@SuppressWarnings("deprecation")
 public class ScreenMatterReplicator extends ContainerScreen<ContainerMatterReplicator> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Main.MOD_ID, "textures/gui/matter_replicator.png");
     public static final int Y_SIZE = 157;
@@ -38,8 +39,9 @@ public class ScreenMatterReplicator extends ContainerScreen<ContainerMatterRepli
         if (!Objects.requireNonNull(Objects.requireNonNull(this.minecraft).player).inventory.getItemStack().isEmpty()) return;
         super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
         ArrayList<ITextComponent> hoveringText = new ArrayList<>();
-        if (isPointInRegion(guiLeft + ContainerMatterReplicator.ARROW_X, guiTop + ContainerMatterReplicator.ARROW_Y, ContainerMatterReplicator.ARROW_WIDTH, ContainerMatterReplicator.ARROW_HEIGHT, mouseX, mouseY)) {
-            hoveringText.add(new TranslationTextComponent("gui.projectexpansion.matter_replicator.progress", (int) (container.percentageToUnlock() * 100)));
+        if (isPointInRegion(ContainerMatterReplicator.ARROW_X, ContainerMatterReplicator.ARROW_Y, ContainerMatterReplicator.ARROW_WIDTH, ContainerMatterReplicator.ARROW_HEIGHT, mouseX, mouseY)) {
+            // normal translations weren't woring??
+            hoveringText.add(new StringTextComponent(String.format("Progress: %s%%", (int) (container.percentageToUnlock() * 100))));
         }
         if (!hoveringText.isEmpty()) func_243308_b(matrixStack, hoveringText, mouseX, mouseY);
         else  super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
@@ -54,7 +56,7 @@ public class ScreenMatterReplicator extends ContainerScreen<ContainerMatterRepli
         this.blit(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);
 
         double unlockProgress = container.percentageToUnlock();
-        if(this.container.tile.isLocked) this.blit(matrixStack, guiLeft + ContainerMatterReplicator.ARROW_X, guiTop + ContainerMatterReplicator.ARROW_Y, ContainerMatterReplicator.ARROW_FILLED_X, ContainerMatterReplicator.ARROW_FILLED_Y,
+        if(this.container.isLocked()) this.blit(matrixStack, guiLeft + ContainerMatterReplicator.ARROW_X, guiTop + ContainerMatterReplicator.ARROW_Y, ContainerMatterReplicator.ARROW_FILLED_X, ContainerMatterReplicator.ARROW_FILLED_Y,
             ContainerMatterReplicator.ARROW_WIDTH, (int) (unlockProgress * ContainerMatterReplicator.ARROW_HEIGHT));
     }
 

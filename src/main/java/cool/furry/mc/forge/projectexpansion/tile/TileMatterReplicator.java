@@ -1,23 +1,15 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.container.ContainerMatterReplicator;
-import cool.furry.mc.forge.projectexpansion.container.inventory.ItemhandlerMatterReplicator;
+import cool.furry.mc.forge.projectexpansion.container.inventory.ItemHandlerMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
-import cool.furry.mc.forge.projectexpansion.item.ItemUpgrade;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
-import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -33,26 +25,57 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.BigInteger;
 import java.util.Arrays;
+
+import static cool.furry.mc.forge.projectexpansion.item.ItemUpgrade.UpgradeType;
 
 public class TileMatterReplicator extends TileEntity implements ITickableTileEntity, IItemHandler, INamedContainerProvider {
     public static final int SPEED_UPGRADE_SLOT = 0;
     public static final int STACK_UPGRADE_SLOT = 1;
     public static final int INPUT_SLOT = 2;
     public static final int OUTPUT_SLOT = 3;
+    public static final int TIME_BASE = 200;
     public int speedUpgradeCount = 0;
     public int stackUpgradeCount = 0;
     public ItemStack itemStack;
     public int lockedTicks = 0;
     public boolean isLocked = false;
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
-    public ItemhandlerMatterReplicator containerItemHandler = new ItemhandlerMatterReplicator(this);
+    public final IIntArray data = new IIntArray() {
+        @Override
+        public int get(int index) {
+            switch (index) {
+                case LOCKED: return TileMatterReplicator.this.isLocked ? 1 : 0;
+                case LOCKED_TICKS: return TileMatterReplicator.this.lockedTicks;
+                case SPEED_UPGRADE_COUNT: return TileMatterReplicator.this.speedUpgradeCount;
+                case STACK_UPGRADE_COUNT: return TileMatterReplicator.this.stackUpgradeCount;
+                default: return 0;
+            }
+        }
+
+        @Override
+        public void set(int index, int value) {
+            switch(index) {
+                case LOCKED: TileMatterReplicator.this.isLocked = value == 1; break;
+                case LOCKED_TICKS: TileMatterReplicator.this.lockedTicks = value; break;
+                case SPEED_UPGRADE_COUNT: TileMatterReplicator.this.speedUpgradeCount = value; break;
+                case STACK_UPGRADE_COUNT: TileMatterReplicator.this.stackUpgradeCount = value; break;
+            }
+        }
+
+        @Override
+        public int size() {
+            return 4;
+        }
+    };
+    public static final int LOCKED = 0;
+    public static final int LOCKED_TICKS = 1;
+    public static final int SPEED_UPGRADE_COUNT = 2;
+    public static final int STACK_UPGRADE_COUNT = 3;
+    public ItemHandlerMatterReplicator containerItemHandler = new ItemHandlerMatterReplicator(data, () -> itemStack, (stack) -> itemStack = stack);
 
     public TileMatterReplicator() {
         super(TileEntityTypes.MATTER_REPLICATOR.get());
@@ -72,8 +95,8 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
             lockedTicks = nbt.getByte("LockedTicks");
             this.isLocked = lockedTicks > 0;
         }
-        if(speedUpgradeCount > ItemUpgrade.UpgradeType.SPEED.getMax()) speedUpgradeCount = ItemUpgrade.UpgradeType.SPEED.getMax();
-        if(stackUpgradeCount > ItemUpgrade.UpgradeType.STACK.getMax()) stackUpgradeCount = ItemUpgrade.UpgradeType.STACK.getMax();
+        if(speedUpgradeCount > UpgradeType.SPEED.getMax()) speedUpgradeCount = UpgradeType.SPEED.getMax();
+        if(stackUpgradeCount > UpgradeType.STACK.getMax()) stackUpgradeCount = UpgradeType.STACK.getMax();
     }
 
     @Nonnull
@@ -88,7 +111,7 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     }
 
     public int getGenTime() {
-        int time = 200 - (speedUpgradeCount * 10);
+        int time = TIME_BASE - (speedUpgradeCount * 10);
         return Math.max(time, 1);
     }
 
@@ -161,7 +184,7 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
 
     @Override
     public int getSlotLimit(int slot) {
-        return slot == SPEED_UPGRADE_SLOT ? ItemUpgrade.UpgradeType.SPEED.getMax() : slot == STACK_UPGRADE_SLOT ? ItemUpgrade.UpgradeType.STACK.getMax() : slot == INPUT_SLOT ? 1 : getStackLimit();
+        return slot == SPEED_UPGRADE_SLOT ? UpgradeType.SPEED.getMax() : slot == STACK_UPGRADE_SLOT ? UpgradeType.STACK.getMax() : slot == INPUT_SLOT ? 1 : getStackLimit();
     }
 
     @Override
@@ -192,7 +215,7 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     @Nullable
     @Override
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-        return new ContainerMatterReplicator(id, playerInventory, getPos());
+        return new ContainerMatterReplicator(id, playerInventory, containerItemHandler, data);
     }
 
     @Override
