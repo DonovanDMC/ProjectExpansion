@@ -93,7 +93,8 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     }
 
     public int getStackLimit() {
-        return stackUpgradeCount == 0 ? 1 : (int) Math.pow(2, stackUpgradeCount);
+        // final star shards are too op to allow generating any more than 1
+        return itemStack.getItem() == Items.FINAL_STAR_SHARD.get() ? 1 : stackUpgradeCount == 0 ? 1 : (int) Math.pow(2, stackUpgradeCount);
     }
 
     public int getLockedTime() {
