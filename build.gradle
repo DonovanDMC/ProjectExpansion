@@ -87,6 +87,8 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${getProperty("mcVersion")}-${getProperty("forgeVersion")}"
     implementation fg.deobf("curse.maven:projecte-226410:${getProperty("projecteVersion")}")
+    // FIXME: remove this
+    implementation fg.deobf("curse.maven:pipez-443900:3569511")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

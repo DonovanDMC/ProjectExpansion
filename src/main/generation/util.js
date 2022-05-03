@@ -22,15 +22,13 @@ const STAR_TIERS = module.exports.STAR_TIERS = [
 	"omega"
 ];
 
-const UPGRADE_TYPES = module.exports.UPGRADE_TYPES = [
-	"collector",
-	"power_flower",
-	"relay"
-];
-
 const FUEL_DISABLED = module.exports.FUEL_DISABLED = [
 	"basic", "dark", "red", "fading", "final"
 ];
+
+const UPGRADE_TYPES = module.exports.UPGRADE_TYPES = [
+	"speed", "stack"
+]
 
 module.exports.genericBlock = function genericBlock(outDir, name, base, exclude = []) {
 	if (!existsSync(`${outDir}/${name}`)) mkdirSync(`${outDir}/${name}`);
