@@ -54,7 +54,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
 
         for (Direction dir : DIRECTIONS) {
             TileEntity tile = world.getTileEntity(pos.offset(dir));
-            assert tile != null;
+            if (tile == null) continue;
             tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
                 if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);
