@@ -32,7 +32,6 @@ public class ConfigMenu extends Screen {
 
     @Override
     protected void init() {
-        assert minecraft != null;
         optionsRowList = new OptionsRowList(minecraft, width, height, OPTIONS_LIST_TOP_HEIGHT, height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
         children.add(optionsRowList);
 
