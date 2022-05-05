@@ -46,14 +46,14 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     @Override
     public void tick() {
         // we can't use the user defined value due to emc duplication possibilities
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20))
-            return;
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
+
         long transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getRelayTransfer();
         List<IEmcStorage> temp = new ArrayList<>(1);
 
         for (Direction dir : DIRECTIONS) {
             TileEntity tile = world.getTileEntity(pos.offset(dir));
-            assert tile != null;
+            if (tile == null) continue;
             tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
                 if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L)
                     temp.add(storage);
