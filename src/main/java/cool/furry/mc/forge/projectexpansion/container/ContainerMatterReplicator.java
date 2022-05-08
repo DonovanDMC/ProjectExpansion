@@ -13,8 +13,10 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.logging.log4j.Level;
@@ -41,21 +43,24 @@ public class ContainerMatterReplicator extends Container {
     public static final int ARROW_FILLED_Y = 0;
 
     private final IIntArray data;
+    private TileMatterReplicator tile;
+    private ItemHandlerMatterReplicator handler;
     @SuppressWarnings("unused")
     public ContainerMatterReplicator(int id, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
-        this(id, playerInventory, new IntArray(4));
+        this(id, playerInventory, packetBuffer.readBlockPos(), new IntArray(4));
     }
-    public ContainerMatterReplicator(int id, PlayerInventory playerInventory, IIntArray data) {
-        this(id, playerInventory, new ItemHandlerMatterReplicator(data), data);
-    }
-    public ContainerMatterReplicator(int id, PlayerInventory playerInventory, IItemHandlerModifiable itemHandler, IIntArray data) {
+    public ContainerMatterReplicator(int id, PlayerInventory playerInventory, BlockPos pos, IIntArray data) {
         super(ContainerTypes.MATTER_REPLICATOR.get(), id);
         this.data = data;
+        TileEntity tile = playerInventory.player.getEntityWorld().getTileEntity(pos);
+        if (!(tile instanceof TileMatterReplicator)) return;
+        this.tile = (TileMatterReplicator) tile;
+        this.handler = new ItemHandlerMatterReplicator(data, this.tile);
         Util.addPlayerInventoryToContainer(this::addSlot, playerInventory, PLAYER_HOTBAR_X, PLAYER_HOTBAR_Y, PLAYER_INVENTORY_X, PLAYER_INVENTORY_Y);
-        addSlot(new SlotUpgrade(itemHandler, 0, UPGRADES_X, UPGRADES_Y, UpgradeType.SPEED));
-        addSlot(new SlotUpgrade(itemHandler, 1, UPGRADES_X + Util.SLOT_SPACING_X, UPGRADES_Y, UpgradeType.STACK));
-        addSlot(new SlotMatter(itemHandler, 2, INPUT_X, INPUT_Y));
-        addSlot(new SlotMatter(itemHandler, 3, OUTPUT_X, OUTPUT_Y));
+        addSlot(new SlotUpgrade(this.handler, 0, UPGRADES_X, UPGRADES_Y, UpgradeType.SPEED));
+        addSlot(new SlotUpgrade(this.handler, 1, UPGRADES_X + Util.SLOT_SPACING_X, UPGRADES_Y, UpgradeType.STACK));
+        addSlot(new SlotMatter(this.handler, 2, INPUT_X, INPUT_Y));
+        addSlot(new SlotMatter(this.handler, 3, OUTPUT_X, OUTPUT_Y));
         assertIntArraySize(data, 4);
         trackIntArray(data);
     }

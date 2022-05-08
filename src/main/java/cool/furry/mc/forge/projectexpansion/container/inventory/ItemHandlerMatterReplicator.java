@@ -1,7 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.container.inventory;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.init.Items;
+import cool.furry.mc.forge.projectexpansion.tile.TileMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,23 +10,16 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import static cool.furry.mc.forge.projectexpansion.tile.TileMatterReplicator.*;
 import static cool.furry.mc.forge.projectexpansion.item.ItemUpgrade.UpgradeType;
+import static cool.furry.mc.forge.projectexpansion.tile.TileMatterReplicator.*;
 
 public class ItemHandlerMatterReplicator implements IItemHandlerModifiable {
     private final IIntArray data;
-    private final Supplier<ItemStack> itemStackSupplier;
-    private final Consumer<ItemStack> itemStackConsumer;
-    public ItemHandlerMatterReplicator(IIntArray data) {
-        this(data, () -> ItemStack.EMPTY, (stack) -> {});
-    }
-    public ItemHandlerMatterReplicator(IIntArray data, Supplier<ItemStack> itemStackSupplier, Consumer<ItemStack> itemStackConsumer) {
+    private final TileMatterReplicator tile;
+    public ItemHandlerMatterReplicator(IIntArray data, TileMatterReplicator tile) {
         this.data = data;
-        this.itemStackSupplier = itemStackSupplier;
-        this.itemStackConsumer = itemStackConsumer;
+        this.tile = tile;
     }
 
     private boolean isLocked() {
@@ -54,7 +47,7 @@ public class ItemHandlerMatterReplicator implements IItemHandlerModifiable {
     }
 
     private ItemStack getItemStack() {
-        return itemStackSupplier.get();
+        return tile.itemStack;
     }
 
     private Item getItem() {
@@ -62,7 +55,7 @@ public class ItemHandlerMatterReplicator implements IItemHandlerModifiable {
     }
 
     private void setItemStack(ItemStack itemStack) {
-        this.itemStackConsumer.accept(itemStack);
+        this.tile.itemStack = itemStack;
     }
 
     private int getStackLimit() {

@@ -75,7 +75,6 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     public static final int LOCKED_TICKS = 1;
     public static final int SPEED_UPGRADE_COUNT = 2;
     public static final int STACK_UPGRADE_COUNT = 3;
-    public ItemHandlerMatterReplicator containerItemHandler = new ItemHandlerMatterReplicator(data, () -> itemStack, (stack) -> itemStack = stack);
 
     public TileMatterReplicator() {
         super(TileEntityTypes.MATTER_REPLICATOR.get());
@@ -215,7 +214,7 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     @Nullable
     @Override
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-        return new ContainerMatterReplicator(id, playerInventory, containerItemHandler, data);
+        return new ContainerMatterReplicator(id, playerInventory, pos, data);
     }
 
     @Override
