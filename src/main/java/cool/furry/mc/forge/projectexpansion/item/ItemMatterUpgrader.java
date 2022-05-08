@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.tile.TileCollector;
+import cool.furry.mc.forge.projectexpansion.tile.TileEMCLink;
 import cool.furry.mc.forge.projectexpansion.tile.TilePowerFlower;
 import cool.furry.mc.forge.projectexpansion.tile.TileRelay;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
@@ -33,8 +34,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class ItemUpgrade extends Item {
-    public ItemUpgrade() {
+public class ItemMatterUpgrader extends Item {
+    public ItemMatterUpgrader() {
         super(new Item.Properties().group(Main.group));
     }
 
@@ -105,6 +106,11 @@ public class ItemUpgrade extends Item {
         if (tile instanceof TileRelay) {
             upgrade = Objects.requireNonNull(upgradeTo.getRelayItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getRelay());
+        }
+
+        if (tile instanceof TileEMCLink) {
+            upgrade = Objects.requireNonNull(upgradeTo.getEMCLinkItem());
+            upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
         }
 
         if (!provider.hasKnowledge(new ItemStack(upgrade)) && !player.abilities.isCreativeMode) {
