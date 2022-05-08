@@ -11,6 +11,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.Objects;
+
 @OnlyIn(Dist.CLIENT)
 public class ConfigMenu extends Screen {
     private static final int TITLE_HEIGHT = 8;
@@ -31,7 +33,7 @@ public class ConfigMenu extends Screen {
 
     @Override
     protected void init() {
-        optionsRowList = new OptionsRowList(minecraft, width, height, OPTIONS_LIST_TOP_HEIGHT, height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
+        optionsRowList = new OptionsRowList(Objects.requireNonNull(minecraft), width, height, OPTIONS_LIST_TOP_HEIGHT, height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
         children.add(optionsRowList);
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
