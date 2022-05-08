@@ -61,28 +61,20 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.hasUniqueId("Owner")) {
+        if (nbt.hasUniqueId("Owner"))
             owner = nbt.getUniqueId("Owner");
-        }
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) {
+        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING))
             ownerName = nbt.getString("OwnerName");
-        }
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) {
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING))
             emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
-        }
-
-        if (nbt.contains("Item", Constants.NBT.TAG_COMPOUND)) {
+        if (nbt.contains("Item", Constants.NBT.TAG_COMPOUND))
             itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound("Item")))).createStack();
-        }
-        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE)) {
+        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE))
             remainingEMC = (long) nbt.getDouble("RemainingEMC");
-        }
-        if (nbt.contains("RemainingImport", Constants.NBT.TAG_INT)) {
+        if (nbt.contains("RemainingImport", Constants.NBT.TAG_INT))
             remainingImport = nbt.getInt("RemainingImport");
-        }
-        if (nbt.contains("RemainingExport", Constants.NBT.TAG_INT)) {
+        if (nbt.contains("RemainingExport", Constants.NBT.TAG_INT))
             remainingExport = nbt.getInt("RemainingExport");
-        }
     }
 
     @Nonnull

@@ -37,7 +37,7 @@ public enum Matter {
     ORANGE("orange", true, 13, null),
     WHITE("white", true, 14, null),
     FADING("fading", true, 15, null),
-    FINAL("final", false, 16, null);
+    FINAL("final", false, 16, Items.FINAL_STAR_SHARD);
 
     public static final Matter[] VALUES = values();
     public static final int UNCOMMON_THRESHOLD = 4;
@@ -178,6 +178,10 @@ public enum Matter {
 
     public @Nullable Item getMatter() {
         return itemMatter == null ? null : itemMatter.get();
+    }
+
+    public @Nullable Item getItem() {
+        return !hasItem && existingItem != null ? existingItem.get() : getMatter();
     }
 
     public @Nullable BlockPowerFlower getPowerFlower() {

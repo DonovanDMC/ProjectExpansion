@@ -33,9 +33,8 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_LONG)) {
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_LONG))
             emc = nbt.getLong((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC));
-        }
     }
 
     @Nonnull

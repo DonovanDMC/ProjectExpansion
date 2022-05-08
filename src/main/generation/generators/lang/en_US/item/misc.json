@@ -8,5 +8,11 @@
   "item.projectexpansion.infinite_fuel.not_enough_emc": "You do not have enough emc to use this, you need %s.",
   "item.projectexpansion.infinite_steak": "Infinite Steak",
   "item.projectexpansion.infinite_steak.tooltip": "Infinite food via your emc.",
-  "item.projectexpansion.infinite_steak.not_enough_emc": "You do not have enough emc to use this, you need %s."
+  "item.projectexpansion.infinite_steak.not_enough_emc": "You do not have enough emc to use this, you need %s.",
+  "item.projectexpansion.speed_upgrade": "Speed Upgrade",
+  "item.projectexpansion.speed_upgrade.tooltip": "An upgrade for the Matter Replicator: decreases the time between replications by 0.5 seconds",
+  "item.projectexpansion.speed_upgrade.tooltip_max": "Maximum of %s per Matter Replicator",
+  "item.projectexpansion.stack_upgrade": "Stack Upgrade",
+  "item.projectexpansion.stack_upgrade.tooltip": "An upgrade for the Matter Replicator: increases the output stack by powers of 2",
+  "item.projectexpansion.stack_upgrade.tooltip_max": "Maximum of %s per Matter Replicator"
 }

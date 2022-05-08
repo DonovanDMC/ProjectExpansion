@@ -2,7 +2,6 @@ package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.tile.TileCollector;
-import cool.furry.mc.forge.projectexpansion.tile.TileEMCLink;
 import cool.furry.mc.forge.projectexpansion.tile.TilePowerFlower;
 import cool.furry.mc.forge.projectexpansion.tile.TileRelay;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
@@ -106,11 +105,6 @@ public class ItemMatterUpgrader extends Item {
         if (tile instanceof TileRelay) {
             upgrade = Objects.requireNonNull(upgradeTo.getRelayItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getRelay());
-        }
-
-        if (tile instanceof TileEMCLink) {
-            upgrade = Objects.requireNonNull(upgradeTo.getEMCLinkItem());
-            upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
         }
 
         if (!provider.hasKnowledge(new ItemStack(upgrade)) && !player.abilities.isCreativeMode) {
