@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityCollector;
+import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityEMCLink;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityPowerFlower;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityRelay;
 import cool.furry.mc.forge.projectexpansion.util.*;
@@ -31,8 +32,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class ItemUpgrade extends Item {
-    public ItemUpgrade() {
+public class ItemMatterUpgrader extends Item {
+    public ItemMatterUpgrader() {
         super(new Item.Properties().tab(Main.tab));
     }
 
@@ -101,6 +102,11 @@ public class ItemUpgrade extends Item {
         if (tile instanceof BlockEntityRelay) {
             upgrade = Objects.requireNonNull(upgradeTo.getRelayItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getRelay());
+        }
+
+        if (tile instanceof BlockEntityEMCLink) {
+            upgrade = Objects.requireNonNull(upgradeTo.getEMCLinkItem());
+            upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
         }
 
         if (!provider.hasKnowledge(new ItemStack(upgrade)) && !player.isCreative()) {
