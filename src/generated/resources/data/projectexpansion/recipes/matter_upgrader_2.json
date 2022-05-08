@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LCL",
+    "PMR",
+    "LDL"
+  ],
+  "key": {
+    "L": {
+      "item": "projectexpansion:basic_emc_link"
+    },
+    "C": {
+      "item": "projectexpansion:basic_collector"
+    },
+    "P": {
+      "item": "projectexpansion:basic_power_flower"
+    },
+    "M": {
+      "item": "minecraft:lime_dye"
+    },
+    "R": {
+      "item": "projecte:relay_mk1"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:matter_upgrader"
+  }
+}
