@@ -1,9 +1,12 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
+import cool.furry.mc.forge.projectexpansion.Main;
+import cool.furry.mc.forge.projectexpansion.block.BlockMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.container.ContainerMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.container.inventory.ItemHandlerMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.emc.nbt.NBTManager;
@@ -12,8 +15,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -32,7 +38,7 @@ import java.util.Arrays;
 
 import static cool.furry.mc.forge.projectexpansion.item.ItemUpgrade.UpgradeType;
 
-public class TileMatterReplicator extends TileEntity implements ITickableTileEntity, IItemHandler, INamedContainerProvider {
+public class TileMatterReplicator extends TileEntity implements ITickableTileEntity, IItemHandler, INamedContainerProvider, IHasMatter {
     public static final int SPEED_UPGRADE_SLOT = 0;
     public static final int STACK_UPGRADE_SLOT = 1;
     public static final int INPUT_SLOT = 2;
@@ -40,7 +46,7 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     public static final int TIME_BASE = 200;
     public int speedUpgradeCount = 0;
     public int stackUpgradeCount = 0;
-    public ItemStack itemStack;
+    private ItemStack itemStack;
     public int lockedTicks = 0;
     public boolean isLocked = false;
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
@@ -121,6 +127,23 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
 
     public int getLockedTime() {
         return !isLocked ? 0 : getGenTime() - lockedTicks;
+    }
+
+    public ItemStack getItemStack() {
+        return this.itemStack;
+    }
+
+    public Item getItem() {
+        return getItemStack().getItem();
+    }
+
+    public void setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack;
+        if(world != null) world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+    }
+
+    public void setItem(Item item) {
+        setItemStack(new ItemStack(item, 1));
     }
 
     @Override
@@ -220,5 +243,48 @@ public class TileMatterReplicator extends TileEntity implements ITickableTileEnt
     @Override
     public ITextComponent getDisplayName() {
         return new TranslationTextComponent("block.projectexpansion.matter_replicator");
+    }
+
+    @Nullable
+    @Override
+    public Matter getMatter() {
+        if(getItem() == Matter.DARK.getMatter()) return Matter.DARK;
+        else if(getItem() == Matter.RED.getMatter()) return Matter.RED;
+        else if(getItem() == Matter.MAGENTA.getMatter()) return Matter.MAGENTA;
+        else if(getItem() == Matter.PINK.getMatter()) return Matter.PINK;
+        else if(getItem() == Matter.PURPLE.getMatter()) return Matter.PURPLE;
+        else if(getItem() == Matter.VIOLET.getMatter()) return Matter.VIOLET;
+        else if(getItem() == Matter.BLUE.getMatter()) return Matter.BLUE;
+        else if(getItem() == Matter.CYAN.getMatter()) return Matter.CYAN;
+        else if(getItem() == Matter.GREEN.getMatter()) return Matter.GREEN;
+        else if(getItem() == Matter.LIME.getMatter()) return Matter.LIME;
+        else if(getItem() == Matter.YELLOW.getMatter()) return Matter.YELLOW;
+        else if(getItem() == Matter.ORANGE.getMatter()) return Matter.ORANGE;
+        else if(getItem() == Matter.WHITE.getMatter()) return Matter.WHITE;
+        else if(getItem() == Matter.FADING.getMatter()) return Matter.FADING;
+        else if(getItem() == Matter.FINAL.getMatter()) return Matter.FINAL;
+        else return null;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        CompoundNBT nbt = pkt.getNbtCompound();
+        itemStack.deserializeNBT(nbt);
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(pos, -1, itemStack.serializeNBT());
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return itemStack.serializeNBT();
+    }
+
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+        itemStack.deserializeNBT(tag);
     }
 }

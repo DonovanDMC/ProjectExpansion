@@ -46,20 +46,9 @@ public class ItemHandlerMatterReplicator implements IItemHandlerModifiable {
         data.set(STACK_UPGRADE_COUNT, value);
     }
 
-    private ItemStack getItemStack() {
-        return tile.itemStack;
-    }
-
-    private Item getItem() {
-        return getItemStack().getItem();
-    }
-
-    private void setItemStack(ItemStack itemStack) {
-        this.tile.itemStack = itemStack;
-    }
 
     private int getStackLimit() {
-        return getItem() == Items.FINAL_STAR_SHARD.get() ? 1 : getStackUpgradeCount() == 0 ? 1 : (int) Math.pow(2, getStackUpgradeCount());
+        return tile.getItem() == Items.FINAL_STAR_SHARD.get() ? 1 : getStackUpgradeCount() == 0 ? 1 : (int) Math.pow(2, getStackUpgradeCount());
     }
 
     @Override
@@ -73,8 +62,8 @@ public class ItemHandlerMatterReplicator implements IItemHandlerModifiable {
         switch (slot) {
             case SPEED_UPGRADE_SLOT: return getSpeedUpgradeCount() == 0 ? ItemStack.EMPTY : new ItemStack(Items.SPEED_UPGRADE.get(), getSpeedUpgradeCount());
             case STACK_UPGRADE_SLOT: return getStackUpgradeCount() == 0 ? ItemStack.EMPTY : new ItemStack(Items.STACK_UPGRADE.get(), getStackUpgradeCount());
-            case INPUT_SLOT: return getItemStack();
-            case OUTPUT_SLOT: return isLocked() ? ItemStack.EMPTY : new ItemStack(getItem(), getStackLimit());
+            case INPUT_SLOT: return tile.getItemStack();
+            case OUTPUT_SLOT: return isLocked() ? ItemStack.EMPTY : new ItemStack(tile.getItem(), getStackLimit());
             default: return ItemStack.EMPTY;
         }
     }
@@ -100,8 +89,8 @@ public class ItemHandlerMatterReplicator implements IItemHandlerModifiable {
 
             }
             case INPUT_SLOT: {
-                if(!getItemStack().isEmpty()) return stack;
-                setItemStack(new ItemStack(stack.getItem(), 1));
+                if(!tile.getItemStack().isEmpty()) return stack;
+                tile.setItem(stack.getItem());
                 return stack;
             }
             // OUTPUT_SLOT is intentionally not handled
@@ -126,13 +115,13 @@ public class ItemHandlerMatterReplicator implements IItemHandlerModifiable {
             }
             case INPUT_SLOT: {
                 // we have to return something for simulate because this doesn't work otherwise
-                if(!simulate) setItemStack(ItemStack.EMPTY);
-                return simulate ? getItemStack() : ItemStack.EMPTY;
+                if(!simulate) tile.setItemStack(ItemStack.EMPTY);
+                return simulate ? tile.getItemStack() : ItemStack.EMPTY;
             }
             case OUTPUT_SLOT: {
-                if(getItemStack().isEmpty() || isLocked()) return ItemStack.EMPTY;
+                if(tile.getItemStack().isEmpty() || isLocked()) return ItemStack.EMPTY;
                 if(!simulate) lock();
-                return new ItemStack(getItem(), getStackLimit());
+                return new ItemStack(tile.getItem(), getStackLimit());
             }
             default: return ItemStack.EMPTY;
         }
@@ -146,8 +135,8 @@ public class ItemHandlerMatterReplicator implements IItemHandlerModifiable {
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return
-            slot == SPEED_UPGRADE_SLOT ? getItem() == Items.SPEED_UPGRADE.get() :
-                slot == STACK_UPGRADE_SLOT ? getItem() == Items.STACK_UPGRADE.get() :
+            slot == SPEED_UPGRADE_SLOT ? tile.getItem() == Items.SPEED_UPGRADE.get() :
+                slot == STACK_UPGRADE_SLOT ? tile.getItem() == Items.STACK_UPGRADE.get() :
                     Arrays.stream(Matter.VALUES).anyMatch((m) -> m.getItem() == stack.getItem());
     }
 

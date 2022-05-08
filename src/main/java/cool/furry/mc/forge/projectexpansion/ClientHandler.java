@@ -3,11 +3,13 @@ package cool.furry.mc.forge.projectexpansion;
 import cool.furry.mc.forge.projectexpansion.config.ConfigMenu;
 import cool.furry.mc.forge.projectexpansion.gui.ScreenMatterReplicator;
 import cool.furry.mc.forge.projectexpansion.init.ContainerTypes;
+import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
