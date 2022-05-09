@@ -129,7 +129,8 @@ public class ContainerMatterReplicator extends Container {
                 break;
             }
 
-            case SPEED_UPGRADE: {
+            case SPEED_UPGRADE:
+            case STACK_UPGRADE: {
                 success = mergeInto(SlotZone.PLAYER_HOTBAR, stack, false);
                 if(!success) success = mergeInto(SlotZone.PLAYER_INVENTORY, stack, false);
                 break;
