@@ -44,7 +44,6 @@ public class ContainerMatterReplicator extends Container {
 
     private final IIntArray data;
     private TileMatterReplicator tile;
-    private ItemHandlerMatterReplicator handler;
     @SuppressWarnings("unused")
     public ContainerMatterReplicator(int id, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
         this(id, playerInventory, packetBuffer.readBlockPos(), new IntArray(4));
@@ -55,12 +54,12 @@ public class ContainerMatterReplicator extends Container {
         TileEntity tile = playerInventory.player.getEntityWorld().getTileEntity(pos);
         if (!(tile instanceof TileMatterReplicator)) return;
         this.tile = (TileMatterReplicator) tile;
-        this.handler = new ItemHandlerMatterReplicator(data, this.tile);
+        ItemHandlerMatterReplicator handler = new ItemHandlerMatterReplicator(data, this.tile);
         Util.addPlayerInventoryToContainer(this::addSlot, playerInventory, PLAYER_HOTBAR_X, PLAYER_HOTBAR_Y, PLAYER_INVENTORY_X, PLAYER_INVENTORY_Y);
-        addSlot(new SlotUpgrade(this.handler, 0, UPGRADES_X, UPGRADES_Y, UpgradeType.SPEED));
-        addSlot(new SlotUpgrade(this.handler, 1, UPGRADES_X + Util.SLOT_SPACING_X, UPGRADES_Y, UpgradeType.STACK));
-        addSlot(new SlotMatter(this.handler, 2, INPUT_X, INPUT_Y));
-        addSlot(new SlotMatter(this.handler, 3, OUTPUT_X, OUTPUT_Y));
+        addSlot(new SlotUpgrade(handler, 0, UPGRADES_X, UPGRADES_Y, UpgradeType.SPEED));
+        addSlot(new SlotUpgrade(handler, 1, UPGRADES_X + Util.SLOT_SPACING_X, UPGRADES_Y, UpgradeType.STACK));
+        addSlot(new SlotMatter(handler, 2, INPUT_X, INPUT_Y));
+        addSlot(new SlotMatter(handler, 3, OUTPUT_X, OUTPUT_Y));
         assertIntArraySize(data, 4);
         trackIntArray(data);
     }
@@ -117,7 +116,10 @@ public class ContainerMatterReplicator extends Container {
 
             case PLAYER_HOTBAR:
             case PLAYER_INVENTORY: {
-                if (Util.isMatter(stack)) success = mergeInto(SlotZone.INPUT, stack, false);
+                if (Util.isMatter(stack) && tile.getItemStack() == ItemStack.EMPTY) {
+                    tile.setItemStack(stack);
+                    success = true;
+                }
                 if (!success) success = mergeInto(SlotZone.SPEED_UPGRADE, stack, false);
                 if (!success) success = mergeInto(SlotZone.STACK_UPGRADE, stack, false);
                 if (!success) {
