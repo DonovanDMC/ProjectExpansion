@@ -93,7 +93,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        if (owner == null)
+        if (owner == null || Util.getPlayer(owner) == null)
             return ItemStack.EMPTY;
         fetchKnowledge();
 
@@ -111,7 +111,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty())
+        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty() || Util.getPlayer(owner) == null)
             return stack;
         fetchKnowledge();
 
@@ -144,7 +144,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot <= 0 || owner == null || info.length < slot)
+        if (slot <= 0 || owner == null || info.length < slot || Util.getPlayer(owner) == null)
             return ItemStack.EMPTY;
         fetchKnowledge();
 
