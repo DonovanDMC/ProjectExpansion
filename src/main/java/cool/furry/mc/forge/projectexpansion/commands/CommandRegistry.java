@@ -12,5 +12,6 @@ public class CommandRegistry {
     public static void onRegisterCommandsEvent(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
         CommandEMC.register(dispatcher);
+        CommandKnowledge.register(dispatcher);
     }
 }
