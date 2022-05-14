@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
+import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -173,7 +174,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
 
     @Override
     public int getSlotLimit(int slot) {
-        return Integer.MAX_VALUE;
+        return Math.min(1, Config.transmutationInterfaceItemCount.get());
     }
 
     @Override
