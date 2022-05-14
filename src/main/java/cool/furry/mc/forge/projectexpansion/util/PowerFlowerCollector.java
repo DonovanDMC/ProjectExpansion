@@ -1,7 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.config.Config;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,17 +22,20 @@ public class PowerFlowerCollector {
     @SubscribeEvent
     public static void onTick(TickEvent.ServerTickEvent event) {
         tick++;
-        Set<UUID> toRemove = new HashSet<>();
-        for(UUID uuid : stored.keySet()) {
-            BigInteger amount = stored.get(uuid);
-            ServerPlayerEntity player = Util.getPlayer(uuid);
-            if (player == null) continue;
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(uuid);
-            provider.setEmc(provider.getEmc().add(amount));
-            provider.sync(player);
-            toRemove.add(uuid);
+        if (tick >= 20) {
+            tick = 0;
+            Set<UUID> toRemove = new HashSet<>();
+            for(UUID uuid : stored.keySet()) {
+                BigInteger amount = stored.get(uuid);
+                ServerPlayerEntity player = Util.getPlayer(uuid);
+                if (player == null) continue;
+                IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(uuid);
+                provider.setEmc(provider.getEmc().add(amount));
+                provider.sync(player);
+                toRemove.add(uuid);
+            }
+            toRemove.forEach(stored::remove);
         }
-        toRemove.forEach(stored::remove);
     }
 }
 
