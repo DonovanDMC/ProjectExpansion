@@ -132,7 +132,7 @@
 	"command.projectexpansion.knowledge.test.success": "%s does knowledge of %s.",
 	"command.projectexpansion.knowledge.test.successSelf": "You do have knowledge of %s.",
 	"command.projectexpansion.knowledge.test.fail": "%s does not have knowledge of %s.",
-	"command.projectexpansion.knowledge.test.failSelf": "You does not have knowledge of %s.",
+	"command.projectexpansion.knowledge.test.failSelf": "You do not have knowledge of %s.",
 	"command.projectexpansion.console": "Console",
 	"command.projectexpansion.emc.invalid_value": "The value you provided (\"%s\") is invalid, it must be a positive integer.",
 	"command.projectexpansion.emc.clearKnowledge.success": "Successfully cleared the knowledge of %s",
