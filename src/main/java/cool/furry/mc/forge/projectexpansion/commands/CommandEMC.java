@@ -102,8 +102,8 @@ public class CommandEMC {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if(action == ActionType.GET) {
             IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
-            if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())).setStyle(ColorStyle.GREEN), false);
-            else ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())).setStyle(ColorStyle.GREEN), true);
+            if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
+            else ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
 
             return 1;
         }
