@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.block.entity;
 
+import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -179,7 +180,7 @@ public class BlockEntityTransmutationInterface extends BlockEntity implements II
 
     @Override
     public int getSlotLimit(int slot) {
-        return Integer.MAX_VALUE;
+        return Math.min(1, Config.transmutationInterfaceItemCount.get());
     }
 
     @Override
