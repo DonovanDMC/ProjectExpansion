@@ -221,7 +221,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack)) {
+        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) {
             return stack;
         }
 
@@ -261,7 +261,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     }
 
     public ItemStack extractItemInternal(int slot, int amount, boolean simulate, boolean limit) {
-        if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty()) return ItemStack.EMPTY;
+        if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
 
         BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
