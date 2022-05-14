@@ -21,5 +21,9 @@
   "command.projectexpansion.emc.learn.successSelf": "You have successfully learned %s.",
   "command.projectexpansion.emc.learn.fail": "%s already has knowledge of %s.",
   "command.projectexpansion.emc.learn.failSelf": "You already have knowledge of %s.",
-  "command.projectexpansion.emc.learn.notification": "You gained knowledge of %s from %s."
+  "command.projectexpansion.emc.learn.notification": "You gained knowledge of %s from %s.",
+  "command.projectexpansion.emc.test.success": "%s does have enough emc to remove %s.",
+  "command.projectexpansion.emc.test.successSelf": "You do have enough emc to remove %s.",
+  "command.projectexpansion.emc.test.fail": "%s does not have enough emc to remove %s.",
+  "command.projectexpansion.emc.test.failSelf": "You do not have enough emc to remove %s."
 }

@@ -32,7 +32,9 @@ public class CommandEMC {
     private enum Action {
         ADD,
         REMOVE,
-        SET
+        SET,
+        GET,
+        TEST
     }
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         LiteralArgumentBuilder<CommandSource> cmd = Commands.literal("emc")
@@ -40,27 +42,34 @@ public class CommandEMC {
             .then(Commands.literal("add")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> changeEMC(ctx, Action.ADD))
+                        .executes((ctx) -> handleEMC(ctx, Action.ADD))
                     )
                 )
             )
             .then(Commands.literal("remove")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> changeEMC(ctx, Action.REMOVE))
+                        .executes((ctx) -> handleEMC(ctx, Action.REMOVE))
                     )
                 )
             )
             .then(Commands.literal("set")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> changeEMC(ctx, Action.SET))
+                        .executes((ctx) -> handleEMC(ctx, Action.SET))
                     )
                 )
             )
+            .then(Commands.literal("test")
+                  .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("value", StringArgumentType.string())
+                              .executes((ctx) -> handleEMC(ctx, Action.TEST))
+                        )
+                  )
+            )
             .then(Commands.literal("get")
                 .then(Commands.argument("player", EntityArgument.player())
-                    .executes(CommandEMC::getEMC)
+                              .executes((ctx) -> handleEMC(ctx, Action.GET))
                 )
             )
             .then(Commands.literal("clearKnowledge")
@@ -107,8 +116,17 @@ public class CommandEMC {
         }
     }
 
-    private static int changeEMC(CommandContext<CommandSource> ctx, Action action) throws CommandSyntaxException {
+    private static int handleEMC(CommandContext<CommandSource> ctx, Action action) throws CommandSyntaxException {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if(action == Action.GET) {
+            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
+            if (compareUUID(ctx.getSource(), player))
+                ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
+            else
+                ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
+
+            return 1;
+        }
         String val = StringArgumentType.getString(ctx, "value");
         @Nullable BigInteger value = null;
         try {
@@ -130,7 +148,8 @@ public class CommandEMC {
                     break;
                 }
 
-                case SET: {
+                case SET:
+                case TEST: {
                     if(value.compareTo(BigInteger.ZERO) < 0) value = null;
                     break;
                 }
@@ -186,21 +205,20 @@ public class CommandEMC {
                 }
                 break;
             }
+
+            case TEST: {
+                boolean canTake = newEMC.compareTo(value) > -1;
+                if (compareUUID(ctx.getSource(), player))
+                    if(canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)), false);
+                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.failSelf", formatEMC(value)), false);
+                else {
+                    if(canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.success", player.getScoreboardName(), formatEMC(value)), false);
+                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.fail", player.getScoreboardName(), formatEMC(value)), false);
+                }
+            }
         }
         provider.setEmc(newEMC);
         provider.syncEmc(player);
-        return 1;
-    }
-
-    private static int getEMC(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
-        if (compareUUID(ctx.getSource(), player))
-            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
-        else
-            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
-
         return 1;
     }
 
