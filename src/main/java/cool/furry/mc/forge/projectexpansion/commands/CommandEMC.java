@@ -136,7 +136,7 @@ public class CommandEMC {
             }
         } catch (NumberFormatException ignore) {}
         if(value == null) {
-            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.invalid_value", val).mergeStyle(TextFormatting.RED), false);
+            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.invalid", val).mergeStyle(TextFormatting.RED), false);
             return 0;
         }
 
