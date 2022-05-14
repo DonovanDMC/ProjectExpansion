@@ -12,5 +12,6 @@ public class CommandRegistry {
     public static void onRegisterCommandsEvent(FMLServerStartingEvent event) {
         CommandDispatcher<CommandSource> dispatcher = event.getCommandDispatcher();
         CommandEMC.register(dispatcher);
+        CommandKnowledge.register(dispatcher);
     }
 }
