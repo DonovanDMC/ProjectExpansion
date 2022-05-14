@@ -1,5 +1,6 @@
 {
   "command.projectexpansion.console": "Console",
+  "command.projectexpansion.emc.invalid_value": "The value you provided (\"%s\") is invalid, it must be a positive integer.",
   "command.projectexpansion.emc.add.success": "Successfully added %s emc to %s, they now have %s",
   "command.projectexpansion.emc.add.successSelf": "Successfully added %s to your emc, you now have %s",
   "command.projectexpansion.emc.add.notification": "You were given %s emc by %s, you now have %s",

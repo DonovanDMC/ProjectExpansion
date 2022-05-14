@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.HoverEvent;
 
+import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.UUID;
 
@@ -109,11 +110,12 @@ public class CommandEMC {
     private static int changeEMC(CommandContext<CommandSource> ctx, Action action) throws CommandSyntaxException {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         String val = StringArgumentType.getString(ctx, "value");
-        BigInteger value;
+        @Nullable BigInteger value = null;
         try {
             value = new BigInteger(val);
-        } catch (NumberFormatException err) {
-            err.printStackTrace();
+            if(value.compareTo(BigInteger.ZERO) < 0) value = null;
+        } catch (NumberFormatException ignore) {}
+        if(value == null) {
             ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.invalid_value", val).mergeStyle(TextFormatting.RED), false);
             return 0;
         }
