@@ -12,5 +12,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Integer> powerflowerMultiplier = Builder.translation("gui.projectexpansion.config.powerflower_multiplier.desc").define("powerflowerMultiplier", 1);
     public static final ForgeConfigSpec.ConfigValue<Boolean> notifyCommandChanges = Builder.translation("gui.projectexpansion.config.notify_command_changes.desc").define("notifyCommandChanges", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> limitEmcLinkVendor = Builder.translation("gui.projectexpansion.config.limit_emc_link_vendor.desc").define("limitEmcLinkVendor", true);
+    // due to the large range of this (1 - Integer.MAX_VALUE, with all 2 billion values being valid), this option is excluded from the gui
+    public static final ForgeConfigSpec.ConfigValue<Integer> transmutationInterfaceItemCount = Builder.translation("gui.projectexpansion.config.transmutation_interface_item_count.desc").define("transmutationInterfaceItemCount", 4096);
     static { Spec = Builder.build(); }
 }
