@@ -29,12 +29,16 @@ import java.util.UUID;
 
 public class CommandEMC {
 
-    private enum Action {
+    private enum EMCAction {
         ADD,
         REMOVE,
         SET,
         GET,
         TEST
+    }
+    private enum KnowledgeAction {
+        LEARN,
+        UNLEARN
     }
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         LiteralArgumentBuilder<CommandSource> cmd = Commands.literal("emc")
@@ -42,34 +46,34 @@ public class CommandEMC {
             .then(Commands.literal("add")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> handleEMC(ctx, Action.ADD))
+                        .executes((ctx) -> handleEMC(ctx, EMCAction.ADD))
                     )
                 )
             )
             .then(Commands.literal("remove")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> handleEMC(ctx, Action.REMOVE))
+                        .executes((ctx) -> handleEMC(ctx, EMCAction.REMOVE))
                     )
                 )
             )
             .then(Commands.literal("set")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> handleEMC(ctx, Action.SET))
+                        .executes((ctx) -> handleEMC(ctx, EMCAction.SET))
                     )
                 )
             )
             .then(Commands.literal("test")
                   .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("value", StringArgumentType.string())
-                              .executes((ctx) -> handleEMC(ctx, Action.TEST))
+                              .executes((ctx) -> handleEMC(ctx, EMCAction.TEST))
                         )
                   )
             )
             .then(Commands.literal("get")
                 .then(Commands.argument("player", EntityArgument.player())
-                              .executes((ctx) -> handleEMC(ctx, Action.GET))
+                              .executes((ctx) -> handleEMC(ctx, EMCAction.GET))
                 )
             )
             .then(Commands.literal("clearKnowledge")
@@ -80,7 +84,14 @@ public class CommandEMC {
             .then(Commands.literal("learn")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("item", ItemArgument.item())
-                        .executes(CommandEMC::learn)
+                        .executes((ctx) -> CommandEMC.handleKnowledge(ctx, KnowledgeAction.LEARN))
+                    )
+                )
+            )
+            .then(Commands.literal("unlearn")
+                .then(Commands.argument("player", EntityArgument.player())
+                    .then(Commands.argument("item", ItemArgument.item())
+                        .executes((ctx) -> CommandEMC.handleKnowledge(ctx, KnowledgeAction.UNLEARN))
                     )
                 )
             );
@@ -116,9 +127,9 @@ public class CommandEMC {
         }
     }
 
-    private static int handleEMC(CommandContext<CommandSource> ctx, Action action) throws CommandSyntaxException {
+    private static int handleEMC(CommandContext<CommandSource> ctx, EMCAction action) throws CommandSyntaxException {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if(action == Action.GET) {
+        if(action == EMCAction.GET) {
             IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
             if (compareUUID(ctx.getSource(), player))
                 ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())).mergeStyle(TextFormatting.GREEN), false);
@@ -134,7 +145,7 @@ public class CommandEMC {
             switch(action) {
                 case ADD: {
                     if(value.compareTo(BigInteger.ZERO) < 0) {
-                        action = Action.REMOVE;
+                        action = EMCAction.REMOVE;
                         value = value.abs();
                     }
                     break;
@@ -142,7 +153,7 @@ public class CommandEMC {
 
                 case REMOVE: {
                     if(value.compareTo(BigInteger.ZERO) < 0) {
-                        action = Action.ADD;
+                        action = EMCAction.ADD;
                         value = value.abs();
                     }
                     break;
@@ -209,11 +220,24 @@ public class CommandEMC {
             case TEST: {
                 boolean canTake = newEMC.compareTo(value) > -1;
                 if (compareUUID(ctx.getSource(), player))
-                    if(canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).mergeStyle(TextFormatting.GREEN), false);
-                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.failSelf", formatEMC(value)).mergeStyle(TextFormatting.RED), false);
+                    if(canTake) {
+                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).mergeStyle(TextFormatting.GREEN), false);
+                        return 1;
+                    }
+                    else {
+                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.failSelf", formatEMC(value)).mergeStyle(TextFormatting.RED), false);
+                        return 0;
+                    }
                 else {
-                    if(canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.success", player.getScoreboardName(), formatEMC(value)).mergeStyle(TextFormatting.GREEN), false);
-                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.fail", player.getScoreboardName(), formatEMC(value)).mergeStyle(TextFormatting.RED), false);
+                    if(canTake) {
+                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.success", player.getScoreboardName(), formatEMC(value)).mergeStyle(TextFormatting.GREEN), false);
+                        return 1;
+                    }
+                    else {
+                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.fail", player.getScoreboardName(), formatEMC(value)).mergeStyle(TextFormatting.RED), false);
+                        return 0;
+
+                    }
                 }
             }
         }
@@ -238,35 +262,50 @@ public class CommandEMC {
         return 1;
     }
 
-    private static int learn(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+    private static int handleKnowledge(CommandContext<CommandSource> ctx, KnowledgeAction action) throws CommandSyntaxException {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         Item item = ItemArgument.getItem(ctx, "item").getItem();
 
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
         IEMCProxy proxy = ProjectEAPI.getEMCProxy();
         if (!proxy.hasValue(item)) {
-            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.invalidItem"), false);
+            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.invalidItem"), false);
             return 0;
         }
         boolean isSelf = compareUUID(ctx.getSource(), player);
-        if (!provider.addKnowledge(ItemInfo.fromItem(item))) {
-            if (isSelf)
-                ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.failSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), false);
-             else
-                ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), true);
+        int response = 1;
+        switch(action) {
+            case LEARN: {
+                if (!provider.addKnowledge(ItemInfo.fromItem(item))) {
+                    response = 0;
+                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.failSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), false);
+                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), true);
+                }
+                if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.successSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GREEN), false);
+                else {
+                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GRAY), true);
+                    if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.learn.notification", new ItemStack(item).getTextComponent(), getSourceName(ctx.getSource())).mergeStyle(TextFormatting.GRAY), getSourceUUID(ctx.getSource()));
+                }
+                break;
+            }
 
-            return 0;
-        }
-        provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromItem(item)), true);
-        if (isSelf) {
-            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.successSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GREEN), false);
-        } else {
-            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.learn.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GRAY), true);
-            if (Config.notifyCommandChanges.get()) {
-                player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.learn.notification", new ItemStack(item).getTextComponent(), getSourceName(ctx.getSource())).mergeStyle(TextFormatting.GRAY), getSourceUUID(ctx.getSource()));
+            case UNLEARN: {
+                if (!provider.removeKnowledge(ItemInfo.fromItem(item))) {
+                    response = 0;
+                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.unlearn.failSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), false);
+                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.unlearn.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), true);
+                }
+                provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromItem(item)), true);
+                if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.unlearn.successSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GREEN), false);
+                else {
+                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.unlearn.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GRAY), true);
+                    if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.unlearn.notification", new ItemStack(item).getTextComponent(), getSourceName(ctx.getSource())).mergeStyle(TextFormatting.GRAY), getSourceUUID(ctx.getSource()));
+                }
+                break;
             }
         }
+        if(response == 1) provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromItem(item)), true);
 
-        return 1;
+        return response;
     }
 }
