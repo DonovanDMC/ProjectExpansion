@@ -104,6 +104,7 @@
 	"command.projectexpansion.emc.remove.success": "Successfully removed %s emc from %s, they now have %s",
 	"command.projectexpansion.emc.remove.successSelf": "Successfully removed %s fro your emc, you now have %s",
 	"command.projectexpansion.emc.remove.notification": "%s emc was removed from you by %s, you now have %s",
+	"command.projectexpansion.emc.remove.negative": "Cannot remove %s emc from %s as this would make their emc negative.",
 	"command.projectexpansion.emc.set.success": "Successfully set the emc of %s to %s",
 	"command.projectexpansion.emc.set.successSelf": "Successfully set your emc to %s",
 	"command.projectexpansion.emc.set.notification": "Your emc was set to %s by %s",

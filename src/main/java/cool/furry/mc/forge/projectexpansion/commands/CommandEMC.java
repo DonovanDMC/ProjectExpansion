@@ -159,6 +159,10 @@ public class CommandEMC {
 
             case REMOVE: {
                 newEMC = newEMC.subtract(value);
+                if(newEMC.compareTo(BigInteger.ZERO) < 0) {
+                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.negative", formatEMC(value), player.getScoreboardName()), false);
+                    return 0;
+                }
                 if (compareUUID(ctx.getSource(), player))
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.successSelf", formatEMC(value), formatEMC(newEMC)), false);
                 else {
