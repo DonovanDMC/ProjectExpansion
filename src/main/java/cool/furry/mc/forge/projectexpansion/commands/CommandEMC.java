@@ -113,7 +113,28 @@ public class CommandEMC {
         @Nullable BigInteger value = null;
         try {
             value = new BigInteger(val);
-            if(value.compareTo(BigInteger.ZERO) < 0) value = null;
+            switch(action) {
+                case ADD: {
+                    if(value.compareTo(BigInteger.ZERO) < 0) {
+                        action = Action.REMOVE;
+                        value = value.abs();
+                    }
+                    break;
+                }
+
+                case REMOVE: {
+                    if(value.compareTo(BigInteger.ZERO) < 0) {
+                        action = Action.ADD;
+                        value = value.abs();
+                    }
+                    break;
+                }
+
+                case SET: {
+                    if(value.compareTo(BigInteger.ZERO) < 0) value = null;
+                    break;
+                }
+            }
         } catch (NumberFormatException ignore) {}
         if(value == null) {
             ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.invalid_value", val).mergeStyle(TextFormatting.RED), false);
