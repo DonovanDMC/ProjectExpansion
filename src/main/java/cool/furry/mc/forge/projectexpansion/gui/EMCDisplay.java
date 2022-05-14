@@ -18,16 +18,12 @@ import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.Arrays;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class EMCDisplay {
-    private static BigInteger emc = BigInteger.ZERO;
-    private static BigInteger lastEMC = BigInteger.ZERO;
     private static BigInteger change = BigInteger.ZERO;
-    @SuppressWarnings("FieldMayBeFinal")
-    private static BigInteger[] emcHistory = new BigInteger[5];
+    private static BigInteger emc = BigInteger.ZERO;
     private static int tick = 0;
 
     private static @Nullable ClientPlayerEntity getPlayer() {
@@ -36,22 +32,15 @@ public class EMCDisplay {
 
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {
-        if (!Config.emcDisplay.get())
-            return;
+        if (!Config.emcDisplay.get()) return;
         ClientPlayerEntity player = getPlayer();
         tick++;
-        if (event.phase == TickEvent.Phase.END && player != null && tick >= 20 && emcHistory.length != 0) {
+        if (event.phase == TickEvent.Phase.END && player != null && tick >= 20) {
             tick = 0;
             player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent((provider) -> {
+                BigInteger lastEMC = emc;
                 emc = provider.getEmc();
-                System.arraycopy(emcHistory, 1, emcHistory, 0, emcHistory.length - 1);
-                emcHistory[emcHistory.length - 1] = emc.subtract(lastEMC);
-                lastEMC = emc;
-
-                change = BigInteger.ZERO;
-                for (BigInteger h : emcHistory)
-                    change = change.add(h);
-                change = change.divide(BigInteger.valueOf(emcHistory.length));
+                change = emc.subtract(lastEMC);
             });
         }
     }
@@ -59,8 +48,7 @@ public class EMCDisplay {
     private static void reset() {
         if (!Config.emcDisplay.get())
             return;
-        emc = lastEMC = change = BigInteger.ZERO;
-        Arrays.fill(emcHistory, BigInteger.ZERO);
+        emc = change = BigInteger.ZERO;
         tick = 0;
     }
 
@@ -76,11 +64,10 @@ public class EMCDisplay {
 
     @SubscribeEvent
     public static void onRenderGUI(RenderGameOverlayEvent.Text event) {
-        if (!Config.emcDisplay.get())
-            return;
-        String str = EMCFormat.INSTANCE.format(emc.doubleValue());
+        if (!Config.emcDisplay.get()) return;
+        String str = EMCFormat.format(emc);
         if (!change.equals(BigInteger.ZERO))
-            str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.INSTANCE.format(Math.abs(change.doubleValue())) + "/s";
+            str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.format(change.abs()) + "/s";
         event.getLeft().add(String.format("EMC: %s", str));
     }
 }

@@ -1,12 +1,13 @@
 package cool.furry.mc.forge.projectexpansion.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -19,11 +20,9 @@ import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Util;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.HoverEvent;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.UUID;
 
@@ -39,21 +38,21 @@ public class CommandEMC {
             .requires((source) -> source.hasPermissionLevel(2))
             .then(Commands.literal("add")
                 .then(Commands.argument("player", EntityArgument.player())
-                    .then(Commands.argument("value", DoubleArgumentType.doubleArg(1))
+                    .then(Commands.argument("value", StringArgumentType.string())
                         .executes((ctx) -> changeEMC(ctx, Action.ADD))
                     )
                 )
             )
             .then(Commands.literal("remove")
                 .then(Commands.argument("player", EntityArgument.player())
-                    .then(Commands.argument("value", DoubleArgumentType.doubleArg(1))
+                    .then(Commands.argument("value", StringArgumentType.string())
                         .executes((ctx) -> changeEMC(ctx, Action.REMOVE))
                     )
                 )
             )
             .then(Commands.literal("set")
                 .then(Commands.argument("player", EntityArgument.player())
-                    .then(Commands.argument("value", DoubleArgumentType.doubleArg(0))
+                    .then(Commands.argument("value", StringArgumentType.string())
                         .executes((ctx) -> changeEMC(ctx, Action.SET))
                     )
                 )
@@ -95,12 +94,8 @@ public class CommandEMC {
         }
     }
 
-    private static ITextComponent formatEMC(BigInteger emc) {
-        return formatEMC(emc.doubleValue());
-    }
-
-    private static ITextComponent formatEMC(double emc) {
-        return new StringTextComponent(EMCFormat.INSTANCE_IGNORE_SHIFT.format(emc)).setStyle(Style.EMPTY.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(String.valueOf(emc))))).mergeStyle(TextFormatting.GRAY);
+    private static ITextComponent formatEMC(BigInteger value) {
+        return new StringTextComponent(EMCFormat.formatForceShort(value)).setStyle(Style.EMPTY.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(EMCFormat.formatForceLong(value))))).mergeStyle(TextFormatting.GRAY);
     }
 
     private static boolean compareUUID(CommandSource source, ServerPlayerEntity player) {
@@ -113,13 +108,21 @@ public class CommandEMC {
 
     private static int changeEMC(CommandContext<CommandSource> ctx, Action action) throws CommandSyntaxException {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        double value = DoubleArgumentType.getDouble(ctx, "value");
+        String val = StringArgumentType.getString(ctx, "value");
+        BigInteger value;
+        try {
+            value = new BigInteger(val);
+        } catch (NumberFormatException err) {
+            err.printStackTrace();
+            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.invalid_value", val).mergeStyle(TextFormatting.RED), false);
+            return 0;
+        }
 
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
         BigInteger newEMC = provider.getEmc();
         switch (action) {
             case ADD: {
-                newEMC = newEMC.add(BigDecimal.valueOf(value).toBigInteger());
+                newEMC = newEMC.add(value);
                 if (compareUUID(ctx.getSource(), player))
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.add.successSelf", formatEMC(value), formatEMC(newEMC)), false);
                 else {
@@ -132,7 +135,7 @@ public class CommandEMC {
             }
 
             case REMOVE: {
-                newEMC = newEMC.subtract(BigDecimal.valueOf(value).toBigInteger());
+                newEMC = newEMC.subtract(value);
                 if (compareUUID(ctx.getSource(), player))
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.successSelf", formatEMC(value), formatEMC(newEMC)), false);
                 else {
@@ -145,7 +148,7 @@ public class CommandEMC {
             }
 
             case SET: {
-                newEMC = BigDecimal.valueOf(value).toBigInteger();
+                newEMC = value;
                 if (compareUUID(ctx.getSource(), player))
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.set.successSelf", formatEMC(value), formatEMC(newEMC)), false);
                 else {
