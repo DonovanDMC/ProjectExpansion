@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.client.util.ITooltipFlag;
@@ -36,7 +37,7 @@ public class ItemInfiniteFuel extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
-        list.add(new TranslationTextComponent("item.projectexpansion.infinite_fuel.tooltip").mergeStyle(TextFormatting.GRAY));
+        list.add(new TranslationTextComponent("item.projectexpansion.infinite_fuel.tooltip").setStyle(ColorStyle.GRAY));
     }
 
     @Override

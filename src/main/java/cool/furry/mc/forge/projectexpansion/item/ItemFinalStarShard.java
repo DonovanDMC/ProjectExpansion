@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,7 @@ public class ItemFinalStarShard extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
-        list.add(new TranslationTextComponent("item.projectexpansion.final_star_shard.tooltip").mergeStyle(TextFormatting.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").mergeStyle(TextFormatting.AQUA));
+        list.add(new TranslationTextComponent("item.projectexpansion.final_star_shard.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 }

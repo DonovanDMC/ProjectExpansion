@@ -5,6 +5,7 @@ import cool.furry.mc.forge.projectexpansion.tile.TileCollector;
 import cool.furry.mc.forge.projectexpansion.tile.TileEMCLink;
 import cool.furry.mc.forge.projectexpansion.tile.TilePowerFlower;
 import cool.furry.mc.forge.projectexpansion.tile.TileRelay;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
@@ -22,7 +23,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,9 +43,9 @@ public class ItemMatterUpgrader extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
-        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip").mergeStyle(TextFormatting.GRAY));
-        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip2").mergeStyle(TextFormatting.GREEN));
-        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip_creative").mergeStyle(TextFormatting.RED));
+        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip2").setStyle(ColorStyle.GREEN));
+        list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip_creative").setStyle(ColorStyle.RED));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ItemMatterUpgrader extends Item {
 
 
         if (matter == Matter.FINAL) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.max_upgrade").mergeStyle(TextFormatting.RED), true);
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.max_upgrade").setStyle(ColorStyle.RED), true);
             return ActionResultType.FAIL;
         }
 
@@ -98,7 +98,7 @@ public class ItemMatterUpgrader extends Item {
             if (owner == null)
                 return ActionResultType.FAIL;
             if (owner != player.getUniqueID()) {
-                player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_owner").mergeStyle(TextFormatting.RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_owner").setStyle(ColorStyle.RED), true);
                 return ActionResultType.FAIL;
             }
         }
@@ -114,7 +114,7 @@ public class ItemMatterUpgrader extends Item {
         }
 
         if (!provider.hasKnowledge(new ItemStack(upgrade)) && !player.abilities.isCreativeMode) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_learned", new TranslationTextComponent(Objects.requireNonNull(upgrade).getTranslationKey())).mergeStyle(TextFormatting.RED), true);
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_learned", new TranslationTextComponent(Objects.requireNonNull(upgrade).getTranslationKey())).setStyle(ColorStyle.RED), true);
             return ActionResultType.FAIL;
         }
 
@@ -125,7 +125,7 @@ public class ItemMatterUpgrader extends Item {
             diff = 0;
         BigInteger newEmc = provider.getEmc().subtract(BigInteger.valueOf(diff));
         if (newEmc.compareTo(BigInteger.ZERO) < 0) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_enough_emc", EMCFormat.INSTANCE.format(BigInteger.valueOf(diff))).mergeStyle(TextFormatting.RED), true);
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_enough_emc", EMCFormat.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.RED), true);
             return ActionResultType.FAIL;
         }
 
@@ -146,7 +146,7 @@ public class ItemMatterUpgrader extends Item {
         }
 
         provider.setEmc(newEmc);
-        player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.done", EMCFormat.INSTANCE.format(BigInteger.valueOf(diff))).mergeStyle(TextFormatting.WHITE), true);
+        player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.done", EMCFormat.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.WHITE), true);
         return ActionResultType.SUCCESS;
     }
 }

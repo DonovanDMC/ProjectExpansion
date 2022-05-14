@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -68,7 +69,7 @@ public class CommandKnowledge {
         try {
             return source.asPlayer().getDisplayName();
         } catch (CommandSyntaxException e) {
-            return new TranslationTextComponent("command.projectexpansion.console").mergeStyle(TextFormatting.RED);
+            return new TranslationTextComponent("command.projectexpansion.console").setStyle(ColorStyle.RED);
         }
     }
 
@@ -94,15 +95,15 @@ public class CommandKnowledge {
         if(action == ActionType.CLEAR) {
             IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
             if(provider.getKnowledge().size() == 0) {
-                if(isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.clear.failSelf").mergeStyle(TextFormatting.RED), false);
-                else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.clear.fail", player.getDisplayName()).mergeStyle(TextFormatting.RED), false);
+                if(isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.clear.failSelf").setStyle(ColorStyle.RED), false);
+                else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.clear.fail", player.getDisplayName()).setStyle(ColorStyle.RED), false);
                 return 0;
             }
             provider.clearKnowledge();
             provider.sync(player);
-            if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.clear.successSelf").mergeStyle(TextFormatting.GREEN), false);
+            if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.clear.successSelf").setStyle(ColorStyle.GREEN), false);
             else {
-                ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.clear.success", player.getDisplayName()).mergeStyle(TextFormatting.GREEN), true);
+                ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.clear.success", player.getDisplayName()).setStyle(ColorStyle.GREEN), true);
                 if(Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.knowledge.clear.notification", getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
             }
             return 1;
@@ -120,13 +121,13 @@ public class CommandKnowledge {
             case LEARN: {
                 if (!provider.addKnowledge(ItemInfo.fromItem(item))) {
                     response = 0;
-                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.learn.failSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), false);
-                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.learn.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), true);
+                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.learn.failSelf", new ItemStack(item).getTextComponent()).setStyle(ColorStyle.RED), false);
+                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.learn.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).setStyle(ColorStyle.RED), true);
                 } else {
-                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.learn.successSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GREEN), false);
+                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.learn.successSelf", new ItemStack(item).getTextComponent()).setStyle(ColorStyle.GREEN), false);
                     else {
-                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.learn.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GRAY), true);
-                        if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.knowledge.learn.notification", new ItemStack(item).getTextComponent(), getSourceName(ctx.getSource())).mergeStyle(TextFormatting.GRAY), getSourceUUID(ctx.getSource()));
+                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.learn.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).setStyle(ColorStyle.GRAY), true);
+                        if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.knowledge.learn.notification", new ItemStack(item).getTextComponent(), getSourceName(ctx.getSource())).setStyle(ColorStyle.GRAY), getSourceUUID(ctx.getSource()));
                     }
                 }
                 break;
@@ -135,13 +136,13 @@ public class CommandKnowledge {
             case UNLEARN: {
                 if (!provider.removeKnowledge(ItemInfo.fromItem(item))) {
                     response = 0;
-                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.failSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), false);
-                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), true);
+                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.failSelf", new ItemStack(item).getTextComponent()).setStyle(ColorStyle.RED), false);
+                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).setStyle(ColorStyle.RED), true);
                 } else {
-                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.successSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GREEN), false);
+                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.successSelf", new ItemStack(item).getTextComponent()).setStyle(ColorStyle.GREEN), false);
                     else {
-                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GRAY), true);
-                        if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.notification", new ItemStack(item).getTextComponent(), getSourceName(ctx.getSource())).mergeStyle(TextFormatting.GRAY), getSourceUUID(ctx.getSource()));
+                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).setStyle(ColorStyle.GRAY), true);
+                        if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.knowledge.unlearn.notification", new ItemStack(item).getTextComponent(), getSourceName(ctx.getSource())).setStyle(ColorStyle.GRAY), getSourceUUID(ctx.getSource()));
                     }
                 }
                 break;
@@ -150,11 +151,11 @@ public class CommandKnowledge {
             case TEST: {
                 if (!provider.hasKnowledge(ItemInfo.fromItem(item))) {
                     response = 0;
-                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.test.failSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), false);
-                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.test.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.RED), false);
+                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.test.failSelf", new ItemStack(item).getTextComponent()).setStyle(ColorStyle.RED), false);
+                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.test.fail", player.getDisplayName(), new ItemStack(item).getTextComponent()).setStyle(ColorStyle.RED), false);
                 } else {
-                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.test.successSelf", new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GREEN), false);
-                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.test.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).mergeStyle(TextFormatting.GRAY), false);
+                    if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.test.successSelf", new ItemStack(item).getTextComponent()).setStyle(ColorStyle.GREEN), false);
+                    else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.knowledge.test.success", player.getDisplayName(), new ItemStack(item).getTextComponent()).setStyle(ColorStyle.GRAY), false);
                 }
                 break;
             }

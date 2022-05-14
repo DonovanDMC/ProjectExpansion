@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.tile.TileTransmutationInterface;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,8 +49,8 @@ public class BlockTransmutationInterface extends Block {
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, level, list, flag);
-        list.add(new TranslationTextComponent("block.projectexpansion.transmutation_interface.tooltip").mergeStyle(TextFormatting.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").mergeStyle(TextFormatting.AQUA));
+        list.add(new TranslationTextComponent("block.projectexpansion.transmutation_interface.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
     @Override

@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.tile.TileRelay;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
@@ -56,10 +57,10 @@ public class BlockRelay extends Block implements IHasMatter {
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, level, list, flag);
-        list.add(new TranslationTextComponent("block.projectexpansion.relay.tooltip").mergeStyle(TextFormatting.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").mergeStyle(TextFormatting.AQUA));
-        list.add(new TranslationTextComponent("block.projectexpansion.relay.bonus", new StringTextComponent("").appendSibling(TransmutationEMCFormatter.formatEMC(matter.getRelayBounsForTicks(Config.tickDelay.get()))).mergeStyle(TextFormatting.GREEN)).mergeStyle(TextFormatting.GRAY));
-        list.add(new TranslationTextComponent("block.projectexpansion.relay.transfer", new StringTextComponent("").appendSibling(TransmutationEMCFormatter.formatEMC(matter.getRelayTransferForTicks(Config.tickDelay.get()))).mergeStyle(TextFormatting.GREEN)).mergeStyle(TextFormatting.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.relay.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(new TranslationTextComponent("block.projectexpansion.relay.bonus", new StringTextComponent("").appendSibling(TransmutationEMCFormatter.formatEMC(matter.getRelayBounsForTicks(Config.tickDelay.get()))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.relay.transfer", new StringTextComponent("").appendSibling(TransmutationEMCFormatter.formatEMC(matter.getRelayTransferForTicks(Config.tickDelay.get()))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
     }
 
     @Override

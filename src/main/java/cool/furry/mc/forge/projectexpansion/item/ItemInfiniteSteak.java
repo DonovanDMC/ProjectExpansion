@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.client.util.ITooltipFlag;
@@ -34,7 +35,7 @@ public class ItemInfiniteSteak extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
-        list.add(new TranslationTextComponent("item.projectexpansion.infinite_steak.tooltip").mergeStyle(TextFormatting.GRAY));
+        list.add(new TranslationTextComponent("item.projectexpansion.infinite_steak.tooltip").setStyle(ColorStyle.GRAY));
     }
 
     @Override
@@ -71,7 +72,7 @@ public class ItemInfiniteSteak extends Item {
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(entity.getUniqueID());
         BigInteger emc = provider.getEmc().subtract(COST.get());
         if (emc.compareTo(BigInteger.ZERO) < 0) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.infinite_steak.not_enough_emc", new StringTextComponent(COST.get().toString())).mergeStyle(TextFormatting.RED), true);
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.infinite_steak.not_enough_emc", new StringTextComponent(COST.get().toString())).setStyle(ColorStyle.RED), true);
             return stack;
         }
         provider.setEmc(emc);

@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.Util;
@@ -296,50 +297,50 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
         ItemStack inHand = player.getHeldItem(hand);
         if (!owner.equals(player.getUniqueID())) {
-            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.RED), true);
+            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
             return ActionResultType.CONSUME;
         }
         if (player.isCrouching()) {
             if (itemStack.isEmpty()) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").mergeStyle(TextFormatting.RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             if (inHand.isEmpty()) {
                 setInternalItem(ItemStack.EMPTY);
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").mergeStyle(TextFormatting.RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").setStyle(ColorStyle.RED), true);
                 return ActionResultType.SUCCESS;
             }
         }
 
         if (itemStack.isEmpty()) {
             if (inHand.isEmpty()) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").mergeStyle(TextFormatting.RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             if (!isItemValid(0, inHand)) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_emc_value", new TranslationTextComponent(itemStack.getTranslationKey()).mergeStyle(TextFormatting.BLUE)).mergeStyle(TextFormatting.RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_emc_value", new TranslationTextComponent(itemStack.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             setInternalItem(inHand);
-            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(itemStack.getTranslationKey()).mergeStyle(TextFormatting.BLUE)).mergeStyle(TextFormatting.GREEN), true);
+            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(itemStack.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
             return ActionResultType.SUCCESS;
         }
 
         if (inHand.isEmpty() || itemStack.isItemEqual(inHand)) {
             if (Config.limitEmcLinkVendor.get() && remainingExport <= 0) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").mergeStyle(TextFormatting.RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             ItemStack extract = extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
             if (extract.isEmpty()) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).mergeStyle(TextFormatting.GREEN)).mergeStyle(TextFormatting.RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             ItemHandlerHelper.giveItemToPlayer(player, extract);
             return ActionResultType.SUCCESS;
         }
 
-        player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").mergeStyle(TextFormatting.RED), true);
+        player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").setStyle(ColorStyle.RED), true);
         return ActionResultType.CONSUME;
     }
 
