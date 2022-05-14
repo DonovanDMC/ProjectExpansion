@@ -1,7 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.config.Config;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +22,7 @@ public class PowerFlowerCollector {
     @SubscribeEvent
     public static void onTick(TickEvent.ServerTickEvent event) {
         tick++;
-        if (tick >= (Config.tickDelay.get() + 3)) {
+        if (tick >= 20) {
             tick = 0;
             Set<UUID> toRemove = new HashSet<>();
             for(UUID uuid : stored.keySet()) {
