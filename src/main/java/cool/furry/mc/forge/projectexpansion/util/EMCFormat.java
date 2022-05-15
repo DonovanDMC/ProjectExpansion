@@ -160,7 +160,8 @@ public class EMCFormat extends DecimalFormat {
         }
 
         static @Nullable NumberName findName(BigDecimal value) {
-            return Arrays.stream(VALUES).filter(v -> v.getBigDecimalValue().compareTo(value) > -1).findFirst().orElse(null);
+            // reduce is a quick and dirty soultion to get the last element
+            return Arrays.stream(VALUES).filter(v -> value.compareTo(v.getBigDecimalValue()) > -1).reduce((first, second) -> second).orElse(null);
         }
     }
 }
