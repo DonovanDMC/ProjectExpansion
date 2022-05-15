@@ -81,7 +81,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
         BigInteger targetItemEmc = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]));
         if (targetItemEmc.compareTo(BigInteger.ZERO) < 1)
             return 0;
-        return playerEmc.divide(targetItemEmc).min(BigInteger.valueOf(Integer.MAX_VALUE)).intValueExact();
+        return playerEmc.divide(targetItemEmc).min(BigInteger.valueOf(Math.max(1, Config.transmutationInterfaceItemCount.get()))).intValue();
     }
 
     @Override
@@ -174,7 +174,7 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
 
     @Override
     public int getSlotLimit(int slot) {
-        return Math.min(1, Config.transmutationInterfaceItemCount.get());
+        return Integer.MAX_VALUE;
     }
 
     @Override
