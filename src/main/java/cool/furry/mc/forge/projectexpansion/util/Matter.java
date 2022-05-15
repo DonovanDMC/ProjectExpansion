@@ -22,22 +22,22 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public enum Matter {
-    BASIC("basic", false, 1, () -> net.minecraft.item.Items.DIAMOND_BLOCK),
-    DARK("dark", false, 2, ObjHandler.darkMatter::getItem),
-    RED("red", false, 3, ObjHandler.redMatter::getItem),
-    MAGENTA("magenta", true, 4, null),
-    PINK("pink", true, 5, null),
-    PURPLE("purple", true, 6, null),
-    VIOLET("violet", true, 7, null),
-    BLUE("blue", true, 8, null),
-    CYAN("cyan", true, 9, null),
-    GREEN("green", true, 10, null),
-    LIME("lime", true, 11, null),
-    YELLOW("yellow", true, 12, null),
-    ORANGE("orange", true, 13, null),
-    WHITE("white", true, 14, null),
-    FADING("fading", true, 15, null),
-    FINAL("final", false, 16, null);
+    BASIC(  4L,             1L,             64L,            null),
+    DARK(   12L,            3L,             192L,           ObjHandler.darkMatter::getItem),
+    RED(    40L,            10L,            640L,           ObjHandler.redMatter::getItem),
+    MAGENTA(160L,           40L,            2560L,          null),
+    PINK(   640L,           150L,           10240L,         null),
+    PURPLE( 2560L,          750L,           40960L,         null),
+    VIOLET( 10240L,         3750L,          163840L,        null),
+    BLUE(   40960L,         15000L,         655360L,        null),
+    CYAN(   163840L,        60000L,         2621440L,       null),
+    GREEN(  655360L,        240000L,        10485760L,      null),
+    LIME(   2621440L,       960000L,        41943040L,      null),
+    YELLOW( 10485760L,      3840000L,       167772160L,     null),
+    ORANGE( 41943040L,      15360000L,      671088640L,     null),
+    WHITE(  167772160L,     61440000L,      2684354560L,    null),
+    FADING( 671088640L,     245760000L,     10737418240L,   null),
+    FINAL(  1000000000000L, 1000000000000L, Long.MAX_VALUE, Items.FINAL_STAR_SHARD);
 
     public static final Matter[] VALUES = values();
 
@@ -78,22 +78,29 @@ public enum Matter {
     private RegistryObject<BlockEMCLink> emcLink = null;
     @Nullable
     private RegistryObject<BlockItem> itemEMCLink = null;
-    Matter(String name, boolean hasItem, int level, @Nullable Supplier<Item> existingItem) {
-        this.name = name;
-        this.hasItem = hasItem;
-        this.level = level;
-        this.collectorOutput = calcSomeFactorialShitOrSomething(TemporaryValues.COLLECTOR_BASE, level);
-        this.relayBonus = calcSomeFactorialShitOrSomething(TemporaryValues.RELAY_BONUS_BASE, level);
-        this.relayTransfer = calcSomeFactorialShitOrSomething(TemporaryValues.RELAY_TRANSFER_BASE, level);
+
+    public static final int UNCOMMON_THRESHOLD = 4;
+    public static final int RARE_THRESHOLD = 15;
+    public static final int EPIC_THRESHOLD = 16;
+    Matter(long collectorOutput, long relayBonus, long relayTransfer, @Nullable Supplier<Item> existingItem) {
+        this.name = name().toLowerCase();
+        this.hasItem = existingItem == null && ordinal() != 0;
+        this.level = ordinal() + 1;
+        // Gₙ(aₙ)(z)=4(2z²+z-1)/4z-1
+        this.collectorOutput = Config.useOldValues.get() ? calcOldValue(TemporaryValues.COLLECTOR_BASE, level) : collectorOutput;
+        // ¯\_(ツ)_/¯
+        this.relayBonus = Config.useOldValues.get() ? calcOldValue(TemporaryValues.RELAY_BONUS_BASE, level) : relayBonus;
+        // a(n+1)=4a(n)
+        this.relayTransfer = Config.useOldValues.get() ? calcOldValue(TemporaryValues.RELAY_TRANSFER_BASE, level) : relayTransfer;
         this.existingItem = existingItem;
         this.rarity =
-                level >= EPIC_THRESHOLD ? Rarity.EPIC :
-                        level >= RARE_THRESHOLD ? Rarity.RARE :
-                                level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
-                                        Rarity.COMMON;
+            level >= EPIC_THRESHOLD ? Rarity.EPIC :
+                level >= RARE_THRESHOLD ? Rarity.RARE :
+                    level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
+                        Rarity.COMMON;
     }
 
-    private Long calcSomeFactorialShitOrSomething(Long base, int level) {
+    private Long calcOldValue(Long base, int level) {
         try {
             long i = base;
             for(int v = 1; v <= level; v++) i = Math.multiplyExact(i, Long.valueOf(v));
@@ -212,10 +219,6 @@ public enum Matter {
     public @Nullable BlockItem getEMCLinkItem() {
         return itemEMCLink == null ? null : itemEMCLink.get();
     }
-
-    public static final int UNCOMMON_THRESHOLD = 4;
-    public static final int RARE_THRESHOLD = 15;
-    public static final int EPIC_THRESHOLD = 16;
 
     private void register(RegistrationType reg) {
         switch(reg) {
