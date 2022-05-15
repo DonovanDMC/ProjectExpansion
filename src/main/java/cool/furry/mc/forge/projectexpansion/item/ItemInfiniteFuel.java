@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -33,6 +34,7 @@ public class ItemInfiniteFuel extends Item {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
         list.add(new TranslatableComponent("item.projectexpansion.infinite_fuel.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("text.projectexpansion.cost", EMCFormat.getComponent(BURN_TIME).setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.RED));
     }
 
     @Override

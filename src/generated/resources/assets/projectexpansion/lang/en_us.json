@@ -228,5 +228,6 @@
 	"itemGroup.projectexpansion": "Project Expansion",
 	"text.projectexpansion.wip": "WIP!",
 	"text.projectexpansion.provider_error": "Failed to fetch ProjectE provider.",
-	"text.projectexpansion.see_wiki": "See the wiki on github for more information."
+	"text.projectexpansion.see_wiki": "See the wiki on github for more information.",
+	"text.projectexpansion.cost": "Cost: %s"
 }
