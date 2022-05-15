@@ -59,7 +59,7 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
         list.add(new TranslationTextComponent("block.projectexpansion.emc_link.tooltip").setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
         list.add(new TranslationTextComponent("block.projectexpansion.emc_link.limit_items", new StringTextComponent(matter.getItemLimitString()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", new StringTextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.INSTANCE.format(matter.getEMCLimit())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", matter.getLevel() == 16 ? new StringTextComponent("INFINITY") : EMCFormat.getComponent(matter.getEMCLimit()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
     }
 
     @Deprecated

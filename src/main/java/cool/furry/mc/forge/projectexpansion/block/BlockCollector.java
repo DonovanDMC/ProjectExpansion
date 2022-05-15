@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.tile.TileCollector;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import moze_intel.projecte.utils.TransmutationEMCFormatter;
@@ -57,7 +58,7 @@ public class BlockCollector extends Block implements IHasMatter {
         super.addInformation(stack, level, list, flag);
         list.add(new TranslationTextComponent("block.projectexpansion.collector.tooltip").setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
-        list.add(new TranslationTextComponent("block.projectexpansion.collector.emc", new StringTextComponent(TransmutationEMCFormatter.formatEMC(matter.getCollectorOutputForTicks(Config.tickDelay.get()))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.collector.emc", EMCFormat.getComponent(matter.getCollectorOutputForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
     }
 
     @Override
