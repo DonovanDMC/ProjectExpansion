@@ -21,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -58,7 +57,7 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
         list.add((new TranslationTextComponent("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
         list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_items", new StringTextComponent(matter.getItemLimitString()).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
-        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", new StringTextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.INSTANCE.format(matter.getEMCLimit())).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", matter.getLevel() == 16 ? new StringTextComponent("INFINITY") : EMCFormat.getComponent(matter.getEMCLimit()).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
     }
 
     @Deprecated

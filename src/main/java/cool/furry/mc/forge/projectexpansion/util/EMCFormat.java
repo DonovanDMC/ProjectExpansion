@@ -2,6 +2,9 @@ package cool.furry.mc.forge.projectexpansion.util;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -36,25 +39,29 @@ public class EMCFormat extends DecimalFormat {
         return format(Double.parseDouble(Long.toString(number)), result, fieldPosition);
     }
 
-    public static String format(BigInteger value) {
-        return format(value, IgnoreShiftType.NONE);
+    public static IFormattableTextComponent getComponent(long value) {
+        return getComponent(BigDecimal.valueOf(value));
     }
-
-    public static String format(BigInteger value, IgnoreShiftType ignoreShiftType) {
-        return format(new BigDecimal(value), ignoreShiftType);
+    public static IFormattableTextComponent getComponent(BigInteger value) {
+        return getComponent(new BigDecimal(value));
+    }
+    public static IFormattableTextComponent getComponent(BigDecimal value) {
+        return new StringTextComponent(format(value));
     }
 
     public static String formatForceShort(BigInteger value) {
         return format(value, IgnoreShiftType.FORMAT);
     }
-
     public static String formatForceLong(BigInteger value) {
         return format(value, IgnoreShiftType.NO_FORMAT);
     }
-
-    public static String format(BigDecimal value) {
+    public static String format(BigInteger value) {
         return format(value, IgnoreShiftType.NONE);
     }
+    public static String format(BigInteger value, IgnoreShiftType ignoreShiftType) {
+        return format(new BigDecimal(value), ignoreShiftType);
+    }
+
 
     public static String formatForceShort(BigDecimal value) {
         return format(value, IgnoreShiftType.FORMAT);
@@ -63,7 +70,9 @@ public class EMCFormat extends DecimalFormat {
     public static String formatForceLong(BigDecimal value) {
         return format(value, IgnoreShiftType.NO_FORMAT);
     }
-
+    public static String format(BigDecimal value) {
+        return format(value, IgnoreShiftType.NONE);
+    }
     public static String format(BigDecimal value, IgnoreShiftType ignoreShiftType) {
         if (shouldFormat(value, ignoreShiftType)) {
             NumberName name = NumberName.findName(value);
@@ -160,7 +169,7 @@ public class EMCFormat extends DecimalFormat {
         }
 
         static @Nullable NumberName findName(BigDecimal value) {
-            // reduce is a quick and dirty soultion to get the last element
+            // reduce is a quick and dirty solution to get the last element
             return Arrays.stream(VALUES).filter(v -> value.compareTo(v.getBigDecimalValue()) > -1).reduce((first, second) -> second).orElse(null);
         }
     }
