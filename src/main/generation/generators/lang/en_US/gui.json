@@ -16,6 +16,6 @@
   "gui.projectexpansion.config.limit_emc_link_vendor.desc": "If EMC Link Right-Click functionality should be Limited by Tier or Not.",
   "gui.projectexpansion.config.transmutation_interface_item_count": "Transmutation Interface Item Count",
   "gui.projectexpansion.config.transmutation_interface_item_count.desc": "The amount of items that the transmutation interface will report to have. You likely want this to be at least 64.",
-  "gui.projectexpansion.emc_link": "Personal Link",
-  "gui.projectexpansion.emc_gain": "EMC Gain"
+  "gui.projectexpansion.config.use_old_values": "Use Old Values",
+  "gui.projectexpansion.config.use_old_values.desc": "Use the previous emc generation values (much more unbalanced)"
 }
