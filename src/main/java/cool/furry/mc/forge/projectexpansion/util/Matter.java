@@ -13,6 +13,9 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -110,16 +113,18 @@ public enum Matter {
         }
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    /* Limits */
+
     public long getPowerFlowerOutput() {
         try {
-            return Math.addExact(
-                    Math.multiplyExact(
-                            collectorOutput, 18L
-                    ),
-                    Math.multiplyExact(
-                            relayBonus, 30L
-                    )
-            ) * Config.powerflowerMultiplier.get();
+            return Math.multiplyExact(Math.addExact(
+                Math.multiplyExact(collectorOutput, 18L),
+                Math.multiplyExact(relayBonus, 30L)
+            ), Config.powerflowerMultiplier.get());
         } catch (ArithmeticException err) {
             return Long.MAX_VALUE;
         }
@@ -137,7 +142,7 @@ public enum Matter {
     */
 
     public long getCollectorOutput() {
-        return collectorOutput;
+        return Math.multiplyExact(collectorOutput, Config.collectorMultiplier.get());
     }
 
     public long getCollectorOutputForTicks(int ticks) {
@@ -145,7 +150,7 @@ public enum Matter {
     }
 
     public long getRelayBonus() {
-        return relayBonus;
+        return Math.multiplyExact(relayBonus, Config.relayBonusMultiplier.get());
     }
 
     public long getRelayBonusForTicks(int ticks) {
@@ -153,32 +158,37 @@ public enum Matter {
     }
 
     public long getRelayTransfer() {
-        return relayTransfer;
+        return Math.multiplyExact(relayTransfer, Config.relayTransferMultiplier.get());
     }
-
     public long getRelayTransferForTicks(int ticks) {
         return getRelayTransfer();
-    }
-
-    public int getLevel() {
-        return level;
     }
 
     public int getEMCLinkInventorySize() {
         return level * 3;
     }
 
-    public long getEMCLimit() {
-        return (long) Math.pow(16, level);
+    public long getEMCLinkEMCLimit() {
+        try {
+            return Math.multiplyExact((long) Math.pow(16, level), Config.emcLinkEMCLimitMultiplier.get());
+        } catch(ArithmeticException ignore) {
+            return Long.MAX_VALUE;
+        }
     }
 
-    public int getItemLimit() {
-        return (int) Math.pow(2, level - 1);
+    public int getEMCLinkItemLimit() {
+        try {
+            return Math.multiplyExact((int) Math.pow(2, level - 1), Config.emcLinkItemLimitMultiplier.get());
+        } catch(ArithmeticException ignore) {
+            return Integer.MAX_VALUE;
+        }
     }
 
-    public String getItemLimitString() {
-        return level == 16 ? "INFINITY" : String.valueOf(getItemLimit());
+    public StringTextComponent getEMCLinkItemLimitComponent() {
+        return new StringTextComponent(this == FINAL ? "INFINITY" : String.valueOf(getEMCLinkEMCLimit()));
     }
+
+    /* Registry Objects */
 
     public @Nullable Item getMatter() {
         return itemMatter == null ? null : itemMatter.get();
@@ -219,6 +229,8 @@ public enum Matter {
     public @Nullable BlockItem getEMCLinkItem() {
         return itemEMCLink == null ? null : itemEMCLink.get();
     }
+
+    /* Registration */
 
     private void register(RegistrationType reg) {
         switch (reg) {
