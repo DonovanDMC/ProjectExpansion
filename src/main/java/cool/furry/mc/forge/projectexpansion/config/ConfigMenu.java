@@ -66,14 +66,6 @@ public class ConfigMenu extends Screen {
                 (__, newValue) -> Config.emcDisplay.set(newValue)
         ));
 
-        optionsRowList.func_214333_a(new SliderPercentageOption(
-                "gui.projectexpansion.config.powerflower_multiplier",
-                1, 20, 1,
-                __ -> (double) Config.powerflowerMultiplier.get(),
-                (__, newValue) -> Config.powerflowerMultiplier.set(newValue.intValue()),
-                (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.powerflower_multiplier"), option.get(gs))
-        ));
-
         optionsRowList.func_214333_a(new BooleanOption(
                 "gui.projectexpansion.config.notify_command_changes",
                 __ -> Config.notifyCommandChanges.get(),
@@ -90,6 +82,54 @@ public class ConfigMenu extends Screen {
             "gui.projectexpansion.config.use_old_values",
             __ -> Config.useOldValues.get(),
             (__, newValue) -> Config.useOldValues.set(newValue)
+        ));
+
+        optionsRowList.func_214333_a(new SliderPercentageOption(
+            "gui.projectexpansion.config.collector_multiplier",
+            1, 20, 1,
+            __ -> (double) Config.collectorMultiplier.get(),
+            (__, newValue) -> Config.collectorMultiplier.set(newValue.longValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.collector_multiplier"), option.get(gs))
+        ));
+
+        optionsRowList.func_214333_a(new SliderPercentageOption(
+            "gui.projectexpansion.config.emc_link_item_limit_multiplier",
+            1, 20, 1,
+            __ -> (double) Config.emcLinkItemLimitMultiplier.get(),
+            (__, newValue) -> Config.emcLinkItemLimitMultiplier.set(newValue.intValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_item_limit_multiplier"), option.get(gs))
+        ));
+
+        optionsRowList.func_214333_a(new SliderPercentageOption(
+            "gui.projectexpansion.config.emc_link_emc_limit_multiplier",
+            1, 20, 1,
+            __ -> (double) Config.emcLinkEMCLimitMultiplier.get(),
+            (__, newValue) -> Config.emcLinkEMCLimitMultiplier.set(newValue.longValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_emc_limit_multiplier"), option.get(gs))
+        ));
+
+        optionsRowList.func_214333_a(new SliderPercentageOption(
+            "gui.projectexpansion.config.powerflower_multiplier",
+            1, 20, 1,
+            __ -> (double) Config.powerflowerMultiplier.get(),
+            (__, newValue) -> Config.powerflowerMultiplier.set(newValue.longValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.powerflower_multiplier"), option.get(gs))
+        ));
+
+        optionsRowList.func_214333_a(new SliderPercentageOption(
+            "gui.projectexpansion.config.relay_bonus_multiplier",
+            1, 20, 1,
+            __ -> (double) Config.relayBonusMultiplier.get(),
+            (__, newValue) -> Config.relayBonusMultiplier.set(newValue.longValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.relay_bonus_multiplier"), option.get(gs))
+        ));
+
+        optionsRowList.func_214333_a(new SliderPercentageOption(
+            "gui.projectexpansion.config.relay_transfer_multiplier",
+            1, 20, 1,
+            __ -> (double) Config.relayTransferMultiplier.get(),
+            (__, newValue) -> Config.relayTransferMultiplier.set(newValue.longValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.relay_transfer_multiplier"), option.get(gs))
         ));
 
         addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, I18n.format("gui.done"), (button) -> minecraft.displayGuiScreen(parentScreen)));
