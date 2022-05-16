@@ -10,6 +10,7 @@ import cool.furry.mc.forge.projectexpansion.init.Blocks;
 import cool.furry.mc.forge.projectexpansion.init.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemCompressedEnergyCollector;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -87,11 +88,11 @@ public enum Matter {
         this.hasItem = existingItem == null && ordinal() != 0;
         this.level = ordinal() + 1;
         // Gₙ(aₙ)(z)=4(2z²+z-1)/4z-1
-        this.collectorOutput = Config.useOldValues.get() ? calcSomeFactorialShitOrSomething(TemporaryValues.COLLECTOR_BASE, level) : collectorOutput;
+        this.collectorOutput = Config.useOldValues.get() ? calcOldValue(TemporaryValues.COLLECTOR_BASE, level) : collectorOutput;
         // ¯\_(ツ)_/¯
-        this.relayBonus = Config.useOldValues.get() ? calcSomeFactorialShitOrSomething(TemporaryValues.RELAY_BONUS_BASE, level) : relayBonus;
+        this.relayBonus = Config.useOldValues.get() ? calcOldValue(TemporaryValues.RELAY_BONUS_BASE, level) : relayBonus;
         // a(n+1)=4a(n)
-        this.relayTransfer = Config.useOldValues.get() ? calcSomeFactorialShitOrSomething(TemporaryValues.RELAY_TRANSFER_BASE, level) : relayTransfer;
+        this.relayTransfer = Config.useOldValues.get() ? calcOldValue(TemporaryValues.RELAY_TRANSFER_BASE, level) : relayTransfer;
         this.existingItem = existingItem;
         this.rarity =
             level >= EPIC_THRESHOLD ? Rarity.EPIC :
@@ -100,7 +101,7 @@ public enum Matter {
                         Rarity.COMMON;
     }
 
-    private Long calcSomeFactorialShitOrSomething(Long base, int level) {
+    private Long calcOldValue(Long base, int level) {
         try {
             long i = base;
             for(int v = 1; v <= level; v++) i = Math.multiplyExact(i, Long.valueOf(v));
@@ -110,16 +111,18 @@ public enum Matter {
         }
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    /* Limits */
+
     public long getPowerFlowerOutput() {
         try {
-            return Math.addExact(
-                    Math.multiplyExact(
-                            collectorOutput, 18L
-                    ),
-                    Math.multiplyExact(
-                            relayBonus, 30L
-                    )
-            ) * Config.powerflowerMultiplier.get();
+            return Math.multiplyExact(Math.addExact(
+                Math.multiplyExact(collectorOutput, 18L),
+                Math.multiplyExact(relayBonus, 30L)
+            ), Config.powerflowerMultiplier.get());
         } catch (ArithmeticException err) {
             return Long.MAX_VALUE;
         }
@@ -137,7 +140,7 @@ public enum Matter {
     */
 
     public long getCollectorOutput() {
-        return collectorOutput;
+        return Math.multiplyExact(collectorOutput, Config.collectorMultiplier.get());
     }
 
     public long getCollectorOutputForTicks(int ticks) {
@@ -145,7 +148,7 @@ public enum Matter {
     }
 
     public long getRelayBonus() {
-        return relayBonus;
+        return Math.multiplyExact(relayBonus, Config.relayBonusMultiplier.get());
     }
 
     public long getRelayBonusForTicks(int ticks) {
@@ -153,31 +156,37 @@ public enum Matter {
     }
 
     public long getRelayTransfer() {
-        return relayTransfer;
+        return Math.multiplyExact(relayTransfer, Config.relayTransferMultiplier.get());
     }
     public long getRelayTransferForTicks(int ticks) {
         return getRelayTransfer();
-    }
-
-    public int getLevel() {
-        return level;
     }
 
     public int getEMCLinkInventorySize() {
         return level * 3;
     }
 
-    public long getEMCLimit() {
-        return (long) Math.pow(16, level);
+    public long getEMCLinkEMCLimit() {
+        try {
+            return Math.multiplyExact((long) Math.pow(16, level), Config.emcLinkEMCLimitMultiplier.get());
+        } catch(ArithmeticException ignore) {
+            return Long.MAX_VALUE;
+        }
     }
 
-    public int getItemLimit() {
-        return (int) Math.pow(2, level - 1);
+    public int getEMCLinkItemLimit() {
+        try {
+            return Math.multiplyExact((int) Math.pow(2, level - 1), Config.emcLinkItemLimitMultiplier.get());
+        } catch(ArithmeticException ignore) {
+            return Integer.MAX_VALUE;
+        }
     }
 
-    public String getItemLimitString() {
-        return level == 16 ? "INFINITY" : String.valueOf(getItemLimit());
+    public TextComponent getEMCLinkItemLimitComponent() {
+        return new TextComponent(this == FINAL ? "INFINITY" : String.valueOf(getEMCLinkEMCLimit()));
     }
+
+    /* Registry Objects */
 
     public @Nullable Item getMatter() {
         return itemMatter == null ? null : itemMatter.get();
@@ -218,6 +227,8 @@ public enum Matter {
     public @Nullable BlockItem getEMCLinkItem() {
         return itemEMCLink == null ? null : itemEMCLink.get();
     }
+
+    /* Registration */
 
     private void register(RegistrationType reg) {
         switch (reg) {

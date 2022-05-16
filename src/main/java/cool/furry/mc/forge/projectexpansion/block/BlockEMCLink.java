@@ -61,8 +61,8 @@ public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatt
         super.appendHoverText(stack, level, list, flag);
         list.add((new TranslatableComponent("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
         list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
-        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_items", new TextComponent(matter.getItemLimitString()).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
-        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_emc", new TextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.format(BigDecimal.valueOf(matter.getEMCLimit()))).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_emc", new TextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.format(BigDecimal.valueOf(matter.getEMCLinkEMCLimit()))).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
     }
 
     @Override

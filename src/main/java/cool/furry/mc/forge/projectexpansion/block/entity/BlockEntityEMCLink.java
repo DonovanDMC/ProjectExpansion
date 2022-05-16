@@ -119,8 +119,8 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
     }
 
     private void resetLimits() {
-        remainingEMC = getMatter().getEMCLimit();
-        remainingImport = remainingExport = getMatter().getItemLimit();
+        remainingEMC = getMatter().getEMCLinkEMCLimit();
+        remainingImport = remainingExport = getMatter().getEMCLinkItemLimit();
     }
 
     public void setOwner(Player player) {
@@ -166,7 +166,7 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
 
     @Override
     public long getMaximumEmc() {
-        return getMatter().getEMCLimit();
+        return getMatter().getEMCLinkEMCLimit();
     }
 
     @Override
@@ -275,7 +275,7 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
 
     @Override
     public int getSlotLimit(int slot) {
-        return getMatter().getItemLimit();
+        return getMatter().getEMCLinkItemLimit();
     }
 
     @Override
