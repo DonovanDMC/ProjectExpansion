@@ -24,7 +24,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
@@ -126,8 +125,8 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     }
 
     private void resetLimits() {
-        remainingEMC = getMatter().getEMCLimit();
-        remainingImport = remainingExport = getMatter().getItemLimit();
+        remainingEMC = getMatter().getEMCLinkEMCLimit();
+        remainingImport = remainingExport = getMatter().getEMCLinkItemLimit();
     }
 
     public void setOwner(PlayerEntity player) {
@@ -173,7 +172,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public long getMaximumEmc() {
-        return getMatter().getEMCLimit();
+        return getMatter().getEMCLinkEMCLimit();
     }
 
     @Override
@@ -286,7 +285,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public int getSlotLimit(int slot) {
-        return getMatter().getItemLimit();
+        return getMatter().getEMCLinkItemLimit();
     }
 
     @Override
