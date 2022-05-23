@@ -7,9 +7,9 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@SuppressWarnings({"unused", "rawtypes"})
+@SuppressWarnings({"unused"})
 public class Blocks {
-    public static final DeferredRegister<Block> Registry = new DeferredRegister(ForgeRegistries.BLOCKS, Main.MOD_ID);
+    public static final DeferredRegister<Block> Registry = new DeferredRegister<>(ForgeRegistries.BLOCKS, Main.MOD_ID);
 
     public static final RegistryObject<BlockTransmutationInterface> TRANSMUTATION_INTERFACE = Registry.register("transmutation_interface", BlockTransmutationInterface::new);
 }

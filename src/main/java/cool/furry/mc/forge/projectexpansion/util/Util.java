@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.util;
 
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,8 +16,13 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import static moze_intel.projecte.api.capabilities.tile.IEmcStorage.EmcAction;
 @SuppressWarnings("unused")
 public class Util {
     // yes I know this exists in net.minecraft.util.Util but having to either type out that fully or
@@ -83,6 +89,57 @@ public class Util {
         return a < 0 ? a + b : a;
     }
 
+    public static BigInteger stepBigInteger(BigInteger value, Function<Long, Long> func) {
+        return stepBigInteger(value, Long.MAX_VALUE, func);
+    }
+
+    public static BigInteger stepBigInteger(BigInteger value, Long step, Function<Long, Long> func) {
+        return stepBigInteger(value, step, (a, b) -> func.apply(a));
+    }
+
+    public static BigInteger stepBigInteger(BigInteger value, BiFunction<Long, BigInteger, Long> func) {
+        return stepBigInteger(value, Long.MAX_VALUE, func);
+    }
+
+    public static BigInteger spreadEMC(BigInteger emc, List<IEmcStorage> storageList) {
+        return spreadEMC(emc, storageList, null);
+    }
+    public static BigInteger spreadEMC(BigInteger emc, List<IEmcStorage> storageList, @Nullable Long maxPer) {
+        if(emc.equals(BigInteger.ZERO) || storageList.isEmpty()) return emc;
+        List<IEmcStorage> notAccepting = new ArrayList<>();
+        emc = stepBigInteger(emc, (val) -> {
+            long div = val / storageList.size();
+            if(maxPer != null && maxPer < div) div = maxPer;
+            parentLoop: while (val > 0 && notAccepting.size() < storageList.size()) {
+                for(IEmcStorage storage : storageList) {
+                    if(notAccepting.contains(storage)) continue;
+                    if(val == 0) break parentLoop;
+                    if(val < div) div = val;
+                    long oldVal = val;
+                    val -= storage.insertEmc(div, EmcAction.EXECUTE);
+                    if(val.equals(oldVal)) notAccepting.add(storage);
+                }
+            }
+            return val;
+        });
+        return emc;
+    }
+
+    // consumer values: step, leftover
+    // consumer return: leftover (from step)
+    public static BigInteger stepBigInteger(BigInteger value, Long step, BiFunction<Long, BigInteger, Long> func) {
+        if(value.equals(BigInteger.ZERO)) return value;
+        long localValue;
+        while((localValue = Math.min(step, safeLongValue(value))) > 0L) {
+            value = value.subtract(BigInteger.valueOf(localValue));
+            Long unused = func.apply(localValue, value);
+            if(unused > 0L) {
+                value = value.add(BigInteger.valueOf(unused));
+                break;
+            }
+        }
+        return value;
+    }
 
     public enum AddKnowledgeResult {
         FAIL,

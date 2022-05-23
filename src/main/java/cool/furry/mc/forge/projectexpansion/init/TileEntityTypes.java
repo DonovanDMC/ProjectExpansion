@@ -11,9 +11,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Arrays;
 
-@SuppressWarnings({"unused", "ConstantConditions", "rawtypes"})
+@SuppressWarnings({"unused", "ConstantConditions"})
 public class TileEntityTypes {
-    public static final DeferredRegister<TileEntityType<?>> Registry = new DeferredRegister(ForgeRegistries.TILE_ENTITIES, Main.MOD_ID);
+    public static final DeferredRegister<TileEntityType<?>> Registry = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Main.MOD_ID);
 
     public static final RegistryObject<TileEntityType<TileEMCLink>> EMC_LINK = Registry.register("emc_link", () -> TileEntityType.Builder.create(TileEMCLink::new, Arrays.stream(Matter.VALUES).map(Matter::getEMCLink).toArray(Block[]::new)).build(null));
     public static final RegistryObject<TileEntityType<TilePowerFlower>> POWER_FLOWER = Registry.register("power_flower", () -> TileEntityType.Builder.create(TilePowerFlower::new, Arrays.stream(Matter.VALUES).map(Matter::getPowerFlower).toArray(Block[]::new)).build(null));
