@@ -91,7 +91,7 @@ public enum Matter {
         this.collectorOutput = Config.useOldValues.get() ? calcOldValue(TemporaryValues.COLLECTOR_BASE, level) : collectorOutput;
         // ¯\_(ツ)_/¯
         this.relayBonus = Config.useOldValues.get() ? calcOldValue(TemporaryValues.RELAY_BONUS_BASE, level) : relayBonus;
-        // a(n+1)=4a(n)
+        // Gₙ(aₙ)(z)=64(2z²+z-1)/4z-1
         this.relayTransfer = Config.useOldValues.get() ? calcOldValue(TemporaryValues.RELAY_TRANSFER_BASE, level) : relayTransfer;
         this.existingItem = existingItem;
         this.rarity =
@@ -183,7 +183,7 @@ public enum Matter {
     }
 
     public StringTextComponent getEMCLinkItemLimitComponent() {
-        return new StringTextComponent(this == FINAL ? "INFINITY" : String.valueOf(getEMCLinkEMCLimit()));
+        return new StringTextComponent(this == FINAL ? "INFINITY" : String.valueOf(getEMCLinkItemLimit()));
     }
 
     /* Registry Objects */
