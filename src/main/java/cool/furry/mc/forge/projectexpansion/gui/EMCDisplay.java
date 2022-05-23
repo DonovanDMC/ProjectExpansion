@@ -22,11 +22,13 @@ import java.math.BigInteger;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class EMCDisplay {
-    private static BigInteger change = BigInteger.ZERO;
     private static BigInteger emc = BigInteger.ZERO;
+    private static final BigInteger[] history = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
+    private static BigInteger lastEMC = BigInteger.ZERO;
     private static int tick = 0;
 
-    private static @Nullable ClientPlayerEntity getPlayer() {
+    private static @Nullable
+    ClientPlayerEntity getPlayer() {
         return Minecraft.getInstance().player;
     }
 
@@ -38,36 +40,38 @@ public class EMCDisplay {
         if (event.phase == TickEvent.Phase.END && player != null && tick >= 20) {
             tick = 0;
             player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).ifPresent((provider) -> {
-                BigInteger lastEMC = emc;
                 emc = provider.getEmc();
-                change = emc.subtract(lastEMC);
+                history[1] = history[0];
+                history[0] = emc.subtract(lastEMC);
+                lastEMC = emc;
             });
         }
     }
 
     private static void reset() {
-        if (!Config.emcDisplay.get())
-            return;
-        emc = change = BigInteger.ZERO;
+        emc = lastEMC = BigInteger.ZERO;
         tick = 0;
     }
 
     @SubscribeEvent
     public static void clientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+        if (!Config.emcDisplay.get()) return;
         reset();
     }
 
     @SubscribeEvent
-    public static void worldUnload(WorldEvent.Unload event) {
+    public static void onWorldUnload(WorldEvent.Unload event) {
+        if (!Config.emcDisplay.get()) return;
         reset();
     }
 
     @SubscribeEvent
     public static void onRenderGUI(RenderGameOverlayEvent.Text event) {
         if (!Config.emcDisplay.get()) return;
+        BigInteger avg = history[0].add(history[1]);
         String str = EMCFormat.format(emc);
-        if (!change.equals(BigInteger.ZERO))
-            str += " " + (change.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.format(change.abs()) + "/s";
+        if (!avg.equals(BigInteger.ZERO)) str += " " + (avg.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.format(avg.abs()) + "/s";
         event.getLeft().add(String.format("EMC: %s", str));
     }
 }
+
