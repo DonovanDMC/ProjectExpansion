@@ -45,7 +45,7 @@ public class ConfigMenu extends Screen {
                 __ -> (double) Config.tickDelay.get(),
                 (__, newValue) -> Config.tickDelay.set(newValue.intValue()),
                 // I don't know if this is how I should be doing this, but it works
-                (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.tick_delay"), option.get(gs))
+                (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.tick_delay"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new BooleanOption(
@@ -88,8 +88,8 @@ public class ConfigMenu extends Screen {
             "gui.projectexpansion.config.collector_multiplier",
             1, 20, 1,
             __ -> (double) Config.collectorMultiplier.get(),
-            (__, newValue) -> Config.collectorMultiplier.set(newValue.longValue()),
-            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.collector_multiplier"), option.get(gs))
+            (__, newValue) -> Config.collectorMultiplier.set(newValue.intValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.collector_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
@@ -97,39 +97,39 @@ public class ConfigMenu extends Screen {
             1, 20, 1,
             __ -> (double) Config.emcLinkItemLimitMultiplier.get(),
             (__, newValue) -> Config.emcLinkItemLimitMultiplier.set(newValue.intValue()),
-            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_item_limit_multiplier"), option.get(gs))
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_item_limit_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.emc_link_emc_limit_multiplier",
             1, 20, 1,
             __ -> (double) Config.emcLinkEMCLimitMultiplier.get(),
-            (__, newValue) -> Config.emcLinkEMCLimitMultiplier.set(newValue.longValue()),
-            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_emc_limit_multiplier"), option.get(gs))
+            (__, newValue) -> Config.emcLinkEMCLimitMultiplier.set(newValue.intValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_emc_limit_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.powerflower_multiplier",
             1, 20, 1,
             __ -> (double) Config.powerflowerMultiplier.get(),
-            (__, newValue) -> Config.powerflowerMultiplier.set(newValue.longValue()),
-            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.powerflower_multiplier"), option.get(gs))
+            (__, newValue) -> Config.powerflowerMultiplier.set(newValue.intValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.powerflower_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.relay_bonus_multiplier",
             1, 20, 1,
             __ -> (double) Config.relayBonusMultiplier.get(),
-            (__, newValue) -> Config.relayBonusMultiplier.set(newValue.longValue()),
-            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.relay_bonus_multiplier"), option.get(gs))
+            (__, newValue) -> Config.relayBonusMultiplier.set(newValue.intValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.relay_bonus_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.relay_transfer_multiplier",
             1, 20, 1,
             __ -> (double) Config.relayTransferMultiplier.get(),
-            (__, newValue) -> Config.relayTransferMultiplier.set(newValue.longValue()),
-            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.relay_transfer_multiplier"), option.get(gs))
+            (__, newValue) -> Config.relayTransferMultiplier.set(newValue.intValue()),
+            (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.relay_transfer_multiplier"), (int) option.get(gs))
         ));
 
         addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, I18n.format("gui.done"), (button) -> minecraft.displayGuiScreen(parentScreen)));
