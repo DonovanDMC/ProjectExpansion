@@ -8,6 +8,7 @@ displayName="Project Expansion"
 updateJSONURL="https://raw.githubusercontent.com/DonovanDMC/ProjectExpansion/1.15/updates.json"
 displayURL="https://github.com/DonovanDMC/ProjectExpansion"
 logoFile="icon.png"
+itemIcon = "minecraft:anvil"
 credits="sinkillerj for ProjectE"
 authors="Donovan_DMC"
 description='''
@@ -31,3 +32,9 @@ mandatory=true
 versionRange="*"
 ordering="AFTER"
 side="BOTH"
+[[dependencies.projectexpansion]]
+modId = "catalogue"
+mandatory = false
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
