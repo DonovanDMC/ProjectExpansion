@@ -44,7 +44,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private ItemStack itemStack;
     private Matter matter;
-    private long remainingEMC = 0L;
+    private BigInteger remainingEMC = BigInteger.ZERO;
     private int remainingImport = 0;
     private int remainingExport = 0;
 
@@ -64,12 +64,10 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
             owner = nbt.getUniqueId("Owner");
         if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING))
             ownerName = nbt.getString("OwnerName");
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING))
-            emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
         if (nbt.contains("Item", Constants.NBT.TAG_COMPOUND))
             itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound("Item")))).createStack();
-        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE))
-            remainingEMC = (long) nbt.getDouble("RemainingEMC");
+        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_STRING)) remainingEMC = new BigInteger(nbt.getString("RemainingEMC"));
         if (nbt.contains("RemainingImport", Constants.NBT.TAG_INT))
             remainingImport = nbt.getInt("RemainingImport");
         if (nbt.contains("RemainingExport", Constants.NBT.TAG_INT))
@@ -84,7 +82,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
         nbt.putString("OwnerName", ownerName);
         nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
         nbt.put("Item", itemStack.serializeNBT());
-        nbt.putDouble("RemainingEMC", remainingEMC);
+        nbt.putString("RemainingEMC", remainingEMC.toString());
         nbt.putInt("RemainingImport", remainingImport);
         nbt.putInt("RemainingExport", remainingExport);
         return nbt;
@@ -163,7 +161,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public long getMaximumEmc() {
-        return getMatter().getEMCLinkEMCLimit();
+        return Util.safeLongValue(getMatter().getEMCLinkEMCLimit());
     }
 
     @Override
@@ -173,13 +171,10 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        long v = Math.min(remainingEMC, emc);
+        long v = Math.min(Util.safeLongValue(remainingEMC), emc);
 
-        if (emc <= 0L)
-            return 0L;
-
-        if (action.execute())
-            this.emc = this.emc.add(BigInteger.valueOf(v));
+        if (emc <= 0L) return 0L;
+        if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(v));
 
         return v;
     }
@@ -196,13 +191,11 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        if (slot != 0 || itemStack.isEmpty())
-            return ItemStack.EMPTY;
+        if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger maxCount = provider.getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack))).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int count = maxCount.intValueExact();
-        if (count <= 0)
-            return ItemStack.EMPTY;
+        if (count <= 0) return ItemStack.EMPTY;
 
         ItemStack stack = itemStack.copy();
         stack.setCount(count);
@@ -212,15 +205,13 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null)
-            return stack;
+        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) return stack;
 
         stack = stack.copy();
         int count = stack.getCount();
         stack.setCount(1);
 
-        if (count <= 0)
-            return stack;
+        if (count <= 0) return stack;
 
         int insertCount = Math.min(count, remainingImport);
         if (!simulate) {
@@ -237,8 +228,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
             markDirty();
         }
 
-        if (insertCount == count)
-            return ItemStack.EMPTY;
+        if (insertCount == count) return ItemStack.EMPTY;
 
         stack.setCount(count - insertCount);
         return stack;
@@ -251,29 +241,24 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     }
 
     public ItemStack extractItemInternal(int slot, int amount, boolean simulate, boolean limit) {
-        if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null)
-            return ItemStack.EMPTY;
+        if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
 
         BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int extractCount = Math.min(amount, limit ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
-        if (extractCount <= 0)
-            return ItemStack.EMPTY;
+        if (extractCount <= 0) return ItemStack.EMPTY;
 
         ItemStack r = itemStack.copy();
         r.setCount(extractCount);
-        if (simulate)
-            return r;
+        if (simulate) return r;
 
         BigInteger totalPrice = itemValue.multiply(BigInteger.valueOf(extractCount));
         provider.setEmc(provider.getEmc().subtract(totalPrice));
         ServerPlayerEntity player = Util.getPlayer(owner);
-        if (player != null)
-            provider.sync(player);
+        if (player != null) provider.sync(player);
 
-        if (limit)
-            remainingExport -= extractCount;
+        if (limit) remainingExport -= extractCount;
         markDirty();
         return r;
     }

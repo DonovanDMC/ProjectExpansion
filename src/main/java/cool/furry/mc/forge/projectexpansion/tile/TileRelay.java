@@ -15,11 +15,12 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcStorage {
-    public long emc = 0L;
+    public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     public static final Direction[] DIRECTIONS = Direction.values();
     public TileRelay() {
@@ -29,15 +30,14 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_LONG))
-            emc = nbt.getLong((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC));
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putLong(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc);
+        nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
         return nbt;
     }
 
@@ -46,36 +46,23 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
         // we can't use the user defined value due to emc duplication possibilities
         if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
 
-        long transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getRelayTransfer();
+        BigInteger transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getRelayTransfer();
         List<IEmcStorage> temp = new ArrayList<>(1);
 
         for (Direction dir : DIRECTIONS) {
             TileEntity tile = world.getTileEntity(pos.offset(dir));
             if (tile == null) continue;
             tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
-                if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L)
-                    temp.add(storage);
+                if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) temp.add(storage);
             });
         }
 
-        if (!temp.isEmpty() && emc >= temp.size()) {
-            long div = Math.min(emc / temp.size(), transfer);
-
-            for (IEmcStorage storage : temp) {
-                long action = storage.insertEmc(div, EmcAction.EXECUTE);
-                if (action > 0L) {
-                    emc -= action;
-                    markDirty();
-                    if (emc < div)
-                        break;
-                }
-            }
-        }
+        emc = Util.spreadEMC(emc, temp, Util.safeLongValue(transfer));
     }
 
     @Override
     public long getStoredEmc() {
-        return emc;
+        return Util.safeLongValue(emc);
     }
 
     @Override
@@ -85,24 +72,20 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
 
     @Override
     public long extractEmc(long emc, EmcAction action) {
-        long v = Math.min(this.emc, emc);
+        long v = Math.min(Util.safeLongValue(this.emc), emc);
 
-        if (v < 0L)
-            return insertEmc(-v, action);
-        else if (action.execute())
-            this.emc -= v;
+        if (v < 0L) return insertEmc(-v, action);
+        else if (action.execute()) this.emc = this.emc.subtract(BigInteger.valueOf(v));
 
         return v;
     }
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        long v = Math.min(getMaximumEmc() - this.emc, emc);
+        long v = Math.min(getMaximumEmc() - Util.safeLongValue(this.emc), emc);
 
-        if (v < 0L)
-            return extractEmc(-v, action);
-        else if (action.execute())
-            this.emc += v;
+        if (v < 0L) return extractEmc(-v, action);
+        else if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(v));
 
         return v;
     }
@@ -113,8 +96,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
     }
 
     public void addBonus() {
-        if (getBlockState().getBlock() instanceof BlockRelay)
-            insertEmc(((BlockRelay) getBlockState().getBlock()).getMatter().getRelayBonus(), EmcAction.EXECUTE);
+        if (getBlockState().getBlock() instanceof BlockRelay) Util.stepBigInteger(((BlockRelay) getBlockState().getBlock()).getMatter().getRelayBonus(), (val) -> insertEmc(val, EmcAction.EXECUTE));
     }
 
     /****************

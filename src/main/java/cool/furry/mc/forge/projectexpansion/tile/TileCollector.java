@@ -17,11 +17,12 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TileCollector extends TileEntity implements ITickableTileEntity, IEmcStorage {
-    public long emc = 0L;
+    public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     public static final Direction[] DIRECTIONS = Direction.values();
     public TileCollector() {
@@ -31,24 +32,22 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_LONG))
-            emc = nbt.getLong((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC));
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putLong(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc);
+        nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
         return nbt;
     }
 
     @Override
     public void tick() {
         // we can't use the user defined value due to emc duplication possibilities
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20))
-            return;
-        emc += ((BlockCollector) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get());
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
+        emc = emc.add(((BlockCollector) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get()));
         List<IEmcStorage> temp = new ArrayList<>(1);
 
         for (Direction dir : DIRECTIONS) {
@@ -69,23 +68,12 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
             });
         }
 
-        if (!temp.isEmpty() && emc >= temp.size()) {
-            long div = emc / temp.size();
-
-            for (IEmcStorage storage : temp) {
-                long action = storage.insertEmc(div, EmcAction.EXECUTE);
-                if (action > 0L) {
-                    emc -= action;
-                    markDirty();
-                    if (emc < div) break;
-                }
-            }
-        }
+        emc = Util.spreadEMC(emc, temp);
     }
 
     @Override
     public long getStoredEmc() {
-        return emc;
+        return Util.safeLongValue(emc);
     }
 
     @Override
@@ -95,13 +83,9 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
 
     @Override
     public long extractEmc(long emc, EmcAction action) {
-        long change = Math.min(this.emc, emc);
-
-        if (change < 0L)
-            return insertEmc(-change, action);
-        else if (action.execute())
-            this.emc -= change;
-
+        long change = Math.min(Util.safeLongValue(this.emc), emc);
+        if (change < 0L) return insertEmc(-change, action);
+        else if (action.execute()) this.emc = this.emc.subtract(BigInteger.valueOf(change));
         return change;
     }
 

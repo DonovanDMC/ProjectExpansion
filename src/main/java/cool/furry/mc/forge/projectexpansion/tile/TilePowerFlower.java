@@ -34,8 +34,7 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
             owner = nbt.getUniqueId("Owner");
         if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING))
             ownerName = nbt.getString("OwnerName");
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING))
-            emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
+        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
     }
 
     @Nonnull
@@ -62,18 +61,17 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
 
     @Override
     public void tick() {
-        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != Util.mod(hashCode(), Config.tickDelay.get()))
-            return;
+        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != Util.mod(hashCode(), Config.tickDelay.get())) return;
 
-        long res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
+        BigInteger res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
         ServerPlayerEntity player = Util.getPlayer(world, owner);
 
         if (player != null) {
-            PowerFlowerCollector.add(player, emc.add(BigInteger.valueOf(res)));
+            PowerFlowerCollector.add(player, emc.add(res));
             emc = BigInteger.ZERO;
             markDirty();
         } else {
-            emc = emc.add(BigInteger.valueOf(res));
+            emc = emc.add(res);
             markDirty();
         }
     }
