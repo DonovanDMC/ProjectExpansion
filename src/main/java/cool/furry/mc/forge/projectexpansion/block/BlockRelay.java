@@ -7,10 +7,8 @@ import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
-import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -59,8 +57,8 @@ public class BlockRelay extends Block implements IHasMatter, EntityBlock {
         super.appendHoverText(stack, level, list, flag);
         list.add(new TranslatableComponent("block.projectexpansion.relay.tooltip").setStyle(ColorStyle.GRAY));
         list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
-        list.add(new TranslatableComponent("block.projectexpansion.relay.bonus", EMCFormat.getComponent(matter.getRelayBonusForTicks(Config.tickDelay.get())).copy().setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("block.projectexpansion.relay.transfer", EMCFormat.getComponent(matter.getRelayTransferForTicks(Config.tickDelay.get())).copy().setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("block.projectexpansion.relay.bonus", EMCFormat.getComponent(matter.getRelayBonusForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("block.projectexpansion.relay.transfer", EMCFormat.getComponent(matter.getRelayTransferForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
     }
 
     @Nullable

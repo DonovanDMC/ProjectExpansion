@@ -10,7 +10,6 @@ import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -26,12 +25,9 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
 
 @SuppressWarnings("unused")
-public class BlockEntityTransmutationInterface extends BlockEntity implements IItemHandler {
-    public UUID owner = Util.DUMMY_UUID;
-    public String ownerName = "";
+public class BlockEntityTransmutationInterface extends BlockEntityOwnable implements IItemHandler {
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
 
     private ItemInfo[] info;
@@ -43,23 +39,11 @@ public class BlockEntityTransmutationInterface extends BlockEntity implements II
     @Override
     public void load(@Nonnull CompoundTag tag) {
         super.load(tag);
-        if (tag.hasUUID("Owner"))
-            owner = tag.getUUID("Owner");
-        if (tag.contains("OwnerName", Tag.TAG_STRING))
-            ownerName = tag.getString("OwnerName");
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putUUID("Owner", owner);
-        tag.putString("OwnerName", ownerName);
-    }
-
-    public void setOwner(Player player) {
-        owner = player.getUUID();
-        ownerName = player.getScoreboardName();
-        Util.markDirty(this);
     }
 
     @SuppressWarnings("unused")

@@ -2,10 +2,10 @@ package cool.furry.mc.forge.projectexpansion.block.entity;
 
 import cool.furry.mc.forge.projectexpansion.block.BlockRelay;
 import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
-import moze_intel.projecte.utils.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,12 +18,13 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
-    public long emc = 0L;
+    public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     public static final Direction[] DIRECTIONS = Direction.values();
     public BlockEntityRelay(BlockPos pos, BlockState state) {
@@ -33,14 +34,13 @@ public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
     @Override
     public void load(@Nonnull CompoundTag tag) {
         super.load(tag);
-        if (tag.contains(Constants.NBT_KEY_STORED_EMC, Tag.TAG_LONG))
-            emc = tag.getLong((Constants.NBT_KEY_STORED_EMC));
+        if (tag.contains(TagNames.STORED_EMC, Tag.TAG_STRING)) emc = new BigInteger(tag.getString((TagNames.STORED_EMC)));
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putLong(Constants.NBT_KEY_STORED_EMC, emc);
+        tag.putString(TagNames.STORED_EMC, emc.toString());
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
@@ -51,7 +51,7 @@ public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
         // we can't use the user defined value due to emc duplication possibilities
         if ((level.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
 
-        long transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getRelayTransfer();
+        BigInteger transfer = ((BlockRelay) getBlockState().getBlock()).getMatter().getRelayTransfer();
         List<IEmcStorage> temp = new ArrayList<>(1);
 
         for (Direction dir : DIRECTIONS) {
@@ -64,23 +64,12 @@ public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
 
         }
 
-        if (!temp.isEmpty() && emc >= temp.size()) {
-            long div = Math.min(emc / temp.size(), transfer);
-
-            for (IEmcStorage storage : temp) {
-                long action = storage.insertEmc(div, EmcAction.EXECUTE);
-                if (action > 0L) {
-                    emc -= action;
-                    Util.markDirty(this);
-                    if (emc < div) break;
-                }
-            }
-        }
+        emc = Util.spreadEMC(emc, temp, Util.safeLongValue(transfer));
     }
 
     @Override
     public long getStoredEmc() {
-        return emc;
+        return Util.safeLongValue(emc);
     }
 
     @Override
@@ -90,25 +79,17 @@ public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
 
     @Override
     public long extractEmc(long emc, EmcAction action) {
-        long v = Math.min(this.emc, emc);
-
-        if (v < 0L)
-            return insertEmc(-v, action);
-        else if (action.execute())
-            this.emc -= v;
-
+        long v = Math.min(Util.safeLongValue(this.emc), emc);
+        if (v < 0L) return insertEmc(-v, action);
+        else if (action.execute()) this.emc = this.emc.subtract(BigInteger.valueOf(v));
         return v;
     }
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        long v = Math.min(getMaximumEmc() - this.emc, emc);
-
-        if (v < 0L)
-            return extractEmc(-v, action);
-        else if (action.execute())
-            this.emc += v;
-
+        long v = Math.min(getMaximumEmc() - Util.safeLongValue(this.emc), emc);
+        if (v < 0L) return extractEmc(-v, action);
+        else if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(v));
         return v;
     }
 
@@ -118,8 +99,7 @@ public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
     }
 
     public void addBonus() {
-        if (getBlockState().getBlock() instanceof BlockRelay)
-            insertEmc(((BlockRelay) getBlockState().getBlock()).getMatter().getRelayBonus(), EmcAction.EXECUTE);
+        if (getBlockState().getBlock() instanceof BlockRelay) Util.stepBigInteger(((BlockRelay) getBlockState().getBlock()).getMatter().getRelayBonus(), (val) -> insertEmc(val, EmcAction.EXECUTE));
     }
 
     /****************

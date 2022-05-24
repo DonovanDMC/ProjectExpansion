@@ -3,17 +3,13 @@ package cool.furry.mc.forge.projectexpansion.block.entity;
 import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
-import cool.furry.mc.forge.projectexpansion.util.Util;
+import cool.furry.mc.forge.projectexpansion.util.*;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.emc.nbt.NBTManager;
-import moze_intel.projecte.utils.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -38,18 +34,15 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
 
 @SuppressWarnings("unused")
-public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IItemHandler, IHasMatter {
+public class BlockEntityEMCLink extends BlockEntityOwnable implements IEmcStorage, IItemHandler, IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
-    public UUID owner = Util.DUMMY_UUID;
-    public String ownerName = "";
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private ItemStack itemStack;
     private Matter matter;
-    private long remainingEMC = 0L;
+    private BigInteger remainingEMC = BigInteger.ZERO;
     private int remainingImport = 0;
     private int remainingExport = 0;
 
@@ -65,32 +58,21 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
     @Override
     public void load(@Nonnull CompoundTag tag) {
         super.load(tag);
-        if (tag.hasUUID("Owner"))
-            owner = tag.getUUID("Owner");
-        if (tag.contains("OwnerName", Tag.TAG_STRING))
-            ownerName = tag.getString("OwnerName");
-        if (tag.contains(Constants.NBT_KEY_STORED_EMC, Tag.TAG_STRING))
-            emc = new BigInteger(tag.getString((Constants.NBT_KEY_STORED_EMC)));
-        if (tag.contains("Item", Tag.TAG_COMPOUND))
-            itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.of(tag.getCompound("Item")))).createStack();
-        if (tag.contains("RemainingEMC", Tag.TAG_DOUBLE))
-            remainingEMC = (long) tag.getDouble("RemainingEMC");
-        if (tag.contains("RemainingImport", Tag.TAG_INT))
-            remainingImport = tag.getInt("RemainingImport");
-        if (tag.contains("RemainingExport", Tag.TAG_INT))
-            remainingExport = tag.getInt("RemainingExport");
+        if (tag.contains(TagNames.STORED_EMC, Tag.TAG_STRING)) emc = new BigInteger(tag.getString((TagNames.STORED_EMC)));
+        if (tag.contains(TagNames.ITEM, Tag.TAG_COMPOUND)) itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.of(tag.getCompound(TagNames.ITEM)))).createStack();
+        if (tag.contains(TagNames.REMAINING_EMC, Tag.TAG_STRING)) remainingEMC = new BigInteger(tag.getString(TagNames.REMAINING_EMC));
+        if (tag.contains(TagNames.REMAINING_IMPORT, Tag.TAG_INT)) remainingImport = tag.getInt(TagNames.REMAINING_IMPORT);
+        if (tag.contains(TagNames.REMAINING_EXPORT, Tag.TAG_INT)) remainingExport = tag.getInt(TagNames.REMAINING_EXPORT);
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putUUID("Owner", owner);
-        tag.putString("OwnerName", ownerName);
-        tag.putString(Constants.NBT_KEY_STORED_EMC, emc.toString());
-        tag.put("Item", itemStack.serializeNBT());
-        tag.putDouble("RemainingEMC", remainingEMC);
-        tag.putInt("RemainingImport", remainingImport);
-        tag.putInt("RemainingExport", remainingExport);
+        tag.putString(TagNames.STORED_EMC, emc.toString());
+        tag.put(TagNames.ITEM, itemStack.serializeNBT());
+        tag.putString(TagNames.REMAINING_EMC, remainingEMC.toString());
+        tag.putInt(TagNames.REMAINING_IMPORT, remainingImport);
+        tag.putInt(TagNames.REMAINING_EXPORT, remainingExport);
     }
 
     /********
@@ -121,12 +103,6 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
     private void resetLimits() {
         remainingEMC = getMatter().getEMCLinkEMCLimit();
         remainingImport = remainingExport = getMatter().getEMCLinkItemLimit();
-    }
-
-    public void setOwner(Player player) {
-        owner = player.getUUID();
-        ownerName = player.getScoreboardName();
-        Util.markDirty(this);
     }
 
     private void setInternalItem(ItemStack stack) {
@@ -166,7 +142,7 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
 
     @Override
     public long getMaximumEmc() {
-        return getMatter().getEMCLinkEMCLimit();
+        return Util.safeLongValue(getMatter().getEMCLinkEMCLimit());
     }
 
     @Override
@@ -176,13 +152,10 @@ public class BlockEntityEMCLink extends BlockEntity implements IEmcStorage, IIte
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        long v = Math.min(remainingEMC, emc);
+        long v = Math.min(Util.safeLongValue(remainingEMC), emc);
 
-        if (emc <= 0L)
-            return 0L;
-
-        if (action.execute())
-            this.emc = this.emc.add(BigInteger.valueOf(v));
+        if (emc <= 0L) return 0L;
+        if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(v));
 
         return v;
     }
