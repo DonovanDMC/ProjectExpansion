@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.PowerFlowerCollector;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import net.minecraft.entity.LivingEntity;
@@ -19,10 +20,8 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public class TilePowerFlower extends TileEntity implements ITickableTileEntity  {
+public class TilePowerFlower extends TileOwnable implements ITickableTileEntity  {
     public BigInteger emc = BigInteger.ZERO;
-    public UUID owner = new UUID(0L, 0L);
-    public String ownerName = "";
     public TilePowerFlower() {
         super(TileEntityTypes.POWER_FLOWER.get());
     }
@@ -30,20 +29,14 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity  
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
-        if (nbt.hasUniqueId("Owner"))
-            owner = nbt.getUniqueId("Owner");
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING))
-            ownerName = nbt.getString("OwnerName");
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
+        if (nbt.contains(NBTNames.STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((NBTNames.STORED_EMC)));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putUniqueId("Owner", owner);
-        nbt.putString("OwnerName", ownerName);
-        nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
+        nbt.putString(NBTNames.STORED_EMC, emc.toString());
         return nbt;
     }
 

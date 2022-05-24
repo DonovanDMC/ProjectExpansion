@@ -3,10 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
-import cool.furry.mc.forge.projectexpansion.util.Util;
+import cool.furry.mc.forge.projectexpansion.util.*;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -36,10 +33,8 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
+public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
-    public UUID owner = Util.DUMMY_UUID;
-    public String ownerName = "";
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private ItemStack itemStack;
@@ -60,31 +55,22 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
-        if (nbt.hasUniqueId("Owner"))
-            owner = nbt.getUniqueId("Owner");
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING))
-            ownerName = nbt.getString("OwnerName");
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
-        if (nbt.contains("Item", Constants.NBT.TAG_COMPOUND))
-            itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound("Item")))).createStack();
-        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_STRING)) remainingEMC = new BigInteger(nbt.getString("RemainingEMC"));
-        if (nbt.contains("RemainingImport", Constants.NBT.TAG_INT))
-            remainingImport = nbt.getInt("RemainingImport");
-        if (nbt.contains("RemainingExport", Constants.NBT.TAG_INT))
-            remainingExport = nbt.getInt("RemainingExport");
+        if (nbt.contains(NBTNames.STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((NBTNames.STORED_EMC)));
+        if (nbt.contains(NBTNames.ITEM, Constants.NBT.TAG_COMPOUND)) itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound(NBTNames.ITEM)))).createStack();
+        if (nbt.contains(NBTNames.REMAINING_EMC, Constants.NBT.TAG_STRING)) remainingEMC = new BigInteger(nbt.getString(NBTNames.REMAINING_EMC));
+        if (nbt.contains(NBTNames.REMAINING_IMPORT, Constants.NBT.TAG_INT)) remainingImport = nbt.getInt(NBTNames.REMAINING_IMPORT);
+        if (nbt.contains(NBTNames.REMAINING_EXPORT, Constants.NBT.TAG_INT)) remainingExport = nbt.getInt(NBTNames.REMAINING_EXPORT);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putUniqueId("Owner", owner);
-        nbt.putString("OwnerName", ownerName);
-        nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
-        nbt.put("Item", itemStack.serializeNBT());
-        nbt.putString("RemainingEMC", remainingEMC.toString());
-        nbt.putInt("RemainingImport", remainingImport);
-        nbt.putInt("RemainingExport", remainingExport);
+        nbt.putString(NBTNames.STORED_EMC, emc.toString());
+        nbt.put(NBTNames.ITEM, itemStack.serializeNBT());
+        nbt.putString(NBTNames.REMAINING_EMC, remainingEMC.toString());
+        nbt.putInt(NBTNames.REMAINING_IMPORT, remainingImport);
+        nbt.putInt(NBTNames.REMAINING_EXPORT, remainingExport);
         return nbt;
     }
 
@@ -95,17 +81,14 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public void tick() {
         // due to the nature of per second this block follows, using the config value isn't really possible
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20))
-            return;
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
         resetLimits();
-        if (emc.equals(BigInteger.ZERO))
-            return;
+        if (emc.equals(BigInteger.ZERO)) return;
         ServerPlayerEntity player = Util.getPlayer(world, owner);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
 
         provider.setEmc(provider.getEmc().add(emc));
-        if (player != null)
-            provider.sync(player);
+        if (player != null) provider.sync(player);
         markDirty();
         emc = BigInteger.ZERO;
     }
@@ -113,12 +96,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     private void resetLimits() {
         remainingEMC = getMatter().getEMCLinkEMCLimit();
         remainingImport = remainingExport = getMatter().getEMCLinkItemLimit();
-    }
-
-    public void setOwner(PlayerEntity player) {
-        owner = player.getUniqueID();
-        ownerName = player.getScoreboardName();
-        markDirty();
     }
 
     private void setInternalItem(ItemStack stack) {

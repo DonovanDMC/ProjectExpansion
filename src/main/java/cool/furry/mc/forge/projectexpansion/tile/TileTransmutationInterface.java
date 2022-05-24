@@ -13,10 +13,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -24,11 +22,8 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
 
-public class TileTransmutationInterface extends TileEntity implements IItemHandler, ITickableTileEntity {
-    public UUID owner = Util.DUMMY_UUID;
-    public String ownerName = "";
+public class TileTransmutationInterface extends TileOwnable implements IItemHandler, ITickableTileEntity {
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private ItemInfo[] info;
 
@@ -39,17 +34,12 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Override
     public void read(@Nonnull CompoundNBT nbt) {
         super.read(nbt);
-        if (nbt.hasUniqueId("Owner")) owner = nbt.getUniqueId("Owner");
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) ownerName = nbt.getString("OwnerName");
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-        super.write(nbt);
-        nbt.putUniqueId("Owner", owner);
-        nbt.putString("OwnerName", ownerName);
-        return nbt;
+        return super.write(nbt);
     }
 
     public void setOwner(PlayerEntity player) {
