@@ -17,6 +17,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -53,9 +54,9 @@ public enum Matter {
     public final String name;
     public final boolean hasItem;
     public final int level;
-    public final long collectorOutput;
-    public final long relayBonus;
-    public final long relayTransfer;
+    public final BigInteger collectorOutputBase;
+    public final BigInteger relayBonusBase;
+    public final BigInteger relayTransferBase;
     @Nullable
     public final Supplier<Item> existingItem;
     public final Rarity rarity;
@@ -88,11 +89,11 @@ public enum Matter {
         this.hasItem = existingItem == null && ordinal() != 0;
         this.level = ordinal() + 1;
         // Gₙ(aₙ)(z)=4(2z²+z-1)/4z-1
-        this.collectorOutput = Config.useOldValues.get() ? calcOldValue(TemporaryValues.COLLECTOR_BASE, level) : collectorOutput;
+        this.collectorOutputBase = Config.useOldValues.get() ? calcOldValue(BigInteger.valueOf(6), level) : BigInteger.valueOf(collectorOutput);
         // ¯\_(ツ)_/¯
-        this.relayBonus = Config.useOldValues.get() ? calcOldValue(TemporaryValues.RELAY_BONUS_BASE, level) : relayBonus;
+        this.relayBonusBase = Config.useOldValues.get() ? calcOldValue(BigInteger.valueOf(1), level) : BigInteger.valueOf(relayBonus);
         // Gₙ(aₙ)(z)=64(2z²+z-1)/4z-1
-        this.relayTransfer = Config.useOldValues.get() ? calcOldValue(TemporaryValues.RELAY_TRANSFER_BASE, level) : relayTransfer;
+        this.relayTransferBase = Config.useOldValues.get() ? calcOldValue(BigInteger.valueOf(64), level) : BigInteger.valueOf(relayTransfer);
         this.existingItem = existingItem;
         this.rarity =
             level >= EPIC_THRESHOLD ? Rarity.EPIC :
@@ -101,14 +102,10 @@ public enum Matter {
                         Rarity.COMMON;
     }
 
-    private Long calcOldValue(Long base, int level) {
-        try {
-            long i = base;
-            for(int v = 1; v <= level; v++) i = Math.multiplyExact(i, Long.valueOf(v));
-            return i;
-        } catch (ArithmeticException err) {
-            return Long.MAX_VALUE;
-        }
+    private BigInteger calcOldValue(BigInteger base, int level) {
+        BigInteger i = base;
+        for (int v = 1; v <= level; v++) i = i.multiply(BigInteger.valueOf(v));
+        return i;
     }
 
     public int getLevel() {
@@ -117,21 +114,14 @@ public enum Matter {
 
     /* Limits */
 
-    public long getPowerFlowerOutput() {
-        try {
-            return Math.multiplyExact(Math.addExact(
-                Math.multiplyExact(collectorOutput, 18L),
-                Math.multiplyExact(relayBonus, 30L)
-            ), Config.powerflowerMultiplier.get());
-        } catch (ArithmeticException err) {
-            return Long.MAX_VALUE;
-        }
+    public BigInteger getPowerFlowerOutput() {
+        return collectorOutputBase.multiply(BigInteger.valueOf(18)).add(relayBonusBase.multiply(BigInteger.valueOf(30))).multiply(BigInteger.valueOf(Config.powerflowerMultiplier.get()));
     }
 
-    public long getPowerFlowerOutputForTicks(int ticks) {
+    public BigInteger getPowerFlowerOutputForTicks(int ticks) {
         if (ticks == 20) return getPowerFlowerOutput();
-        long div20 = getPowerFlowerOutput() / 20;
-        return Math.round((double) div20 * ticks);
+        BigInteger div20 = getPowerFlowerOutput().divide(BigInteger.valueOf(20));
+        return div20.multiply(BigInteger.valueOf(ticks));
     }
 
     /*
@@ -139,26 +129,26 @@ public enum Matter {
     tick rate of these 3 will grossly duplicate emc
     */
 
-    public long getCollectorOutput() {
-        return Math.multiplyExact(collectorOutput, Config.collectorMultiplier.get());
+    public BigInteger getCollectorOutput() {
+        return collectorOutputBase.multiply(BigInteger.valueOf(Config.collectorMultiplier.get()));
     }
 
-    public long getCollectorOutputForTicks(int ticks) {
+    public BigInteger getCollectorOutputForTicks(int ticks) {
         return getCollectorOutput();
     }
 
-    public long getRelayBonus() {
-        return Math.multiplyExact(relayBonus, Config.relayBonusMultiplier.get());
+    public BigInteger getRelayBonus() {
+        return relayBonusBase.multiply(BigInteger.valueOf(Config.relayBonusMultiplier.get()));
     }
 
-    public long getRelayBonusForTicks(int ticks) {
+    public BigInteger getRelayBonusForTicks(int ticks) {
         return getRelayBonus();
     }
 
-    public long getRelayTransfer() {
-        return Math.multiplyExact(relayTransfer, Config.relayTransferMultiplier.get());
+    public BigInteger getRelayTransfer() {
+        return relayTransferBase.multiply(BigInteger.valueOf(Config.relayTransferMultiplier.get()));
     }
-    public long getRelayTransferForTicks(int ticks) {
+    public BigInteger getRelayTransferForTicks(int ticks) {
         return getRelayTransfer();
     }
 
@@ -166,12 +156,10 @@ public enum Matter {
         return level * 3;
     }
 
-    public long getEMCLinkEMCLimit() {
-        try {
-            return Math.multiplyExact((long) Math.pow(16, level), Config.emcLinkEMCLimitMultiplier.get());
-        } catch(ArithmeticException ignore) {
-            return Long.MAX_VALUE;
-        }
+    public BigInteger getEMCLinkEMCLimit() {
+        return BigInteger.valueOf(16)
+            .pow(level)
+            .multiply(BigInteger.valueOf(Config.emcLinkEMCLimitMultiplier.get()));
     }
 
     public int getEMCLinkItemLimit() {
@@ -265,11 +253,6 @@ public enum Matter {
         POWER_FLOWER,
         RELAY,
         EMC_LINK
-    }
 
-    private static final class TemporaryValues {
-        static Long COLLECTOR_BASE = 6L;
-        static Long RELAY_BONUS_BASE = 1L;
-        static Long RELAY_TRANSFER_BASE = 64L;
     }
 }
