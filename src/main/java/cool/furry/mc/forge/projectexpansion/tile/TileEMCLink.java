@@ -3,10 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
-import cool.furry.mc.forge.projectexpansion.util.Util;
+import cool.furry.mc.forge.projectexpansion.util.*;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -19,7 +16,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -35,17 +31,15 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
 
-public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
+@SuppressWarnings("unused")
+public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     public BigInteger emc = BigInteger.ZERO;
-    public UUID owner = Util.DUMMY_UUID;
-    public String ownerName = "";
     private ItemStack itemStack;
     private Matter matter;
-    private long remainingEMC = 0L;
+    private BigInteger remainingEMC = BigInteger.ZERO;
     private int remainingImport = 0;
     private int remainingExport = 0;
 
@@ -61,41 +55,22 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.hasUniqueId("Owner")) {
-            owner = nbt.getUniqueId("Owner");
-        }
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) {
-            ownerName = nbt.getString("OwnerName");
-        }
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) {
-            emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
-        }
-
-        if (nbt.contains("Item", Constants.NBT.TAG_COMPOUND)) {
-            itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound("Item")))).createStack();
-        }
-        if (nbt.contains("RemainingEMC", Constants.NBT.TAG_DOUBLE)) {
-            remainingEMC = (long) nbt.getDouble("RemainingEMC");
-        }
-        if (nbt.contains("RemainingImport", Constants.NBT.TAG_INT)) {
-            remainingImport = nbt.getInt("RemainingImport");
-        }
-        if (nbt.contains("RemainingExport", Constants.NBT.TAG_INT)) {
-            remainingExport = nbt.getInt("RemainingExport");
-        }
+        if (nbt.contains(NBTNames.STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((NBTNames.STORED_EMC)));
+        if (nbt.contains(NBTNames.ITEM, Constants.NBT.TAG_COMPOUND)) itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound(NBTNames.ITEM)))).createStack();
+        if (nbt.contains(NBTNames.REMAINING_EMC, Constants.NBT.TAG_STRING)) remainingEMC = new BigInteger(nbt.getString(NBTNames.REMAINING_EMC));
+        if (nbt.contains(NBTNames.REMAINING_IMPORT, Constants.NBT.TAG_INT)) remainingImport = nbt.getInt(NBTNames.REMAINING_IMPORT);
+        if (nbt.contains(NBTNames.REMAINING_EXPORT, Constants.NBT.TAG_INT)) remainingExport = nbt.getInt(NBTNames.REMAINING_EXPORT);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putUniqueId("Owner", owner);
-        nbt.putString("OwnerName", ownerName);
-        nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
-        nbt.put("Item", itemStack.serializeNBT());
-        nbt.putDouble("RemainingEMC", remainingEMC);
-        nbt.putInt("RemainingImport", remainingImport);
-        nbt.putInt("RemainingExport", remainingExport);
+        nbt.putString(NBTNames.STORED_EMC, emc.toString());
+        nbt.put(NBTNames.ITEM, itemStack.serializeNBT());
+        nbt.putString(NBTNames.REMAINING_EMC, remainingEMC.toString());
+        nbt.putInt(NBTNames.REMAINING_IMPORT, remainingImport);
+        nbt.putInt(NBTNames.REMAINING_EXPORT, remainingExport);
         return nbt;
     }
 
@@ -127,12 +102,6 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
     private void resetLimits() {
         remainingEMC = getMatter().getEMCLinkEMCLimit();
         remainingImport = remainingExport = getMatter().getEMCLinkItemLimit();
-    }
-
-    public void setOwner(PlayerEntity player) {
-        owner = player.getUniqueID();
-        ownerName = player.getScoreboardName();
-        markDirty();
     }
 
     private void setInternalItem(ItemStack stack) {
@@ -172,7 +141,7 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public long getMaximumEmc() {
-        return getMatter().getEMCLinkEMCLimit();
+        return Util.safeLongValue(getMatter().getEMCLinkEMCLimit());
     }
 
     @Override
@@ -182,15 +151,10 @@ public class TileEMCLink extends TileEntity implements ITickableTileEntity, IEmc
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        long v = Math.min(remainingEMC, emc);
+        long v = Math.min(Util.safeLongValue(remainingEMC), emc);
 
-        if (emc <= 0L) {
-            return 0L;
-        }
-
-        if (action.execute()) {
-            this.emc = this.emc.add(BigInteger.valueOf(v));
-        }
+        if (emc <= 0L) return 0L;
+        if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(v));
 
         return v;
     }

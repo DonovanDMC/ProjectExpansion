@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.PowerFlowerCollector;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import net.minecraft.block.BlockState;
@@ -12,18 +13,15 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
 
-public class TilePowerFlower extends TileEntity implements ITickableTileEntity {
+@SuppressWarnings("unused")
+public class TilePowerFlower extends TileOwnable implements ITickableTileEntity {
     public BigInteger emc = BigInteger.ZERO;
-    public UUID owner = Util.DUMMY_UUID;
-    public String ownerName = "";
 
     public TilePowerFlower() {
         super(TileEntityTypes.POWER_FLOWER.get());
@@ -32,31 +30,15 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity {
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.hasUniqueId("Owner")) {
-            owner = nbt.getUniqueId("Owner");
-        }
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) {
-            ownerName = nbt.getString("OwnerName");
-        }
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_STRING)) {
-            emc = new BigInteger(nbt.getString((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC)));
-        }
+        if (nbt.contains(NBTNames.STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((NBTNames.STORED_EMC)));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putUniqueId("Owner", owner);
-        nbt.putString("OwnerName", ownerName);
-        nbt.putString(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc.toString());
+        nbt.putString(NBTNames.STORED_EMC, emc.toString());
         return nbt;
-    }
-
-    public void setOwner(PlayerEntity player) {
-        owner = player.getUniqueID();
-        ownerName = player.getScoreboardName();
-        markDirty();
     }
 
     public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
@@ -65,18 +47,17 @@ public class TilePowerFlower extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void tick() {
-        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != Util.mod(hashCode(), Config.tickDelay.get())) {
-            return;
-        }
-        long res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
+        if (world == null || world.isRemote || (world.getGameTime() % Config.tickDelay.get()) != Util.mod(hashCode(), Config.tickDelay.get())) return;
+
+        BigInteger res = ((BlockPowerFlower) getBlockState().getBlock()).getMatter().getPowerFlowerOutputForTicks(Config.tickDelay.get());
         ServerPlayerEntity player = Util.getPlayer(world, owner);
 
         if (player != null) {
-            PowerFlowerCollector.add(player, emc.add(BigInteger.valueOf(res)));
+            PowerFlowerCollector.add(player, emc.add(res));
             emc = BigInteger.ZERO;
             markDirty();
         } else {
-            emc = emc.add(BigInteger.valueOf(res));
+            emc = emc.add(res);
             markDirty();
         }
     }

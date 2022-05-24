@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockCollector;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
@@ -18,13 +19,14 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TileCollector extends TileEntity implements ITickableTileEntity, IEmcStorage {
     public static final Direction[] DIRECTIONS = Direction.values();
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
-    public long emc = 0L;
+    public BigInteger emc = BigInteger.ZERO;
 
     public TileCollector() {
         super(TileEntityTypes.COLLECTOR.get());
@@ -33,33 +35,28 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.contains(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, Constants.NBT.TAG_LONG)) {
-            emc = nbt.getLong((moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC));
-        }
+        if (nbt.contains(NBTNames.STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(NBTNames.STORED_EMC));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putLong(moze_intel.projecte.utils.Constants.NBT_KEY_STORED_EMC, emc);
+        nbt.putString(NBTNames.STORED_EMC, emc.toString());
         return nbt;
     }
 
     @Override
     public void tick() {
         // we can't use a user defined value due to emc duplication possibilities
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) {
-            return;
-        }
-        emc += ((BlockCollector) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get());
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
+        emc = emc.add(((BlockCollector) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get()));
         List<IEmcStorage> temp = new ArrayList<>(1);
 
         for (Direction dir : DIRECTIONS) {
             TileEntity tile = world.getTileEntity(pos.offset(dir));
-            if (tile == null) {
+            if(tile == null)
                 continue;
-            }
             tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
                 if (storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);
@@ -74,24 +71,12 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
             });
         }
 
-        if (!temp.isEmpty() && emc >= temp.size()) {
-            long div = emc / temp.size();
-
-            for (IEmcStorage storage : temp) {
-                long action = storage.insertEmc(div, EmcAction.EXECUTE);
-                if (action > 0L) {
-                    emc -= action;
-                    markDirty();
-                    if (emc < div)
-                        break;
-                }
-            }
-        }
+        emc = Util.spreadEMC(emc, temp);
     }
 
     @Override
     public long getStoredEmc() {
-        return emc;
+        return Util.safeLongValue(emc);
     }
 
     @Override
@@ -101,13 +86,9 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
 
     @Override
     public long extractEmc(long emc, EmcAction action) {
-        long change = Math.min(this.emc, emc);
-
-        if (change < 0L)
-            return insertEmc(-change, action);
-        else if (action.execute())
-            this.emc -= change;
-
+        long change = Math.min(Util.safeLongValue(this.emc), emc);
+        if (change < 0L) return insertEmc(-change, action);
+        else if (action.execute()) this.emc = this.emc.subtract(BigInteger.valueOf(change));
         return change;
     }
 

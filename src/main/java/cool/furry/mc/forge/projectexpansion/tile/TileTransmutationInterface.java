@@ -14,10 +14,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -25,12 +23,10 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
 
-public class TileTransmutationInterface extends TileEntity implements IItemHandler, ITickableTileEntity {
+@SuppressWarnings("unused")
+public class TileTransmutationInterface extends TileOwnable implements IItemHandler, ITickableTileEntity {
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
-    public UUID owner = Util.DUMMY_UUID;
-    public String ownerName = "";
     private ItemInfo[] info;
 
     public TileTransmutationInterface() {
@@ -40,23 +36,13 @@ public class TileTransmutationInterface extends TileEntity implements IItemHandl
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
-        if (nbt.hasUniqueId("Owner")) owner = nbt.getUniqueId("Owner");
-        if (nbt.contains("OwnerName", Constants.NBT.TAG_STRING)) ownerName = nbt.getString("OwnerName");
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
-        nbt.putUniqueId("Owner", owner);
-        nbt.putString("OwnerName", ownerName);
         return nbt;
-    }
-
-    public void setOwner(PlayerEntity player) {
-        owner = player.getUniqueID();
-        ownerName = player.getScoreboardName();
-        markDirty();
     }
 
     public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
