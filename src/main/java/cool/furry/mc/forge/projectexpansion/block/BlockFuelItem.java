@@ -15,7 +15,6 @@ public class BlockFuelItem extends BlockItem {
     public BlockFuelItem(Fuel level) {
         super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Item.Properties().tab(Main.tab).rarity(level.rarity));
         this.level = level;
-
     }
 
 

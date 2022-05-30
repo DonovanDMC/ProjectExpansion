@@ -35,7 +35,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
 import java.util.List;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -60,9 +59,9 @@ public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatt
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
         list.add((new TranslatableComponent("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
         list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
-        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_emc", new TextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.format(BigDecimal.valueOf(matter.getEMCLinkEMCLimit()))).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_emc", new TextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.format(matter.getEMCLinkEMCLimit())).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
     @Override
