@@ -6,7 +6,6 @@ import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
-import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -88,19 +87,16 @@ public class BlockPowerFlower extends Block implements IHasMatter {
     @Deprecated
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote)
-            return true;
+        if (world.isRemote) return true;
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TilePowerFlower)
-            player.sendStatusMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
+        if (tile instanceof TilePowerFlower) player.sendStatusMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
         return super.onBlockActivated(state, world, pos, player, hand, ray);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TilePowerFlower)
-            ((TilePowerFlower) tile).wasPlaced(livingEntity, stack);
+        if (tile instanceof TilePowerFlower) ((TilePowerFlower) tile).wasPlaced(livingEntity, stack);
     }
 
     @Override

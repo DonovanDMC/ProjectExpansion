@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.tile.TileEMCLink;
+import cool.furry.mc.forge.projectexpansion.tile.TileNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
@@ -65,19 +66,16 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
     @Deprecated
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote)
-            return true;
+        if (world.isRemote) return true;
         TileEntity tile = world.getTileEntity(pos);
-        if (!(tile instanceof TileEMCLink))
-            return false;
+        if (!(tile instanceof TileEMCLink)) return false;
         return ((TileEMCLink) tile).handleActivation(player, hand);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEMCLink)
-            ((TileEMCLink) tile).wasPlaced(livingEntity, stack);
+        if (tile instanceof TileEMCLink) ((TileEMCLink) tile).wasPlaced(livingEntity, stack);
     }
 
     @Nonnull
@@ -88,7 +86,7 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite());
+        return getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite()).with(TileNBTFilterable.FILTER, true);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING);
+        builder.add(HORIZONTAL_FACING).add(TileNBTFilterable.FILTER);
     }
 
     @Override

@@ -13,6 +13,9 @@ abandoned at this point. This has been rewritten from the ground up, and has som
 If you want to get updates instantly or just generally chat with developers, come see us in
 our [Discord Server](https://discord.gg/SwxbbmMKQH).
 
+## Required Dependency
+[MixinBootstrap](https://www.curseforge.com/minecraft/mc-mods/mixinbootstrap) is REQUIRED for 1.14 versions 1.0.7 and beyond!
+
 ### Where To Find Releases
 
 - [Github Releases](https://github.com/DonovanDMC/ProjectExpansion/releases)

@@ -54,8 +54,7 @@ public class ItemMatterUpgrader extends Item {
         BlockPos pos = context.getPos();
         World world = context.getWorld();
 
-        if (world.isRemote || player == null)
-            return ActionResultType.PASS;
+        if (world.isRemote || player == null) return ActionResultType.PASS;
 
         TileEntity tile = world.getTileEntity(pos);
         Block block = world.getBlockState(pos).getBlock();
@@ -65,8 +64,7 @@ public class ItemMatterUpgrader extends Item {
         if (block instanceof IHasMatter) {
             matter = ((IHasMatter) block).getMatter();
             upgradeTo = matter.next();
-        } else
-            return ActionResultType.PASS;
+        } else return ActionResultType.PASS;
 
         if (matter == Matter.FINAL) {
             player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.max_upgrade").setStyle(ColorStyle.RED), true);
@@ -94,8 +92,7 @@ public class ItemMatterUpgrader extends Item {
             owner = tilePowerFlower.owner;
             ownerName = tilePowerFlower.ownerName;
             emc = tilePowerFlower.emc;
-            if (owner == null)
-                return ActionResultType.FAIL;
+            if (owner == null) return ActionResultType.FAIL;
             if (owner != player.getUniqueID()) {
                 player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_owner").setStyle(ColorStyle.RED), true);
                 return ActionResultType.FAIL;
@@ -120,11 +117,10 @@ public class ItemMatterUpgrader extends Item {
         long prevValue = proxy.getValue(block);
         long emcValue = proxy.getValue(Objects.requireNonNull(upgrade));
         long diff = emcValue - prevValue;
-        if (player.abilities.isCreativeMode)
-            diff = 0;
+        if (player.abilities.isCreativeMode) diff = 0;
         BigInteger newEmc = provider.getEmc().subtract(BigInteger.valueOf(diff));
         if (newEmc.compareTo(BigInteger.ZERO) < 0) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_enough_emc", EMCFormat.INSTANCE.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.RED), true);
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_enough_emc", EMCFormat.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.RED), true);
             return ActionResultType.FAIL;
         }
 
@@ -132,8 +128,7 @@ public class ItemMatterUpgrader extends Item {
         world.setBlockState(pos, upgradeBlock.getDefaultState());
 
         if (tile instanceof TilePowerFlower) {
-            if (ownerName == null || emc == null)
-                return ActionResultType.FAIL;
+            if (ownerName == null || emc == null) return ActionResultType.FAIL;
 
             TilePowerFlower newTile = new TilePowerFlower();
             newTile.owner = owner;
@@ -145,7 +140,7 @@ public class ItemMatterUpgrader extends Item {
         }
 
         provider.setEmc(newEmc);
-        player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.done", EMCFormat.INSTANCE.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.WHITE), true);
+        player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.done", EMCFormat.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.WHITE), true);
         return ActionResultType.SUCCESS;
     }
 }

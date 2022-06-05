@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
+import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
@@ -15,7 +16,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
@@ -31,9 +32,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.Objects;
-import java.util.UUID;
 
-public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
+public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
@@ -186,6 +186,11 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
 
         if (count <= 0) return stack;
 
+        if(getFilterStatus()) {
+            ItemInfo info = ItemInfo.fromStack(stack);
+            if (!NBTManager.getPersistentInfo(info).equals(info)) return stack;
+        }
+
         int insertCount = Math.min(count, remainingImport);
         if (!simulate) {
             long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
@@ -248,10 +253,10 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
 
     public boolean handleActivation(PlayerEntity player, Hand hand) {
         ItemStack inHand = player.getHeldItem(hand);
-        if (!owner.equals(player.getUniqueID())) {
-            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
-            return false;
-        }
+
+        if(!super.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return false;
+
+
         if (player.isSneaking()) {
             if (itemStack.isEmpty()) {
                 player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);

@@ -2,7 +2,6 @@ package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
-import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -12,12 +11,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -26,25 +22,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.Objects;
-import java.util.UUID;
 
-public class TileTransmutationInterface extends TileOwnable implements IItemHandler, ITickableTileEntity {
+public class TileTransmutationInterface extends TileNBTFilterable implements IItemHandler, ITickableTileEntity {
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private ItemInfo[] info;
 
     public TileTransmutationInterface() {
         super(Objects.requireNonNull(TileEntityTypes.TRANSMUTATION_INTERFACE.get()));
-    }
-
-    @Override
-    public void read(@Nonnull CompoundNBT nbt) {
-        super.read(nbt);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-        return super.write(nbt);
     }
 
     @SuppressWarnings("unused")
@@ -97,13 +81,16 @@ public class TileTransmutationInterface extends TileOwnable implements IItemHand
         if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty() || Util.getPlayer(owner) == null) return stack;
         fetchKnowledge();
 
-        ItemInfo info = ItemInfo.fromStack(stack);
-        if (!NBTManager.getPersistentInfo(info).equals(info)) return stack;
         stack = stack.copy();
         int count = stack.getCount();
         stack.setCount(1);
-
         if (count <= 0) return stack;
+
+        if(getFilterStatus()) {
+            ItemInfo info = ItemInfo.fromStack(stack);
+            if (!NBTManager.getPersistentInfo(info).equals(info)) return stack;
+        }
+
         if (simulate) return ItemStack.EMPTY;
 
         long emcValue = ProjectEAPI.getEMCProxy().getSellValue(stack);

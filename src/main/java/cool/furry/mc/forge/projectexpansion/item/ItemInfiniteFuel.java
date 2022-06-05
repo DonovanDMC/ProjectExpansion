@@ -43,8 +43,7 @@ public class ItemInfiniteFuel extends Item {
     @Override
     public int getBurnTime(ItemStack stack) {
         @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUniqueId("Owner");
-        if (owner == null)
-            return 0;
+        if (owner == null) return 0;
 
         return ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().compareTo(COST.get()) < 0 ? 0 : BURN_TIME;
     }
