@@ -29,7 +29,10 @@ public class PowerFlowerCollector {
                 BigInteger amount = stored.get(uuid);
                 ServerPlayer player = Util.getPlayer(uuid);
                 if (player == null) continue;
-                IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(uuid);
+                IKnowledgeProvider provider;
+                try {
+                    provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(uuid);
+                } catch(NullPointerException ignore) { continue; }
                 provider.setEmc(provider.getEmc().add(amount));
                 provider.syncEmc(player);
                 toRemove.add(uuid);
