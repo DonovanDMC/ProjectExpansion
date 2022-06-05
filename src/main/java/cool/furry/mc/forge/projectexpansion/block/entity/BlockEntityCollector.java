@@ -57,8 +57,7 @@ public class BlockEntityCollector extends BlockEntity implements IEmcStorage {
 
         for (Direction dir : DIRECTIONS) {
             BlockEntity be = level.getBlockEntity(pos.offset(dir.getStepX(), dir.getStepY(), dir.getStepZ()));
-            if (be == null)
-                continue;
+            if (be == null) continue;
             be.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
                 if (storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);

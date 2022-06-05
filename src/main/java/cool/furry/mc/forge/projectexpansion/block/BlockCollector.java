@@ -62,8 +62,7 @@ public class BlockCollector extends Block implements IHasMatter, EntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (type == BlockEntityTypes.COLLECTOR.get() && !level.isClientSide)
-            return BlockEntityCollector::tickServer;
+        if (type == BlockEntityTypes.COLLECTOR.get() && !level.isClientSide) return BlockEntityCollector::tickServer;
         return null;
     }
 

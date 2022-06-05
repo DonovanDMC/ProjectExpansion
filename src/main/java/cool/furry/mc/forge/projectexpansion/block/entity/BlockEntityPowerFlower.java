@@ -6,9 +6,6 @@ import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.PowerFlowerCollector;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
-import moze_intel.projecte.utils.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -23,8 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.Objects;
-import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class BlockEntityPowerFlower extends BlockEntityOwnable {
@@ -51,8 +46,7 @@ public class BlockEntityPowerFlower extends BlockEntityOwnable {
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        if (blockEntity instanceof BlockEntityPowerFlower be)
-            be.tickServer(level, pos, state, be);
+        if (blockEntity instanceof BlockEntityPowerFlower be) be.tickServer(level, pos, state, be);
     }
 
     public void tickServer(Level level, BlockPos pos, BlockState state, BlockEntityPowerFlower blockEntity) {

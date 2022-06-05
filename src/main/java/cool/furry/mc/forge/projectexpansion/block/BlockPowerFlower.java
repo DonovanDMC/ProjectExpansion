@@ -7,7 +7,6 @@ import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
-import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -88,26 +87,22 @@ public class BlockPowerFlower extends Block implements IHasMatter, EntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide)
-            return InteractionResult.SUCCESS;
+        if (level.isClientSide) return InteractionResult.SUCCESS;
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityPowerFlower be)
-            player.displayClientMessage(new TextComponent((be).ownerName), true);
+        if (blockEntity instanceof BlockEntityPowerFlower be) player.displayClientMessage(new TextComponent((be).ownerName), true);
         return super.use(state, level, pos, player, hand, hit);
     }
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityPowerFlower be)
-            be.wasPlaced(livingEntity, stack);
+        if (blockEntity instanceof BlockEntityPowerFlower be) be.wasPlaced(livingEntity, stack);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (type == BlockEntityTypes.POWER_FLOWER.get() && !level.isClientSide)
-            return BlockEntityPowerFlower::tickServer;
+        if (type == BlockEntityTypes.POWER_FLOWER.get() && !level.isClientSide) return BlockEntityPowerFlower::tickServer;
         return null;
     }
 

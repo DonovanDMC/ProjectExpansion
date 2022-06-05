@@ -58,8 +58,7 @@ public class Main {
         for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack stack = player.getInventory().getItem(i);
-                if (stack.getItem().equals(Items.INFINITE_FUEL.get()))
-                    stack.getOrCreateTag().putUUID("Owner", player.getUUID());
+                if (stack.getItem().equals(Items.INFINITE_FUEL.get())) stack.getOrCreateTag().putUUID("Owner", player.getUUID());
             }
         }
     }

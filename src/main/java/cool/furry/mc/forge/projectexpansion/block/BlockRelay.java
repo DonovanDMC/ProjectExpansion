@@ -64,8 +64,7 @@ public class BlockRelay extends Block implements IHasMatter, EntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (type == BlockEntityTypes.RELAY.get() && !level.isClientSide)
-            return BlockEntityRelay::tickServer;
+        if (type == BlockEntityTypes.RELAY.get() && !level.isClientSide) return BlockEntityRelay::tickServer;
         return null;
     }
 

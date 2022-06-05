@@ -66,19 +66,16 @@ public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatt
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide)
-            return InteractionResult.SUCCESS;
+        if (level.isClientSide) return InteractionResult.SUCCESS;
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityEMCLink be)
-            return be.handleActivation(player, hand);
+        if (blockEntity instanceof BlockEntityEMCLink be) return be.handleActivation(player, hand);
         return InteractionResult.PASS;
     }
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityEMCLink be)
-            be.wasPlaced(livingEntity, stack);
+        if (blockEntity instanceof BlockEntityEMCLink be) be.wasPlaced(livingEntity, stack);
     }
 
     @Nonnull
@@ -102,8 +99,7 @@ public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatt
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (type == BlockEntityTypes.EMC_LINK.get() && !level.isClientSide)
-            return BlockEntityEMCLink::tickServer;
+        if (type == BlockEntityTypes.EMC_LINK.get() && !level.isClientSide) return BlockEntityEMCLink::tickServer;
         return null;
     }
 

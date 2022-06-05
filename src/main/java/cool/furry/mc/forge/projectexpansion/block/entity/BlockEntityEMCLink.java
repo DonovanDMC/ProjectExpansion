@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 
 @SuppressWarnings("unused")
-public class BlockEntityEMCLink extends BlockEntityOwnable implements IEmcStorage, IItemHandler, IHasMatter {
+public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmcStorage, IItemHandler, IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
@@ -85,17 +85,14 @@ public class BlockEntityEMCLink extends BlockEntityOwnable implements IEmcStorag
 
     public void tickServer(Level level, BlockPos pos, BlockState state, BlockEntityEMCLink blockEntity) {
         // due to the nature of per second this block follows, using the config value isn't really possible
-        if (level.isClientSide || (level.getGameTime() % 20L) != Util.mod(hashCode(), 20))
-            return;
+        if (level.isClientSide || (level.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
         resetLimits();
-        if (emc.equals(BigInteger.ZERO))
-            return;
+        if (emc.equals(BigInteger.ZERO)) return;
         ServerPlayer player = Util.getPlayer(level, owner);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
 
         provider.setEmc(provider.getEmc().add(emc));
-        if (player != null)
-            provider.syncEmc(player);
+        if (player != null) provider.syncEmc(player);
         Util.markDirty(this);
         emc = BigInteger.ZERO;
     }
@@ -186,14 +183,16 @@ public class BlockEntityEMCLink extends BlockEntityOwnable implements IEmcStorag
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null)
-            return stack;
+        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) return stack;
 
         stack = stack.copy();
         int count = stack.getCount();
         stack.setCount(1);
 
         if (count <= 0) return stack;
+
+        ItemInfo info = ItemInfo.fromStack(stack);
+        if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
 
         int insertCount = Math.min(count, remainingImport);
         if (!simulate) {
@@ -204,7 +203,7 @@ public class BlockEntityEMCLink extends BlockEntityOwnable implements IEmcStorag
             ServerPlayer player = Util.getPlayer(owner);
             if (player != null) {
                 if (provider.addKnowledge(stack))
-                    provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromStack(stack)), true);
+                    provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
                 provider.syncEmc(player);
             }
             remainingImport -= insertCount;
@@ -258,10 +257,9 @@ public class BlockEntityEMCLink extends BlockEntityOwnable implements IEmcStorag
 
     public InteractionResult handleActivation(Player player, InteractionHand hand) {
         ItemStack inHand = player.getItemInHand(hand);
-        if (!owner.equals(player.getUUID())) {
-            player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_owner", new TextComponent(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
-            return InteractionResult.CONSUME;
-        }
+
+        if(!super.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return InteractionResult.CONSUME;
+
         if (player.isCrouching()) {
             if (itemStack.isEmpty()) {
                 player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);

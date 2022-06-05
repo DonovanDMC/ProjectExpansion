@@ -59,8 +59,7 @@ public class ItemInfiniteSteak extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         // TODO: wolves???
-        if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID()).getEmc().compareTo(COST.get()) < 0)
-            return InteractionResultHolder.fail(stack);
+        if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID()).getEmc().compareTo(COST.get()) < 0) return InteractionResultHolder.fail(stack);
         player.startUsingItem(hand);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }

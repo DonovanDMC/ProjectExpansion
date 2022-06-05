@@ -8,7 +8,6 @@ import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.integration.IntegrationHelper;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import org.jetbrains.annotations.NotNull;
@@ -63,12 +62,10 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder, IBarHelper
 
     @Override
     public long insertEmc(@Nonnull ItemStack stack, long toInsert, IEmcStorage.EmcAction action) {
-        if (toInsert < 0L)
-            return extractEmc(stack, -toInsert, action);
+        if (toInsert < 0L) return extractEmc(stack, -toInsert, action);
         else {
             long toAdd = Math.min(getNeededEmc(stack), toInsert);
-            if (action.execute())
-                addEmcToStack(stack, toAdd);
+            if (action.execute()) addEmcToStack(stack, toAdd);
 
             return toAdd;
         }
@@ -81,9 +78,7 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder, IBarHelper
         else {
             long storedEmc = getStoredEmc(stack);
             long toRemove = Math.min(storedEmc, toExtract);
-            if (action.execute())
-                setEmc(stack, storedEmc - toRemove);
-
+            if (action.execute()) setEmc(stack, storedEmc - toRemove);
             return toRemove;
         }
     }

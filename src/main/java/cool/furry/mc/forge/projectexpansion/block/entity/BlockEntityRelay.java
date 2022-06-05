@@ -58,8 +58,7 @@ public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
             BlockEntity be = level.getBlockEntity(pos.offset(dir.getStepX(), dir.getStepY(), dir.getStepZ()));
             if (be == null) continue;
             be.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
-                if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L)
-                    temp.add(storage);
+                if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) temp.add(storage);
             });
 
         }

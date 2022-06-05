@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 
 @SuppressWarnings("unused")
-public class BlockEntityTransmutationInterface extends BlockEntityOwnable implements IItemHandler {
+public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable implements IItemHandler {
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
 
     private ItemInfo[] info;
@@ -53,19 +53,16 @@ public class BlockEntityTransmutationInterface extends BlockEntityOwnable implem
     }
 
     private ItemInfo[] fetchKnowledge() {
-        if (info != null)
-            return info;
+        if (info != null) return info;
         return info = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getKnowledge().toArray(new ItemInfo[0]);
     }
 
     private int getMaxCount(int slot) {
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         BigInteger playerEmc = provider.getEmc();
-        if (playerEmc.compareTo(BigInteger.ZERO) < 1)
-            return 0;
+        if (playerEmc.compareTo(BigInteger.ZERO) < 1) return 0;
         BigInteger targetItemEmc = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]));
-        if (targetItemEmc.compareTo(BigInteger.ZERO) < 1)
-            return 0;
+        if (targetItemEmc.compareTo(BigInteger.ZERO) < 1) return 0;
         return playerEmc.divide(targetItemEmc).min(BigInteger.valueOf(Math.max(1, Config.transmutationInterfaceItemCount.get()))).intValue();
     }
 
@@ -86,15 +83,12 @@ public class BlockEntityTransmutationInterface extends BlockEntityOwnable implem
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        if (owner == null || Util.getPlayer(owner) == null)
-            return ItemStack.EMPTY;
+        if (owner == null || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
         fetchKnowledge();
 
-        if (slot <= 0 || info.length < slot)
-            return ItemStack.EMPTY;
+        if (slot <= 0 || info.length < slot) return ItemStack.EMPTY;
         int maxCount = getMaxCount(slot - 1);
-        if (maxCount <= 0)
-            return ItemStack.EMPTY;
+        if (maxCount <= 0) return ItemStack.EMPTY;
 
         ItemStack item = info[slot - 1].createStack();
         item.setCount(maxCount);
@@ -104,21 +98,17 @@ public class BlockEntityTransmutationInterface extends BlockEntityOwnable implem
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty() || Util.getPlayer(owner) == null)
-            return stack;
-        fetchKnowledge();
+        if (slot != 0 || owner == null || !isItemValid(slot, stack) || stack.isEmpty() || Util.getPlayer(owner) == null) return stack;
 
         ItemInfo info = ItemInfo.fromStack(stack);
-        if (!NBTManager.getPersistentInfo(info).equals(info))
-            return stack;
+
         stack = stack.copy();
         int count = stack.getCount();
         stack.setCount(1);
+        if (count <= 0) return stack;
 
-        if (count <= 0)
-            return stack;
-        if (simulate)
-            return ItemStack.EMPTY;
+        if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
+        if (simulate) return ItemStack.EMPTY;
 
         long emcValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
@@ -127,8 +117,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityOwnable implem
 
         ServerPlayer player = Util.getPlayer(level, owner);
         if (player != null) {
-            if (provider.addKnowledge(stack))
-                provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
+            if (provider.addKnowledge(stack)) provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
             provider.syncEmc(player);
         }
 
@@ -138,26 +127,22 @@ public class BlockEntityTransmutationInterface extends BlockEntityOwnable implem
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot <= 0 || owner == null || info.length < slot || Util.getPlayer(owner) == null)
-            return ItemStack.EMPTY;
+        if (slot <= 0 || owner == null || info.length < slot || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
         fetchKnowledge();
 
         amount = Math.min(amount, getMaxCount(slot - 1));
 
-        if (amount <= 0)
-            return ItemStack.EMPTY;
+        if (amount <= 0) return ItemStack.EMPTY;
         ItemStack item = info[slot - 1].createStack();
         item.setCount(amount);
 
-        if (simulate)
-            return item;
+        if (simulate) return item;
         long emcValue = ProjectEAPI.getEMCProxy().getValue(info[slot - 1]);
         BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         provider.setEmc(provider.getEmc().subtract(totalEmcCost));
         ServerPlayer player = Util.getPlayer(level, owner);
-        if (player != null)
-            provider.syncEmc(player);
+        if (player != null) provider.syncEmc(player);
 
         return item;
     }
