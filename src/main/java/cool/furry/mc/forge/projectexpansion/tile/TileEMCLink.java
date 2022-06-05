@@ -15,7 +15,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -31,9 +30,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
-
-public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
+public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
@@ -106,8 +103,7 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
 
     @SuppressWarnings("unused")
     public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof PlayerEntity)
-            setOwner((PlayerEntity) livingEntity);
+        if (livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
         resetLimits();
     }
 
@@ -116,8 +112,7 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
     public Matter getMatter() {
         if (world != null) {
             BlockEMCLink block = (BlockEMCLink) getBlockState().getBlock();
-            if (block.getMatter() != matter)
-                setMatter(block.getMatter());
+            if (block.getMatter() != matter) setMatter(block.getMatter());
             return matter;
         }
         return Matter.BASIC;
@@ -190,6 +185,11 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
 
         if (count <= 0) return stack;
 
+        if(getFilterStatus()) {
+            ItemInfo info = ItemInfo.fromStack(stack);
+            if (!NBTManager.getPersistentInfo(info).equals(info)) return stack;
+        }
+
         int insertCount = Math.min(count, remainingImport);
         if (!simulate) {
             long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
@@ -252,10 +252,9 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
 
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
         ItemStack inHand = player.getHeldItem(hand);
-        if (!owner.equals(player.getUniqueID())) {
-            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
-            return ActionResultType.CONSUME;
-        }
+
+        if(!super.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return ActionResultType.CONSUME;
+
         if (player.isCrouching()) {
             if (itemStack.isEmpty()) {
                 player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);

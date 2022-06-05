@@ -59,8 +59,7 @@ public class Util {
         if (cleanInfo.createStack().isEmpty()) return AddKnowledgeResult.FAIL;
 
         if (!provider.hasKnowledge(cleanInfo)) {
-            if (MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, rawInfo, cleanInfo)))
-                return AddKnowledgeResult.FAIL;
+            if (MinecraftForge.EVENT_BUS.post(new PlayerAttemptLearnEvent(player, rawInfo, cleanInfo))) return AddKnowledgeResult.FAIL;
 
             provider.addKnowledge(cleanInfo);
             return AddKnowledgeResult.SUCCESS;

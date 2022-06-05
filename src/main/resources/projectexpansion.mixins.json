@@ -1,15 +1,16 @@
 {
-	"required": true,
-	"minVersion": "0.8",
-	"package": "cool.furry.mc.forge.projectexpansion.mixin",
+	"required":           true,
+	"minVersion":         "0.8",
+	"package":            "cool.furry.mc.forge.projectexpansion.mixin",
 	"compatibilityLevel": "JAVA_8",
-	"refmap": "projectexpansion.refmap.json",
-	"mixins": [
-	],
-	"client": [
+	"refmap":             "projectexpansion.refmap.json",
+	"client":             [
 		"EMCFormatterMixin"
 	],
-	"injectors": {
+	"mixins":             [
+		"PhilosophersStoneMixin"
+	],
+	"injectors":          {
 		"defaultRequire": 1
 	}
 }

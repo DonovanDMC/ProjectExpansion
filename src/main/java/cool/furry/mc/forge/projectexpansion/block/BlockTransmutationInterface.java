@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
+import cool.furry.mc.forge.projectexpansion.tile.TileNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.tile.TileTransmutationInterface;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import net.minecraft.block.Block;
@@ -10,6 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -30,6 +32,9 @@ import java.util.List;
 public class BlockTransmutationInterface extends Block {
     public BlockTransmutationInterface() {
         super(Block.Properties.create(Material.ROCK).hardnessAndResistance(5F));
+        setDefaultState(
+            getStateContainer().getBaseState().with(TileNBTFilterable.FILTER, true)
+        );
     }
 
     @Override
@@ -53,19 +58,22 @@ public class BlockTransmutationInterface extends Block {
 
     @Override
     public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote)
-            return ActionResultType.SUCCESS;
+        if (world.isRemote) return ActionResultType.SUCCESS;
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileTransmutationInterface)
-            player.sendStatusMessage(new StringTextComponent(((TileTransmutationInterface) tile).ownerName), true);
+        if (tile instanceof TileTransmutationInterface) player.sendStatusMessage(new StringTextComponent(((TileTransmutationInterface) tile).ownerName), true);
         return super.func_225533_a_(state, world, pos, player, hand, ray);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileTransmutationInterface)
-            ((TileTransmutationInterface) tile).wasPlaced(livingEntity, stack);
+        if (tile instanceof TileTransmutationInterface) ((TileTransmutationInterface) tile).wasPlaced(livingEntity, stack);
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(TileNBTFilterable.FILTER);
     }
 
     @Override

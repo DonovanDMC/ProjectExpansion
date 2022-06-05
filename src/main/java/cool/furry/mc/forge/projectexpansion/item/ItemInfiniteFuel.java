@@ -43,8 +43,7 @@ public class ItemInfiniteFuel extends Item {
     @Override
     public int getBurnTime(ItemStack stack) {
         @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUniqueId("Owner");
-        if (owner == null)
-            return 0;
+        if (owner == null) return 0;
 
         return ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().compareTo(COST.get()) < 0 ? 0 : BURN_TIME;
     }
@@ -57,13 +56,11 @@ public class ItemInfiniteFuel extends Item {
     @Override
     public ItemStack getContainerItem(ItemStack stack) {
         @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUniqueId("Owner");
-        if (owner == null)
-            return stack;
+        if (owner == null) return stack;
         ServerPlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(owner);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
         provider.setEmc(provider.getEmc().subtract(COST.get()));
-        if (player != null)
-            provider.sync(player);
+        if (player != null) provider.sync(player);
         return stack;
     }
 }

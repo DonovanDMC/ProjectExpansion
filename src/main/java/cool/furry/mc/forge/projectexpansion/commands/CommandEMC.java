@@ -137,8 +137,7 @@ public class CommandEMC {
         switch (action) {
             case ADD: {
                 newEMC = newEMC.add(value);
-                if (compareUUID(ctx.getSource(), player))
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.add.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
+                if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.add.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
                 else {
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.add.success", formatEMC(value), player.getDisplayName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
                     if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.add.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), ChatType.CHAT);
@@ -152,8 +151,7 @@ public class CommandEMC {
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.negative", formatEMC(value), player.getScoreboardName()).setStyle(ColorStyle.RED), false);
                     return 0;
                 }
-                if (compareUUID(ctx.getSource(), player))
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
+                if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
                 else {
                     ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.success", formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
                     if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.remove.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), ChatType.CHAT);
@@ -175,15 +173,13 @@ public class CommandEMC {
             case TEST: {
                 boolean canTake = newEMC.compareTo(value) > -1;
                 if (compareUUID(ctx.getSource(), player))
-                    if (canTake) {
-                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).setStyle(ColorStyle.GREEN), false);
-                    } else {
+                    if (canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).setStyle(ColorStyle.GREEN), false);
+                    else {
                         response = 0;
                         ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.failSelf", formatEMC(value)).setStyle(ColorStyle.RED), false);
                     }
                 else {
-                    if (canTake)
-                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.success", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.GREEN), false);
+                    if (canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.success", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.GREEN), false);
                     else {
                         response = 0;
                         ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.fail", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.RED), false);
