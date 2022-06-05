@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityEMCLink;
+import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
@@ -16,12 +17,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,15 +36,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
-
 @SuppressWarnings("deprecation")
-public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatter, EntityBlock {
+public class BlockEMCLink extends Block implements IHasMatter, EntityBlock {
     private final Matter matter;
 
     public BlockEMCLink(Matter matter) {
         super(Block.Properties.of(Material.STONE).strength(3.5F));
         this.matter = matter;
+        this.registerDefaultState(this.stateDefinition.any().setValue(BlockEntityNBTFilterable.FILTER, true));
     }
 
     @Nullable
@@ -84,15 +82,9 @@ public class BlockEMCLink extends HorizontalDirectionalBlock implements IHasMatt
         return matter;
     }
 
-    @org.jetbrains.annotations.Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-        return defaultBlockState().setValue(HORIZONTAL_FACING, ctx.getHorizontalDirection().getOpposite());
-    }
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING);
+        builder.add(BlockEntityNBTFilterable.FILTER);
         super.createBlockStateDefinition(builder);
     }
 
