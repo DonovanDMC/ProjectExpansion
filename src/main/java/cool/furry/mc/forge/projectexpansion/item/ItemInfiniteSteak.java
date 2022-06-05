@@ -14,7 +14,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -60,16 +59,14 @@ public class ItemInfiniteSteak extends Item {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         // TODO: wolves???
-        if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID()).getEmc().compareTo(COST.get()) < 0)
-            return ActionResult.resultFail(stack);
+        if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID()).getEmc().compareTo(COST.get()) < 0) return ActionResult.resultFail(stack);
         player.setActiveHand(hand);
         return ActionResult.func_233538_a_(stack, world.isRemote);
     }
 
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entity) {
-        if (!(entity instanceof ServerPlayerEntity) || world.isRemote)
-            return stack;
+        if (!(entity instanceof ServerPlayerEntity) || world.isRemote) return stack;
         ServerPlayerEntity player = (ServerPlayerEntity) entity;
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(entity.getUniqueID());
         BigInteger emc = provider.getEmc().subtract(COST.get());

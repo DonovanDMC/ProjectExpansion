@@ -184,9 +184,7 @@ public class CommandEMC {
             case TEST: {
                 boolean canTake = newEMC.compareTo(value) > -1;
                 if (isSelf)
-                    if(canTake) {
-                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).setStyle(ColorStyle.GREEN), false);
-                    }
+                    if(canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).setStyle(ColorStyle.GREEN), false);
                     else {
                         response = 0;
                         ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.failSelf", formatEMC(value)).setStyle(ColorStyle.RED), false);

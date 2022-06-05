@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 
 @SuppressWarnings("unused")
-public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
+public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     public BigInteger emc = BigInteger.ZERO;
@@ -81,20 +81,14 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
     @Override
     public void tick() {
         // due to the nature of per second this block follows, using the config value isn't really possible
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) {
-            return;
-        }
+        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
         resetLimits();
-        if (emc.equals(BigInteger.ZERO)) {
-            return;
-        }
+        if (emc.equals(BigInteger.ZERO)) return;
         ServerPlayerEntity player = Util.getPlayer(world, owner);
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
 
         provider.setEmc(provider.getEmc().add(emc));
-        if (player != null) {
-            provider.syncEmc(player);
-        }
+        if (player != null) provider.syncEmc(player);
         markDirty();
         emc = BigInteger.ZERO;
     }
@@ -185,15 +179,16 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) {
-            return stack;
-        }
+        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) return stack;
 
         stack = stack.copy();
         int count = stack.getCount();
         stack.setCount(1);
 
         if (count <= 0) return stack;
+
+        ItemInfo info = ItemInfo.fromStack(stack);
+        if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
 
         int insertCount = Math.min(count, remainingImport);
         if (!simulate) {
@@ -203,9 +198,7 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
             provider.setEmc(provider.getEmc().add(totalValue));
             ServerPlayerEntity player = Util.getPlayer(owner);
             if (player != null) {
-                if (provider.addKnowledge(stack)) {
-                    provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromStack(stack)), true);
-                }
+                if (provider.addKnowledge(stack)) provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
                 provider.syncEmc(player);
             }
             remainingImport -= insertCount;
@@ -259,10 +252,9 @@ public class TileEMCLink extends TileOwnable implements ITickableTileEntity, IEm
 
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
         ItemStack inHand = player.getHeldItem(hand);
-        if (!owner.equals(player.getUniqueID())) {
-            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_owner", new StringTextComponent(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
-            return ActionResultType.CONSUME;
-        }
+
+        if(!super.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return ActionResultType.CONSUME;
+
         if (player.isCrouching()) {
             if (itemStack.isEmpty()) {
                 player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);

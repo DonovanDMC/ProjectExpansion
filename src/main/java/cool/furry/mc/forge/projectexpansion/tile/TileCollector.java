@@ -55,8 +55,7 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
 
         for (Direction dir : DIRECTIONS) {
             TileEntity tile = world.getTileEntity(pos.offset(dir));
-            if(tile == null)
-                continue;
+            if(tile == null) continue;
             tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
                 if (storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);

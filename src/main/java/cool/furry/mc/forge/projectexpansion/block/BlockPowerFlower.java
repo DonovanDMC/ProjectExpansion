@@ -91,8 +91,7 @@ public class BlockPowerFlower extends Block implements IHasMatter {
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
         if (world.isRemote) return ActionResultType.SUCCESS;
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TilePowerFlower)
-            player.sendStatusMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
+        if (tile instanceof TilePowerFlower) player.sendStatusMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
         return super.onBlockActivated(state, world, pos, player, hand, ray);
     }
 

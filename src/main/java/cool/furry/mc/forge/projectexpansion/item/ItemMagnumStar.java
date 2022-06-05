@@ -51,12 +51,10 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder {
 
     @Override
     public long insertEmc(@Nonnull ItemStack stack, long toInsert, IEmcStorage.EmcAction action) {
-        if (toInsert < 0L)
-            return extractEmc(stack, -toInsert, action);
+        if (toInsert < 0L) return extractEmc(stack, -toInsert, action);
         else {
             long toAdd = Math.min(getNeededEmc(stack), toInsert);
-            if (action.execute())
-                addEmcToStack(stack, toAdd);
+            if (action.execute()) addEmcToStack(stack, toAdd);
 
             return toAdd;
         }
@@ -64,13 +62,11 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder {
 
     @Override
     public long extractEmc(@Nonnull ItemStack stack, long toExtract, IEmcStorage.EmcAction action) {
-        if (toExtract < 0L)
-            return insertEmc(stack, -toExtract, action);
+        if (toExtract < 0L) return insertEmc(stack, -toExtract, action);
         else {
             long storedEmc = getStoredEmc(stack);
             long toRemove = Math.min(storedEmc, toExtract);
-            if (action.execute())
-                setEmc(stack, storedEmc - toRemove);
+            if (action.execute()) setEmc(stack, storedEmc - toRemove);
 
             return toRemove;
         }

@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 
 @SuppressWarnings("unused")
-public class TileTransmutationInterface extends TileOwnable implements IItemHandler, ITickableTileEntity {
+public class TileTransmutationInterface extends TileNBTFilterable implements IItemHandler, ITickableTileEntity {
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private ItemInfo[] info;
 
@@ -95,12 +95,13 @@ public class TileTransmutationInterface extends TileOwnable implements IItemHand
         fetchKnowledge();
 
         ItemInfo info = ItemInfo.fromStack(stack);
-        if (!NBTManager.getPersistentInfo(info).equals(info)) return stack;
+
         stack = stack.copy();
         int count = stack.getCount();
         stack.setCount(1);
-
         if (count <= 0) return stack;
+
+        if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
         if (simulate) return ItemStack.EMPTY;
 
         long emcValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
@@ -110,9 +111,7 @@ public class TileTransmutationInterface extends TileOwnable implements IItemHand
 
         ServerPlayerEntity player = Util.getPlayer(world, owner);
         if (player != null) {
-            if (provider.addKnowledge(stack)) {
-                provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
-            }
+            if (provider.addKnowledge(stack)) provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
             provider.syncEmc(player);
         }
 
