@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.block;
 
+import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityTransmutationInterface;
 import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
@@ -34,6 +36,7 @@ import java.util.List;
 public class BlockTransmutationInterface extends Block implements EntityBlock {
     public BlockTransmutationInterface() {
         super(Block.Properties.of(Material.STONE).strength(5F));
+        this.registerDefaultState(this.stateDefinition.any().setValue(BlockEntityNBTFilterable.FILTER, true));
     }
 
 
@@ -63,6 +66,11 @@ public class BlockTransmutationInterface extends Block implements EntityBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof BlockEntityTransmutationInterface be) be.wasPlaced(entity, stack);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(BlockEntityNBTFilterable.FILTER);
     }
 
     @Nullable
