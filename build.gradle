@@ -2,6 +2,8 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = "https://libraries.minecraft.net" }
+
         mavenCentral()
     }
     dependencies {
@@ -87,6 +89,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${getProperty("mcVersion")}-${getProperty("forgeVersion")}"
     implementation fg.deobf("curse.maven:projecte-226410:${getProperty("projecteVersion")}")
+    implementation 'com.mojang:brigadier:1.0.18'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
