@@ -27,10 +27,11 @@
     "1.16.5-1.0.23": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.23",
     "1.16.5-1.0.24": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.24",
     "1.16.5-1.0.25": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.25",
-    "1.16.5-1.0.26": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.26"
+    "1.16.5-1.0.26": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.26",
+    "1.16.5-1.0.27": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.16.5-1.0.27"
   },
   "promos": {
-    "1.16.5-latest": "1.16.5-1.0.26",
-    "1.16.5-recommended": "1.16.5-1.0.26"
+    "1.16.5-latest": "1.16.5-1.0.27",
+    "1.16.5-recommended": "1.16.5-1.0.27"
   }
 }
