@@ -10,4 +10,5 @@ public class TagNames {
     public static String REMAINING_EMC = "RemainingEMC";
     public static String REMAINING_IMPORT = "RemainingImport";
     public static String REMAINING_EXPORT = "RemainingExport";
+    public static String REMAINING_FLUID = "RemainingFluid";
 }

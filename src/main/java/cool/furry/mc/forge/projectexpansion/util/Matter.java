@@ -170,8 +170,20 @@ public enum Matter {
         }
     }
 
+    public int getEMCLinkFluidLimit() {
+        try {
+            return Math.multiplyExact(Math.multiplyExact((int) Math.pow(2, level - 1), 1000), Config.emcLinkFluidLimitMultiplier.get());
+        } catch(ArithmeticException ignore) {
+            return Integer.MAX_VALUE;
+        }
+    }
+
     public TextComponent getEMCLinkItemLimitComponent() {
         return new TextComponent(this == FINAL ? "INFINITY" : String.valueOf(getEMCLinkItemLimit()));
+    }
+
+    public TextComponent getEMCLinkFluidLimitComponent() {
+        return new TextComponent(this == FINAL ? "INFINITY" : String.valueOf(getEMCLinkFluidLimit()));
     }
 
     /* Registry Objects */

@@ -20,6 +20,8 @@
   "gui.projectexpansion.config.collector_multiplier.desc": "Multiplies the output of Collectors.",
   "gui.projectexpansion.config.emc_link_item_limit_multiplier": "EMC Link Item Limit Multiplier",
   "gui.projectexpansion.config.emc_link_item_limit_multiplier.desc": "Multiplies the item limit of EMC Links.",
+  "gui.projectexpansion.config.emc_link_fluid_limit_multiplier": "EMC Link Fluid Limit Multiplier",
+  "gui.projectexpansion.config.emc_link_fluid_limit_multiplier.desc": "Multiplies the fluid limit of EMC Links.",
   "gui.projectexpansion.config.emc_link_emc_limit_multiplier": "EMC Link EMC Limit Multiplier",
   "gui.projectexpansion.config.emc_link_emc_limit_multiplier.desc": "Multiplies the emc limit of EMC Links.",
   "gui.projectexpansion.config.powerflower_multiplier": "Power Flower Multiplier",
