@@ -61,6 +61,7 @@ public class BlockEMCLink extends Block implements IHasMatter {
         super.addInformation(stack, level, list, flag);
         list.add((new TranslationTextComponent("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
         list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
         list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", matter.getLevel() == 16 ? new StringTextComponent("INFINITY") : EMCFormat.getComponent(matter.getEMCLinkEMCLimit()).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
