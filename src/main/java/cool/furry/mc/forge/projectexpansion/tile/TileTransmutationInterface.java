@@ -19,6 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,9 +97,8 @@ public class TileTransmutationInterface extends TileNBTFilterable implements IIt
 
         ItemInfo info = ItemInfo.fromStack(stack);
 
-        stack = stack.copy();
         int count = stack.getCount();
-        stack.setCount(1);
+        stack = ItemHandlerHelper.copyStackWithSize(stack, 1);
         if (count <= 0) return stack;
 
         if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;

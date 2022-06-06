@@ -100,6 +100,14 @@ public class ConfigMenu extends Screen {
         ));
 
         optionsRowList.addOption(new SliderPercentageOption(
+            "gui.projectexpansion.config.emc_link_fluid_limit_multiplier",
+            1, 20, 1,
+            __ -> (double) Config.emcLinkFluidLimitMultiplier.get(),
+            (__, newValue) -> Config.emcLinkFluidLimitMultiplier.set(newValue.intValue()),
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.emc_link_fluid_limit_multiplier").appendSibling(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+        ));
+
+        optionsRowList.addOption(new SliderPercentageOption(
             "gui.projectexpansion.config.emc_link_emc_limit_multiplier",
             1, 20, 1,
             __ -> (double) Config.emcLinkEMCLimitMultiplier.get(),

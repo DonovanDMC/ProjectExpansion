@@ -11,7 +11,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.StateContainer;
@@ -33,12 +32,15 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
+public class BlockEMCLink extends Block implements IHasMatter {
     private final Matter matter;
 
     public BlockEMCLink(Matter matter) {
         super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3.5F));
         this.matter = matter;
+        setDefaultState(
+            getStateContainer().getBaseState().with(TileNBTFilterable.FILTER, true)
+        );
     }
 
     @Override
@@ -57,6 +59,7 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
         super.addInformation(stack, level, list, flag);
         list.add((new TranslationTextComponent("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
         list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
         list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", matter.getLevel() == 16 ? new StringTextComponent("INFINITY") : EMCFormat.getComponent(matter.getEMCLinkEMCLimit()).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
@@ -83,18 +86,13 @@ public class BlockEMCLink extends HorizontalBlock implements IHasMatter {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite()).with(TileNBTFilterable.FILTER, true);
-    }
-
-    @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING).add(TileNBTFilterable.FILTER);
+        builder.add(TileNBTFilterable.FILTER);
     }
 
     @Override

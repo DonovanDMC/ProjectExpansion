@@ -15,6 +15,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +71,14 @@ public class Util {
     }
 
     public static int safeIntValue(BigInteger val) {
+        try {
+            return val.intValueExact();
+        } catch (ArithmeticException ignore) {
+            return Integer.MAX_VALUE;
+        }
+    }
+
+    public static int safeIntValue(BigDecimal val) {
         try {
             return val.intValueExact();
         } catch (ArithmeticException ignore) {

@@ -16,6 +16,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Boolean> useOldValues = Builder.translation("gui.projectexpansion.config.use_old_values.desc").define("useOldValues", false);
     public static final ForgeConfigSpec.ConfigValue<Integer> collectorMultiplier = Builder.translation("gui.projectexpansion.config.collector_multiplier.desc").define("collectorMultiplier", 1);
     public static final ForgeConfigSpec.ConfigValue<Integer> emcLinkItemLimitMultiplier = Builder.translation("gui.projectexpansion.config.emc_link_item_limit_multiplier.desc").define("emcLinkItemLimitMultiplier", 1);
+    public static final ForgeConfigSpec.ConfigValue<Integer> emcLinkFluidLimitMultiplier = Builder.translation("gui.projectexpansion.config.emc_link_fluid_limit_multiplier.desc").define("emcLinkFluidLimitMultiplier", 1);
     public static final ForgeConfigSpec.ConfigValue<Integer> emcLinkEMCLimitMultiplier = Builder.translation("gui.projectexpansion.config.emc_link_emc_limit_multiplier.desc").define("emcLinkEMCLimitMultiplier", 1);
     public static final ForgeConfigSpec.ConfigValue<Integer> powerflowerMultiplier = Builder.translation("gui.projectexpansion.config.powerflower_multiplier.desc").define("powerflowerMultiplier", 1);
     public static final ForgeConfigSpec.ConfigValue<Integer> relayBonusMultiplier = Builder.translation("gui.projectexpansion.config.relay_bonus_multiplier.desc").define("relayBonusMultiplier", 1);

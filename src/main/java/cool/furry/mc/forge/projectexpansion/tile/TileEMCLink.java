@@ -13,6 +13,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -24,24 +27,34 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter {
+public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntity, IEmcStorage, IItemHandler, IHasMatter, IFluidHandler {
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
+    private final LazyOptional<IFluidHandler> fluidHandlerCapability = LazyOptional.of(() -> this);
     public BigInteger emc = BigInteger.ZERO;
     private ItemStack itemStack;
     private Matter matter;
     private BigInteger remainingEMC = BigInteger.ZERO;
     private int remainingImport = 0;
     private int remainingExport = 0;
+    private int remainingFluid = 0;
 
     public TileEMCLink() {
         super(TileEntityTypes.EMC_LINK.get());
@@ -60,6 +73,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         if (nbt.contains(NBTNames.REMAINING_EMC, Constants.NBT.TAG_STRING)) remainingEMC = new BigInteger(nbt.getString(NBTNames.REMAINING_EMC));
         if (nbt.contains(NBTNames.REMAINING_IMPORT, Constants.NBT.TAG_INT)) remainingImport = nbt.getInt(NBTNames.REMAINING_IMPORT);
         if (nbt.contains(NBTNames.REMAINING_EXPORT, Constants.NBT.TAG_INT)) remainingExport = nbt.getInt(NBTNames.REMAINING_EXPORT);
+        if (nbt.contains(NBTNames.REMAINING_FLUID, Constants.NBT.TAG_INT)) remainingFluid = nbt.getInt(NBTNames.REMAINING_FLUID);
     }
 
     @Nonnull
@@ -71,6 +85,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         nbt.putString(NBTNames.REMAINING_EMC, remainingEMC.toString());
         nbt.putInt(NBTNames.REMAINING_IMPORT, remainingImport);
         nbt.putInt(NBTNames.REMAINING_EXPORT, remainingExport);
+        nbt.putInt(NBTNames.REMAINING_FLUID, remainingFluid);
         return nbt;
     }
 
@@ -94,13 +109,14 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     }
 
     private void resetLimits() {
-        remainingEMC = getMatter().getEMCLinkEMCLimit();
-        remainingImport = remainingExport = getMatter().getEMCLinkItemLimit();
+        Matter m = getMatter();
+        remainingEMC    = m.getEMCLinkEMCLimit();
+        remainingImport = remainingExport = m.getEMCLinkItemLimit();
+        remainingFluid  = m.getEMCLinkFluidLimit();
     }
 
     private void setInternalItem(ItemStack stack) {
-        itemStack = stack.copy();
-        itemStack.setCount(1);
+        itemStack = ItemHandlerHelper.copyStackWithSize(itemStack, 1);
         markDirty();
     }
 
@@ -171,9 +187,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         int count = maxCount.intValueExact();
         if (count <= 0) return ItemStack.EMPTY;
 
-        ItemStack stack = itemStack.copy();
-        stack.setCount(count);
-        return stack;
+        return ItemHandlerHelper.copyStackWithSize(itemStack, 1);
     }
 
     @Nonnull
@@ -181,9 +195,8 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) return stack;
 
-        stack = stack.copy();
         int count = stack.getCount();
-        stack.setCount(1);
+        stack = ItemHandlerHelper.copyStackWithSize(stack, 1);
 
         if (count <= 0) return stack;
 
@@ -226,8 +239,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         int extractCount = Math.min(amount, limit ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
         if (extractCount <= 0) return ItemStack.EMPTY;
 
-        ItemStack r = itemStack.copy();
-        r.setCount(extractCount);
+        ItemStack r = ItemHandlerHelper.copyStackWithSize(itemStack, extractCount);
         if (simulate) return r;
 
         BigInteger totalPrice = itemValue.multiply(BigInteger.valueOf(extractCount));
@@ -248,6 +260,98 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return ProjectEAPI.getEMCProxy().hasValue(stack);
+    }
+
+    /*********
+     * Fluids *
+     *********/
+
+    public @Nullable Fluid getFluid() {
+        if(!itemStack.isEmpty() && itemStack.getItem() instanceof BucketItem) {
+            BucketItem bucketItem = (BucketItem) itemStack.getItem();
+            return bucketItem.getFluid();
+        } else return null;
+    }
+
+    private double getFluidCostPer() {
+        try {
+            return ProjectEAPI.getEMCProxy().getValue(itemStack) / 1000D;
+        } catch(ArithmeticException ignore) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    private long getFluidCost(double amount) {
+        try {
+            double cost = getFluidCostPer();
+            return (long) Math.ceil(cost * amount);
+        } catch(ArithmeticException ignore) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    @Override
+    public int getTanks() {
+        return 1;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack getFluidInTank(int tank) {
+        Fluid fluid = getFluid();
+        if(fluid == null) return FluidStack.EMPTY;
+        return new FluidStack(fluid, remainingFluid);
+    }
+
+    @Override
+    public int getTankCapacity(int tank) {
+        return remainingFluid;
+    }
+
+    @Override
+    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+        return false;
+    }
+
+    @Override
+    public int fill(FluidStack resource, FluidAction action) {
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack drain(FluidStack resource, FluidAction action) {
+        Fluid fluid = getFluid();
+        if(fluid != null && resource.getFluid().equals(fluid)) return drain(resource.getAmount(), action);
+        return FluidStack.EMPTY;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack drain(int maxDrain, FluidAction action) {
+        Fluid fluid = getFluid();
+        if(fluid == null  || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
+        if(maxDrain > remainingFluid) maxDrain = remainingFluid;
+        long cost = getFluidCost(maxDrain);
+        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        BigInteger emc = provider.getEmc();
+        BigDecimal dEMC = new BigDecimal(emc);
+        if(dEMC.compareTo(BigDecimal.valueOf(getFluidCostPer())) < 0) return FluidStack.EMPTY;
+        if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
+            // this is a bad way to estimate, it rounds up so we'll usually say less than what's really possible
+            BigDecimal max = dEMC.divide(BigDecimal.valueOf(getFluidCostPer()), RoundingMode.FLOOR);
+            maxDrain = Util.safeIntValue(max);
+            if(maxDrain > remainingFluid) maxDrain = remainingFluid;
+            if(maxDrain < 1) return FluidStack.EMPTY;
+            cost = getFluidCost(maxDrain);
+        }
+        if(action.execute()) {
+            remainingFluid -= maxDrain;
+            markDirty();
+            provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
+            provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
+        }
+        return new FluidStack(fluid, maxDrain);
     }
 
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
@@ -281,6 +385,31 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
             return ActionResultType.SUCCESS;
         }
 
+        Fluid fluid = getFluid();
+        if(fluid != null && inHand.getItem() instanceof BucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
+            BucketItem bucketItem = (BucketItem) inHand.getItem();
+            if(Config.limitEmcLinkVendor.get() && remainingExport < 1000) {
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
+                return ActionResultType.CONSUME;
+            }
+            long cost = getFluidCost(1000);
+            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+            BigInteger emc = provider.getEmc();
+            if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                return ActionResultType.CONSUME;
+            }
+            FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, this, 1000, player, true);
+            if(!fillResult.isSuccess()) return ActionResultType.FAIL;
+            player.inventory.decrStackSize(player.inventory.currentItem, 1);
+            ItemHandlerHelper.giveItemToPlayer(player, fillResult.getResult());
+            provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
+            remainingFluid -= 1000;
+            markDirty();
+            if(player instanceof ServerPlayerEntity) provider.syncEmc((ServerPlayerEntity) player);
+            return ActionResultType.CONSUME;
+        }
+
         if (inHand.isEmpty() || itemStack.isItemEqual(inHand)) {
             if (Config.limitEmcLinkVendor.get() && remainingExport <= 0) {
                 player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
@@ -309,12 +438,14 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         return
             (cap == ProjectEAPI.EMC_STORAGE_CAPABILITY) ? emcStorageCapability.cast() :
                 (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() :
-                    super.getCapability(cap, side);
+                    (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) ? fluidHandlerCapability.cast() :
+                            super.getCapability(cap, side);
     }
 
     @Override
     protected void invalidateCaps() {
         emcStorageCapability.invalidate();
         itemHandlerCapability.invalidate();
+        fluidHandlerCapability.invalidate();
     }
 }
