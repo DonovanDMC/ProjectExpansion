@@ -114,7 +114,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     }
 
     private void setInternalItem(ItemStack stack) {
-        itemStack = ItemHandlerHelper.copyStackWithSize(itemStack, 1);
+        itemStack = ItemHandlerHelper.copyStackWithSize(stack, 1);
         markDirty();
     }
 
