@@ -54,8 +54,12 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
     }
 
     private ItemInfo[] fetchKnowledge() {
-        if (info != null) return info;
-        return info = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getKnowledge().toArray(new ItemInfo[0]);
+        try {
+            if (info != null) return info;
+            return info = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getKnowledge().toArray(new ItemInfo[0]);
+        } catch (NullPointerException ignore) {
+            return new ItemInfo[]{};
+        }
     }
 
     private int getMaxCount(int slot) {
