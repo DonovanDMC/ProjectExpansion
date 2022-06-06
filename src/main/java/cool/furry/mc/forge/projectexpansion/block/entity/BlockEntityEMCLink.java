@@ -116,7 +116,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
     }
 
     private void setInternalItem(ItemStack stack) {
-        itemStack = ItemHandlerHelper.copyStackWithSize(itemStack, 1);
+        itemStack = ItemHandlerHelper.copyStackWithSize(stack, 1);
         Util.markDirty(this);
     }
 
