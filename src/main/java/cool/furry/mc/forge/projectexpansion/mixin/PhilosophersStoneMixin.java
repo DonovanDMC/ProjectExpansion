@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -23,7 +24,7 @@ public class PhilosophersStoneMixin {
         Player player = ctx.getPlayer();
         Level level = ctx.getLevel();
         if(!level.isClientSide && player != null) {
-            BlockHitResult rtr = ((PhilosophersStone)(Object)this).getHitBlock(player);
+            BlockHitResult rtr = this.getHitBlock(player);
             if (!rtr.getBlockPos().equals(pos)) pos = rtr.getBlockPos();
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if(blockEntity instanceof BlockEntityNBTFilterable be) {
@@ -31,5 +32,10 @@ public class PhilosophersStoneMixin {
                 cir.setReturnValue(InteractionResult.SUCCESS);
             }
         }
+    }
+
+    @Shadow
+    public BlockHitResult getHitBlock(Player player) {
+        throw new IllegalStateException("Mixin failed to shadow getHitBlock()");
     }
 }
