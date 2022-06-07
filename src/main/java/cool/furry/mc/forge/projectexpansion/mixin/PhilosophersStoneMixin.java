@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -23,7 +24,7 @@ public class PhilosophersStoneMixin {
         PlayerEntity player = ctx.getPlayer();
         World world = ctx.getWorld();
         if(!world.isRemote && player != null) {
-            BlockRayTraceResult rtr = ((PhilosophersStone)(Object)this).getHitBlock(player);
+            BlockRayTraceResult rtr = this.getHitBlock(player);
             if (!rtr.getPos().equals(pos)) pos = rtr.getPos();
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof TileNBTFilterable) {
@@ -31,5 +32,10 @@ public class PhilosophersStoneMixin {
                 cir.setReturnValue(ActionResultType.SUCCESS);
             }
         }
+    }
+
+    @Shadow
+    public BlockRayTraceResult getHitBlock(PlayerEntity player) {
+        throw new IllegalStateException("Mixin failed to shadow getHitBlock()");
     }
 }
