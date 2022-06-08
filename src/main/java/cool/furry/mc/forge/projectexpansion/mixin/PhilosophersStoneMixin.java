@@ -35,7 +35,7 @@ public class PhilosophersStoneMixin {
         }
     }
 
-    @Shadow
+    @Shadow(remap = false)
     public RayTraceResult getHitBlock(PlayerEntity player) {
         throw new IllegalStateException("Mixin failed to shadow getHitBlock()");
     }

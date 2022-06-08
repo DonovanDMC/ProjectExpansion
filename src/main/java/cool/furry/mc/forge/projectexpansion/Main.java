@@ -1,9 +1,10 @@
 package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.init.Blocks;
-import cool.furry.mc.forge.projectexpansion.init.Items;
-import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.registries.Blocks;
+import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
+import cool.furry.mc.forge.projectexpansion.registries.Items;
+import cool.furry.mc.forge.projectexpansion.registries.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.NBTNames;
@@ -44,6 +45,7 @@ public class Main {
         };
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         Blocks.Registry.register(bus);
+        Enchantments.Registry.register(bus);
         Items.Registry.register(bus);
         TileEntityTypes.Registry.register(bus);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);
