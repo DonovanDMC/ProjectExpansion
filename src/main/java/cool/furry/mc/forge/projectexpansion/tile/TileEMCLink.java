@@ -395,7 +395,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
             IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
             BigInteger emc = provider.getEmc();
             if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
                 return false;
             }
             FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, this, 1000, player, true);
