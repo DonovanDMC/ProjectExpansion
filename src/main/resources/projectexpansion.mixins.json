@@ -8,6 +8,7 @@
     "EMCFormatterMixin"
   ],
   "mixins":             [
+    "EnchantmentMixin",
     "PhilosophersStoneMixin"
   ],
   "injectors":          {

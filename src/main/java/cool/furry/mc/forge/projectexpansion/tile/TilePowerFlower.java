@@ -2,7 +2,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.init.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.registries.TileEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.PowerFlowerCollector;
 import cool.furry.mc.forge.projectexpansion.util.Util;

@@ -1,6 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
-import cool.furry.mc.forge.projectexpansion.init.Items;
+import cool.furry.mc.forge.projectexpansion.registries.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemColossalStar;
 import cool.furry.mc.forge.projectexpansion.item.ItemMagnumStar;
 import net.minecraftforge.fml.RegistryObject;

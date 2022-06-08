@@ -3,7 +3,6 @@ package cool.furry.mc.forge.projectexpansion.util;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nullable;
@@ -123,7 +122,7 @@ public class EMCFormat extends DecimalFormat {
         BILLION(1e9, "B"),
         TRILLION(1e12, "T"),
         QUADRILLION(1e15, "Qa"),
-        QUINTILLION(1e18, "Qu"),
+        QUINTILLION(1e18, "Qi"),
         SEXTILLION(1e21, "Sx"),
         SEPTILLION(1e24, "Sp"),
         OCTILLION(1e27, "O"),
