@@ -391,7 +391,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
             }
             ItemStack extract = extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
             if (extract.isEmpty()) {
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_enough_emc", new TextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_enough_emc", new TextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
                 return InteractionResult.CONSUME;
             }
             ItemHandlerHelper.giveItemToPlayer(player, extract);
