@@ -5,10 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "projectexpansion.refmap.json",
   "mixins": [
+    "PhilosophersStoneMixin",
+    "EnchantmentMixin"
   ],
   "client": [
-    "EMCFormatterMixin",
-    "PhilosophersStoneMixin"
+    "EMCFormatterMixin"
   ],
   "injectors": {
     "defaultRequire": 1
