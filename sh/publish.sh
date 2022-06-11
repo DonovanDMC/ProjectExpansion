@@ -6,5 +6,5 @@ if [ $# -eq 0 ]; then
 fi
 
 cd "$DIR" || exit
-. "$DIR/get-log.sh" "$0"
-node --no-warnings --no-deprecation --experimental-specifier-resolution=node --loader ts-node/esm "$DIR/../scripts/publish.ts" "$0" "$GITLOG_FILE" "$OTHERLOG_FILE"
+. "$DIR/get-log.sh" "$1"
+node --no-warnings --no-deprecation --experimental-specifier-resolution=node --loader ts-node/esm "$DIR/../scripts/publish.ts" "$1" "$GITLOG_FILE" "$OTHERLOG_FILE"
