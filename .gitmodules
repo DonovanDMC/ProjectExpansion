@@ -1,0 +1,4 @@
+[submodule "Publishing"]
+	path = scripts/publish
+	url = https://github.com/DonovanDMC/ProjectExpansion
+	branch = publishing
