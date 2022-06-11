@@ -51,7 +51,8 @@ const req = await fetch(`${config.endpoint}/publish/${config.gitName}`, {
 	method:  "POST",
 	headers: {
 		Authorization: config.auth
-	}
+	},
+	body: data
 });
 if (req.status !== 201) throw new Error(`Unexpected ${req.status} ${req.statusText} "${await req.text()}"`);
 const body = await req.json() as SuccessResponse | ErrorResponse;
