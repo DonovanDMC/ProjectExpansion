@@ -3,8 +3,10 @@ import { access, readFile, writeFile } from "fs/promises";
 import { tmpdir } from "os";
 
 
-const gitlogFile = process.argv[2];
-const id = process.argv[3];
+const gitDir = process.argv[2];
+const gitlogFile = process.argv[3];
+const id = process.argv[4];
+if (!gitDir) throw new Error("git dir is required");
 if (!gitlogFile) throw new Error("gitlog file is required");
 if (!id) throw new Error("edit id is required");
 const GITLOG_LINE_REGEX = /^(.*) \(((?:([\da-f]{40})|([\da-f]{6,8})(?:,\s?)?)+)\)$/;
@@ -13,7 +15,7 @@ const gitlog = (await readFile(gitlogFile)).toString();
 const otherlog = [
 	"# Log For Other Platforms"
 ];
-const git = simpleGit(".");
+const git = simpleGit(gitDir);
 
 for (const line of gitlog.split("\n")) {
 	let m: RegExpMatchArray | null;

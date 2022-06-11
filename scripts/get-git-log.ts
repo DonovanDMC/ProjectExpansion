@@ -9,7 +9,7 @@ if (!gitDir) throw new Error("git dir is required");
 if (!id) throw new Error("edit id is required");
 
 const git = simpleGit(gitDir);
-await git.pull(["--tags"]);
+await git.pull(["--tags", "--force"]);
 const latestTag = (await git.raw(["describe", "--tags", "--abbrev=0"])).toString().trim();
 const commits = await git.log([`${latestTag}..HEAD`]) as SimpleGit & LogResult;
 const gitLog = [
