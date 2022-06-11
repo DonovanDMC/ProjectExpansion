@@ -1,0 +1,27 @@
+{
+  "name": "generation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "run.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DonovanDMC/ProjectExpansion.git"
+  },
+  "author": "Donovan Daniels <hewwo@yiff.rocks>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DonovanDMC/ProjectExpansion/issues"
+  },
+  "homepage": "https://github.com/DonovanDMC/ProjectExpansion#readme",
+  "dependencies": {
+    "@types/node": "^17.0.41",
+    "@uwu-codes/eslint-config": "^1.0.49",
+    "@uwu-codes/tsconfig": "^1.0.1",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  },
+  "type": "module"
+}
