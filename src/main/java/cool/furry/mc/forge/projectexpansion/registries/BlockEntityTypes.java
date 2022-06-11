@@ -1,4 +1,4 @@
-package cool.furry.mc.forge.projectexpansion.init;
+package cool.furry.mc.forge.projectexpansion.registries;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.entity.*;

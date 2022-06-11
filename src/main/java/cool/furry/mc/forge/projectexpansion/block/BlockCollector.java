@@ -2,7 +2,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
+import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;

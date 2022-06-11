@@ -2,7 +2,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityTransmutationInterface;
-import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
+import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

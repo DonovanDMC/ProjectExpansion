@@ -1,8 +1,8 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
 import cool.furry.mc.forge.projectexpansion.block.BlockFuelItem;
-import cool.furry.mc.forge.projectexpansion.init.Blocks;
-import cool.furry.mc.forge.projectexpansion.init.Items;
+import cool.furry.mc.forge.projectexpansion.registries.Blocks;
+import cool.furry.mc.forge.projectexpansion.registries.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemFuel;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.world.item.BlockItem;

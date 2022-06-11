@@ -1,7 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.block.entity;
 
 import cool.furry.mc.forge.projectexpansion.block.BlockRelay;
-import cool.furry.mc.forge.projectexpansion.init.BlockEntityTypes;
+import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.PECapabilities;
