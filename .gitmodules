@@ -2,3 +2,7 @@
 	path = scripts/publish
 	url = https://github.com/DonovanDMC/ProjectExpansion
 	branch = publishing
+[submodule "Generation"]
+	path = src/main/generation
+	url = https://github.com/DonovanDMC/ProjectExpansion
+	branch = generation
