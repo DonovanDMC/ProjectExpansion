@@ -16,6 +16,6 @@ public class EnchantmentAlchemicalCollection extends Enchantment {
 
     @Override
     public int getMaxEnchantability(int level) {
-        return super.getMinEnchantability(level) + 50;
+        return getMinEnchantability(level) + 50;
     }
 }
