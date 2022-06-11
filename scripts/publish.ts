@@ -1,3 +1,5 @@
+// I use a self signed cert locally
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 import config from "../config.json" assert { type: "json" };
 import type { ErrorResponse, SuccessResponse } from "../types";
 import simpleGit from "simple-git";
