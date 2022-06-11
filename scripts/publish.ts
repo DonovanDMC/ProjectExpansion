@@ -47,7 +47,7 @@ data.append("changelog", otherlog);
 data.append("version", version);
 data.append("expectedLatestCommit", currentCommit);
 data.append("file", new File([fileContent], file));
-const req = await fetch(`${config.endpoint}/${config.gitName}`, {
+const req = await fetch(`${config.endpoint}/publish/${config.gitName}`, {
 	method:  "POST",
 	headers: {
 		Authorization: config.auth
