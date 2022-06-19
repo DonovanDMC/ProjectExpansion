@@ -30,6 +30,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -410,14 +411,16 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         return
-                (cap == PECapabilities.EMC_STORAGE_CAPABILITY) ? emcStorageCapability.cast() :
-                        (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() :
-                                super.getCapability(cap, side);
+            (cap == PECapabilities.EMC_STORAGE_CAPABILITY) ? emcStorageCapability.cast() :
+                (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) ? itemHandlerCapability.cast() :
+                    (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) ? fluidHandlerCapability.cast() :
+                        super.getCapability(cap, side);
     }
 
     @Override
     public void invalidateCaps() {
         emcStorageCapability.invalidate();
         itemHandlerCapability.invalidate();
+        fluidHandlerCapability.invalidate();
     }
 }
