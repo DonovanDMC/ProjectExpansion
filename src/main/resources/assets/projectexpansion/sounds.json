@@ -1,0 +1,14 @@
+{
+  "knowledge_sharing_book.store": {
+    "subtitle": "sounds.projectexpansion.knowledge_sharing_book.store",
+    "sounds": ["minecraft:random/orb"]
+  },
+  "knowledge_sharing_book.use": {
+    "subtitle": "sounds.projectexpansion.knowledge_sharing_book.use",
+    "sounds": ["minecraft:random/break"]
+  },
+  "knowledge_sharing_book.use_none": {
+    "subtitle": "sounds.projectexpansion.knowledge_sharing_book.use_none",
+    "sounds": ["minecraft:random/fizz"]
+  }
+}
