@@ -14,6 +14,7 @@
   "item.projectexpansion.knowledge_sharing_book.stored": "Knowledge stored.",
   "item.projectexpansion.knowledge_sharing_book.self": "You cannot gain your own knowledge.",
   "item.projectexpansion.knowledge_sharing_book.learned": "You learned %s.",
+  "item.projectexpansion.knowledge_sharing_book.learned_over_100": "%s item(s) were learned, but not shown.",
   "item.projectexpansion.knowledge_sharing_book.learned_total": "You have learned %s item(s) from %s.",
   "item.projectexpansion.knowledge_sharing_book.no_new_knowledge": "You learned nothing new.",
   "item.projectexpansion.knowledge_sharing_book.no_owner": "You cannot gain knowledge from an unowned book."
