@@ -225,6 +225,15 @@
 	"item.projectexpansion.infinite_steak": "Infinite Steak",
 	"item.projectexpansion.infinite_steak.tooltip": "Infinite food via your emc.",
 	"item.projectexpansion.infinite_steak.not_enough_emc": "You do not have enough emc to use this, you need %s.",
+	"item.projectexpansion.knowledge_sharing_book": "Knowledge Sharing Book",
+	"item.projectexpansion.knowledge_sharing_book.selected": "Selected Player: %s",
+	"item.projectexpansion.knowledge_sharing_book.stored": "Knowledge stored.",
+	"item.projectexpansion.knowledge_sharing_book.self": "You cannot gain your own knowledge.",
+	"item.projectexpansion.knowledge_sharing_book.learned": "You learned %s.",
+	"item.projectexpansion.knowledge_sharing_book.learned_over_100": "%s item(s) were learned, but not shown.",
+	"item.projectexpansion.knowledge_sharing_book.learned_total": "You have learned %s item(s) from %s.",
+	"item.projectexpansion.knowledge_sharing_book.no_new_knowledge": "You learned nothing new.",
+	"item.projectexpansion.knowledge_sharing_book.no_owner": "You cannot gain knowledge from an unowned book.",
 	"item.projectexpansion.magnum_star_ein": "Magnum Star Ein",
 	"item.projectexpansion.magnum_star_zwei": "Magnum Star Zwei",
 	"item.projectexpansion.magnum_star_drei": "Magnum Star Drei",
@@ -246,5 +255,8 @@
 	"text.projectexpansion.nbt_filter.disable": "NBT Filter Disabled",
 	"text.projectexpansion.nbt_filter.enable": "NBT Filter Enabled",
 	"enchantment.projectexpansion.alchemical_collection": "Alchemical Collection",
-	"enchantment.projectexpansion.alchemical_collection.desc": "Converts any mined items with an emc value directly into emc."
+	"enchantment.projectexpansion.alchemical_collection.desc": "Converts any mined items with an emc value directly into emc.",
+	"sounds.projectexpansion.knowledge_sharing_book.store": "Knowledge Stored",
+	"sounds.projectexpansion.knowledge_sharing_book.use": "Knowledge Gained",
+	"sounds.projectexpansion.knowledge_sharing_book.use_none": "No Knowledge Gained"
 }

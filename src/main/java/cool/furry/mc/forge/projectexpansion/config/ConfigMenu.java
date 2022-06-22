@@ -73,6 +73,12 @@ public class ConfigMenu extends Screen {
         ));
 
         optionsRowList.func_214333_a(new BooleanOption(
+                "gui.projectexpansion.config.notify_knowledge_book_changes",
+                __ -> Config.notifyKnowledgeBookGains.get(),
+                (__, newValue) -> Config.notifyKnowledgeBookGains.set(newValue)
+        ));
+
+        optionsRowList.func_214333_a(new BooleanOption(
             "gui.projectexpansion.config.limit_emc_link_vendor",
             __ -> Config.limitEmcLinkVendor.get(),
             (__, newValue) -> Config.limitEmcLinkVendor.set(newValue)
