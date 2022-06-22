@@ -8,5 +8,13 @@
   "item.projectexpansion.infinite_fuel.not_enough_emc": "You do not have enough emc to use this, you need %s.",
   "item.projectexpansion.infinite_steak": "Infinite Steak",
   "item.projectexpansion.infinite_steak.tooltip": "Infinite food via your emc.",
-  "item.projectexpansion.infinite_steak.not_enough_emc": "You do not have enough emc to use this, you need %s."
+  "item.projectexpansion.infinite_steak.not_enough_emc": "You do not have enough emc to use this, you need %s.",
+  "item.projectexpansion.knowledge_sharing_book": "Knowledge Sharing Book",
+  "item.projectexpansion.knowledge_sharing_book.selected": "Selected Player: %s",
+  "item.projectexpansion.knowledge_sharing_book.stored": "Knowledge stored.",
+  "item.projectexpansion.knowledge_sharing_book.self": "You cannot gain your own knowledge.",
+  "item.projectexpansion.knowledge_sharing_book.learned": "You learned %s.",
+  "item.projectexpansion.knowledge_sharing_book.learned_total": "You have learned %s item(s) from %s.",
+  "item.projectexpansion.knowledge_sharing_book.no_new_knowledge": "You learned nothing new.",
+  "item.projectexpansion.knowledge_sharing_book.no_owner": "You cannot gain knowledge from an unowned book."
 }
