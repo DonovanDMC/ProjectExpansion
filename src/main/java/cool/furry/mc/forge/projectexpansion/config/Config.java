@@ -10,6 +10,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Boolean> fullNumberNames = Builder.translation("gui.projectexpansion.config.full_number_names.desc").define("fullNumberNames", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> emcDisplay = Builder.translation("gui.projectexpansion.config.emc_display.desc").define("emcDisplay", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> notifyCommandChanges = Builder.translation("gui.projectexpansion.config.notify_command_changes.desc").define("notifyCommandChanges", true);
+    public static final ForgeConfigSpec.ConfigValue<Boolean> notifyKnowledgeBookGains = Builder.translation("gui.projectexpansion.config.notify_knowledge_book_gains.desc").define("notifyKnowledgeBookGains", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> limitEmcLinkVendor = Builder.translation("gui.projectexpansion.config.limit_emc_link_vendor.desc").define("limitEmcLinkVendor", true);
     public static final ForgeConfigSpec.ConfigValue<Integer> transmutationInterfaceItemCount = Builder.translation("gui.projectexpansion.config.transmutation_interface_item_count.desc").define("transmutationInterfaceItemCount", 2147483647);
     public static final ForgeConfigSpec.ConfigValue<Boolean> useOldValues = Builder.translation("gui.projectexpansion.config.use_old_values.desc").define("useOldValues", false);

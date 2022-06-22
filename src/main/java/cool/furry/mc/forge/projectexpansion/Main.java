@@ -1,10 +1,7 @@
 package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
-import cool.furry.mc.forge.projectexpansion.registries.Blocks;
-import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
-import cool.furry.mc.forge.projectexpansion.registries.Items;
+import cool.furry.mc.forge.projectexpansion.registries.*;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.Star;
@@ -43,10 +40,11 @@ public class Main {
             }
         };
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        BlockEntityTypes.Registry.register(bus);
         Blocks.Registry.register(bus);
         Enchantments.Registry.register(bus);
         Items.Registry.register(bus);
-        BlockEntityTypes.Registry.register(bus);
+        SoundEvents.Registry.register(bus);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.Spec, "project-expansion.toml");
 
