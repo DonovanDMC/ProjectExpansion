@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap":             "projectexpansion.refmap.json",
   "client":             [
+    "DeleteWeebShitMixin",
     "EMCFormatterMixin"
   ],
   "mixins":             [
