@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
+import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -22,10 +23,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ItemInfiniteSteak extends Item {
-    public static final Supplier<BigInteger> COST = () -> BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(Items.COOKED_BEEF));
 
     public ItemInfiniteSteak() {
         super(new Item.Properties().maxStackSize(1).rarity(Rarity.RARE).group(Main.group));
@@ -36,7 +35,7 @@ public class ItemInfiniteSteak extends Item {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, world, list, flag);
         list.add(new TranslationTextComponent("item.projectexpansion.infinite_steak.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.cost", EMCFormat.getComponent(COST.get()).setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.RED));
+        list.add(new TranslationTextComponent("text.projectexpansion.cost", EMCFormat.getComponent(Config.infiniteSteakCost.get()).setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.RED));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemInfiniteSteak extends Item {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         // TODO: wolves???
-        if (!player.canEat(false) || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID()).getEmc().compareTo(COST.get()) < 0) return ActionResult.func_226251_d_(stack);
+        if (!player.canEat(false) || Config.infiniteSteakCost.get() == 0 || ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID()).getEmc().compareTo(BigInteger.valueOf(Config.infiniteSteakCost.get())) < 0) return ActionResult.func_226251_d_(stack);
         player.setActiveHand(hand);
         return world.isRemote ? ActionResult.func_226248_a_(stack) : ActionResult.func_226249_b_(stack);
     }
@@ -69,9 +68,9 @@ public class ItemInfiniteSteak extends Item {
         if (!(entity instanceof ServerPlayerEntity) || world.isRemote) return stack;
         ServerPlayerEntity player = (ServerPlayerEntity) entity;
         IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(entity.getUniqueID());
-        BigInteger emc = provider.getEmc().subtract(COST.get());
+        BigInteger emc = provider.getEmc().subtract(BigInteger.valueOf(Config.infiniteSteakCost.get()));
         if (emc.compareTo(BigInteger.ZERO) < 0) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.infinite_steak.not_enough_emc", new StringTextComponent(COST.get().toString())).setStyle(ColorStyle.RED), true);
+            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.infinite_steak.not_enough_emc", new StringTextComponent(Config.infiniteSteakCost.get().toString())).setStyle(ColorStyle.RED), true);
             return stack;
         }
         provider.setEmc(emc);
