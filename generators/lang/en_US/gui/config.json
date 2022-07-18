@@ -29,5 +29,11 @@
   "gui.projectexpansion.config.relay_bonus_multiplier": "Relay Bonus Multiplier",
   "gui.projectexpansion.config.relay_bonus_multiplier.desc": "Multiplies the bonus of Relays.",
   "gui.projectexpansion.config.relay_transfer_multiplier": "Relay Transfer Multiplier",
-  "gui.projectexpansion.config.relay_transfer_multiplier.desc": "Multiplies the transfer limit of Relays."
+  "gui.projectexpansion.config.relay_transfer_multiplier.desc": "Multiplies the transfer limit of Relays.",
+  "gui.projectexpansion.config.infinite_fuel_cost": "Infinite Fuel Cost",
+  "gui.projectexpansion.config.infinite_fuel_cost.desc": "The cost of using the infinite fuel item.",
+  "gui.projectexpansion.config.infinite_fuel_burn_time": "Infinite Fuel Burn Time",
+  "gui.projectexpansion.config.infinite_fuel_burn_time.desc": "The ticks each usage of the infinite fuel item will give.",
+  "gui.projectexpansion.config.infinite_steak_cost": "Infinite Steak Cost",
+  "gui.projectexpansion.config.infinite_steak_cost.desc": "The cost of using the infinite steak item."
 }
