@@ -21,5 +21,8 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Integer> powerflowerMultiplier = Builder.translation("gui.projectexpansion.config.powerflower_multiplier.desc").define("powerflowerMultiplier", 1);
     public static final ForgeConfigSpec.ConfigValue<Integer> relayBonusMultiplier = Builder.translation("gui.projectexpansion.config.relay_bonus_multiplier.desc").define("relayBonusMultiplier", 1);
     public static final ForgeConfigSpec.ConfigValue<Integer> relayTransferMultiplier = Builder.translation("gui.projectexpansion.config.relay_transfer_multiplier.desc").define("relayTransferMultiplier", 1);
+    public static final ForgeConfigSpec.ConfigValue<Integer> infiniteFuelCost = Builder.translation("gui.projectexpansion.config.infinite_fuel_cost.desc").define("infiniteFuelCost", 128);
+    public static final ForgeConfigSpec.ConfigValue<Integer> infiniteFuelBurnTime = Builder.translation("gui.projectexpansion.config.infinite_fuel_burn_time.desc").define("infiniteFuelBurnTime", 1600);
+    public static final ForgeConfigSpec.ConfigValue<Integer> infiniteSteakCost = Builder.translation("gui.projectexpansion.config.infinite_steak_cost.desc").define("infiniteSteakCost", 64);
     static { Spec = Builder.build(); }
 }
