@@ -187,7 +187,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         int count = maxCount.intValueExact();
         if (count <= 0) return ItemStack.EMPTY;
 
-        return ItemHandlerHelper.copyStackWithSize(itemStack, 1);
+        return ItemHandlerHelper.copyStackWithSize(itemStack, count);
     }
 
     @Nonnull
