@@ -82,12 +82,21 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        name "curios"
+        url "https://maven.theillusivec4.top/"
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${getProperty("mcVersion")}-${getProperty("forgeVersion")}"
     implementation fg.deobf("curse.maven:projecte-226410:${getProperty("projecteVersion")}")
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}")
 }
 
 jar {
