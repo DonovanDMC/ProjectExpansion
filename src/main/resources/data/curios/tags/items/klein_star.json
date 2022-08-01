@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "projectexpansion:magnum_star_ein",
+    "projectexpansion:magnum_star_zwei",
+    "projectexpansion:magnum_star_drei",
+    "projectexpansion:magnum_star_vier",
+    "projectexpansion:magnum_star_sphere",
+    "projectexpansion:magnum_star_omega",
+    "projectexpansion:colossal_star_ein",
+    "projectexpansion:colossal_star_zwei",
+    "projectexpansion:colossal_star_drei",
+    "projectexpansion:colossal_star_vier",
+    "projectexpansion:colossal_star_sphere",
+    "projectexpansion:colossal_star_omega"
+  ]
+}
