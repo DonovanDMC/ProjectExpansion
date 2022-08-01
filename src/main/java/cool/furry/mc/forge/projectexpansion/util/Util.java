@@ -115,7 +115,6 @@ public class Util {
         return spreadEMC(emc, storageList, null);
     }
     public static BigInteger spreadEMC(BigInteger emc, List<IEmcStorage> storageList, @Nullable Long maxPer) {
-        System.out.printf("[emc/maxPer] %s %s\n", emc, maxPer);
         if(emc.equals(BigInteger.ZERO) || storageList.isEmpty()) return emc;
         List<IEmcStorage> notAccepting = new ArrayList<>();
         emc = stepBigInteger(emc, (val) -> {
