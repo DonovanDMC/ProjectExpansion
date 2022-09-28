@@ -1,0 +1,19 @@
+{
+  "item.projectexpansion.compressed_collector.tooltip": "Crafting Ingredient",
+  "item.projectexpansion.basic_compressed_collector": "Basic Compressed Collector [MK 1]",
+  "item.projectexpansion.dark_compressed_collector": "Dark Compressed Collector [MK 2]",
+  "item.projectexpansion.red_compressed_collector": "Red Compressed Collector [MK 3]",
+  "item.projectexpansion.magenta_compressed_collector": "Magenta Compressed Collector [MK 4]",
+  "item.projectexpansion.pink_compressed_collector": "Pink Compressed Collector [MK 5]",
+  "item.projectexpansion.purple_compressed_collector": "Purple Compressed Collector [MK 6]",
+  "item.projectexpansion.violet_compressed_collector": "Violet Compressed Collector [MK 7]",
+  "item.projectexpansion.blue_compressed_collector": "Blue Compressed Collector [MK 8]",
+  "item.projectexpansion.cyan_compressed_collector": "Cyan Compressed Collector [MK 9]",
+  "item.projectexpansion.green_compressed_collector": "Green Compressed Collector [MK 10]",
+  "item.projectexpansion.lime_compressed_collector": "Lime Compressed Collector [MK 11]",
+  "item.projectexpansion.yellow_compressed_collector": "Yellow Compressed Collector [MK 12]",
+  "item.projectexpansion.orange_compressed_collector": "Orange Compressed Collector [MK 13]",
+  "item.projectexpansion.white_compressed_collector": "White Compressed Collector [MK 14]",
+  "item.projectexpansion.fading_compressed_collector": "Fading Compressed Collector [MK 15]",
+  "item.projectexpansion.final_compressed_collector": "Final Compressed Collector [MK 16]"
+}

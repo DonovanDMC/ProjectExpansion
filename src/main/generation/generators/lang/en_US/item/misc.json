@@ -1,0 +1,22 @@
+{
+  "item.projectexpansion.arcane_tablet": "Arcane Tablet",
+  "item.projectexpansion.final_star_shard": "Final Star Shard",
+  "item.projectexpansion.final_star_shard.tooltip": "Crafting ingredient.",
+  "item.projectexpansion.final_star": "Final Star",
+  "item.projectexpansion.final_star.tooltip": "Currently exists only to show off, future usages are planned.",
+  "item.projectexpansion.infinite_fuel": "Infinite Fuel",
+  "item.projectexpansion.infinite_fuel.tooltip": "This item will not be consumed, fuel will be provided via your emc.",
+  "item.projectexpansion.infinite_fuel.not_enough_emc": "You do not have enough emc to use this, you need %s.",
+  "item.projectexpansion.infinite_steak": "Infinite Steak",
+  "item.projectexpansion.infinite_steak.tooltip": "Infinite food via your emc.",
+  "item.projectexpansion.infinite_steak.not_enough_emc": "You do not have enough emc to use this, you need %s.",
+  "item.projectexpansion.knowledge_sharing_book": "Knowledge Sharing Book",
+  "item.projectexpansion.knowledge_sharing_book.selected": "Selected Player: %s",
+  "item.projectexpansion.knowledge_sharing_book.stored": "Knowledge stored.",
+  "item.projectexpansion.knowledge_sharing_book.self": "You cannot gain your own knowledge.",
+  "item.projectexpansion.knowledge_sharing_book.learned": "You learned %s.",
+  "item.projectexpansion.knowledge_sharing_book.learned_over_100": "%s item(s) were learned, but not shown.",
+  "item.projectexpansion.knowledge_sharing_book.learned_total": "You have learned %s item(s) from %s.",
+  "item.projectexpansion.knowledge_sharing_book.no_new_knowledge": "You learned nothing new.",
+  "item.projectexpansion.knowledge_sharing_book.no_owner": "You cannot gain knowledge from an unowned book."
+}

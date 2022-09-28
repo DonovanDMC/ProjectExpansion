@@ -1,0 +1,12 @@
+{
+  "itemGroup.projectexpansion": "Project Expansion",
+  "text.projectexpansion.wip": "WIP!",
+  "text.projectexpansion.provider_error": "Failed to fetch ProjectE provider.",
+  "text.projectexpansion.see_wiki": "See the wiki on github for more information.",
+  "text.projectexpansion.cost": "Cost: %s",
+  "text.projectexpansion.not_owner": "You do not own this, %s does.",
+  "text.projectexpansion.nbt_filter.disable": "NBT Filter Disabled",
+  "text.projectexpansion.nbt_filter.enable": "NBT Filter Enabled",
+  "enchantment.projectexpansion.alchemical_collection": "Alchemical Collection",
+  "enchantment.projectexpansion.alchemical_collection.desc": "Converts any mined items with an emc value directly into emc."
+}

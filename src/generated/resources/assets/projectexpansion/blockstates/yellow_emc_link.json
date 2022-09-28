@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "filter=true": {
+      "model": "projectexpansion:block/emc_link/yellow"
+    },
+    "filter=false": {
+      "model": "projectexpansion:block/emc_link/yellow_nofilter"
+    }
+  }
+}

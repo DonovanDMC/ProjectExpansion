@@ -1,0 +1,14 @@
+{
+  "extends": "@uwu-codes/tsconfig",
+  "compilerOptions": {
+    "outDir": "./build",
+    "baseUrl": "./src",
+    "strictPropertyInitialization": false,
+    "inlineSourceMap": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "module": "esnext"
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules"]
+}

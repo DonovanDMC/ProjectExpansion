@@ -1,0 +1,120 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = "https://libraries.minecraft.net" }
+
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+
+group = 'furry.cool.mc.forge'
+version = getProperty("mcVersion") + "-" + getProperty("localVersion")
+
+java {
+    archivesBaseName = 'ProjectExpansion'
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+minecraft {
+    mappings channel: getProperty("mappingsChannel"), version: getProperty("mappingsVersion")
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                projectexpansion {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                projectexpansion {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'projectexpansion', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                projectexpansion {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "projectexpansion.refmap.json"
+    config "projectexpansion.mixins.json"
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        name "curios"
+        url "https://maven.theillusivec4.top/"
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${getProperty("mcVersion")}-${getProperty("forgeVersion")}"
+    implementation fg.deobf("curse.maven:projecte-226410:${getProperty("projecteVersion")}")
+    implementation "com.mojang:brigadier:1.0.18"
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}")
+    runtimeOnly fg.deobf("curse.maven:no-chat-reports-634062:3926371")
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "Project Expansion",
+                "Specification-Vendor"    : "Donovan_DMC",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "Donovan_DMC",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')

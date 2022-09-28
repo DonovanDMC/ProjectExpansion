@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "VNV",
+    "VBV",
+    "VNV"
+  ],
+  "key": {
+    "V": {
+      "item": "projectexpansion:violet_matter"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "B": {
+      "item": "minecraft:book"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:knowledge_sharing_book"
+  }
+}

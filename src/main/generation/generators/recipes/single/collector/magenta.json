@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:matter/magenta",
+  "ingredients": [
+    {
+      "item": "projectexpansion:red_collector"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:magenta_collector"
+  }
+}

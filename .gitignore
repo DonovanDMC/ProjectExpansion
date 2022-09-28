@@ -1,0 +1,17 @@
+.idea/
+.idea_modules/
+out/
+*.class
+*.log
+*.jar
+.gradle
+build/
+gradle-app.setting
+.gradletasknamecache
+**/build/
+run/
+!gradle-wrapper.jar
+bin/
+src/generated/resources/.cache
+scripts/secrets.sh
+**/node_modules/
