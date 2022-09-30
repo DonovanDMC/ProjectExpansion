@@ -92,57 +92,57 @@ public class ConfigMenu extends Screen {
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.collector_multiplier",
-            1, 20, 1,
-            __ -> (double) Config.collectorMultiplier.get(),
-            (__, newValue) -> Config.collectorMultiplier.set(newValue.intValue()),
+            0.1F, 20.0F, 0.1F,
+            __ -> Config.collectorMultiplier.get(),
+            (__, newValue) -> Config.collectorMultiplier.set(newValue),
             (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.collector_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.emc_link_item_limit_multiplier",
-            1, 20, 1,
-            __ -> (double) Config.emcLinkItemLimitMultiplier.get(),
-            (__, newValue) -> Config.emcLinkItemLimitMultiplier.set(newValue.intValue()),
+            0.1F, 20.0F, 0.1F,
+            __ -> Config.emcLinkItemLimitMultiplier.get(),
+            (__, newValue) -> Config.emcLinkItemLimitMultiplier.set(newValue),
             (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_item_limit_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.emc_link_fluid_limit_multiplier",
-            1, 20, 1,
-            __ -> (double) Config.emcLinkFluidLimitMultiplier.get(),
-            (__, newValue) -> Config.emcLinkFluidLimitMultiplier.set(newValue.intValue()),
+            0.1F, 20.0F, 0.1F,
+            __ -> Config.emcLinkFluidLimitMultiplier.get(),
+            (__, newValue) -> Config.emcLinkFluidLimitMultiplier.set(newValue),
             (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_fluid_limit_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.emc_link_emc_limit_multiplier",
-            1, 20, 1,
-            __ -> (double) Config.emcLinkEMCLimitMultiplier.get(),
-            (__, newValue) -> Config.emcLinkEMCLimitMultiplier.set(newValue.intValue()),
+            0.1F, 20.0F, 0.1F,
+            __ -> Config.emcLinkEMCLimitMultiplier.get(),
+            (__, newValue) -> Config.emcLinkEMCLimitMultiplier.set(newValue),
             (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.emc_link_emc_limit_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.powerflower_multiplier",
-            1, 20, 1,
-            __ -> (double) Config.powerflowerMultiplier.get(),
-            (__, newValue) -> Config.powerflowerMultiplier.set(newValue.intValue()),
+            0.1F, 20.0F, 0.1F,
+            __ -> Config.powerflowerMultiplier.get(),
+            (__, newValue) -> Config.powerflowerMultiplier.set(newValue),
             (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.powerflower_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.relay_bonus_multiplier",
-            1, 20, 1,
-            __ -> (double) Config.relayBonusMultiplier.get(),
-            (__, newValue) -> Config.relayBonusMultiplier.set(newValue.intValue()),
+            0.1F, 20.0F, 0.1F,
+            __ -> Config.relayBonusMultiplier.get(),
+            (__, newValue) -> Config.relayBonusMultiplier.set(newValue),
             (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.relay_bonus_multiplier"), (int) option.get(gs))
         ));
 
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.relay_transfer_multiplier",
-            1, 20, 1,
-            __ -> (double) Config.relayTransferMultiplier.get(),
-            (__, newValue) -> Config.relayTransferMultiplier.set(newValue.intValue()),
+            0.1F, 20.0F, 0.1F,
+            __ -> Config.relayTransferMultiplier.get(),
+            (__, newValue) -> Config.relayTransferMultiplier.set(newValue),
             (gs, option) -> String.format("%s: %s", I18n.format("gui.projectexpansion.config.relay_transfer_multiplier"), (int) option.get(gs))
         ));
 
