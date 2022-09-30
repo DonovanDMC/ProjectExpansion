@@ -6,9 +6,9 @@ import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.forge.projectexpansion.block.BlockRelay;
 import cool.furry.mc.forge.projectexpansion.config.Config;
+import cool.furry.mc.forge.projectexpansion.item.ItemCompressedEnergyCollector;
 import cool.furry.mc.forge.projectexpansion.registries.Blocks;
 import cool.furry.mc.forge.projectexpansion.registries.Items;
-import cool.furry.mc.forge.projectexpansion.item.ItemCompressedEnergyCollector;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.BlockItem;
@@ -17,6 +17,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
@@ -54,9 +55,9 @@ public enum Matter {
     public final String name;
     public final boolean hasItem;
     public final int level;
-    public final BigInteger collectorOutputBase;
-    public final BigInteger relayBonusBase;
-    public final BigInteger relayTransferBase;
+    public final BigDecimal collectorOutputBase;
+    public final BigDecimal relayBonusBase;
+    public final BigDecimal relayTransferBase;
     @Nullable
     public final Supplier<Item> existingItem;
     public final Rarity rarity;
@@ -89,11 +90,11 @@ public enum Matter {
         this.hasItem = existingItem == null && ordinal() != 0;
         this.level = ordinal() + 1;
         // Gₙ(aₙ)(z)=4(2z²+z-1)/4z-1
-        this.collectorOutputBase = Config.useOldValues.get() ? calcOldValue(BigInteger.valueOf(6), level) : BigInteger.valueOf(collectorOutput);
+        this.collectorOutputBase = Config.useOldValues.get() ? calcOldValue(BigDecimal.valueOf(6), level) : BigDecimal.valueOf(collectorOutput);
         // ¯\_(ツ)_/¯
-        this.relayBonusBase = Config.useOldValues.get() ? calcOldValue(BigInteger.valueOf(1), level) : BigInteger.valueOf(relayBonus);
+        this.relayBonusBase = Config.useOldValues.get() ? calcOldValue(BigDecimal.valueOf(1), level) : BigDecimal.valueOf(relayBonus);
         // Gₙ(aₙ)(z)=64(2z²+z-1)/4z-1
-        this.relayTransferBase = Config.useOldValues.get() ? calcOldValue(BigInteger.valueOf(64), level) : BigInteger.valueOf(relayTransfer);
+        this.relayTransferBase = Config.useOldValues.get() ? calcOldValue(BigDecimal.valueOf(64), level) : BigDecimal.valueOf(relayTransfer);
         this.existingItem = existingItem;
         this.rarity =
             level >= EPIC_THRESHOLD ? Rarity.EPIC :
@@ -102,9 +103,9 @@ public enum Matter {
                         Rarity.COMMON;
     }
 
-    private BigInteger calcOldValue(BigInteger base, int level) {
-        BigInteger i = base;
-        for (int v = 1; v <= level; v++) i = i.multiply(BigInteger.valueOf(v));
+    private BigDecimal calcOldValue(BigDecimal base, int level) {
+        BigDecimal i = base;
+        for (int v = 1; v <= level; v++) i = i.multiply(BigDecimal.valueOf(v));
         return i;
     }
 
@@ -113,9 +114,8 @@ public enum Matter {
     }
 
     /* Limits */
-
     public BigInteger getPowerFlowerOutput() {
-        return collectorOutputBase.multiply(BigInteger.valueOf(18)).add(relayBonusBase.multiply(BigInteger.valueOf(30))).multiply(BigInteger.valueOf(Config.powerflowerMultiplier.get()));
+        return collectorOutputBase.multiply(BigDecimal.valueOf(18)).add(relayBonusBase.multiply(BigDecimal.valueOf(30))).multiply(BigDecimal.valueOf(Config.powerflowerMultiplier.get())).toBigInteger();
     }
 
     public BigInteger getPowerFlowerOutputForTicks(int ticks) {
@@ -130,7 +130,7 @@ public enum Matter {
     */
 
     public BigInteger getCollectorOutput() {
-        return collectorOutputBase.multiply(BigInteger.valueOf(Config.collectorMultiplier.get()));
+        return collectorOutputBase.multiply(BigDecimal.valueOf(Config.collectorMultiplier.get())).toBigInteger();
     }
 
     public BigInteger getCollectorOutputForTicks(int ticks) {
@@ -138,7 +138,7 @@ public enum Matter {
     }
 
     public BigInteger getRelayBonus() {
-        return relayBonusBase.multiply(BigInteger.valueOf(Config.relayBonusMultiplier.get()));
+        return relayBonusBase.multiply(BigDecimal.valueOf(Config.relayBonusMultiplier.get())).toBigInteger();
     }
 
     public BigInteger getRelayBonusForTicks(int ticks) {
@@ -146,7 +146,7 @@ public enum Matter {
     }
 
     public BigInteger getRelayTransfer() {
-        return relayTransferBase.multiply(BigInteger.valueOf(Config.relayTransferMultiplier.get()));
+        return relayTransferBase.multiply(BigDecimal.valueOf(Config.relayTransferMultiplier.get())).toBigInteger();
     }
     public BigInteger getRelayTransferForTicks(int ticks) {
         return getRelayTransfer();
@@ -157,14 +157,14 @@ public enum Matter {
     }
 
     public BigInteger getEMCLinkEMCLimit() {
-        return BigInteger.valueOf(16)
+        return BigDecimal.valueOf(16)
             .pow(level)
-            .multiply(BigInteger.valueOf(Config.emcLinkEMCLimitMultiplier.get()));
+            .multiply(BigDecimal.valueOf(Config.emcLinkEMCLimitMultiplier.get())).toBigInteger();
     }
 
     public int getEMCLinkItemLimit() {
         try {
-            return Math.multiplyExact((int) Math.pow(2, level - 1), Config.emcLinkItemLimitMultiplier.get());
+            return BigDecimal.valueOf(2).pow(level - 1).multiply(BigDecimal.valueOf(Config.emcLinkItemLimitMultiplier.get())).intValueExact();
         } catch(ArithmeticException ignore) {
             return Integer.MAX_VALUE;
         }
@@ -172,7 +172,7 @@ public enum Matter {
 
     public int getEMCLinkFluidLimit() {
         try {
-            return Math.multiplyExact(Math.multiplyExact((int) Math.pow(2, level - 1), 1000), Config.emcLinkFluidLimitMultiplier.get());
+            return BigDecimal.valueOf(2).pow(level - 1).multiply(BigDecimal.valueOf(1000)).multiply(BigDecimal.valueOf(Config.emcLinkFluidLimitMultiplier.get())).intValueExact();
         } catch(ArithmeticException ignore) {
             return Integer.MAX_VALUE;
         }
