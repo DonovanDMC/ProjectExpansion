@@ -276,7 +276,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
 
     private double getFluidCostPer() {
         try {
-            return ProjectEAPI.getEMCProxy().getValue(itemStack) / 1000D;
+            return (ProjectEAPI.getEMCProxy().getValue(itemStack) - ((ProjectEAPI.getEMCProxy().getValue(net.minecraft.world.item.Items.BUCKET) * matter.getFluidEfficiencyPercentage()) / 100F))  / 1000D;
         } catch(ArithmeticException ignore) {
             return Long.MAX_VALUE;
         }

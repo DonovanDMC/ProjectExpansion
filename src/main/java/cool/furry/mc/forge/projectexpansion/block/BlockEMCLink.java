@@ -4,7 +4,6 @@ import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityEMCLink;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import net.minecraft.core.BlockPos;
@@ -56,10 +55,11 @@ public class BlockEMCLink extends Block implements IHasMatter, EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add((new TranslatableComponent("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
-        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
-        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
-        list.add((new TranslatableComponent("block.projectexpansion.emc_link.limit_emc", new TextComponent(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.format(matter.getEMCLinkEMCLimit())).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("block.projectexpansion.emc_link.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("block.projectexpansion.emc_link.fluid_export_efficiency", new TextComponent(matter.getFluidEfficiencyPercentage() + "%").setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslatableComponent("block.projectexpansion.emc_link.limit_emc", matter.getEMCLinkEMCLimitComponent()).setStyle(ColorStyle.GRAY));
         list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
