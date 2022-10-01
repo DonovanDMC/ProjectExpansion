@@ -1,7 +1,8 @@
 {
-  "block.projectexpansion.emc_link.tooltip": "Can be used to import emc & items, and export items.",
+  "block.projectexpansion.emc_link.tooltip": "Can be used to import emc & items, and export items & fluids.",
   "block.projectexpansion.emc_link.limit_items": "Item Import/Export Limit: %s/s",
   "block.projectexpansion.emc_link.limit_fluids": "Fluid Export Limit: %s mB/s",
+  "block.projectexpansion.emc_link.fluid_export_efficiency": "Fluid Export Efficiency: %s",
   "block.projectexpansion.emc_link.limit_emc": "EMC Limit: %s/s",
   "block.projectexpansion.emc_link.not_set": "An export item has not been set.",
   "block.projectexpansion.emc_link.already_set": "An export item has already been set, clear the current export first.",

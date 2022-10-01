@@ -18,6 +18,8 @@
   "gui.projectexpansion.config.transmutation_interface_item_count.desc": "The amount of items that the transmutation interface will report to have. You likely want this to be at least 64.",
   "gui.projectexpansion.config.use_old_values": "Use Old Values",
   "gui.projectexpansion.config.use_old_values.desc": "Use the previous emc generation values (much more unbalanced)",
+  "gui.projectexpansion.config.enable_fluid_efficiency": "Enable Fluid Efficiency",
+  "gui.projectexpansion.config.enable_fluid_efficiency.desc": "If fluid efficiency should be enabled.",
   "gui.projectexpansion.config.collector_multiplier": "Collector Multiplier",
   "gui.projectexpansion.config.collector_multiplier.desc": "Multiplies the output of Collectors.",
   "gui.projectexpansion.config.emc_link_item_limit_multiplier": "EMC Link Item Limit Multiplier",
