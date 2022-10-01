@@ -18,7 +18,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -61,7 +60,9 @@ public enum Matter {
     public final BigDecimal collectorOutputBase;
     public final BigDecimal relayBonusBase;
     public final BigDecimal relayTransferBase;
-    /** @deprecated Note: Due to how 1.19.2 config values work, this will not be set to 100 when fluid efficiency is disabled. */
+    /** @deprecated Due to how 1.19.2 config values work, this will not be set to 100 when fluid efficiency is disabled. */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
     public final int fluidEfficiency;
     @Nullable
     public final Supplier<Item> existingItem;
