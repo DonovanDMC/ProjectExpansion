@@ -32,6 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -54,10 +55,11 @@ public class BlockEMCLink extends Block implements IHasMatter, EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add((Component.translatable("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
-        list.add((Component.translatable("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add((Component.translatable("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add((Component.translatable("block.projectexpansion.emc_link.limit_emc", Component.literal(matter.getLevel() == 16 ? "INFINITY" : EMCFormat.format(matter.getEMCLinkEMCLimit())).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.fluid_export_efficiency", Component.literal(matter.getFluidEfficiencyPercentage() + "%").setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.limit_emc", matter.getEMCLinkEMCLimitComponent()).setStyle(ColorStyle.GRAY));
         list.add(Component.translatable("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 

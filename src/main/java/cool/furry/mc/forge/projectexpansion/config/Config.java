@@ -12,6 +12,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Boolean> notifyCommandChanges = Builder.translation("gui.projectexpansion.config.notify_command_changes.desc").define("notifyCommandChanges", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> notifyKnowledgeBookGains = Builder.translation("gui.projectexpansion.config.notify_knowledge_book_gains.desc").define("notifyKnowledgeBookGains", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> limitEmcLinkVendor = Builder.translation("gui.projectexpansion.config.limit_emc_link_vendor.desc").define("limitEmcLinkVendor", true);
+    public static final ForgeConfigSpec.ConfigValue<Boolean> enableFluidEfficiency = Builder.translation("gui.projectexpansion.config.enable_fluid_efficiency.desc").define("enableFluidEfficiency", true);
     public static final ForgeConfigSpec.ConfigValue<Integer> transmutationInterfaceItemCount = Builder.translation("gui.projectexpansion.config.transmutation_interface_item_count.desc").defineInRange("transmutationInterfaceItemCount", Integer.MAX_VALUE, 1, Integer.MAX_VALUE);
     public static final ForgeConfigSpec.ConfigValue<Double> collectorMultiplier = Builder.translation("gui.projectexpansion.config.collector_multiplier.desc").defineInRange("collectorMultiplier", 1.0D, 0.1D, 50D);
     public static final ForgeConfigSpec.ConfigValue<Double> emcLinkItemLimitMultiplier = Builder.translation("gui.projectexpansion.config.emc_link_item_limit_multiplier.desc").defineInRange("emcLinkItemLimitMultiplier", 1.0D, 0.1D, 50D);
