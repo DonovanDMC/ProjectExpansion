@@ -90,6 +90,12 @@ public class ConfigMenu extends Screen {
             (__, newValue) -> Config.useOldValues.set(newValue)
         ));
 
+        optionsRowList.func_214333_a(new BooleanOption(
+            "gui.projectexpansion.config.enable_fluid_efficiency",
+            __ -> Config.enableFluidEfficiency.get(),
+            (__, newValue) -> Config.enableFluidEfficiency.set(newValue)
+        ));
+
         optionsRowList.func_214333_a(new SliderPercentageOption(
             "gui.projectexpansion.config.collector_multiplier",
             0.1F, 20.0F, 0.1F,
