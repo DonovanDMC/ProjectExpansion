@@ -3,10 +3,12 @@ package cool.furry.mc.forge.projectexpansion.block;
 import cool.furry.mc.forge.projectexpansion.tile.TileEMCLink;
 import cool.furry.mc.forge.projectexpansion.tile.TileNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -57,10 +59,11 @@ public class BlockEMCLink extends Block implements IHasMatter {
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(stack, level, list, flag);
-        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.tooltip")).setStyle(ColorStyle.GRAY));
-        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
-        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent().setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
-        list.add((new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", matter.getLevel() == 16 ? new StringTextComponent("INFINITY") : EMCFormat.getComponent(matter.getEMCLinkEMCLimit()).setStyle(ColorStyle.GREEN))).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.fluid_export_efficiency", new StringTextComponent(matter.getFluidEfficiencyPercentage() + "%").setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.emc_link.limit_emc", matter.getEMCLinkEMCLimitComponent()).setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
