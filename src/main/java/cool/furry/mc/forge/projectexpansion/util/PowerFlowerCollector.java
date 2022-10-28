@@ -32,7 +32,9 @@ public class PowerFlowerCollector {
                 IKnowledgeProvider provider;
                 try {
                     provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(uuid);
-                } catch(NullPointerException ignore) { continue; }
+                } catch(NullPointerException ignore) {
+                    continue;
+                }
                 provider.setEmc(provider.getEmc().add(amount));
                 provider.syncEmc(player);
                 toRemove.add(uuid);

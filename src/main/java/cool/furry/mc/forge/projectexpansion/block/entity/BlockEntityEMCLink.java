@@ -101,7 +101,12 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         resetLimits();
         if (emc.equals(BigInteger.ZERO)) return;
         ServerPlayer player = Util.getPlayer(level, owner);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        IKnowledgeProvider provider;
+        try {
+            provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        } catch (NullPointerException ignore) {
+            return;
+        }
 
         provider.setEmc(provider.getEmc().add(emc));
         if (player != null) provider.syncEmc(player);
@@ -183,7 +188,12 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
     @Override
     public ItemStack getStackInSlot(int slot) {
         if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        IKnowledgeProvider provider;
+        try {
+            provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        } catch (NullPointerException ignore) {
+            return ItemStack.EMPTY;
+        }
         BigInteger maxCount = provider.getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack))).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int count = maxCount.intValueExact();
         if (count <= 0) return ItemStack.EMPTY;
@@ -207,7 +217,12 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         int insertCount = Math.min(count, remainingImport);
         if (!simulate) {
             long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+            IKnowledgeProvider provider;
+            try {
+                provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+            } catch (NullPointerException ignore) {
+                return stack;
+            }
             BigInteger totalValue = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(insertCount));
             provider.setEmc(provider.getEmc().add(totalValue));
             ServerPlayer player = Util.getPlayer(owner);
@@ -236,7 +251,12 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
 
         BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        IKnowledgeProvider provider;
+        try {
+            provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        } catch (NullPointerException ignore) {
+            return ItemStack.EMPTY;
+        }
         BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int extractCount = Math.min(amount, limit ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
         if (extractCount <= 0) return ItemStack.EMPTY;
@@ -334,7 +354,12 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         if(fluid == null  || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
         if(maxDrain > remainingFluid) maxDrain = remainingFluid;
         long cost = getFluidCost(maxDrain);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        IKnowledgeProvider provider;
+        try {
+            provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        } catch (NullPointerException ignore) {
+            return FluidStack.EMPTY;
+        }
         BigInteger emc = provider.getEmc();
         BigDecimal dEMC = new BigDecimal(emc);
         if(dEMC.compareTo(BigDecimal.valueOf(getFluidCostPer())) < 0) return FluidStack.EMPTY;

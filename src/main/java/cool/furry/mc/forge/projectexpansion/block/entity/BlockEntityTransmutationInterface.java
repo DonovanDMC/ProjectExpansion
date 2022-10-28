@@ -63,7 +63,12 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
     }
 
     private int getMaxCount(int slot) {
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        IKnowledgeProvider provider;
+        try {
+            provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        } catch (NullPointerException ignore) {
+            return 0;
+        }
         BigInteger playerEmc = provider.getEmc();
         if (playerEmc.compareTo(BigInteger.ZERO) < 1) return 0;
         BigInteger targetItemEmc = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]));
@@ -115,7 +120,12 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
         if (simulate) return ItemStack.EMPTY;
 
         long emcValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        IKnowledgeProvider provider;
+        try {
+            provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        } catch (NullPointerException ignore) {
+            return ItemStack.EMPTY;
+        }
         BigInteger totalEmcValue = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(count));
         provider.setEmc(provider.getEmc().add(totalEmcValue));
 
@@ -143,7 +153,12 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
         if (simulate) return item;
         long emcValue = ProjectEAPI.getEMCProxy().getValue(info[slot - 1]);
         BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        IKnowledgeProvider provider;
+        try {
+            provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        } catch (NullPointerException ignore) {
+            return ItemStack.EMPTY;
+        }
         provider.setEmc(provider.getEmc().subtract(totalEmcCost));
         ServerPlayer player = Util.getPlayer(level, owner);
         if (player != null) provider.syncEmc(player);
