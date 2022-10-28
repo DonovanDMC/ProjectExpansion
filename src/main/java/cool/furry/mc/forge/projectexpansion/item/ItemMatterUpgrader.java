@@ -19,6 +19,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
@@ -135,6 +136,7 @@ public class ItemMatterUpgrader extends Item {
             newTile.owner = owner;
             newTile.ownerName = ownerName;
             newTile.emc = emc;
+            tile.write(new CompoundNBT());
             newTile.markDirty();
             world.removeTileEntity(pos);
             world.setTileEntity(pos, newTile);
