@@ -10,6 +10,7 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionResult;
@@ -132,6 +133,7 @@ public class ItemMatterUpgrader extends Item {
             newTile.owner = owner;
             newTile.ownerName = ownerName;
             newTile.emc = emc;
+            newTile.saveAdditional(new CompoundTag());
             level.removeBlockEntity(pos);
             level.setBlockEntity(newTile);
             Util.markDirty(level, pos);
