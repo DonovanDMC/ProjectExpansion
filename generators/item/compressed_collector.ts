@@ -1,4 +1,4 @@
-import { generic } from "../../util";
+import { genericMatter } from "../../util";
 
 const BASE = new URL("collector.json", import.meta.url).pathname;
-export default generic.bind(null, "compressed_collector", BASE, []);
+export default genericMatter.bind(null, "compressed_collector", BASE, []);

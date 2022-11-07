@@ -1,0 +1,22 @@
+{
+  "block.projectexpansion.advanced_alchemical_chest.color_set": "The color has been set to %s.",
+  "block.projectexpansion.advanced_alchemical_chest.invalid_item": "You must be holding a %s to set the color.",
+  "block.projectexpansion.advanced_alchemical_chest.color": "Current Color: %s",
+  "block.projectexpansion.advanced_alchemical_chest.tooltip": "Just like the alchemical bag, but in a chest form. Shift click with a bag to set the color.",
+  "block.projectexpansion.white_advanced_alchemical_chest": "White Advanced Alchemical Chest",
+  "block.projectexpansion.orange_advanced_alchemical_chest": "Orange Advanced Alchemical Chest",
+  "block.projectexpansion.magenta_advanced_alchemical_chest": "Magenta Advanced Alchemical Chest",
+  "block.projectexpansion.light_blue_advanced_alchemical_chest": "Light Blue Advanced Alchemical Chest",
+  "block.projectexpansion.yellow_advanced_alchemical_chest": "Yellow Advanced Alchemical Chest",
+  "block.projectexpansion.lime_advanced_alchemical_chest": "Lime Advanced Alchemical Chest",
+  "block.projectexpansion.pink_advanced_alchemical_chest": "Pink Advanced Alchemical Chest",
+  "block.projectexpansion.gray_advanced_alchemical_chest": "Gray Advanced Alchemical Chest",
+  "block.projectexpansion.light_gray_advanced_alchemical_chest": "Light Gray Advanced Alchemical Chest",
+  "block.projectexpansion.cyan_advanced_alchemical_chest": "Cyan Advanced Alchemical Chest",
+  "block.projectexpansion.purple_advanced_alchemical_chest": "Purple Advanced Alchemical Chest",
+  "block.projectexpansion.blue_advanced_alchemical_chest": "Blue Advanced Alchemical Chest",
+  "block.projectexpansion.brown_advanced_alchemical_chest": "Brown Advanced Alchemical Chest",
+  "block.projectexpansion.green_advanced_alchemical_chest": "Green Advanced Alchemical Chest",
+  "block.projectexpansion.red_advanced_alchemical_chest": "Red Advanced Alchemical Chest",
+  "block.projectexpansion.black_advanced_alchemical_chest": "Black Advanced Alchemical Chest"
+}

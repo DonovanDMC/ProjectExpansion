@@ -1,4 +1,4 @@
-import { genericBlock } from "../../util";
+import { genericBlockMatter } from "../../util";
 
 const BASE = new URL("emc_link.json", import.meta.url).pathname;
-export default genericBlock.bind(null, "emc_link", BASE, [], undefined);
+export default genericBlockMatter.bind(null, "emc_link", BASE, [], undefined);

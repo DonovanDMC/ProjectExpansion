@@ -1,4 +1,4 @@
-import { generic } from "../../util";
+import { genericMatter } from "../../util";
 
 const BASE = new URL("relay.json", import.meta.url).pathname;
-export default generic.bind(null, "relay", BASE, []);
+export default genericMatter.bind(null, "relay", BASE, []);

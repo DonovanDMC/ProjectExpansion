@@ -1,5 +1,5 @@
 import { FUEL_DISABLED } from "../../constants";
-import { generic } from "../../util";
+import { genericMatter } from "../../util";
 
 const BASE = new URL("fuel.json", import.meta.url).pathname;
-export default generic.bind(null, "fuel", BASE, FUEL_DISABLED);
+export default genericMatter.bind(null, "fuel", BASE, FUEL_DISABLED);

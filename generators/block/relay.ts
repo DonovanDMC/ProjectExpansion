@@ -1,4 +1,4 @@
-import { genericBlock } from "../../util";
+import { genericBlockMatter } from "../../util";
 
 const BASE = new URL("relay.json", import.meta.url).pathname;
-export default genericBlock.bind(null, "relay", BASE, [], undefined);
+export default genericBlockMatter.bind(null, "relay", BASE, [], undefined);

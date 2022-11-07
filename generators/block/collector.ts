@@ -1,4 +1,4 @@
-import { genericBlock } from "../../util";
+import { genericBlockMatter } from "../../util";
 
 const BASE = new URL("collector.json", import.meta.url).pathname;
-export default genericBlock.bind(null, "collector", BASE, [], undefined);
+export default genericBlockMatter.bind(null, "collector", BASE, [], undefined);

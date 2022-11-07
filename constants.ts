@@ -28,5 +28,13 @@ export const UPGRADE_TYPES = [
 export const FUEL_DISABLED = [
 	"basic", "dark", "red", "fading", "final"
 ];
+
+export const DYE_COLORS = [
+	"white", "orange", "magenta", "light_blue",
+	"yellow", "lime", "pink", "gray",
+	"light_gray", "cyan", "purple", "blue",
+	"brown", "green", "red", "black"
+];
+
 export const assetsDir = new URL("../../generated/resources/assets/projectexpansion/", import.meta.url);
 export const dataDir = new URL("../../generated/resources/data/projectexpansion/", import.meta.url);
