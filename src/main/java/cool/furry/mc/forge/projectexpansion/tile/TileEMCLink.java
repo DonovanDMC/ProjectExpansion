@@ -66,10 +66,10 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
      *******/
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-        super.read(state, nbt);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+        super.load(state, nbt);
         if (nbt.contains(NBTNames.STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString((NBTNames.STORED_EMC)));
-        if (nbt.contains(NBTNames.ITEM, Constants.NBT.TAG_COMPOUND)) itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.read(nbt.getCompound(NBTNames.ITEM)))).createStack();
+        if (nbt.contains(NBTNames.ITEM, Constants.NBT.TAG_COMPOUND)) itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemStack.of(nbt.getCompound(NBTNames.ITEM)))).createStack();
         if (nbt.contains(NBTNames.REMAINING_EMC, Constants.NBT.TAG_STRING)) remainingEMC = new BigInteger(nbt.getString(NBTNames.REMAINING_EMC));
         if (nbt.contains(NBTNames.REMAINING_IMPORT, Constants.NBT.TAG_INT)) remainingImport = nbt.getInt(NBTNames.REMAINING_IMPORT);
         if (nbt.contains(NBTNames.REMAINING_EXPORT, Constants.NBT.TAG_INT)) remainingExport = nbt.getInt(NBTNames.REMAINING_EXPORT);
@@ -78,8 +78,8 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-        super.write(nbt);
+    public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+        super.save(nbt);
         nbt.putString(NBTNames.STORED_EMC, emc.toString());
         nbt.put(NBTNames.ITEM, itemStack.serializeNBT());
         nbt.putString(NBTNames.REMAINING_EMC, remainingEMC.toString());
@@ -96,15 +96,16 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     @Override
     public void tick() {
         // due to the nature of per second this block follows, using the config value isn't really possible
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
+        if (level == null || level.isClientSide || (level.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
         resetLimits();
         if (emc.equals(BigInteger.ZERO)) return;
-        ServerPlayerEntity player = Util.getPlayer(world, owner);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        ServerPlayerEntity player = Util.getPlayer(level, owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if (provider == null) return;
 
         provider.setEmc(provider.getEmc().add(emc));
         if (player != null) provider.syncEmc(player);
-        markDirty();
+        Util.markDirty(this);
         emc = BigInteger.ZERO;
     }
 
@@ -117,18 +118,19 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
 
     private void setInternalItem(ItemStack stack) {
         itemStack = ItemHandlerHelper.copyStackWithSize(stack, 1);
-        markDirty();
+        Util.markDirty(this);
     }
 
-    public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof PlayerEntity) setOwner((PlayerEntity) livingEntity);
+    @Override
+    public void handlePlace(@Nullable LivingEntity livingEntity, ItemStack stack) {
+        super.handlePlace(livingEntity, stack);
         resetLimits();
     }
 
     @Nonnull
     @Override
     public Matter getMatter() {
-        if (world != null) {
+        if (level != null) {
             BlockEMCLink block = (BlockEMCLink) getBlockState().getBlock();
             if (block.getMatter() != matter) setMatter(block.getMatter());
             return matter;
@@ -182,7 +184,8 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     @Override
     public ItemStack getStackInSlot(int slot) {
         if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if (provider == null) return ItemStack.EMPTY;
         BigInteger maxCount = provider.getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack))).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int count = maxCount.intValueExact();
         if (count <= 0) return ItemStack.EMPTY;
@@ -206,7 +209,8 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         int insertCount = Math.min(count, remainingImport);
         if (!simulate) {
             long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+            if (provider == null) return stack;
             BigInteger totalValue = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(insertCount));
             provider.setEmc(provider.getEmc().add(totalValue));
             ServerPlayerEntity player = Util.getPlayer(owner);
@@ -215,7 +219,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
                 provider.syncEmc(player);
             }
             remainingImport -= insertCount;
-            markDirty();
+            Util.markDirty(this);
         }
 
         if (insertCount == count) return ItemStack.EMPTY;
@@ -234,7 +238,8 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
 
         BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if (provider == null) return ItemStack.EMPTY;
         BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int extractCount = Math.min(amount, limit ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
         if (extractCount <= 0) return ItemStack.EMPTY;
@@ -248,7 +253,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         if (player != null) provider.syncEmc(player);
 
         if (limit) remainingExport -= extractCount;
-        markDirty();
+        Util.markDirty(this);
         return r;
     }
 
@@ -333,7 +338,8 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         if(fluid == null  || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
         if(maxDrain > remainingFluid) maxDrain = remainingFluid;
         long cost = getFluidCost(maxDrain);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if(provider == null) return FluidStack.EMPTY;
         BigInteger emc = provider.getEmc();
         BigDecimal dEMC = new BigDecimal(emc);
         if(dEMC.compareTo(BigDecimal.valueOf(getFluidCostPer())) < 0) return FluidStack.EMPTY;
@@ -347,7 +353,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         }
         if(action.execute()) {
             remainingFluid -= maxDrain;
-            markDirty();
+            Util.markDirty(this);
             provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
             provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
         }
@@ -355,33 +361,33 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     }
 
     public ActionResultType handleActivation(PlayerEntity player, Hand hand) {
-        ItemStack inHand = player.getHeldItem(hand);
+        ItemStack inHand = player.getItemInHand(hand);
 
         if(!super.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return ActionResultType.CONSUME;
 
         if (player.isCrouching()) {
             if (itemStack.isEmpty()) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             if (inHand.isEmpty()) {
                 setInternalItem(ItemStack.EMPTY);
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").setStyle(ColorStyle.RED), true);
                 return ActionResultType.SUCCESS;
             }
         }
 
         if (itemStack.isEmpty()) {
             if (inHand.isEmpty()) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             if (!isItemValid(0, inHand)) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_emc_value", new TranslationTextComponent(itemStack.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_emc_value", itemStack.getDisplayName().copy().setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             setInternalItem(inHand);
-            player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", new TranslationTextComponent(itemStack.getTranslationKey()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
+            player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", itemStack.getDisplayName().copy().setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
             return ActionResultType.SUCCESS;
         }
 
@@ -389,42 +395,46 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         if(fluid != null && inHand.getItem() instanceof BucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
             BucketItem bucketItem = (BucketItem) inHand.getItem();
             if(Config.limitEmcLinkVendor.get() && remainingExport < 1000) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             long cost = getFluidCost(1000);
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+            if(provider == null) {
+                player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()).setStyle(ColorStyle.RED), true);
+                return ActionResultType.FAIL;
+            }
             BigInteger emc = provider.getEmc();
             if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, this, 1000, player, true);
             if(!fillResult.isSuccess()) return ActionResultType.FAIL;
-            player.inventory.decrStackSize(player.inventory.currentItem, 1);
+            player.inventory.removeItem(player.inventory.selected, 1);
             ItemHandlerHelper.giveItemToPlayer(player, fillResult.getResult());
             provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
             remainingFluid -= 1000;
-            markDirty();
+            Util.markDirty(this);
             if(player instanceof ServerPlayerEntity) provider.syncEmc((ServerPlayerEntity) player);
             return ActionResultType.CONSUME;
         }
 
-        if (inHand.isEmpty() || itemStack.isItemEqual(inHand)) {
+        if (inHand.isEmpty() || itemStack.equals(inHand)) {
             if (Config.limitEmcLinkVendor.get() && remainingExport <= 0) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             ItemStack extract = extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
             if (extract.isEmpty()) {
-                player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
                 return ActionResultType.CONSUME;
             }
             ItemHandlerHelper.giveItemToPlayer(player, extract);
             return ActionResultType.SUCCESS;
         }
 
-        player.sendStatusMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").setStyle(ColorStyle.RED), true);
+        player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").setStyle(ColorStyle.RED), true);
         return ActionResultType.CONSUME;
     }
 

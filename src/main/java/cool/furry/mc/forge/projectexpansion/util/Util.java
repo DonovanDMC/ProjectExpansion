@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
 import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
@@ -9,6 +10,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -33,18 +36,18 @@ public class Util {
 
     public static @Nullable
     ServerPlayerEntity getPlayer(UUID uuid) {
-        return ServerLifecycleHooks.getCurrentServer() == null ? null : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(uuid);
+        return ServerLifecycleHooks.getCurrentServer() == null ? null : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
     }
 
     public static @Nullable
     ServerPlayerEntity getPlayer(@Nullable World world, UUID uuid) {
-        return world == null || world.getServer() == null ? null : world.getServer().getPlayerList().getPlayerByUUID(uuid);
+        return world == null || world.getServer() == null ? null : world.getServer().getPlayerList().getPlayer(uuid);
     }
 
     public static ItemStack cleanStack(ItemStack stack) {
         if (stack.isEmpty()) return ItemStack.EMPTY;
         ItemStack stackCopy = ItemHandlerHelper.copyStackWithSize(stack, 1);
-        if (stackCopy.isDamageable()) stackCopy.setDamage(0);
+        if (stackCopy.isDamageableItem()) stackCopy.setDamageValue(0);
         return NBTManager.getPersistentInfo(ItemInfo.fromStack(stackCopy)).createStack();
     }
 
@@ -99,16 +102,32 @@ public class Util {
         return a < 0 ? a + b : a;
     }
 
-    public static BigInteger stepBigInteger(BigInteger value, Function<Long, Long> func) {
-        return stepBigInteger(value, Long.MAX_VALUE, func);
+    public static void markDirty(TileEntity block) {
+        if (block.getLevel() != null) markDirty(block.getLevel(), block);
     }
 
-    public static BigInteger stepBigInteger(BigInteger value, Long step, Function<Long, Long> func) {
-        return stepBigInteger(value, step, (a, b) -> func.apply(a));
+    public static void markDirty(World level, TileEntity block) {
+        markDirty(level, block.getBlockPos());
     }
 
-    public static BigInteger stepBigInteger(BigInteger value, BiFunction<Long, BigInteger, Long> func) {
-        return stepBigInteger(value, Long.MAX_VALUE, func);
+    public static void markDirty(World level, BlockPos pos) {
+        level.getChunkAt(pos).setUnsaved(true);
+    }
+
+    public static @Nullable IKnowledgeProvider getKnowledgeProvider(UUID uuid) {
+        @Nullable ServerPlayerEntity player = getPlayer(uuid);
+        if(player == null) {
+            return null;
+        }
+        return getKnowledgeProvider(player);
+    }
+
+    public static @Nullable IKnowledgeProvider getKnowledgeProvider(PlayerEntity player) {
+        try {
+            return player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
+        } catch(NullPointerException ignore) {
+            return null;
+        }
     }
 
     public static BigInteger spreadEMC(BigInteger emc, List<IEmcStorage> storageList) {
@@ -133,6 +152,18 @@ public class Util {
             return val;
         });
         return emc;
+    }
+
+    public static BigInteger stepBigInteger(BigInteger value, Function<Long, Long> func) {
+        return stepBigInteger(value, Long.MAX_VALUE, func);
+    }
+
+    public static BigInteger stepBigInteger(BigInteger value, Long step, Function<Long, Long> func) {
+        return stepBigInteger(value, step, (a, b) -> func.apply(a));
+    }
+
+    public static BigInteger stepBigInteger(BigInteger value, BiFunction<Long, BigInteger, Long> func) {
+        return stepBigInteger(value, Long.MAX_VALUE, func);
     }
 
     // consumer values: step, leftover

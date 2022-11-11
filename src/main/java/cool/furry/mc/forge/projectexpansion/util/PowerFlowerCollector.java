@@ -1,15 +1,19 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
 import cool.furry.mc.forge.projectexpansion.Main;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PowerFlowerCollector {
@@ -17,7 +21,7 @@ public class PowerFlowerCollector {
     private static int tick = 0;
 
     public static void add(ServerPlayerEntity player, BigInteger amount) {
-        UUID uuid = player.getUniqueID();
+        UUID uuid = player.getUUID();
         stored.put(uuid, stored.containsKey(uuid) ? stored.get(uuid).add(amount) : amount);
     }
 
@@ -31,7 +35,8 @@ public class PowerFlowerCollector {
                 BigInteger amount = stored.get(uuid);
                 ServerPlayerEntity player = Util.getPlayer(uuid);
                 if (player == null) continue;
-                IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(uuid);
+                @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(uuid);
+                if(provider == null) continue;
                 provider.setEmc(provider.getEmc().add(amount));
                 provider.syncEmc(player);
                 toRemove.add(uuid);

@@ -9,13 +9,15 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.Util;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
@@ -33,7 +35,7 @@ public class CommandEMC {
     }
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         LiteralArgumentBuilder<CommandSource> cmd = Commands.literal("emc")
-            .requires((source) -> source.hasPermissionLevel(2))
+            .requires((source) -> source.hasPermission(2))
             .then(Commands.literal("add")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
@@ -73,7 +75,7 @@ public class CommandEMC {
 
     private static ITextComponent getSourceName(CommandSource source) {
         try {
-            return source.asPlayer().getDisplayName();
+            return source.getPlayerOrException().getDisplayName();
         } catch (CommandSyntaxException e) {
             return new TranslationTextComponent("command.projectexpansion.console").setStyle(ColorStyle.RED);
         }
@@ -81,19 +83,19 @@ public class CommandEMC {
 
     private static UUID getSourceUUID(CommandSource source) {
         try {
-            return source.asPlayer().getUniqueID();
+            return source.getPlayerOrException().getUUID();
         } catch (CommandSyntaxException e) {
             return Util.DUMMY_UUID;
         }
     }
 
     private static ITextComponent formatEMC(BigInteger value) {
-        return new StringTextComponent(EMCFormat.formatForceShort(value)).setStyle(Style.EMPTY.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(EMCFormat.formatForceLong(value))))).setStyle(ColorStyle.GRAY);
+        return new StringTextComponent(EMCFormat.formatForceShort(value)).setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(EMCFormat.formatForceLong(value))))).setStyle(ColorStyle.GRAY);
     }
 
     private static boolean compareUUID(CommandSource source, ServerPlayerEntity player) {
         try {
-            return source.asPlayer().getUniqueID().equals(player.getUniqueID());
+            return source.getPlayerOrException().getUUID().equals(player.getUUID());
         } catch (CommandSyntaxException e) {
             return false;
         }
@@ -102,9 +104,13 @@ public class CommandEMC {
     private static int handle(CommandContext<CommandSource> ctx, ActionType action) throws CommandSyntaxException {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if(action == ActionType.GET) {
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
-            if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
-            else ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+            if(provider == null) {
+                ctx.getSource().sendFailure(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+                return 0;
+            }
+            if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
+            else ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
 
             return 1;
         }
@@ -137,20 +143,24 @@ public class CommandEMC {
             }
         } catch (NumberFormatException ignore) {}
         if(value == null) {
-            ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.invalid", val).setStyle(ColorStyle.RED), false);
+            ctx.getSource().sendFailure(new TranslationTextComponent("command.projectexpansion.emc.invalid", val).setStyle(ColorStyle.RED));
             return 0;
         }
 
         int response = 1;
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+        if(provider == null) {
+            ctx.getSource().sendFailure(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+            return 0;
+        }
         BigInteger newEMC = provider.getEmc();
         boolean isSelf = compareUUID(ctx.getSource(), player);
         switch (action) {
             case ADD: {
                 newEMC = newEMC.add(value);
-                if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.add.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
+                if (isSelf) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.add.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
                 else {
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.add.success", formatEMC(value), player.getDisplayName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
+                    ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.add.success", formatEMC(value), player.getDisplayName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
                     if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.add.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
                 }
                 break;
@@ -159,12 +169,12 @@ public class CommandEMC {
             case REMOVE: {
                 newEMC = newEMC.subtract(value);
                 if(newEMC.compareTo(BigInteger.ZERO) < 0) {
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.negative", formatEMC(value), player.getScoreboardName()).setStyle(ColorStyle.RED), false);
+                    ctx.getSource().sendFailure(new TranslationTextComponent("command.projectexpansion.emc.remove.negative", formatEMC(value), player.getScoreboardName()).setStyle(ColorStyle.RED));
                     return 0;
                 }
-                if (isSelf) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
+                if (isSelf) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.remove.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
                 else {
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.remove.success", formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
+                    ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.remove.success", formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
                     if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.remove.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
                 }
                 break;
@@ -173,9 +183,9 @@ public class CommandEMC {
             case SET: {
                 newEMC = value;
                 if (isSelf)
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.set.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
+                    ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.set.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
                 else {
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.set.success", player.getDisplayName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
+                    ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.set.success", player.getDisplayName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
                     if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.set.notification", formatEMC(newEMC), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
                 }
                 break;
@@ -184,16 +194,16 @@ public class CommandEMC {
             case TEST: {
                 boolean canTake = newEMC.compareTo(value) > -1;
                 if (isSelf)
-                    if(canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).setStyle(ColorStyle.GREEN), false);
+                    if(canTake) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).setStyle(ColorStyle.GREEN), false);
                     else {
                         response = 0;
-                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.failSelf", formatEMC(value)).setStyle(ColorStyle.RED), false);
+                        ctx.getSource().sendFailure(new TranslationTextComponent("command.projectexpansion.emc.test.failSelf", formatEMC(value)).setStyle(ColorStyle.RED));
                     }
                 else {
-                    if(canTake) ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.success", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.GREEN), false);
+                    if(canTake) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.test.success", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.GREEN), false);
                     else {
                         response = 0;
-                        ctx.getSource().sendFeedback(new TranslationTextComponent("command.projectexpansion.emc.test.fail", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.RED), false);
+                        ctx.getSource().sendFailure(new TranslationTextComponent("command.projectexpansion.emc.test.fail", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.RED));
                     }
                 }
             }

@@ -97,6 +97,8 @@ dependencies {
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}")
+    runtimeOnly fg.deobf("curse.maven:jei-238222:${getProperty("jeiVersion")}")
+    runtimeOnly fg.deobf("curse.maven:pipez-443900:${getProperty("pipezVersion")}")
 }
 
 jar {

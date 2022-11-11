@@ -20,7 +20,7 @@ import java.util.UUID;
 public class DeleteWeebShitMixin {
     @Inject(at = @At("HEAD"), method = "render(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;ILnet/minecraft/client/entity/player/AbstractClientPlayerEntity;FFFFFF)V", remap = false, cancellable = true)
     public void render(MatrixStack matrix, IRenderTypeBuffer renderer, int light, AbstractClientPlayerEntity player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
-        if(!FMLEnvironment.production && !player.getUniqueID().equals(SIN_UUID) && !player.getUniqueID().equals(CLAR_UUID)) ci.cancel();
+        if(!FMLEnvironment.production && !player.getUUID().equals(SIN_UUID) && !player.getUUID().equals(CLAR_UUID)) ci.cancel();
     }
 
     @Shadow(remap = false) @Final private static UUID SIN_UUID;

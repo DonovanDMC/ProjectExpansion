@@ -1,7 +1,12 @@
 package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.registries.*;
+import cool.furry.mc.forge.projectexpansion.registries.Blocks;
+import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
+import cool.furry.mc.forge.projectexpansion.registries.Items;
+import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
+import cool.furry.mc.forge.projectexpansion.registries.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.AdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.NBTNames;
@@ -28,15 +33,15 @@ public class Main {
     public static final String MOD_ID = "projectexpansion";
     @SuppressWarnings("unused")
     public static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger();
-    public static ItemGroup group;
+    public static ItemGroup tab;
 
     public Main() {
-        group = new ItemGroup(MOD_ID) {
+        tab = new ItemGroup(MOD_ID) {
 
             @Override
             @Nonnull
             @OnlyIn(Dist.CLIENT)
-            public ItemStack createIcon() {
+            public ItemStack makeIcon() {
                 return new ItemStack(Matter.FADING.getMatter());
             }
         };
@@ -52,14 +57,15 @@ public class Main {
         Fuel.registerAll();
         Matter.registerAll();
         Star.registerAll();
+        AdvancedAlchemicalChest.register();
     }
 
     private void serverTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                ItemStack stack = player.inventory.getStackInSlot(i);
-                if (stack.getItem().equals(Items.INFINITE_FUEL.get())) stack.getOrCreateTag().putUniqueId(NBTNames.OWNER, player.getUniqueID());
+            for (int i = 0; i < player.inventory.getContainerSize(); i++) {
+                ItemStack stack = player.inventory.getItem(i);
+                if (stack.getItem().equals(Items.INFINITE_FUEL.get())) stack.getOrCreateTag().putUUID(NBTNames.OWNER, player.getUUID());
             }
         }
     }

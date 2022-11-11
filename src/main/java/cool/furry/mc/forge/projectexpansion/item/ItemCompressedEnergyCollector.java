@@ -18,19 +18,19 @@ import java.util.List;
 public class ItemCompressedEnergyCollector extends Item {
     public final Matter matter;
     public ItemCompressedEnergyCollector(Matter matter) {
-        super(new Item.Properties().group(Main.group).rarity(matter.rarity));
+        super(new Item.Properties().tab(Main.tab).rarity(matter.rarity));
         this.matter = matter;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(stack, world, list, flag);
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(stack, world, list, flag);
         list.add(new TranslationTextComponent("item.projectexpansion.compressed_collector.tooltip").setStyle(ColorStyle.GRAY));
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         return true;
     }
 }

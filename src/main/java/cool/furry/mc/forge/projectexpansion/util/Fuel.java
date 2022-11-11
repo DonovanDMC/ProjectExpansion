@@ -95,7 +95,7 @@ public enum Fuel {
             }
 
             case BLOCK: {
-                block = Blocks.Registry.register(String.format("%s_fuel_block", name), () -> new Block(AbstractBlock.Properties.create(Material.ROCK).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(0.5F, 1.5F)));
+                block = Blocks.Registry.register(String.format("%s_fuel_block", name), () -> new Block(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).strength(0.5F, 1.5F)));
                 blockItem = Items.Registry.register(String.format("%s_fuel_block", name), () -> new BlockFuelItem(this));
                 break;
             }

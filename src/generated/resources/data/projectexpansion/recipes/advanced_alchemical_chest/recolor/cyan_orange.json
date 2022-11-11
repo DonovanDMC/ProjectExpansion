@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:advanced_alchemical_chest/cyan",
+  "ingredients": [
+    {
+      "item": "projectexpansion:orange_advanced_alchemical_chest"
+    },
+    {
+      "item": "minecraft:cyan_dye"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:cyan_advanced_alchemical_chest"
+  }
+}

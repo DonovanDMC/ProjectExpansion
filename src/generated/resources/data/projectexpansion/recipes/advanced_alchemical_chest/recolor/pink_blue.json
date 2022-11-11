@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:advanced_alchemical_chest/pink",
+  "ingredients": [
+    {
+      "item": "projectexpansion:blue_advanced_alchemical_chest"
+    },
+    {
+      "item": "minecraft:pink_dye"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:pink_advanced_alchemical_chest"
+  }
+}

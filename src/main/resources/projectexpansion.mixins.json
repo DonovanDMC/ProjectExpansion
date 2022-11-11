@@ -9,6 +9,7 @@
     "EMCFormatterMixin"
   ],
   "mixins":             [
+    "AlchemicalBagMixin",
     "EnchantmentMixin",
     "PhilosophersStoneMixin"
   ],

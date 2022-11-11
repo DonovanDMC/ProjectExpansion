@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:advanced_alchemical_chest/light_gray",
+  "pattern": [
+    "DLD",
+    "MBM",
+    "HLH"
+  ],
+  "key": {
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "L": {
+      "item": "projecte:low_covalence_dust"
+    },
+    "M": {
+      "item": "projecte:medium_covalence_dust"
+    },
+    "H": {
+      "item": "projecte:high_covalence_dust"
+    },
+    "B": {
+      "item": "projecte:light_gray_alchemical_bag"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:light_gray_advanced_alchemical_chest"
+  }
+}

@@ -13,23 +13,23 @@ public class TileNBTFilterable extends TileOwnable {
     }
 
     public void toggleFilter(PlayerEntity player) {
-        if(world == null || world.isRemote || !this.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return;
+        if(level == null || level.isClientSide || !this.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return;
         boolean status = getFilterStatus();
         if(status) {
             setFilterStatus(false);
-            player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.nbt_filter.disable").setStyle(ColorStyle.RED), true);
+            player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.nbt_filter.disable").setStyle(ColorStyle.RED), true);
         } else {
             setFilterStatus(true);
-            player.sendStatusMessage(new TranslationTextComponent("text.projectexpansion.nbt_filter.enable").setStyle(ColorStyle.GREEN), true);
+            player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.nbt_filter.enable").setStyle(ColorStyle.GREEN), true);
         }
     }
 
     public boolean getFilterStatus() {
-        return getBlockState().get(FILTER);
+        return getBlockState().getValue(FILTER);
     }
 
     public void setFilterStatus(boolean status) {
-        if(world == null || world.isRemote) return;
-        world.setBlockState(getPos(), getBlockState().with(FILTER, status));
+        if(level == null || level.isClientSide) return;
+        level.setBlockAndUpdate(worldPosition, getBlockState().setValue(FILTER, status));
     }
 }

@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.mixin;
 
 import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -22,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +37,10 @@ public abstract class EnchantmentMixin {
     private static void getDrops(BlockState state, ServerWorld world, BlockPos pos, TileEntity tileEntity, Entity entity, ItemStack stack, CallbackInfoReturnable<List<ItemStack>> cir) {
         if(!(entity instanceof ServerPlayerEntity)) return;
         ServerPlayerEntity player = (ServerPlayerEntity) entity;
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+        if(provider == null) return;
         IEMCProxy proxy = ProjectEAPI.getEMCProxy();
-        boolean hasEnch = EnchantmentHelper.getEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
+        boolean hasEnch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
         if(!state.canHarvestBlock(world, pos, player) || !hasEnch) return;
         List<ItemStack> initialDrops = cir.getReturnValue();
         AtomicLong addEMC = new AtomicLong();
@@ -61,7 +64,7 @@ public abstract class EnchantmentMixin {
                 });
             }
             provider.syncEmc(player);
-            world.playSound(null, pos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 1f, 0.75f);
+            world.playSound(null, pos, SoundEvents.BLAZE_SHOOT, SoundCategory.BLOCKS, 1f, 0.75f);
             cir.setReturnValue(newDrops);
         }
     }

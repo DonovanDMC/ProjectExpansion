@@ -4,7 +4,8 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import moze_intel.projecte.api.ProjectEAPI;
+import cool.furry.mc.forge.projectexpansion.util.NBTNames;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -27,22 +28,23 @@ import java.util.UUID;
 public class ItemInfiniteFuel extends Item {
 
     public ItemInfiniteFuel() {
-        super(new Item.Properties().maxStackSize(1).rarity(Rarity.RARE).group(Main.group));
+        super(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).tab(Main.tab));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(stack, world, list, flag);
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(stack, world, list, flag);
         list.add(new TranslationTextComponent("item.projectexpansion.infinite_fuel.tooltip").setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.cost", EMCFormat.getComponent(Config.infiniteFuelCost.get()).setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.RED));
     }
 
     @Override
     public int getBurnTime(ItemStack stack, @Nullable IRecipeType<?> recipeType) {
-        @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUniqueId("Owner");
-        if (owner == null) return 0;
-        return (Config.infiniteFuelCost.get() == 0 || Config.infiniteFuelBurnTime.get() == 0) ? 0 : ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().compareTo(BigInteger.valueOf(Config.infiniteFuelCost.get())) < 0 ? 0 : Config.infiniteFuelBurnTime.get();
+        @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUUID(NBTNames.OWNER);
+        @Nullable IKnowledgeProvider provider = owner == null ? null : Util.getKnowledgeProvider(owner);
+        if (owner == null || provider == null) return 0;
+        return (Config.infiniteFuelCost.get() == 0 || Config.infiniteFuelBurnTime.get() == 0) ? 0 : provider.getEmc().compareTo(BigInteger.valueOf(Config.infiniteFuelCost.get())) < 0 ? 0 : Config.infiniteFuelBurnTime.get();
     }
 
     @Override
@@ -52,10 +54,11 @@ public class ItemInfiniteFuel extends Item {
 
     @Override
     public ItemStack getContainerItem(ItemStack stack) {
-        @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUniqueId("Owner");
+        @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUUID(NBTNames.OWNER);
         if (owner == null) return stack;
-        ServerPlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(owner);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        ServerPlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if (provider == null) return stack;
         provider.setEmc(provider.getEmc().subtract(BigInteger.valueOf(Config.infiniteFuelCost.get())));
         if (player != null) provider.syncEmc(player);
         return stack;

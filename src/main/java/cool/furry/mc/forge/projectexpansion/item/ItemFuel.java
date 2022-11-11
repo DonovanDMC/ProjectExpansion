@@ -8,13 +8,13 @@ import net.minecraft.item.ItemStack;
 public class ItemFuel extends Item {
     private final Fuel level;
     public ItemFuel(Fuel level) {
-        super(new Item.Properties().group(Main.group).rarity(level.rarity));
+        super(new Item.Properties().tab(Main.tab).rarity(level.rarity));
         this.level = level;
 
     }
 
-
     @Override
+    @SuppressWarnings("deprecation")
     public int getBurnTime(ItemStack stack) {
         return level.getBurnTime();
     }

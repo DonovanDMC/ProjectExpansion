@@ -11,13 +11,14 @@ import java.util.Objects;
 public class BlockFuelItem extends BlockItem {
     private final Fuel level;
     public BlockFuelItem(Fuel level) {
-        super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Item.Properties().group(Main.group).rarity(level.rarity));
+        super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Item.Properties().tab(Main.tab).rarity(level.rarity));
         this.level = level;
 
     }
 
 
     @Override
+    @SuppressWarnings("deprecation")
     public int getBurnTime(ItemStack stack) {
         // 9 single items combined
         return level.getBurnTime() * 9;

@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "projectexpansion:magenta_fuel_block",
+    "projectexpansion:pink_fuel_block",
+    "projectexpansion:purple_fuel_block",
+    "projectexpansion:violet_fuel_block",
+    "projectexpansion:blue_fuel_block",
+    "projectexpansion:cyan_fuel_block",
+    "projectexpansion:green_fuel_block",
+    "projectexpansion:lime_fuel_block",
+    "projectexpansion:yellow_fuel_block",
+    "projectexpansion:orange_fuel_block",
+    "projectexpansion:white_fuel_block"
+  ]
+}

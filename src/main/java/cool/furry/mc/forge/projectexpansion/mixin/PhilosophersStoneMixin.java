@@ -18,15 +18,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PhilosophersStone.class)
 public class PhilosophersStoneMixin {
 
-    @Inject(at = @At("HEAD"), method = "onItemUse(Lnet/minecraft/item/ItemUseContext;)Lnet/minecraft/util/ActionResultType;", cancellable = true)
-    public void onItemUse(ItemUseContext ctx, CallbackInfoReturnable<ActionResultType> cir) {
-        BlockPos pos = ctx.getPos();
+    @Inject(at = @At("HEAD"), method = "useOn(Lnet/minecraft/item/ItemUseContext;)Lnet/minecraft/util/ActionResultType;", cancellable = true)
+    public void useOn(ItemUseContext ctx, CallbackInfoReturnable<ActionResultType> cir) {
+        BlockPos pos = ctx.getClickedPos();
         PlayerEntity player = ctx.getPlayer();
-        World world = ctx.getWorld();
-        if(!world.isRemote && player != null) {
+        World world = ctx.getLevel();
+        if(!world.isClientSide && player != null) {
             BlockRayTraceResult rtr = this.getHitBlock(player);
-            if (!rtr.getPos().equals(pos)) pos = rtr.getPos();
-            TileEntity tileEntity = world.getTileEntity(pos);
+            if (!rtr.getBlockPos().equals(pos)) pos = rtr.getBlockPos();
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof TileNBTFilterable) {
                 ((TileNBTFilterable) tileEntity).toggleFilter(player);
                 cir.setReturnValue(ActionResultType.SUCCESS);

@@ -3,15 +3,14 @@ package cool.furry.mc.forge.projectexpansion.block;
 import cool.furry.mc.forge.projectexpansion.tile.TileNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.tile.TileTransmutationInterface;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -32,10 +31,8 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class BlockTransmutationInterface extends Block {
     public BlockTransmutationInterface() {
-        super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(5F));
-        setDefaultState(
-            getStateContainer().getBaseState().with(TileNBTFilterable.FILTER, true)
-        );
+        super(Block.Properties.of(Material.STONE).strength(1.5F, 30).requiresCorrectToolForDrops().lightLevel((state) -> 15));
+        this.registerDefaultState(this.stateDefinition.any().setValue(TileNBTFilterable.FILTER, true));
     }
 
     @Override
@@ -51,34 +48,34 @@ public class BlockTransmutationInterface extends Block {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(stack, level, list, flag);
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(stack, level, list, flag);
         list.add(new TranslationTextComponent("block.projectexpansion.transmutation_interface.tooltip").setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote) return ActionResultType.SUCCESS;
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileTransmutationInterface) player.sendStatusMessage(new StringTextComponent(((TileTransmutationInterface) tile).ownerName), true);
-        return super.onBlockActivated(state, world, pos, player, hand, ray);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
+        if (world.isClientSide) return ActionResultType.SUCCESS;
+        TileEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof TileTransmutationInterface) player.displayClientMessage(new StringTextComponent(((TileTransmutationInterface) tile).ownerName), true);
+        return super.use(state, world, pos, player, hand, ray);
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileTransmutationInterface) ((TileTransmutationInterface) tile).wasPlaced(livingEntity, stack);
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
+        TileEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof TileTransmutationInterface) ((TileTransmutationInterface) tile).handlePlace(livingEntity, stack);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(TileNBTFilterable.FILTER);
     }
 
     @Override
-    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
-        return false;
+    public PushReaction getPistonPushReaction(BlockState state) {
+        return PushReaction.BLOCK;
     }
 }

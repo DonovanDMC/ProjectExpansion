@@ -10,12 +10,12 @@ public class EnchantmentAlchemicalCollection extends Enchantment {
     }
 
     @Override
-    public int getMinEnchantability(int level) {
+    public int getMinCost(int level) {
         return 15;
     }
 
     @Override
-    public int getMaxEnchantability(int level) {
-        return getMinEnchantability(level) + 50;
+    public int getMaxCost(int level) {
+        return getMinCost(level) + 50;
     }
 }

@@ -33,15 +33,15 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-        super.read(state, nbt);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+        super.load(state, nbt);
         if (nbt.contains(NBTNames.STORED_EMC, Constants.NBT.TAG_STRING)) emc = new BigInteger(nbt.getString(NBTNames.STORED_EMC));
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-        super.write(nbt);
+    public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+        super.save(nbt);
         nbt.putString(NBTNames.STORED_EMC, emc.toString());
         return nbt;
     }
@@ -49,23 +49,22 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     @Override
     public void tick() {
         // we can't use a user defined value due to emc duplication possibilities
-        if (world == null || world.isRemote || (world.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
+        if (level == null || level.isClientSide || (level.getGameTime() % 20L) != Util.mod(hashCode(), 20)) return;
         emc = emc.add(((BlockCollector) getBlockState().getBlock()).getMatter().getCollectorOutputForTicks(Config.tickDelay.get()));
         List<IEmcStorage> temp = new ArrayList<>(1);
 
         for (Direction dir : DIRECTIONS) {
-            TileEntity tile = world.getTileEntity(pos.offset(dir));
+            TileEntity tile = level.getBlockEntity(worldPosition.offset(dir.getNormal()));
             if(tile == null) continue;
             tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
                 if (storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);
                     if (tile instanceof RelayMK1Tile) {
                         for (int i = 0; i < 20; i++) ((RelayMK1Tile) tile).addBonus();
-                        tile.markDirty();
                     } else if (tile instanceof TileRelay) {
                         ((TileRelay) tile).addBonus();
-                        tile.markDirty();
                     }
+                    Util.markDirty(this);
                 }
             });
         }

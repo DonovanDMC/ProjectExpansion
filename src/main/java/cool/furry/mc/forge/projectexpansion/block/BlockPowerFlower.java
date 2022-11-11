@@ -6,15 +6,14 @@ import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -38,18 +37,18 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class BlockPowerFlower extends Block implements IHasMatter {
     public static final VoxelShape SHAPE = VoxelShapes.or(
-            makeCuboidShape(0, 0, 0, 16, 1, 16),
-            makeCuboidShape(3.5, 4, 6.5, 12.5, 13, 9.5),
-            makeCuboidShape(6.5, 1, 6.5, 9.5, 16, 9.5),
-            makeCuboidShape(6.5, 4, 3.5, 9.5, 13, 12.5),
-            makeCuboidShape(6.5, 7, 0.5, 9.5, 10, 15.5),
-            makeCuboidShape(3.5, 7, 3.5, 12.5, 10, 12.5),
-            makeCuboidShape(0.5, 7, 6.5, 15.5, 10, 9.5)
+        box(0, 0, 0, 16, 1, 16),
+        box(3.5, 4, 6.5, 12.5, 13, 9.5),
+        box(6.5, 1, 6.5, 9.5, 16, 9.5),
+        box(6.5, 4, 3.5, 9.5, 13, 12.5),
+        box(6.5, 7, 0.5, 9.5, 10, 15.5),
+        box(3.5, 7, 3.5, 12.5, 10, 12.5),
+        box(0.5, 7, 6.5, 15.5, 10, 9.5)
     );
     private final Matter matter;
 
     public BlockPowerFlower(Matter matter) {
-        super(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(1F));
+        super(Block.Properties.of(Material.STONE).strength(1.5F, 30).lightLevel((state) -> Math.min(matter.ordinal(), 15)));
         this.matter = matter;
     }
 
@@ -79,8 +78,8 @@ public class BlockPowerFlower extends Block implements IHasMatter {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(stack, level, list, flag);
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(stack, level, list, flag);
         list.add(new TranslationTextComponent("block.projectexpansion.power_flower.tooltip", new StringTextComponent(Config.tickDelay.get().toString()).setStyle(ColorStyle.GREEN), new StringTextComponent(Config.tickDelay.get() == 1 ? "" : "s").setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("block.projectexpansion.power_flower.emc", EMCFormat.getComponent(matter.getPowerFlowerOutput()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
@@ -88,21 +87,21 @@ public class BlockPowerFlower extends Block implements IHasMatter {
 
     @Deprecated
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        if (world.isRemote) return ActionResultType.SUCCESS;
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TilePowerFlower) player.sendStatusMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
-        return super.onBlockActivated(state, world, pos, player, hand, ray);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
+        if (world.isClientSide) return ActionResultType.SUCCESS;
+        TileEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof TilePowerFlower) player.displayClientMessage(new StringTextComponent(((TilePowerFlower) tile).ownerName), true);
+        return super.use(state, world, pos, player, hand, ray);
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TilePowerFlower) ((TilePowerFlower) tile).wasPlaced(livingEntity, stack);
+    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
+        TileEntity tile = level.getBlockEntity(pos);
+        if (tile instanceof TilePowerFlower) ((TilePowerFlower) tile).handlePlace(livingEntity, stack);
     }
 
     @Override
-    public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type) {
-        return false;
+    public PushReaction getPistonPushReaction(BlockState state) {
+        return PushReaction.BLOCK;
     }
 }

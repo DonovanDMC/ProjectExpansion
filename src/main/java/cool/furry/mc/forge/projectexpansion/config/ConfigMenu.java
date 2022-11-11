@@ -38,127 +38,126 @@ public class ConfigMenu extends Screen {
         optionsRowList = new OptionsRowList(Objects.requireNonNull(minecraft), width, height, OPTIONS_LIST_TOP_HEIGHT, height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
         children.add(optionsRowList);
 
-        optionsRowList.addOption(new SliderPercentageOption(
+        optionsRowList.addBig(new SliderPercentageOption(
             "gui.projectexpansion.config.tick_delay",
             1.0, 200.0,
             1.0F,
             __ -> (double) Config.tickDelay.get(),
             (__, newValue) -> Config.tickDelay.set(newValue.intValue()),
-            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.tick_delay").appendSibling(new StringTextComponent(String.format(": %s", option.get(gs))))
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.tick_delay").append(new StringTextComponent(String.format(": %s", option.get(gs))))
         ));
 
-        optionsRowList.addOption(new BooleanOption(
+        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.format_emc",
             __ -> Config.formatEMC.get(),
             (__, newValue) -> Config.formatEMC.set(newValue)
         ));
 
-        optionsRowList.addOption(new BooleanOption(
+        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.full_number_names",
             __ -> Config.formatEMC.get() && Config.fullNumberNames.get(),
             (__, newValue) -> Config.fullNumberNames.set(newValue)
         ));
 
-        optionsRowList.addOption(new BooleanOption(
+        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.emc_display",
             __ -> Config.formatEMC.get() && Config.emcDisplay.get(),
             (__, newValue) -> Config.emcDisplay.set(newValue)
         ));
 
-        optionsRowList.addOption(new BooleanOption(
+        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.notify_command_changes",
             __ -> Config.notifyCommandChanges.get(),
             (__, newValue) -> Config.notifyCommandChanges.set(newValue)
         ));
 
-        optionsRowList.addOption(new BooleanOption(
+        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.notify_knowledge_book_changes",
             __ -> Config.notifyKnowledgeBookGains.get(),
             (__, newValue) -> Config.notifyKnowledgeBookGains.set(newValue)
         ));
 
-        optionsRowList.addOption(new BooleanOption(
+        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.limit_emc_link_vendor",
             __ -> Config.limitEmcLinkVendor.get(),
             (__, newValue) -> Config.limitEmcLinkVendor.set(newValue)
         ));
 
-        optionsRowList.addOption(new BooleanOption(
+        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.use_old_values",
             __ -> Config.useOldValues.get(),
             (__, newValue) -> Config.useOldValues.set(newValue)
         ));
 
-        optionsRowList.addOption(new BooleanOption(
+        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.enable_fluid_efficiency",
             __ -> Config.enableFluidEfficiency.get(),
             (__, newValue) -> Config.enableFluidEfficiency.set(newValue)
         ));
 
-        optionsRowList.addOption(new SliderPercentageOption(
+        optionsRowList.addBig(new SliderPercentageOption(
             "gui.projectexpansion.config.collector_multiplier",
             0.1F, 20.0F, 0.1F,
             __ -> Config.collectorMultiplier.get(),
             (__, newValue) -> Config.collectorMultiplier.set(newValue),
-            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.collector_multiplier").appendSibling(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.collector_multiplier").append(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
         ));
 
-        optionsRowList.addOption(new SliderPercentageOption(
+        optionsRowList.addBig(new SliderPercentageOption(
             "gui.projectexpansion.config.emc_link_item_limit_multiplier",
             0.1F, 20.0F, 0.1F,
             __ -> Config.emcLinkItemLimitMultiplier.get(),
             (__, newValue) -> Config.emcLinkItemLimitMultiplier.set(newValue),
-            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.emc_link_item_limit_multiplier").appendSibling(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.emc_link_item_limit_multiplier").append(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
         ));
 
-        optionsRowList.addOption(new SliderPercentageOption(
+        optionsRowList.addBig(new SliderPercentageOption(
             "gui.projectexpansion.config.emc_link_fluid_limit_multiplier",
             0.1F, 20.0F, 0.1F,
             __ -> Config.emcLinkFluidLimitMultiplier.get(),
             (__, newValue) -> Config.emcLinkFluidLimitMultiplier.set(newValue),
-            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.emc_link_fluid_limit_multiplier").appendSibling(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.emc_link_fluid_limit_multiplier").append(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
         ));
 
-        optionsRowList.addOption(new SliderPercentageOption(
+        optionsRowList.addBig(new SliderPercentageOption(
             "gui.projectexpansion.config.emc_link_emc_limit_multiplier",
             0.1F, 20.0F, 0.1F,
             __ -> Config.emcLinkEMCLimitMultiplier.get(),
             (__, newValue) -> Config.emcLinkEMCLimitMultiplier.set(newValue),
-            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.emc_link_emc_limit_multiplier").appendSibling(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.emc_link_emc_limit_multiplier").append(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
         ));
 
-        optionsRowList.addOption(new SliderPercentageOption(
+        optionsRowList.addBig(new SliderPercentageOption(
             "gui.projectexpansion.config.powerflower_multiplier",
             0.1F, 20.0F, 0.1F,
             __ -> Config.powerflowerMultiplier.get(),
             (__, newValue) -> Config.powerflowerMultiplier.set(newValue),
-            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.powerflower_multiplier").appendSibling(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.powerflower_multiplier").append(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
         ));
 
-        optionsRowList.addOption(new SliderPercentageOption(
+        optionsRowList.addBig(new SliderPercentageOption(
             "gui.projectexpansion.config.relay_bonus_multiplier",
             0.1F, 20.0F, 0.1F,
             __ -> Config.relayBonusMultiplier.get(),
             (__, newValue) -> Config.relayBonusMultiplier.set(newValue),
-            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.relay_bonus_multiplier").appendSibling(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.relay_bonus_multiplier").append(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
         ));
 
-        optionsRowList.addOption(new SliderPercentageOption(
+        optionsRowList.addBig(new SliderPercentageOption(
             "gui.projectexpansion.config.relay_transfer_multiplier",
             0.1F, 20.0F, 0.1F,
             __ -> Config.relayTransferMultiplier.get(),
             (__, newValue) -> Config.relayTransferMultiplier.set(newValue),
-            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.relay_transfer_multiplier").appendSibling(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+            (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.relay_transfer_multiplier").append(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
         ));
 
-        addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), (button) -> minecraft.displayGuiScreen(parentScreen)));
+        addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), (button) -> minecraft.pushGuiLayer(parentScreen)));
     }
 
     @Override
     public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(matrixStack);
         optionsRowList.render(matrixStack, mouseX, mouseY, partialTicks);
-        //noinspection SuspiciousNameCombination
         drawCenteredString(matrixStack, font, title.getString(), width / 2, TITLE_HEIGHT, 0xFFFFFF);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }

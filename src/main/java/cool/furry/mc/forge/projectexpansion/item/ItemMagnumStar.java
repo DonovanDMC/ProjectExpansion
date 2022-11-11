@@ -31,7 +31,7 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder {
     }
 
     public ItemMagnumStar(Star tier, int type) {
-        super(new Properties().maxStackSize(1).group(Main.group).rarity(tier == Star.OMEGA ? Rarity.EPIC : type == 1 ? Rarity.UNCOMMON : Rarity.RARE));
+        super(new Properties().stacksTo(1).tab(Main.tab).rarity(tier == Star.OMEGA ? Rarity.EPIC : type == 1 ? Rarity.UNCOMMON : Rarity.RARE));
 
         this.tier = tier;
         addItemCapability(EmcHolderItemCapabilityWrapper::new);

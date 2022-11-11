@@ -9,6 +9,7 @@ import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
@@ -37,13 +38,13 @@ import java.util.UUID;
 
 public class ItemMatterUpgrader extends Item {
     public ItemMatterUpgrader() {
-        super(new Item.Properties().group(Main.group));
+        super(new Item.Properties().tab(Main.tab));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(stack, world, list, flag);
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(stack, world, list, flag);
         list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip").setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip2").setStyle(ColorStyle.GREEN));
         list.add(new TranslationTextComponent("item.projectexpansion.matter_upgrader.tooltip_creative").setStyle(ColorStyle.RED));
@@ -52,12 +53,12 @@ public class ItemMatterUpgrader extends Item {
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         @Nullable PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getPos();
-        World world = context.getWorld();
+        BlockPos pos = context.getClickedPos();
+        World world = context.getLevel();
 
-        if (world.isRemote || player == null) return ActionResultType.PASS;
+        if (world.isClientSide || player == null) return ActionResultType.PASS;
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         Block block = world.getBlockState(pos).getBlock();
 
         Matter matter;
@@ -69,11 +70,15 @@ public class ItemMatterUpgrader extends Item {
 
 
         if (matter == Matter.FINAL) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.max_upgrade").setStyle(ColorStyle.RED), true);
+            player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.max_upgrade").setStyle(ColorStyle.RED), true);
             return ActionResultType.FAIL;
         }
 
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUniqueID());
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+        if(provider == null) {
+            player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED), true);
+            return ActionResultType.FAIL;
+        }
         IEMCProxy proxy = ProjectEAPI.getEMCProxy();
 
         @Nullable BlockItem upgrade = null;
@@ -95,8 +100,8 @@ public class ItemMatterUpgrader extends Item {
             ownerName = tilePowerFlower.ownerName;
             emc = tilePowerFlower.emc;
             if (owner == null) return ActionResultType.FAIL;
-            if (owner != player.getUniqueID()) {
-                player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_owner").setStyle(ColorStyle.RED), true);
+            if (owner != player.getUUID()) {
+                player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_owner").setStyle(ColorStyle.RED), true);
                 return ActionResultType.FAIL;
             }
         }
@@ -111,23 +116,23 @@ public class ItemMatterUpgrader extends Item {
             upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
         }
 
-        if (!provider.hasKnowledge(new ItemStack(upgrade)) && !player.abilities.isCreativeMode) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_learned", new TranslationTextComponent(Objects.requireNonNull(upgrade).getTranslationKey())).setStyle(ColorStyle.RED), true);
+        if (!provider.hasKnowledge(new ItemStack(upgrade)) && !player.isCreative()) {
+            player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_learned", new TranslationTextComponent(Objects.requireNonNull(upgrade).toString())).setStyle(ColorStyle.RED), true);
             return ActionResultType.FAIL;
         }
 
         long prevValue = proxy.getValue(block);
         long emcValue = proxy.getValue(Objects.requireNonNull(upgrade));
         long diff = emcValue - prevValue;
-        if (player.abilities.isCreativeMode) diff = 0;
+        if (player.isCreative()) diff = 0;
         BigInteger newEmc = provider.getEmc().subtract(BigInteger.valueOf(diff));
         if (newEmc.compareTo(BigInteger.ZERO) < 0) {
-            player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_enough_emc", EMCFormat.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.RED), true);
+            player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_enough_emc", EMCFormat.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.RED), true);
             return ActionResultType.FAIL;
         }
 
         world.removeBlock(pos, false);
-        world.setBlockState(pos, upgradeBlock.getDefaultState());
+        world.setBlockAndUpdate(pos, upgradeBlock.defaultBlockState());
 
         if (tile instanceof TilePowerFlower) {
             if (ownerName == null || emc == null) return ActionResultType.FAIL;
@@ -136,14 +141,14 @@ public class ItemMatterUpgrader extends Item {
             newTile.owner = owner;
             newTile.ownerName = ownerName;
             newTile.emc = emc;
-            tile.write(new CompoundNBT());
-            newTile.markDirty();
-            world.removeTileEntity(pos);
-            world.setTileEntity(pos, newTile);
+            tile.save(new CompoundNBT());
+            Util.markDirty(tile);
+            world.removeBlockEntity(pos);
+            world.setBlockEntity(pos, newTile);
         }
 
         provider.setEmc(newEmc);
-        player.sendStatusMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.done", EMCFormat.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.WHITE), true);
+        player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.done", EMCFormat.format(BigInteger.valueOf(diff))).setStyle(ColorStyle.WHITE), true);
         return ActionResultType.SUCCESS;
     }
 }
