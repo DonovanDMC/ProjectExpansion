@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -17,10 +18,11 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.commands.GiveCommand;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 public class CommandKnowledge {
     private enum ActionType {
@@ -82,7 +84,11 @@ public class CommandKnowledge {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         boolean isSelf = compareUUID(ctx.getSource(), player);
         if(action == ActionType.CLEAR) {
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+            if(provider == null) {
+                ctx.getSource().sendFailure(Component.translatable("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+                return 0;
+            }
             if(provider.getKnowledge().size() == 0) {
                 if(isSelf) ctx.getSource().sendFailure(Component.translatable("command.projectexpansion.knowledge.clear.failSelf").setStyle(ColorStyle.RED));
                 else ctx.getSource().sendFailure(Component.translatable("command.projectexpansion.knowledge.clear.fail", player.getDisplayName()).setStyle(ColorStyle.RED));
@@ -99,7 +105,11 @@ public class CommandKnowledge {
         }
         Item item = ItemArgument.getItem(ctx, "item").getItem();
 
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+        if(provider == null) {
+            ctx.getSource().sendFailure(Component.translatable("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+            return 0;
+        }
         IEMCProxy proxy = ProjectEAPI.getEMCProxy();
         if (!proxy.hasValue(item)) {
             ctx.getSource().sendFailure(Component.translatable("command.projectexpansion.knowledge.invalid"));

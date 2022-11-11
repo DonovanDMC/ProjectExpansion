@@ -11,8 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,23 +45,20 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
         super.saveAdditional(tag);
     }
 
-    @SuppressWarnings("unused")
-    public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof Player player)
-            setOwner(player);
-    }
-
     private ItemInfo[] fetchKnowledge() {
-        try {
-            if (info != null) return info;
-            return info = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getKnowledge().toArray(new ItemInfo[0]);
-        } catch (NullPointerException ignore) {
+        if (info != null) return info;
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if(provider == null) {
             return new ItemInfo[]{};
         }
+        return info = provider.getKnowledge().toArray(new ItemInfo[0]);
     }
 
     private int getMaxCount(int slot) {
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if(provider == null) {
+            return 0;
+        }
         BigInteger playerEmc = provider.getEmc();
         if (playerEmc.compareTo(BigInteger.ZERO) < 1) return 0;
         BigInteger targetItemEmc = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]));
@@ -115,7 +110,8 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
         if (simulate) return ItemStack.EMPTY;
 
         long emcValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if(provider == null) return stack;
         BigInteger totalEmcValue = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(count));
         provider.setEmc(provider.getEmc().add(totalEmcValue));
 
@@ -143,7 +139,8 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
         if (simulate) return item;
         long emcValue = ProjectEAPI.getEMCProxy().getValue(info[slot - 1]);
         BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if(provider == null) return ItemStack.EMPTY;
         provider.setEmc(provider.getEmc().subtract(totalEmcCost));
         ServerPlayer player = Util.getPlayer(level, owner);
         if (player != null) provider.syncEmc(player);

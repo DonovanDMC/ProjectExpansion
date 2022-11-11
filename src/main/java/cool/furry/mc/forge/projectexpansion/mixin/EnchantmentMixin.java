@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.mixin;
 
 import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -22,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,8 @@ public abstract class EnchantmentMixin {
     @Inject(at = @At("RETURN"), method = "getDrops(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", cancellable = true)
     private static void getDrops(BlockState state, ServerLevel level, BlockPos pos, BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfoReturnable<List<ItemStack>> cir) {
         if(!(entity instanceof ServerPlayer player)) return;
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+        if(provider == null) return;
         IEMCProxy proxy = ProjectEAPI.getEMCProxy();
         boolean hasEnch = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
         if(!state.canHarvestBlock(level, pos, player) || !hasEnch) return;

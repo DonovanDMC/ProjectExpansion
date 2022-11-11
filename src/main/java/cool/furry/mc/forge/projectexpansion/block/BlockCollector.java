@@ -33,7 +33,7 @@ public class BlockCollector extends Block implements IHasMatter, EntityBlock {
     private final Matter matter;
 
     public BlockCollector(Matter matter) {
-        super(Properties.of(Material.STONE).strength(3.5F));
+        super(Block.Properties.of(Material.STONE).strength(0.3F, 0.9F).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(matter.ordinal(), 15)));
         this.matter = matter;
     }
 

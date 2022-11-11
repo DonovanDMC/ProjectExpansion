@@ -101,6 +101,8 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}")
     runtimeOnly fg.deobf("curse.maven:no-chat-reports-634062:3926371")
+    runtimeOnly fg.deobf("curse.maven:jei-238222:${getProperty("jeiVersion")}")
+    runtimeOnly fg.deobf("curse.maven:pipez-443900:${getProperty("pipezVersion")}")
 }
 
 jar {

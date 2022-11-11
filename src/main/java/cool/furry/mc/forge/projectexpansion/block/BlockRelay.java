@@ -33,7 +33,7 @@ public class BlockRelay extends Block implements IHasMatter, EntityBlock {
     private final Matter matter;
 
     public BlockRelay(Matter matter) {
-        super(Properties.of(Material.STONE).strength(5F));
+        super(Block.Properties.of(Material.STONE).strength(10, 30).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(matter.ordinal(), 15)));
         this.matter = matter;
     }
 

@@ -4,7 +4,6 @@ import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityEMCLink;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import net.minecraft.core.BlockPos;
@@ -32,7 +31,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -40,7 +38,7 @@ public class BlockEMCLink extends Block implements IHasMatter, EntityBlock {
     private final Matter matter;
 
     public BlockEMCLink(Matter matter) {
-        super(Properties.of(Material.STONE).strength(3.5F));
+        super(Block.Properties.of(Material.STONE).strength(1.5F, 30).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(matter.ordinal(), 15)));
         this.matter = matter;
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockEntityNBTFilterable.FILTER, true));
     }
@@ -74,7 +72,7 @@ public class BlockEMCLink extends Block implements IHasMatter, EntityBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityEMCLink be) be.wasPlaced(livingEntity, stack);
+        if (blockEntity instanceof BlockEntityEMCLink be) be.handlePlace(livingEntity, stack);
     }
 
     @Nonnull

@@ -5,8 +5,8 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,6 +26,7 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ItemKnowledgeSharingBook extends Item {
@@ -55,8 +56,16 @@ public class ItemKnowledgeSharingBook extends Item {
                     return InteractionResultHolder.fail(stack);
                 }
                 if(!level.isClientSide) {
-                    IKnowledgeProvider ownerProvider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
-                    IKnowledgeProvider learnerProvider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+                    @Nullable IKnowledgeProvider ownerProvider = Util.getKnowledgeProvider(owner);
+                    @Nullable IKnowledgeProvider learnerProvider = Util.getKnowledgeProvider(player);
+                    if(ownerProvider == null) {
+                        player.displayClientMessage(Component.translatable("text.projectexpansion.failed_to_get_knowledge_provider", Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()).setStyle(ColorStyle.RED), true);
+                        return InteractionResultHolder.fail(stack);
+                    }
+                    if(learnerProvider == null) {
+                        player.displayClientMessage(Component.translatable("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED), true);
+                        return InteractionResultHolder.fail(stack);
+                    }
                     long learned = 0;
                     for(ItemInfo info : ownerProvider.getKnowledge()) {
                         if(!learnerProvider.hasKnowledge(info)) {

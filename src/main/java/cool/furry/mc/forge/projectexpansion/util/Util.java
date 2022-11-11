@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.util;
 
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.nbt.NBTManager;
@@ -13,9 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.NonNullConsumer;
-import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
@@ -116,22 +114,20 @@ public class Util {
         level.getChunkAt(pos).setUnsaved(true);
     }
 
-    public static NonNullSupplier<IllegalStateException> knowledgeProviderError = () -> new IllegalStateException("Failed to get knowledge provider.");
-
-    public static <T extends Capability<C>, C> void usePlayerCapability(Player player, T cap, NonNullConsumer<C> consumer) {
-        player.getCapability(cap).ifPresent(consumer);
+    public static @Nullable IKnowledgeProvider getKnowledgeProvider(UUID uuid) {
+        @Nullable ServerPlayer player = getPlayer(uuid);
+        if(player == null) {
+            return null;
+        }
+        return getKnowledgeProvider(player);
     }
 
-    public static BigInteger stepBigInteger(BigInteger value, Function<Long, Long> func) {
-        return stepBigInteger(value, Long.MAX_VALUE, func);
-    }
-
-    public static BigInteger stepBigInteger(BigInteger value, Long step, Function<Long, Long> func) {
-        return stepBigInteger(value, step, (a, b) -> func.apply(a));
-    }
-
-    public static BigInteger stepBigInteger(BigInteger value, BiFunction<Long, BigInteger, Long> func) {
-        return stepBigInteger(value, Long.MAX_VALUE, func);
+    public static @Nullable IKnowledgeProvider getKnowledgeProvider(Player player) {
+        try {
+            return player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
+        } catch(NullPointerException ignore) {
+            return null;
+        }
     }
 
     public static BigInteger spreadEMC(BigInteger emc, List<IEmcStorage> storageList) {
@@ -156,6 +152,18 @@ public class Util {
             return val;
         });
         return emc;
+    }
+
+    public static BigInteger stepBigInteger(BigInteger value, Function<Long, Long> func) {
+        return stepBigInteger(value, Long.MAX_VALUE, func);
+    }
+
+    public static BigInteger stepBigInteger(BigInteger value, Long step, Function<Long, Long> func) {
+        return stepBigInteger(value, step, (a, b) -> func.apply(a));
+    }
+
+    public static BigInteger stepBigInteger(BigInteger value, BiFunction<Long, BigInteger, Long> func) {
+        return stepBigInteger(value, Long.MAX_VALUE, func);
     }
 
     // consumer values: step, leftover

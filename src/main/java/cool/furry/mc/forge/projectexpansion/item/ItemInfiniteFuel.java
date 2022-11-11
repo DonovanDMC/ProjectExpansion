@@ -4,8 +4,8 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
+import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,9 +39,10 @@ public class ItemInfiniteFuel extends Item {
 
     @Override
     public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {
-        @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUUID("Owner");
-        if (owner == null) return 0;
-        return (Config.infiniteFuelCost.get() == 0 || Config.infiniteFuelBurnTime.get() == 0) ? 0 : ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner).getEmc().compareTo(BigInteger.valueOf(Config.infiniteFuelCost.get())) < 0 ? 0 : Config.infiniteFuelBurnTime.get();
+        @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUUID(TagNames.OWNER);
+        @Nullable IKnowledgeProvider provider = owner == null ? null : Util.getKnowledgeProvider(owner);
+        if (owner == null || provider == null) return 0;
+        return (Config.infiniteFuelCost.get() == 0 || Config.infiniteFuelBurnTime.get() == 0) ? 0 : provider.getEmc().compareTo(BigInteger.valueOf(Config.infiniteFuelCost.get())) < 0 ? 0 : Config.infiniteFuelBurnTime.get();
     }
 
     @Override
@@ -51,11 +52,12 @@ public class ItemInfiniteFuel extends Item {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack stack) {
-        @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUUID("Owner");
+        @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUUID(TagNames.OWNER);
         if (owner == null)
             return stack;
         ServerPlayer player = Util.getPlayer(owner);
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if (provider == null) return stack;
         provider.setEmc(provider.getEmc().subtract(BigInteger.valueOf(Config.infiniteFuelCost.get())));
         if (player != null) provider.syncEmc(player);
         return stack;

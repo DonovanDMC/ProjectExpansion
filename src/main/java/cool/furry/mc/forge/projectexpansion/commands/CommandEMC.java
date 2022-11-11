@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import moze_intel.projecte.api.ProjectEAPI;
+import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -93,7 +93,11 @@ public class CommandEMC {
     private static int handle(CommandContext<CommandSourceStack> ctx, ActionType action) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if(action == ActionType.GET) {
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+            if(provider == null) {
+                ctx.getSource().sendFailure(Component.translatable("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+                return 0;
+            }
             if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendSuccess(Component.translatable("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
             else ctx.getSource().sendSuccess(Component.translatable("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
 
@@ -127,7 +131,11 @@ public class CommandEMC {
         }
 
         int response = 1;
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+        if(provider == null) {
+            ctx.getSource().sendFailure(Component.translatable("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+            return 0;
+        }
         BigInteger newEMC = provider.getEmc();
         switch (action) {
             case ADD -> {

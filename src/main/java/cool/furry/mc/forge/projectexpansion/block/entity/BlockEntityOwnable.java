@@ -7,11 +7,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class BlockEntityOwnable extends BlockEntity {
@@ -59,5 +62,9 @@ public class BlockEntityOwnable extends BlockEntity {
         }
 
         return true;
+    }
+
+    public void handlePlace(@Nullable LivingEntity livingEntity, ItemStack stack) {
+        if (livingEntity instanceof Player player) setOwner(player);
     }
 }

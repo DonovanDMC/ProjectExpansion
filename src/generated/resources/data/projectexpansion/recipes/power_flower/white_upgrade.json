@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/white",
+  "pattern": [
+    "CLC",
+    "RPR",
+    "RRR"
+  ],
+  "key": {
+    "L": {
+      "item": "projectexpansion:white_emc_link"
+    },
+    "C": {
+      "item": "projectexpansion:white_compressed_collector"
+    },
+    "R": {
+      "item": "projectexpansion:white_relay"
+    },
+    "P": {
+      "item": "projectexpansion:orange_power_flower"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:white_power_flower"
+  }
+}
