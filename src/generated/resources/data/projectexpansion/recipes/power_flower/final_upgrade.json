@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:matter/final",
+  "pattern": [
+    "CLC",
+    "RPR",
+    "RRR"
+  ],
+  "key": {
+    "L": {
+      "item": "projectexpansion:final_emc_link"
+    },
+    "C": {
+      "item": "projectexpansion:final_compressed_collector"
+    },
+    "R": {
+      "item": "projectexpansion:final_relay"
+    },
+    "P": {
+      "item": "projectexpansion:fading_power_flower"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:final_power_flower"
+  }
+}

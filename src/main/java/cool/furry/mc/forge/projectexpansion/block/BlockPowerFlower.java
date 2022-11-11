@@ -53,7 +53,7 @@ public class BlockPowerFlower extends Block implements IHasMatter, EntityBlock {
     private final Matter matter;
 
     public BlockPowerFlower(Matter matter) {
-        super(Block.Properties.of(Material.STONE).strength(1F));
+        super(Block.Properties.of(Material.STONE).strength(1.5F, 30).lightLevel((state) -> Math.min(matter.ordinal(), 15)));
         this.matter = matter;
     }
 
@@ -96,7 +96,7 @@ public class BlockPowerFlower extends Block implements IHasMatter, EntityBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityPowerFlower be) be.wasPlaced(livingEntity, stack);
+        if (blockEntity instanceof BlockEntityPowerFlower be) be.handlePlace(livingEntity, stack);
     }
 
     @Nullable

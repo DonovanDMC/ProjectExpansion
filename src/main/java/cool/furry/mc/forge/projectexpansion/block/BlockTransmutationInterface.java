@@ -35,7 +35,7 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class BlockTransmutationInterface extends Block implements EntityBlock {
     public BlockTransmutationInterface() {
-        super(Block.Properties.of(Material.STONE).strength(5F));
+        super(Block.Properties.of(Material.STONE).strength(1.5F, 30).requiresCorrectToolForDrops().lightLevel((state) -> 15));
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockEntityNBTFilterable.FILTER, true));
     }
 
@@ -65,11 +65,12 @@ public class BlockTransmutationInterface extends Block implements EntityBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BlockEntityTransmutationInterface be) be.wasPlaced(entity, stack);
+        if (blockEntity instanceof BlockEntityTransmutationInterface be) be.handlePlace(entity, stack);
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(BlockEntityNBTFilterable.FILTER);
     }
 

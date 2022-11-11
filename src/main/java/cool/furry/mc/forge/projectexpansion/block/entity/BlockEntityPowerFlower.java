@@ -10,15 +10,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.math.BigInteger;
 
 @SuppressWarnings("unused")
@@ -39,10 +35,6 @@ public class BlockEntityPowerFlower extends BlockEntityOwnable {
     public void saveAdditional(@Nonnull CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putString(TagNames.STORED_EMC, emc.toString());
-    }
-    public void wasPlaced(@Nullable LivingEntity livingEntity, ItemStack stack) {
-        if (livingEntity instanceof Player player)
-            setOwner(player);
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {

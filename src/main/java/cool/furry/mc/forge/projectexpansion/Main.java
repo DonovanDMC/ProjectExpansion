@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.*;
+import cool.furry.mc.forge.projectexpansion.util.AdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.Star;
@@ -51,6 +52,7 @@ public class Main {
         Fuel.registerAll();
         Matter.registerAll();
         Star.registerAll();
+        AdvancedAlchemicalChest.register();
     }
 
     private void serverTick(TickEvent.ServerTickEvent event) {

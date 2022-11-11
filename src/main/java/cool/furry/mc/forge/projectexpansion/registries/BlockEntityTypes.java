@@ -1,7 +1,11 @@
 package cool.furry.mc.forge.projectexpansion.registries;
 
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.block.entity.*;
+import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityCollector;
+import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityEMCLink;
+import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityPowerFlower;
+import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityRelay;
+import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityTransmutationInterface;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;

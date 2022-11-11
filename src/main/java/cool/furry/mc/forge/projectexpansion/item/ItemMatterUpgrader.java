@@ -70,7 +70,12 @@ public class ItemMatterUpgrader extends Item {
             return InteractionResult.FAIL;
         }
 
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+        if(provider == null) {
+            player.displayClientMessage(new TranslatableComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED), true);
+            return InteractionResult.FAIL;
+        }
         IEMCProxy proxy = ProjectEAPI.getEMCProxy();
 
         @Nullable BlockItem upgrade = null;

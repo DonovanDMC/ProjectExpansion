@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class CommandKnowledge {
@@ -92,7 +93,11 @@ public class CommandKnowledge {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         boolean isSelf = compareUUID(ctx.getSource(), player);
         if(action == ActionType.CLEAR) {
-            IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+            if(provider == null) {
+                ctx.getSource().sendFailure(new TranslatableComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+                return 0;
+            }
             if(provider.getKnowledge().size() == 0) {
                 if(isSelf) ctx.getSource().sendFailure(new TranslatableComponent("command.projectexpansion.knowledge.clear.failSelf").setStyle(ColorStyle.RED));
                 else ctx.getSource().sendFailure(new TranslatableComponent("command.projectexpansion.knowledge.clear.fail", player.getDisplayName()).setStyle(ColorStyle.RED));
@@ -109,7 +114,11 @@ public class CommandKnowledge {
         }
         Item item = ItemArgument.getItem(ctx, "item").getItem();
 
-        IKnowledgeProvider provider = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(player.getUUID());
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
+        if(provider == null) {
+            ctx.getSource().sendFailure(new TranslatableComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+            return 0;
+        }
         IEMCProxy proxy = ProjectEAPI.getEMCProxy();
         if (!proxy.hasValue(item)) {
             ctx.getSource().sendFailure(new TranslatableComponent("command.projectexpansion.knowledge.invalid"));
