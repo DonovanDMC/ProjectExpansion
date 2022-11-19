@@ -134,13 +134,13 @@ public class ItemMatterUpgrader extends Item {
         if (tile instanceof BlockEntityPowerFlower) {
             if (ownerName == null || emc == null) return InteractionResult.FAIL;
 
-            BlockEntityPowerFlower newTile = new BlockEntityPowerFlower(pos, state);
-            newTile.owner = owner;
-            newTile.ownerName = ownerName;
-            newTile.emc = emc;
-            newTile.saveAdditional(new CompoundTag());
+            BlockEntityPowerFlower newBlockEntity = new BlockEntityPowerFlower(pos, state);
+            newBlockEntity.owner = owner;
+            newBlockEntity.ownerName = ownerName;
+            newBlockEntity.emc = emc;
+            newBlockEntity.saveAdditional(new CompoundTag());
             level.removeBlockEntity(pos);
-            level.setBlockEntity(newTile);
+            level.setBlockEntity(newBlockEntity);
             Util.markDirty(level, pos);
         }
 

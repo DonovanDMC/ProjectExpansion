@@ -259,7 +259,11 @@ public enum Matter {
 
     private void register(RegistrationType reg) {
         switch (reg) {
-            case MATTER -> { if (hasItem)itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().tab(Main.tab).rarity(rarity))); }
+            case MATTER -> {
+                if (hasItem) {
+                    itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().tab(Main.tab).rarity(rarity)));
+                }
+            }
 
             case COLLECTOR -> {
                 collector = Blocks.Registry.register(String.format("%s_collector", name), () -> new BlockCollector(this));
