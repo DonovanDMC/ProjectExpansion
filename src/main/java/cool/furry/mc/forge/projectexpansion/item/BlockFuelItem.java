@@ -1,4 +1,4 @@
-package cool.furry.mc.forge.projectexpansion.block;
+package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;

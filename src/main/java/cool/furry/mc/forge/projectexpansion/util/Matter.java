@@ -263,7 +263,9 @@ public enum Matter {
     private void register(RegistrationType reg) {
         switch (reg) {
             case MATTER: {
-                if (hasItem) itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().tab(Main.tab).rarity(rarity)));
+                if (hasItem) {
+                    itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().tab(Main.tab).rarity(rarity)));
+                }
                 break;
             }
 

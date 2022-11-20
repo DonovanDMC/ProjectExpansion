@@ -58,7 +58,7 @@ public class ItemMatterUpgrader extends Item {
 
         if (world.isClientSide || player == null) return ActionResultType.PASS;
 
-        TileEntity tile = world.getBlockEntity(pos);
+        TileEntity blockEntity = world.getBlockEntity(pos);
         Block block = world.getBlockState(pos).getBlock();
 
         Matter matter;
@@ -87,18 +87,18 @@ public class ItemMatterUpgrader extends Item {
         @Nullable String ownerName = null;
         @Nullable BigInteger emc = null;
 
-        if (tile instanceof TileCollector) {
+        if (blockEntity instanceof TileCollector) {
             upgrade = Objects.requireNonNull(upgradeTo.getCollectorItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getCollector());
         }
 
-        if (tile instanceof TilePowerFlower) {
-            TilePowerFlower tilePowerFlower = (TilePowerFlower) tile;
+        if (blockEntity instanceof TilePowerFlower) {
+            TilePowerFlower bePowerFlower = (TilePowerFlower) blockEntity;
             upgrade = Objects.requireNonNull(upgradeTo.getPowerFlowerItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getPowerFlower());
-            owner = tilePowerFlower.owner;
-            ownerName = tilePowerFlower.ownerName;
-            emc = tilePowerFlower.emc;
+            owner = bePowerFlower.owner;
+            ownerName = bePowerFlower.ownerName;
+            emc = bePowerFlower.emc;
             if (owner == null) return ActionResultType.FAIL;
             if (owner != player.getUUID()) {
                 player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.matter_upgrader.not_owner").setStyle(ColorStyle.RED), true);
@@ -106,12 +106,12 @@ public class ItemMatterUpgrader extends Item {
             }
         }
 
-        if (tile instanceof TileRelay) {
+        if (blockEntity instanceof TileRelay) {
             upgrade = Objects.requireNonNull(upgradeTo.getRelayItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getRelay());
         }
 
-        if (tile instanceof TileEMCLink) {
+        if (blockEntity instanceof TileEMCLink) {
             upgrade = Objects.requireNonNull(upgradeTo.getEMCLinkItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
         }
@@ -134,15 +134,15 @@ public class ItemMatterUpgrader extends Item {
         world.removeBlock(pos, false);
         world.setBlockAndUpdate(pos, upgradeBlock.defaultBlockState());
 
-        if (tile instanceof TilePowerFlower) {
+        if (blockEntity instanceof TilePowerFlower) {
             if (ownerName == null || emc == null) return ActionResultType.FAIL;
 
             TilePowerFlower newTile = new TilePowerFlower();
             newTile.owner = owner;
             newTile.ownerName = ownerName;
             newTile.emc = emc;
-            tile.save(new CompoundNBT());
-            Util.markDirty(tile);
+            blockEntity.save(new CompoundNBT());
+            Util.markDirty(blockEntity);
             world.removeBlockEntity(pos);
             world.setBlockEntity(pos, newTile);
         }
