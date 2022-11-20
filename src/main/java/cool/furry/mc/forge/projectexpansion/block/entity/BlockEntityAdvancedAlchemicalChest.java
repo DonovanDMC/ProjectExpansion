@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -93,10 +94,17 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 		}
 
 		if(stack.getItem() instanceof AlchemicalBag bag) {
-			this.saveAdditional(new CompoundTag());
 			if(level != null) {
 				BlockAdvancedAlchemicalChest block = AdvancedAlchemicalChest.getBlock(bag.color);
-				level.setBlockAndUpdate(worldPosition, block.defaultBlockState());
+				BlockEntityType<BlockEntityAdvancedAlchemicalChest> blockEntityType = AdvancedAlchemicalChest.getBlockEntityType(bag.color);
+
+				BlockEntityAdvancedAlchemicalChest newBlockEntity = new BlockEntityAdvancedAlchemicalChest(worldPosition, getBlockState(), blockEntityType, bag.color);
+				newBlockEntity.owner = owner;
+				newBlockEntity.ownerName = ownerName;
+				newBlockEntity.saveAdditional(new CompoundTag());
+				level.setBlockAndUpdate(worldPosition, block.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).setValue(BlockStateProperties.WATERLOGGED, getBlockState().getValue(BlockStateProperties.WATERLOGGED)));
+				level.removeBlockEntity(worldPosition);
+				level.setBlockEntity(newBlockEntity);
 				Util.markDirty(level, worldPosition);
 			}
 			player.displayClientMessage(Component.translatable("block.projectexpansion.advanced_alchemical_chest.color_set", bag.color.getName()), true);
