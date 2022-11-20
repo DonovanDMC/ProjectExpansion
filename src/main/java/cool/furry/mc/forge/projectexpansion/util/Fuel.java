@@ -1,6 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
-import cool.furry.mc.forge.projectexpansion.block.BlockFuelItem;
+import cool.furry.mc.forge.projectexpansion.item.BlockFuelItem;
 import cool.furry.mc.forge.projectexpansion.item.ItemFuel;
 import cool.furry.mc.forge.projectexpansion.registries.Blocks;
 import cool.furry.mc.forge.projectexpansion.registries.Items;
