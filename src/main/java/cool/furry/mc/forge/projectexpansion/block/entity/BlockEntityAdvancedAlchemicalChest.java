@@ -94,7 +94,6 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 		}
 
 		if(stack.getItem() instanceof AlchemicalBag bag) {
-			this.saveAdditional(new CompoundTag());
 			if(level != null) {
 				BlockAdvancedAlchemicalChest block = AdvancedAlchemicalChest.getBlock(bag.color);
 				BlockEntityType<BlockEntityAdvancedAlchemicalChest> blockEntityType = AdvancedAlchemicalChest.getBlockEntityType(bag.color);

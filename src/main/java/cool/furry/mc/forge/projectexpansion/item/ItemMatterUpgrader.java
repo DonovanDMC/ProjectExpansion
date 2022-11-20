@@ -59,7 +59,7 @@ public class ItemMatterUpgrader extends Item {
 
         if (level.isClientSide || player == null) return InteractionResult.PASS;
 
-        BlockEntity tile = level.getBlockEntity(pos);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         Block block = level.getBlockState(pos).getBlock();
 
         Matter matter;
@@ -85,13 +85,14 @@ public class ItemMatterUpgrader extends Item {
         @Nullable BlockItem upgrade = null;
         @Nullable Block upgradeBlock = null;
         @Nullable BlockEntity newBlockEntity = null;
+        @Nullable BlockState newBlockState = null;
 
-        if (tile instanceof BlockEntityCollector) {
+        if (blockEntity instanceof BlockEntityCollector) {
             upgrade = Objects.requireNonNull(upgradeTo.getCollectorItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getCollector());
         }
 
-        if (tile instanceof BlockEntityPowerFlower be) {
+        if (blockEntity instanceof BlockEntityPowerFlower be) {
             upgrade = Objects.requireNonNull(upgradeTo.getPowerFlowerItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getPowerFlower());
             if (be.owner == null) return InteractionResult.FAIL;
@@ -100,15 +101,15 @@ public class ItemMatterUpgrader extends Item {
                 return InteractionResult.FAIL;
             }
 
-            BlockEntityPowerFlower blockEntity = new BlockEntityPowerFlower(pos, upgradeBlock.defaultBlockState());
-            blockEntity.owner = be.owner;
-            blockEntity.ownerName = be.ownerName;
-            blockEntity.emc = be.emc;
-            blockEntity.saveAdditional(new CompoundTag());
-            newBlockEntity = blockEntity;
+            BlockEntityPowerFlower intBlockEntity = new BlockEntityPowerFlower(pos, newBlockState = upgradeBlock.defaultBlockState());
+            intBlockEntity.owner = be.owner;
+            intBlockEntity.ownerName = be.ownerName;
+            intBlockEntity.emc = be.emc;
+            intBlockEntity.saveAdditional(new CompoundTag());
+            newBlockEntity = intBlockEntity;
         }
 
-        if (tile instanceof BlockEntityEMCLink be) {
+        if (blockEntity instanceof BlockEntityEMCLink be) {
             upgrade = Objects.requireNonNull(upgradeTo.getEMCLinkItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
             if (be.owner == null) return InteractionResult.FAIL;
@@ -117,20 +118,20 @@ public class ItemMatterUpgrader extends Item {
                 return InteractionResult.FAIL;
             }
 
-            BlockEntityEMCLink blockEntity = new BlockEntityEMCLink(pos, upgradeBlock.defaultBlockState().setValue(BlockEntityNBTFilterable.FILTER, be.getBlockState().getValue(BlockEntityNBTFilterable.FILTER)));
-            blockEntity.owner = be.owner;
-            blockEntity.ownerName = be.ownerName;
-            blockEntity.emc = be.emc;
-            blockEntity.itemStack = be.itemStack;
-            blockEntity.remainingEMC = be.remainingEMC;
-            blockEntity.remainingImport = be.remainingImport;
-            blockEntity.remainingExport = be.remainingExport;
-            blockEntity.remainingFluid = be.remainingFluid;
-            blockEntity.saveAdditional(new CompoundTag());
-            newBlockEntity = blockEntity;
+            BlockEntityEMCLink intBlockEntity = new BlockEntityEMCLink(pos, newBlockState = upgradeBlock.defaultBlockState().setValue(BlockEntityNBTFilterable.FILTER, be.getBlockState().getValue(BlockEntityNBTFilterable.FILTER)));
+            intBlockEntity.owner = be.owner;
+            intBlockEntity.ownerName = be.ownerName;
+            intBlockEntity.emc = be.emc;
+            intBlockEntity.itemStack = be.itemStack;
+            intBlockEntity.remainingEMC = be.remainingEMC;
+            intBlockEntity.remainingImport = be.remainingImport;
+            intBlockEntity.remainingExport = be.remainingExport;
+            intBlockEntity.remainingFluid = be.remainingFluid;
+            intBlockEntity.saveAdditional(new CompoundTag());
+            newBlockEntity = intBlockEntity;
         }
 
-        if (tile instanceof BlockEntityRelay) {
+        if (blockEntity instanceof BlockEntityRelay) {
             upgrade = Objects.requireNonNull(upgradeTo.getRelayItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getRelay());
         }
@@ -150,9 +151,12 @@ public class ItemMatterUpgrader extends Item {
             return InteractionResult.FAIL;
         }
 
+        if(newBlockState == null) {
+            newBlockState = upgradeBlock.defaultBlockState();
+        }
+
         level.removeBlock(pos, false);
-        BlockState state = upgradeBlock.defaultBlockState();
-        level.setBlockAndUpdate(pos, state);
+        level.setBlockAndUpdate(pos, newBlockState);
 
         if(newBlockEntity != null) {
             level.removeBlockEntity(pos);
