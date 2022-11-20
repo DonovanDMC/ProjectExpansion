@@ -52,12 +52,12 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
     private final LazyOptional<IFluidHandler> fluidHandlerCapability = LazyOptional.of(() -> this);
-    private ItemStack itemStack;
-    private Matter matter;
-    private BigInteger remainingEMC = BigInteger.ZERO;
-    private int remainingImport = 0;
-    private int remainingExport = 0;
-    private int remainingFluid = 0;
+    public ItemStack itemStack;
+    public Matter matter;
+    public BigInteger remainingEMC = BigInteger.ZERO;
+    public int remainingImport = 0;
+    public int remainingExport = 0;
+    public int remainingFluid = 0;
 
     public BlockEntityEMCLink(BlockPos pos, BlockState state) {
         super(BlockEntityTypes.EMC_LINK.get(), pos, state);
