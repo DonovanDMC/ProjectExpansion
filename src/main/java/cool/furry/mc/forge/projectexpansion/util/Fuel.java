@@ -1,6 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
-import cool.furry.mc.forge.projectexpansion.item.BlockFuelItem;
+import cool.furry.mc.forge.projectexpansion.item.FuelBlockItem;
 import cool.furry.mc.forge.projectexpansion.registries.Blocks;
 import cool.furry.mc.forge.projectexpansion.registries.Items;
 import cool.furry.mc.forge.projectexpansion.item.ItemFuel;
@@ -96,7 +96,7 @@ public enum Fuel {
 
             case BLOCK: {
                 block = Blocks.Registry.register(String.format("%s_fuel_block", name), () -> new Block(AbstractBlock.Properties.of(Material.STONE).requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).strength(0.5F, 1.5F)));
-                blockItem = Items.Registry.register(String.format("%s_fuel_block", name), () -> new BlockFuelItem(this));
+                blockItem = Items.Registry.register(String.format("%s_fuel_block", name), () -> new FuelBlockItem(this));
                 break;
             }
         }

@@ -68,7 +68,6 @@ public class TileAdvancedAlchemicalChest extends TileOwnable implements IItemHan
 
 		if(stack.getItem() instanceof AlchemicalBag) {
 			AlchemicalBag bag = (AlchemicalBag) stack.getItem();
-			this.save(new CompoundNBT());
 			if(level != null) {
 				BlockAdvancedAlchemicalChest block = AdvancedAlchemicalChest.getBlock(bag.color);
 				TileEntityType<TileAdvancedAlchemicalChest> blockEntityType = AdvancedAlchemicalChest.getBlockEntityType(bag.color);

@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Objects;
 
-public class BlockFuelItem extends BlockItem {
+public class FuelBlockItem extends BlockItem {
     private final Fuel level;
-    public BlockFuelItem(Fuel level) {
+    public FuelBlockItem(Fuel level) {
         super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Item.Properties().tab(Main.tab).rarity(level.rarity));
         this.level = level;
 
