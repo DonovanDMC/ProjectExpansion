@@ -9,9 +9,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class BlockFuelItem extends BlockItem {
+public class FuelBlockItem extends BlockItem {
     private final Fuel level;
-    public BlockFuelItem(Fuel level) {
+    public FuelBlockItem(Fuel level) {
         super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Properties().tab(Main.tab).rarity(level.rarity));
         this.level = level;
     }
