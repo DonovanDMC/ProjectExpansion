@@ -10,6 +10,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
@@ -70,7 +71,15 @@ public class TileAdvancedAlchemicalChest extends TileOwnable implements IItemHan
 			this.save(new CompoundNBT());
 			if(level != null) {
 				BlockAdvancedAlchemicalChest block = AdvancedAlchemicalChest.getBlock(bag.color);
-				level.setBlockAndUpdate(worldPosition, block.defaultBlockState());
+				TileEntityType<TileAdvancedAlchemicalChest> blockEntityType = AdvancedAlchemicalChest.getBlockEntityType(bag.color);
+
+				TileAdvancedAlchemicalChest newBlockEntity = new TileAdvancedAlchemicalChest(blockEntityType, bag.color);
+				newBlockEntity.owner = owner;
+				newBlockEntity.ownerName = ownerName;
+				newBlockEntity.save(new CompoundNBT());
+				level.setBlockAndUpdate(worldPosition, block.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).setValue(BlockStateProperties.WATERLOGGED, getBlockState().getValue(BlockStateProperties.WATERLOGGED)));
+				level.removeBlockEntity(worldPosition);
+				level.setBlockEntity(worldPosition, newBlockEntity);
 				Util.markDirty(level, worldPosition);
 			}
 			player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.advanced_alchemical_chest.color_set", bag.color.getName()), true);
