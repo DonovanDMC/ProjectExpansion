@@ -84,12 +84,6 @@ public class ConfigMenu extends Screen {
         ));
 
         optionsRowList.addBig(new BooleanOption(
-            "gui.projectexpansion.config.use_old_values",
-            __ -> Config.useOldValues.get(),
-            (__, newValue) -> Config.useOldValues.set(newValue)
-        ));
-
-        optionsRowList.addBig(new BooleanOption(
             "gui.projectexpansion.config.enable_fluid_efficiency",
             __ -> Config.enableFluidEfficiency.get(),
             (__, newValue) -> Config.enableFluidEfficiency.set(newValue)
@@ -149,6 +143,12 @@ public class ConfigMenu extends Screen {
             __ -> Config.relayTransferMultiplier.get(),
             (__, newValue) -> Config.relayTransferMultiplier.set(newValue),
             (gs, option) -> new TranslationTextComponent("gui.projectexpansion.config.relay_transfer_multiplier").append(new StringTextComponent(String.format(": %s", (int) option.get(gs))))
+        ));
+
+        optionsRowList.addBig(new BooleanOption(
+                "gui.projectexpansion.config.persist_enchanted_books_only",
+                __ -> Config.persistEnchantedBooksOnly.get(),
+                (__, newValue) -> Config.persistEnchantedBooksOnly.set(newValue)
         ));
 
         addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), (button) -> minecraft.pushGuiLayer(parentScreen)));
