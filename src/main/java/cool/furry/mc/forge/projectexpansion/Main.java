@@ -2,13 +2,11 @@ package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.*;
-import cool.furry.mc.forge.projectexpansion.util.AdvancedAlchemicalChest;
-import cool.furry.mc.forge.projectexpansion.util.Fuel;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
-import cool.furry.mc.forge.projectexpansion.util.Star;
+import cool.furry.mc.forge.projectexpansion.util.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,7 +58,14 @@ public class Main {
         for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack stack = player.getInventory().getItem(i);
-                if (stack.getItem().equals(Items.INFINITE_FUEL.get())) stack.getOrCreateTag().putUUID("Owner", player.getUUID());
+                if (stack.getItem().equals(Items.INFINITE_FUEL.get())) {
+                    stack.getOrCreateTag().putUUID(TagNames.OWNER, player.getUUID());
+                    continue;
+                }
+                boolean hasEnch = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
+                if(hasEnch && !stack.getOrCreateTag().contains(TagNames.ALCHEMICAL_COLLECTION_ENABLED)) {
+                    stack.getOrCreateTag().putBoolean(TagNames.ALCHEMICAL_COLLECTION_ENABLED, true);
+                }
             }
         }
     }
