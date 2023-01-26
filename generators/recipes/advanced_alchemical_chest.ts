@@ -12,15 +12,9 @@ export default async function run(outDir: URL) {
     const baseRecolor = await readFile(BASE_RECOLOR, "utf8");
     return (await Promise.all(DYE_COLORS.map(async color => {
         const res: Array<[string, string]> = [];
-        for (const sub of DYE_COLORS) {
-            if (color === sub) {
-                continue;
-            }
-            await writeFile(new URL(`advanced_alchemical_chest/recolor/${color}_${sub}.json`, outDir), baseRecolor.replace(/\$COLOR\$/g, color).replace(/\$PREV\$/g, sub));
-            res.push([BASE_RECOLOR, new URL(`advanced_alchemical_chest/recolor/${color}_${sub}.json`, outDir).pathname]);
-        }
+        await writeFile(new URL(`advanced_alchemical_chest/recolor/${color}.json`, outDir), baseRecolor.replace(/\$COLOR\$/g, color));
         await writeFile(new URL(`advanced_alchemical_chest/${color}.json`, outDir), base.replace(/\$COLOR\$/g, color));
-        res.push([BASE, new URL(`advanced_alchemical_chest/${color}.json`, outDir).pathname])
+        res.push([BASE, new URL(`advanced_alchemical_chest/${color}.json`, outDir).pathname], [BASE_RECOLOR, new URL(`advanced_alchemical_chest/recolor/${color}.json`, outDir).pathname])
 
         return res;
     }))).flat();

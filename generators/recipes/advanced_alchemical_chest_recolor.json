@@ -3,7 +3,7 @@
   "group": "projectexpansion:advanced_alchemical_chest/$COLOR$",
   "ingredients": [
     {
-      "item": "projectexpansion:$PREV$_advanced_alchemical_chest"
+      "tag": "projectexpansion:advanced_alchemical_chest"
     },
     {
       "item": "minecraft:$COLOR$_dye"
