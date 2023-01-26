@@ -151,6 +151,12 @@ public class ConfigMenu extends Screen {
                 (__, newValue) -> Config.persistEnchantedBooksOnly.set(newValue)
         ));
 
+        optionsRowList.addBig(new BooleanOption(
+                "gui.projectexpansion.config.enable_learned_tooltip",
+                __ -> Config.enabledLearnedTooltip.get(),
+                (__, newValue) -> Config.enabledLearnedTooltip.set(newValue)
+        ));
+
         addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), (button) -> minecraft.pushGuiLayer(parentScreen)));
     }
 

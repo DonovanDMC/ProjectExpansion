@@ -1,5 +1,6 @@
-package cool.furry.mc.forge.projectexpansion;
+package cool.furry.mc.forge.projectexpansion.events;
 
+import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.BlockAdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.config.ConfigMenu;
 import cool.furry.mc.forge.projectexpansion.rendering.ChestRenderer;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ClientHandler {
+public class RenderingEvent {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ConfigMenu(screen));
