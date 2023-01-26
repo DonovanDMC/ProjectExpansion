@@ -24,5 +24,6 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Integer> infiniteFuelCost = Builder.comment("The cost of using the infinite fuel item.").defineInRange("infiniteFuelCost", 128, 1, Integer.MAX_VALUE);
     public static final ForgeConfigSpec.ConfigValue<Integer> infiniteFuelBurnTime = Builder.comment("The ticks each usage of the infinite fuel item will give.").defineInRange("infiniteFuelBurnTime", 1600, 1, Integer.MAX_VALUE);
     public static final ForgeConfigSpec.ConfigValue<Integer> infiniteSteakCost = Builder.comment("The cost of using the infinite steak item.").defineInRange("infiniteSteakCost", 64, 1, Integer.MAX_VALUE);
+    public static final ForgeConfigSpec.ConfigValue<Boolean> persistEnchantedBooksOnly = Builder.comment("If ProjectE's processors.EnchantmentProcessor.persistent option should only include enchanted books.").define("persistEnchantedBooksOnly", false);
     static { Spec = Builder.build(); }
 }
