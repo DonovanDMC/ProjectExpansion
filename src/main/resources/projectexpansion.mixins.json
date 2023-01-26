@@ -1,19 +1,20 @@
 {
-  "required":           true,
-  "minVersion":         "0.8",
-  "package":            "cool.furry.mc.forge.projectexpansion.mixin",
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cool.furry.mc.forge.projectexpansion.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap":             "projectexpansion.refmap.json",
-  "client":             [
+  "refmap": "projectexpansion.refmap.json",
+  "client": [
     "DeleteWeebShitMixin",
     "EMCFormatterMixin"
   ],
-  "mixins":             [
+  "mixins": [
     "AlchemicalBagMixin",
     "EnchantmentMixin",
+    "EnchantmentProcessorMixin",
     "PhilosophersStoneMixin"
   ],
-  "injectors":          {
+  "injectors": {
     "defaultRequire": 1
 	}
 }
