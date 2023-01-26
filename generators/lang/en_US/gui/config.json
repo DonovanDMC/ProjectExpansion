@@ -16,8 +16,6 @@
   "gui.projectexpansion.config.limit_emc_link_vendor.desc": "If EMC Link Right-Click functionality should be Limited by Tier or Not.",
   "gui.projectexpansion.config.transmutation_interface_item_count": "Transmutation Interface Item Count",
   "gui.projectexpansion.config.transmutation_interface_item_count.desc": "The amount of items that the transmutation interface will report to have. You likely want this to be at least 64.",
-  "gui.projectexpansion.config.use_old_values": "Use Old Values",
-  "gui.projectexpansion.config.use_old_values.desc": "Use the previous emc generation values (much more unbalanced)",
   "gui.projectexpansion.config.enable_fluid_efficiency": "Enable Fluid Efficiency",
   "gui.projectexpansion.config.enable_fluid_efficiency.desc": "If fluid efficiency should be enabled.",
   "gui.projectexpansion.config.collector_multiplier": "Collector Multiplier",
@@ -39,5 +37,7 @@
   "gui.projectexpansion.config.infinite_fuel_burn_time": "Infinite Fuel Burn Time",
   "gui.projectexpansion.config.infinite_fuel_burn_time.desc": "The ticks each usage of the infinite fuel item will give.",
   "gui.projectexpansion.config.infinite_steak_cost": "Infinite Steak Cost",
-  "gui.projectexpansion.config.infinite_steak_cost.desc": "The cost of using the infinite steak item."
+  "gui.projectexpansion.config.infinite_steak_cost.desc": "The cost of using the infinite steak item.",
+  "gui.projectexpansion.config.persist_enchanted_books_only": "Persist Enchanted Books Only",
+  "gui.projectexpansion.config.persist_enchanted_books_only.desc": "If ProjectE's processors.EnchantmentProcessor.persistent option should only include enchanted books."
 }
