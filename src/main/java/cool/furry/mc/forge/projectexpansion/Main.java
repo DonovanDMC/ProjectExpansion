@@ -11,6 +11,7 @@ import cool.furry.mc.forge.projectexpansion.util.Fuel;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.Star;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -65,7 +66,14 @@ public class Main {
         for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
             for (int i = 0; i < player.inventory.getContainerSize(); i++) {
                 ItemStack stack = player.inventory.getItem(i);
-                if (stack.getItem().equals(Items.INFINITE_FUEL.get())) stack.getOrCreateTag().putUUID(NBTNames.OWNER, player.getUUID());
+                if (stack.getItem().equals(Items.INFINITE_FUEL.get())) {
+                    stack.getOrCreateTag().putUUID(NBTNames.OWNER, player.getUUID());
+                    continue;
+                }
+                boolean hasEnch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
+                if(hasEnch && !stack.getOrCreateTag().contains(NBTNames.ALCHEMICAL_COLLECTION_ENABLED)) {
+                    stack.getOrCreateTag().putBoolean(NBTNames.ALCHEMICAL_COLLECTION_ENABLED, true);
+                }
             }
         }
     }

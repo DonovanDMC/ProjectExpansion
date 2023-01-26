@@ -13,4 +13,5 @@ public class NBTNames {
     public static String REMAINING_FLUID = "RemainingFluid";
     public static String LAST_USED = "LastUsed";
     public static String KNOWLEDGE_GAINED = "KnowledgeGained";
+    public static String ALCHEMICAL_COLLECTION_ENABLED = "AlchemicalCollectionEnabled";
 }
