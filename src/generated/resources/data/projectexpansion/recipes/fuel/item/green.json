@@ -3,6 +3,9 @@
   "group": "projectexpansion:fuel/green",
   "ingredients": [
     {
+      "item": "projecte:philosophers_stone"
+    },
+    {
       "item": "projectexpansion:cyan_fuel"
     },
     {
