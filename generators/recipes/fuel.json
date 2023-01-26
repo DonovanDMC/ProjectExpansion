@@ -3,6 +3,9 @@
   "group": "projectexpansion:fuel/$TIER$",
   "ingredients": [
     {
+      "item": "projecte:philosophers_stone"
+    },
+    {
       "item": "projectexpansion:$PREV$_fuel"
     },
     {
