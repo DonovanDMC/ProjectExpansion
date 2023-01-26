@@ -10,7 +10,8 @@
 	],
 	"mixins": [
 		"AlchemicalBagMixin",
-		"EnchantmentMixin",
+		"AlchemicalCollectionMixin",
+		"AlchemicalCollectionToggleMixin",
 		"EnchantmentProcessorMixin",
 		"PhilosophersStoneMixin"
 	],

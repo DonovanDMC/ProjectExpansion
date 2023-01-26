@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.mixin;
 
 import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
+import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -32,7 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Mixin(Block.class)
-public abstract class EnchantmentMixin {
+public abstract class AlchemicalCollectionMixin {
     @Inject(at = @At("RETURN"), method = "getDrops(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", cancellable = true)
     private static void getDrops(BlockState state, ServerLevel level, BlockPos pos, BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfoReturnable<List<ItemStack>> cir) {
         if(!(entity instanceof ServerPlayer player)) return;
@@ -41,6 +42,10 @@ public abstract class EnchantmentMixin {
         IEMCProxy proxy = ProjectEAPI.getEMCProxy();
         boolean hasEnch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
         if(!state.canHarvestBlock(level, pos, player) || !hasEnch) return;
+        boolean enabled = stack.getOrCreateTag().getBoolean(TagNames.ALCHEMICAL_COLLECTION_ENABLED);
+        if(!enabled) {
+            return;
+        }
         List<ItemStack> initialDrops = cir.getReturnValue();
         AtomicLong addEMC = new AtomicLong();
         List<ItemStack> knowledgeAdditions = new ArrayList<>();
@@ -48,7 +53,7 @@ public abstract class EnchantmentMixin {
             .map(drop -> {
                 if(proxy.hasValue(drop)) {
                     addEMC.addAndGet(proxy.getValue(drop));
-                    if(!provider.hasKnowledge(drop)) knowledgeAdditions.add(drop);
+                    if(!provider.hasKnowledge(drop) && !knowledgeAdditions.contains(drop)) knowledgeAdditions.add(drop);
                     return null;
                 } else return drop;
             })

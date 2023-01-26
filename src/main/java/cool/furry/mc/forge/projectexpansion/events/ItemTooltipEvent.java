@@ -2,7 +2,9 @@ package cool.furry.mc.forge.projectexpansion.events;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
+import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -16,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,51 +30,59 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ItemTooltipEvent {
     // we need to be lower priority than ProjectE's listener so the EMC component is present when we get the event
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void itemToolTipEvent(net.minecraftforge.event.entity.player.ItemTooltipEvent event) {
-        if(!Config.enabledLearnedTooltip.get() || (ProjectEConfig.client.shiftEmcToolTips.get() && !Screen.hasShiftDown())) {
-            return;
-        }
-
+    public static void itemTooltipEvent(net.minecraftforge.event.entity.player.ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        boolean hasValue = ProjectEAPI.getEMCProxy().hasValue(stack);
-        if(stack.isEmpty() || !hasValue || event.getPlayer() == null || event.getPlayer().isDeadOrDying()) {
+        if (stack.isEmpty()|| event.getPlayer() == null || event.getPlayer().isDeadOrDying()) {
             return;
         }
 
-        IKnowledgeProvider provider = Util.getKnowledgeProvider(event.getPlayer());
-        if(provider == null) {
-            return;
-        }
-
-        boolean hasKnowledge = provider.hasKnowledge(ItemInfo.fromStack(stack));
-        long value = ProjectEAPI.getEMCProxy().getValue(stack);
-        AtomicInteger index = new AtomicInteger(-1);
-        AtomicInteger peTransmutableIndex = new AtomicInteger(-1);
-        for (Component c : event.getToolTip()) {
-            if (c.getString().equals(EMCHelper.getEmcTextComponent(value, 1).getString())) {
-                index.set(event.getToolTip().indexOf(c));
-                continue;
+        learnedTooltip: if(Config.enabledLearnedTooltip.get() && (!ProjectEConfig.client.shiftEmcToolTips.get() || Screen.hasShiftDown())) {
+            boolean hasValue = ProjectEAPI.getEMCProxy().hasValue(stack);
+            if (!hasValue) {
+                break learnedTooltip;
             }
 
-            if(c.getString().equals(I18n.get(PELang.EMC_HAS_KNOWLEDGE.getTranslationKey()))) {
-                peTransmutableIndex.set(event.getToolTip().indexOf(c));
+            IKnowledgeProvider provider = Util.getKnowledgeProvider(event.getPlayer());
+            if (provider == null) {
+                break learnedTooltip;
+            }
+
+            boolean hasKnowledge = provider.hasKnowledge(ItemInfo.fromStack(stack));
+            long value = ProjectEAPI.getEMCProxy().getValue(stack);
+            AtomicInteger index = new AtomicInteger(-1);
+            AtomicInteger peTransmutableIndex = new AtomicInteger(-1);
+            for (Component c : event.getToolTip()) {
+                if (c.getString().equals(EMCHelper.getEmcTextComponent(value, 1).getString())) {
+                    index.set(event.getToolTip().indexOf(c));
+                    continue;
+                }
+
+                if (c.getString().equals(I18n.get(PELang.EMC_HAS_KNOWLEDGE.getTranslationKey()))) {
+                    peTransmutableIndex.set(event.getToolTip().indexOf(c));
+                }
+            }
+
+            // attempt to add a minimal notice
+            if (index.get() != -1) {
+                event.getToolTip().set(index.get(), event.getToolTip().get(index.get()).copy().append(new TextComponent(" (").setStyle(ColorStyle.WHITE)).append(hasKnowledge ?
+                        new TextComponent("✓").setStyle(ColorStyle.GREEN) : new TextComponent("✗").setStyle(ColorStyle.RED)
+                ).append(new TextComponent(")").setStyle(ColorStyle.WHITE)));
+            } else {
+                // if we can't find an existing EMC element, add a new more detailed element
+                event.getToolTip().add(hasKnowledge ?
+                        new TranslatableComponent("text.projectexpansion.learned").setStyle(ColorStyle.GREEN) : new TranslatableComponent("text.projectexpansion.notLearned").setStyle(ColorStyle.RED)
+                );
+            }
+
+            if (peTransmutableIndex.get() != -1) {
+                event.getToolTip().remove(peTransmutableIndex.get());
             }
         }
 
-        // attempt to add a minimal notice
-        if(index.get() != -1) {
-            event.getToolTip().set(index.get(), event.getToolTip().get(index.get()).copy().append(new TextComponent(" (").setStyle(ColorStyle.WHITE)).append(hasKnowledge ?
-                    new TextComponent("✓").setStyle(ColorStyle.GREEN) : new TextComponent("✗").setStyle(ColorStyle.RED)
-            ).append(new TextComponent(")").setStyle(ColorStyle.WHITE)));
-        } else {
-            // if we can't find an existing EMC element, add a new more detailed element
-            event.getToolTip().add(hasKnowledge ?
-                    new TranslatableComponent("text.projectexpansion.learned").setStyle(ColorStyle.GREEN) : new TranslatableComponent("text.projectexpansion.notLearned").setStyle(ColorStyle.RED)
-            );
-        }
-
-        if(peTransmutableIndex.get() != -1) {
-            event.getToolTip().remove(peTransmutableIndex.get());
+        boolean hasEnch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
+        if(hasEnch) {
+            boolean enabled = stack.getOrCreateTag().getBoolean(TagNames.ALCHEMICAL_COLLECTION_ENABLED);
+            event.getToolTip().add(new TranslatableComponent("text.projectexpansion.alchemical_collection", new TranslatableComponent(enabled ? "text.projectexpansion.enabled" : "text.projectexpansion.disabled").setStyle(enabled ? ColorStyle.GREEN : ColorStyle.RED)));
         }
     }
 }
