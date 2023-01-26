@@ -93,11 +93,11 @@ public enum Matter {
         this.hasItem = existingItem == null && ordinal() != 0;
         this.level = ordinal() + 1;
         // Gₙ(aₙ)(z)=4(2z²+z-1)/4z-1
-        this.collectorOutputBase = Config.useOldValues.get() ? calcOldValue(BigDecimal.valueOf(6), level) : BigDecimal.valueOf(collectorOutput);
+        this.collectorOutputBase =BigDecimal.valueOf(collectorOutput);
         // ¯\_(ツ)_/¯
-        this.relayBonusBase = Config.useOldValues.get() ? calcOldValue(BigDecimal.valueOf(1), level) : BigDecimal.valueOf(relayBonus);
+        this.relayBonusBase = BigDecimal.valueOf(relayBonus);
         // Gₙ(aₙ)(z)=64(2z²+z-1)/4z-1
-        this.relayTransferBase = Config.useOldValues.get() ? calcOldValue(BigDecimal.valueOf(64), level) : BigDecimal.valueOf(relayTransfer);
+        this.relayTransferBase = BigDecimal.valueOf(relayTransfer);
         this.fluidEfficiency = Config.enableFluidEfficiency.get() ? fluidEfficiency : 100;
         this.existingItem = existingItem;
         this.rarity =
@@ -105,12 +105,6 @@ public enum Matter {
                 level >= RARE_THRESHOLD ? Rarity.RARE :
                     level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
                         Rarity.COMMON;
-    }
-
-    private BigDecimal calcOldValue(BigDecimal base, int level) {
-        BigDecimal i = base;
-        for (int v = 1; v <= level; v++) i = i.multiply(BigDecimal.valueOf(v));
-        return i;
     }
 
     public int getLevel() {
