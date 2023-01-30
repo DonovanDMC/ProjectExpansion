@@ -107,10 +107,11 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
         if (provider == null) return;
 
-        provider.setEmc(provider.getEmc().add(emc));
+        BigInteger toAdd = getMatter() == Matter.FINAL ? emc : remainingEMC.min(emc);
+        provider.setEmc(provider.getEmc().add(toAdd));
+        emc = emc.subtract(toAdd).max(BigInteger.ZERO);
         if (player != null) provider.syncEmc(player);
         Util.markDirty(this);
-        emc = BigInteger.ZERO;
     }
 
     private void resetLimits() {
@@ -167,10 +168,15 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
 
     @Override
     public long insertEmc(long emc, EmcAction action) {
-        long v = Math.min(Util.safeLongValue(remainingEMC), emc);
+        boolean isFinal = getMatter() == Matter.FINAL;
+        long v = isFinal ? emc : Math.min(Util.safeLongValue(remainingEMC), emc);
 
         if (emc <= 0L) return 0L;
-        if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(v));
+        if (action.execute()) {
+            if(!isFinal) remainingEMC = remainingEMC.subtract(BigInteger.valueOf(v));
+            this.emc = this.emc.add(BigInteger.valueOf(v));
+            Util.markDirty(this);
+        }
 
         return v;
     }
@@ -202,7 +208,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot == 0 || remainingImport <= 0 || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) return stack;
+        boolean isFinal = getMatter() == Matter.FINAL;
+        if (slot == 0 || (!isFinal && remainingImport <= 0) || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) return stack;
 
         int count = stack.getCount();
         stack = ItemHandlerHelper.copyStackWithSize(stack, 1);
@@ -212,7 +219,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         ItemInfo info = ItemInfo.fromStack(stack);
         if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
 
-        int insertCount = Math.min(count, remainingImport);
+        int insertCount = isFinal ? count : Math.min(count, remainingImport);
         if (!simulate) {
             long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
@@ -225,7 +232,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
                     provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
                 provider.syncEmc(player);
             }
-            remainingImport -= insertCount;
+            if(!isFinal) remainingImport -= insertCount;
             Util.markDirty(this);
         }
 
@@ -242,14 +249,15 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
     }
 
     public ItemStack extractItemInternal(int slot, int amount, boolean simulate, boolean limit) {
-        if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
+        boolean isFinal = getMatter() == Matter.FINAL;
+        if (slot != 0 || (!isFinal && remainingExport <= 0) || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
 
         BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
         if(itemValue.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
         if (provider == null) return ItemStack.EMPTY;
         BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
-        int extractCount = Math.min(amount, limit ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
+        int extractCount = Math.min(amount, limit && !isFinal ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
         if (extractCount <= 0) return ItemStack.EMPTY;
 
         ItemStack r = ItemHandlerHelper.copyStackWithSize(itemStack, extractCount);
@@ -260,7 +268,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         ServerPlayer player = Util.getPlayer(owner);
         if (player != null) provider.syncEmc(player);
 
-        if (limit) remainingExport -= extractCount;
+        if (limit && !isFinal) remainingExport -= extractCount;
         Util.markDirty(this);
         return r;
     }
@@ -344,9 +352,10 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
     @Nonnull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
+        boolean isFinal = getMatter() == Matter.FINAL;
         Fluid fluid = getFluid();
         if(fluid == null || getFluidCostPer() == 0D || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
-        if(maxDrain > remainingFluid) maxDrain = remainingFluid;
+        if(!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
         long cost = getFluidCost(maxDrain);
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
         if(provider == null) return FluidStack.EMPTY;
@@ -357,12 +366,12 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
             // this is a bad way to estimate, it rounds up so we'll usually say less than what's really possible
             BigDecimal max = dEMC.divide(BigDecimal.valueOf(getFluidCostPer()), RoundingMode.FLOOR);
             maxDrain = Util.safeIntValue(max);
-            if(maxDrain > remainingFluid) maxDrain = remainingFluid;
+            if(!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
             if(maxDrain < 1) return FluidStack.EMPTY;
             cost = getFluidCost(maxDrain);
         }
         if(action.execute()) {
-            remainingFluid -= maxDrain;
+            if(!isFinal) remainingFluid -= maxDrain;
             Util.markDirty(this);
             provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
             provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
