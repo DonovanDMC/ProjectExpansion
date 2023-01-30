@@ -17,6 +17,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
@@ -186,7 +187,9 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
         if (provider == null) return ItemStack.EMPTY;
-        BigInteger maxCount = provider.getEmc().divide(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack))).min(BigInteger.valueOf(Integer.MAX_VALUE));
+        BigInteger val = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
+        if(val.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
+        BigInteger maxCount = provider.getEmc().divide(val).min(BigInteger.valueOf(Integer.MAX_VALUE));
         int count = maxCount.intValueExact();
         if (count <= 0) return ItemStack.EMPTY;
 
@@ -238,6 +241,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         if (slot != 0 || remainingExport <= 0 || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
 
         BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
+        if(itemValue.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
         if (provider == null) return ItemStack.EMPTY;
         BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
@@ -280,7 +284,10 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
 
     private double getFluidCostPer() {
         try {
-            return (ProjectEAPI.getEMCProxy().getValue(itemStack) - ((ProjectEAPI.getEMCProxy().getValue(net.minecraft.item.Items.BUCKET) * matter.getFluidEfficiencyPercentage()) / 100F))  / 1000D;
+            long fullCost = ProjectEAPI.getEMCProxy().getValue(itemStack);
+            long bucketCost = ProjectEAPI.getEMCProxy().getValue(Items.BUCKET);
+            if(bucketCost == 0 && fullCost == 0) return 0D;
+            return (fullCost - ((bucketCost * matter.getFluidEfficiencyPercentage()) / 100F))  / 1000D;
         } catch(ArithmeticException ignore) {
             return Long.MAX_VALUE;
         }
@@ -304,7 +311,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     @Override
     public FluidStack getFluidInTank(int tank) {
         Fluid fluid = getFluid();
-        if(fluid == null) return FluidStack.EMPTY;
+        if(fluid == null || getFluidCostPer() == 0D) return FluidStack.EMPTY;
         return new FluidStack(fluid, remainingFluid);
     }
 
@@ -327,7 +334,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
         Fluid fluid = getFluid();
-        if(fluid != null && resource.getFluid().equals(fluid)) return drain(resource.getAmount(), action);
+        if(fluid != null && getFluidCostPer() != 0D && resource.getFluid().equals(fluid)) return drain(resource.getAmount(), action);
         return FluidStack.EMPTY;
     }
 
@@ -335,7 +342,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         Fluid fluid = getFluid();
-        if(fluid == null  || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
+        if(fluid == null || getFluidCostPer() == 0D || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
         if(maxDrain > remainingFluid) maxDrain = remainingFluid;
         long cost = getFluidCost(maxDrain);
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
@@ -392,7 +399,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         }
 
         Fluid fluid = getFluid();
-        if(fluid != null && inHand.getItem() instanceof BucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
+        if(fluid != null && getFluidCostPer() != 0D && inHand.getItem() instanceof BucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
             BucketItem bucketItem = (BucketItem) inHand.getItem();
             if(Config.limitEmcLinkVendor.get() && remainingExport < 1000) {
                 player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
