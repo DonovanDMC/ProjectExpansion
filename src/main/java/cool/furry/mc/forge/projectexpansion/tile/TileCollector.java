@@ -3,6 +3,8 @@ package cool.furry.mc.forge.projectexpansion.tile;
 import cool.furry.mc.forge.projectexpansion.block.BlockCollector;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.TileEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
+import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -23,10 +25,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileCollector extends TileEntity implements ITickableTileEntity, IEmcStorage {
+public class TileCollector extends TileEntity implements ITickableTileEntity, IEmcStorage, IHasMatter {
+    public BigInteger emc = BigInteger.ZERO;
+    public Matter matter;
     public static final Direction[] DIRECTIONS = Direction.values();
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
-    public BigInteger emc = BigInteger.ZERO;
 
     public TileCollector() {
         super(TileEntityTypes.COLLECTOR.get());
@@ -72,6 +75,21 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
         emc = Util.spreadEMC(emc, temp);
     }
 
+    @Nonnull
+    @Override
+    public Matter getMatter() {
+        if (level != null) {
+            BlockCollector block = (BlockCollector) getBlockState().getBlock();
+            if (block.getMatter() != matter) setMatter(block.getMatter());
+            return matter;
+        }
+        return Matter.BASIC;
+    }
+
+    private void setMatter(Matter matter) {
+        this.matter = matter;
+    }
+
     @Override
     public long getStoredEmc() {
         return Util.safeLongValue(emc);
@@ -86,7 +104,10 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
     public long extractEmc(long emc, EmcAction action) {
         long change = Math.min(Util.safeLongValue(this.emc), emc);
         if (change < 0L) return insertEmc(-change, action);
-        else if (action.execute()) this.emc = this.emc.subtract(BigInteger.valueOf(change));
+        else if (action.execute()) {
+            this.emc = this.emc.subtract(BigInteger.valueOf(change));
+            Util.markDirty(this);
+        }
         return change;
     }
 
