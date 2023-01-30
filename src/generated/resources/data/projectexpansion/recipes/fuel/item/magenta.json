@@ -3,6 +3,9 @@
   "group": "projectexpansion:fuel/magenta",
   "ingredients": [
     {
+      "item": "projecte:philosophers_stone"
+    },
+    {
       "item": "projecte:aeternalis_fuel"
     },
     {
