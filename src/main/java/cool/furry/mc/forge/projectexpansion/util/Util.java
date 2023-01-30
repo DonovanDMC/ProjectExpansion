@@ -147,6 +147,7 @@ public class Util {
                     long oldVal = val;
                     val -= storage.insertEmc(div, EmcAction.EXECUTE);
                     if(val.equals(oldVal)) notAccepting.add(storage);
+                    if(maxPer != null && oldVal - val >= maxPer) notAccepting.add(storage);
                 }
             }
             return val;

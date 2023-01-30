@@ -195,6 +195,7 @@ public enum Matter {
     }
 
     public MutableComponent getFormattedComponent(BigInteger value) {
+        //  && !Screen.hasShiftDown()
         return (this == FINAL ? Component.literal("INFINITY") : EMCFormat.getComponent(value)).setStyle(ColorStyle.GREEN);
     }
 
@@ -208,6 +209,10 @@ public enum Matter {
 
     public MutableComponent getEMCLinkEMCLimitComponent() {
         return getFormattedComponent(getEMCLinkEMCLimit());
+    }
+
+    public MutableComponent getRelayTransferComponent() {
+        return getFormattedComponent(getRelayTransferForTicks(Config.tickDelay.get()));
     }
 
     /* Registry Objects */

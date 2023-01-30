@@ -2,6 +2,8 @@ package cool.furry.mc.forge.projectexpansion.block.entity;
 
 import cool.furry.mc.forge.projectexpansion.block.BlockRelay;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
+import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
+import cool.furry.mc.forge.projectexpansion.util.Matter;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -23,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
+public class BlockEntityRelay extends BlockEntity implements IEmcStorage, IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
+    public Matter matter;
     private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
     public static final Direction[] DIRECTIONS = Direction.values();
     public BlockEntityRelay(BlockPos pos, BlockState state) {
@@ -64,6 +67,22 @@ public class BlockEntityRelay extends BlockEntity implements IEmcStorage {
         }
 
         emc = Util.spreadEMC(emc, temp, Util.safeLongValue(transfer));
+    }
+
+
+    @Nonnull
+    @Override
+    public Matter getMatter() {
+        if (level != null) {
+            BlockRelay block = (BlockRelay) getBlockState().getBlock();
+            if (block.getMatter() != matter) setMatter(block.getMatter());
+            return matter;
+        }
+        return Matter.BASIC;
+    }
+
+    private void setMatter(Matter matter) {
+        this.matter = matter;
     }
 
     @Override
