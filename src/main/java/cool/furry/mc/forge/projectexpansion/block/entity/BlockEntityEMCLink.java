@@ -121,7 +121,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
     }
 
     private void setInternalItem(ItemStack stack) {
-        itemStack = ItemHandlerHelper.copyStackWithSize(stack, 1);
+        itemStack = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemHandlerHelper.copyStackWithSize(stack, 1))).createStack();
         Util.markDirty(this);
     }
 
@@ -259,7 +259,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         int extractCount = Math.min(amount, limit && !isFinal ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
         if (extractCount <= 0) return ItemStack.EMPTY;
 
-        ItemStack r = ItemHandlerHelper.copyStackWithSize(itemStack, extractCount);
+        ItemStack r = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemHandlerHelper.copyStackWithSize(itemStack, extractCount))).createStack();
         if (simulate) return r;
 
         BigInteger totalPrice = itemValue.multiply(BigInteger.valueOf(extractCount));
