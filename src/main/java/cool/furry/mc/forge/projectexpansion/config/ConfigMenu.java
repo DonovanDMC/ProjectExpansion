@@ -157,6 +157,12 @@ public class ConfigMenu extends Screen {
                 (__, newValue) -> Config.enabledLearnedTooltip.set(newValue)
         ));
 
+        optionsRowList.addBig(new BooleanOption(
+                "gui.projectexpansion.config.alchemical_collection_sound",
+                __ -> Config.alchemicalCollectionSound.get(),
+                (__, newValue) -> Config.alchemicalCollectionSound.set(newValue)
+        ));
+
         addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), (button) -> minecraft.pushGuiLayer(parentScreen)));
     }
 
