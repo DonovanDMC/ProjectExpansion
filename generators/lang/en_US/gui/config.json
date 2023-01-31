@@ -41,5 +41,7 @@
   "gui.projectexpansion.config.persist_enchanted_books_only": "Persist Enchanted Books Only",
   "gui.projectexpansion.config.persist_enchanted_books_only.desc": "If ProjectE's processors.EnchantmentProcessor.persistent option should only include enchanted books.",
   "gui.projectexpansion.config.enable_learned_tooltip": "Enable Learned Tooltip",
-  "gui.projectexpansion.config.enable_learned_tooltip.desc": "If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this."
+  "gui.projectexpansion.config.enable_learned_tooltip.desc": "If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this.",
+  "gui.projectexpansion.config.alchemical_collection_sound": "Alchemical Collection Sound",
+  "gui.projectexpansion.config.alchemical_collection_sound.desc": "If a sound should be played when something is collected with Alchemical Collection."
 }
