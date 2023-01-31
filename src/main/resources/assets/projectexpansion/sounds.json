@@ -10,5 +10,9 @@
   "knowledge_sharing_book.use_none": {
     "subtitle": "sounds.projectexpansion.knowledge_sharing_book.use_none",
     "sounds": ["minecraft:random/fizz"]
+  },
+  "alchemical_collection.collect": {
+    "subtitle": "sounds.projectexpansion.alchemical_collection.collect",
+    "sounds": ["minecraft:mob/ghast/fireball4"]
   }
 }

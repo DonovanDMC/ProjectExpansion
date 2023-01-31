@@ -23,7 +23,7 @@ public class ItemFinalStarShard extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(Component.translatable("item.projectexpansion.final_star.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("item.projectexpansion.final_star_shard.tooltip").setStyle(ColorStyle.GRAY));
         list.add(Component.translatable("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 }

@@ -1,6 +1,8 @@
 package cool.furry.mc.forge.projectexpansion.mixin;
 
+import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
+import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -11,7 +13,6 @@ import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +69,7 @@ public abstract class AlchemicalCollectionMixin {
                 });
             }
             provider.syncEmc(player);
-            level.playSound(null, pos, SoundEvents.BLAZE_SHOOT, SoundSource.BLOCKS, 1f, 0.75f);
+            if(Config.alchemicalCollectionSound.get()) level.playSound(null, pos, SoundEvents.ALCHEMICAL_COLLECTION_COLLECT.get(), SoundSource.BLOCKS, 1f, 0.75f);
             cir.setReturnValue(newDrops);
         }
     }
