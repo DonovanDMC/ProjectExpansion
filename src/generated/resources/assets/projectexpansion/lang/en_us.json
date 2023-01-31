@@ -198,7 +198,9 @@
 	"gui.projectexpansion.config.persist_enchanted_books_only.desc": "If ProjectE's processors.EnchantmentProcessor.persistent option should only include enchanted books.",
 	"gui.projectexpansion.config.enable_learned_tooltip": "Enable Learned Tooltip",
 	"gui.projectexpansion.config.enable_learned_tooltip.desc": "If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this.",
-	"gui.projectexpansion.advanced_alchemical_chest.title": "Alchemical Chest",
+	"gui.projectexpansion.config.alchemical_collection_sound": "Alchemical Collection Sound",
+	"gui.projectexpansion.config.alchemical_collection_sound.desc": "If a sound should be played when something is collected with Alchemical Collection.",
+	"gui.projectexpansion.advanced_alchemical_chest.title": "Advanced Alchemical Chest",
 	"item.projectexpansion.compressed_collector.tooltip": "Crafting Ingredient",
 	"item.projectexpansion.basic_compressed_collector": "Basic Compressed Collector [MK 1]",
 	"item.projectexpansion.dark_compressed_collector": "Dark Compressed Collector [MK 2]",
@@ -299,5 +301,6 @@
 	"enchantment.projectexpansion.alchemical_collection.desc": "Converts any mined items with an emc value directly into emc.",
 	"sounds.projectexpansion.knowledge_sharing_book.store": "Knowledge Stored",
 	"sounds.projectexpansion.knowledge_sharing_book.use": "Knowledge Gained",
-	"sounds.projectexpansion.knowledge_sharing_book.use_none": "No Knowledge Gained"
+	"sounds.projectexpansion.knowledge_sharing_book.use_none": "No Knowledge Gained",
+	"sounds.projectexpansion.alchemical_collection.collect": "Alchemically Collected"
 }

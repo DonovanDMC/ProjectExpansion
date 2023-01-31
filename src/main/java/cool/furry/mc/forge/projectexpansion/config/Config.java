@@ -1,6 +1,12 @@
 package cool.furry.mc.forge.projectexpansion.config;
 
+import cool.furry.mc.forge.projectexpansion.Main;
+import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.registries.RegistryObject;
 
 public final class Config {
     public static final ForgeConfigSpec.Builder Builder = new ForgeConfigSpec.Builder();
@@ -26,5 +32,6 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Integer> infiniteSteakCost = Builder.comment("The cost of using the infinite steak item.").defineInRange("infiniteSteakCost", 64, 1, Integer.MAX_VALUE);
     public static final ForgeConfigSpec.ConfigValue<Boolean> persistEnchantedBooksOnly = Builder.comment("If ProjectE's processors.EnchantmentProcessor.persistent option should only include enchanted books.").define("persistEnchantedBooksOnly", false);
     public static final ForgeConfigSpec.ConfigValue<Boolean> enabledLearnedTooltip = Builder.comment("If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this.").define("enabledLearnedTooltip", true);
+    public static final ForgeConfigSpec.ConfigValue<Boolean> alchemicalCollectionSound = Builder.comment("If a sound should be played when something is collected with Alchemical Collection.").define("alchemicalCollectionSound", true);
     static { Spec = Builder.build(); }
 }
