@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 about: Report an issue you're having.
-title: "[BUG]: Issue Here"
+title: "[BUG]: Issue Title Here"
 labels: bug, unconfirmed
 assignees: ''
 
@@ -16,7 +16,7 @@ assignees: ''
 **ProjectExpansion Version**
 <!-- 1.0.0 -->
 
-** Forge Version**
+**Forge Version**
 <!-- 42.0.0 -->
 
 **Reproduction Steps**
