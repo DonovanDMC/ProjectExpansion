@@ -54,10 +54,10 @@ public class BlockEMCLink extends Block implements IHasMatter, EntityBlock {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
         list.add(Component.translatable("block.projectexpansion.emc_link.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(Component.translatable("block.projectexpansion.emc_link.limit_items", matter.getEMCLinkItemLimitComponent()).setStyle(ColorStyle.GRAY));
-        list.add(Component.translatable("block.projectexpansion.emc_link.limit_fluids", matter.getEMCLinkFluidLimitComponent()).setStyle(ColorStyle.GRAY));
-        list.add(Component.translatable("block.projectexpansion.emc_link.fluid_export_efficiency", Component.literal(matter.getFluidEfficiencyPercentage() + "%").setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(Component.translatable("block.projectexpansion.emc_link.limit_emc", matter.getEMCLinkEMCLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.limit_items", getMatter().getEMCLinkItemLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.limit_fluids", getMatter().getEMCLinkFluidLimitComponent()).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.fluid_export_efficiency", Component.literal(getMatter().getFluidEfficiencyPercentage() + "%").setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.emc_link.limit_emc", getMatter().getEMCLinkEMCLimitComponent()).setStyle(ColorStyle.GRAY));
         list.add(Component.translatable("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 

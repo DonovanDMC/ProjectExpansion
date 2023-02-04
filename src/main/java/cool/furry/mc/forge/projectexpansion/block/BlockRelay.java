@@ -55,8 +55,8 @@ public class BlockRelay extends Block implements IHasMatter, EntityBlock {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
         list.add(Component.translatable("block.projectexpansion.relay.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(Component.translatable("block.projectexpansion.relay.bonus", EMCFormat.getComponent(matter.getRelayBonusForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(Component.translatable("block.projectexpansion.relay.transfer", matter.getRelayTransferComponent().setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.relay.bonus", EMCFormat.getComponent(getMatter().getRelayBonusForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(Component.translatable("block.projectexpansion.relay.transfer", getMatter().getRelayTransferComponent().setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
         list.add(Component.translatable("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
