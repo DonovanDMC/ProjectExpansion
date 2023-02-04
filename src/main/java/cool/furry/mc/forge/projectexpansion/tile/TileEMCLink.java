@@ -295,7 +295,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
             long fullCost = ProjectEAPI.getEMCProxy().getValue(itemStack);
             long bucketCost = ProjectEAPI.getEMCProxy().getValue(Items.BUCKET);
             if(bucketCost == 0 && fullCost == 0) return 0D;
-            return (fullCost - ((bucketCost * matter.getFluidEfficiencyPercentage()) / 100F))  / 1000D;
+            return (fullCost - ((bucketCost * getMatter().getFluidEfficiencyPercentage()) / 100F))  / 1000D;
         } catch(ArithmeticException ignore) {
             return Long.MAX_VALUE;
         }

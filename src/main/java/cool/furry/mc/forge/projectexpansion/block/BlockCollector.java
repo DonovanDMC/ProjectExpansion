@@ -54,7 +54,7 @@ public class BlockCollector extends Block implements IHasMatter {
     public void appendHoverText(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
         list.add(new TranslationTextComponent("block.projectexpansion.collector.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("block.projectexpansion.collector.emc", EMCFormat.getComponent(matter.getCollectorOutputForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.collector.emc", EMCFormat.getComponent(getMatter().getCollectorOutputForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 

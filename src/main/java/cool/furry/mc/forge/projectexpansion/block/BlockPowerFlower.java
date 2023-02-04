@@ -81,7 +81,7 @@ public class BlockPowerFlower extends Block implements IHasMatter {
     public void appendHoverText(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
         list.add(new TranslationTextComponent("block.projectexpansion.power_flower.tooltip", new StringTextComponent(Config.tickDelay.get().toString()).setStyle(ColorStyle.GREEN), new StringTextComponent(Config.tickDelay.get() == 1 ? "" : "s").setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("block.projectexpansion.power_flower.emc", EMCFormat.getComponent(matter.getPowerFlowerOutput()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
+        list.add(new TranslationTextComponent("block.projectexpansion.power_flower.emc", EMCFormat.getComponent(getMatter().getPowerFlowerOutput()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
         list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
     }
 
