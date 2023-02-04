@@ -298,7 +298,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
             long fullCost = ProjectEAPI.getEMCProxy().getValue(itemStack);
             long bucketCost = ProjectEAPI.getEMCProxy().getValue(net.minecraft.world.item.Items.BUCKET);
             if(bucketCost == 0 && fullCost == 0) return 0D;
-            return (fullCost - ((bucketCost * matter.getFluidEfficiencyPercentage()) / 100F))  / 1000D;
+            return (fullCost - ((bucketCost * getMatter().getFluidEfficiencyPercentage()) / 100F))  / 1000D;
         } catch(ArithmeticException ignore) {
             return Long.MAX_VALUE;
         }
