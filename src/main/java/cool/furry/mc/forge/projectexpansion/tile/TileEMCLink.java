@@ -256,7 +256,8 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         int extractCount = Math.min(amount, limit && !isFinal ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
         if (extractCount <= 0) return ItemStack.EMPTY;
 
-        ItemStack r = NBTManager.getPersistentInfo(ItemInfo.fromStack(ItemHandlerHelper.copyStackWithSize(itemStack, extractCount))).createStack();
+        ItemStack r = NBTManager.getPersistentInfo(ItemInfo.fromStack(itemStack.copy())).createStack();
+        r.setCount(extractCount);
         if (simulate) return r;
 
         BigInteger totalPrice = itemValue.multiply(BigInteger.valueOf(extractCount));
