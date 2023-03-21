@@ -28,4 +28,4 @@ assignees: ''
 <!-- If applicable, attach the associated crash report and logs. If you'd like to make our lives easier, you can attach a manually generated debug crash if you do not have a crash report (Hold F3 + C for 10 seconds) -->
 
 **Other Mods**
-<-- Any other mods you had enabled when you noticed the issue. Please try to reproduce the issue with as few mods as possible so we can test/reproduce the issue easier. You can skip this step if you've attached a crash report. -->
+<!-- Any other mods you had enabled when you noticed the issue. Please try to reproduce the issue with as few mods as possible so we can test/reproduce the issue easier. You can skip this step if you've attached a crash report. -->
