@@ -103,8 +103,8 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
         ItemInfo info = ItemInfo.fromStack(stack);
 
         int count = stack.getCount();
-        stack = ItemHandlerHelper.copyStackWithSize(stack, 1);
         if (count <= 0) return stack;
+        stack = ItemHandlerHelper.copyStackWithSize(stack, 1);
 
         if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
         if (simulate) return ItemStack.EMPTY;
@@ -155,7 +155,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return ProjectEAPI.getEMCProxy().hasValue(stack);
+        return slot == 0 && ProjectEAPI.getEMCProxy().hasValue(stack);
     }
 
     /****************
