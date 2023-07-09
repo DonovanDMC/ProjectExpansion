@@ -1,8 +1,10 @@
 package cool.furry.mc.forge.projectexpansion.block.entity;
 
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -55,7 +57,7 @@ public class BlockEntityOwnable extends BlockEntity {
             case DISPLAY_NAME -> player.displayClientMessage(Component.literal(ownerName), true);
             case CHECK_OWNERSHIP -> {
                 if (!owner.equals(player.getUUID())) {
-                    player.displayClientMessage(Component.translatable("text.projectexpansion.not_owner", Component.literal(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
+                    player.displayClientMessage(Lang.NOT_OWNER.translateColored(ChatFormatting.RED, Component.literal(ownerName).setStyle(ColorStyle.RED)), true);
                     return false;
                 }
             }

@@ -80,7 +80,6 @@
 	"block.projectexpansion.arcane_table": "Arcane Table",
 	"block.projectexpansion.transmutation_interface": "Transmutation Interface",
 	"block.projectexpansion.transmutation_interface.tooltip": "This can be used with compatible mods like Applied Energistics to access your transmutation inventory.",
-	"block.projectexpansion.transmutation_interface.learned": "You learned %s via a %s.",
 	"block.projectexpansion.power_flower.tooltip": "Generates EMC once per %s tick%s. (20/second)",
 	"block.projectexpansion.power_flower.emc": "Produced EMC: %s/s",
 	"block.projectexpansion.basic_power_flower": "Basic Power Flower [MK 1]",

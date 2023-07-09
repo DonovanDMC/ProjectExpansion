@@ -3,10 +3,8 @@ package cool.furry.mc.forge.projectexpansion.block;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
+import cool.furry.mc.forge.projectexpansion.util.*;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -53,9 +51,9 @@ public class BlockCollector extends Block implements IHasMatter, EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(Component.translatable("block.projectexpansion.collector.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(Component.translatable("block.projectexpansion.collector.emc", EMCFormat.getComponent(getMatter().getCollectorOutputForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(Component.translatable("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(Lang.Blocks.COLLECTOR_TOOLTIP.translateColored(ChatFormatting.GRAY));
+        list.add(Lang.Blocks.COLLECTOR_EMC.translateColored(ChatFormatting.GRAY, EMCFormat.getComponent(getMatter().getCollectorOutputForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)));
+        list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
     }
 
     @Nullable
