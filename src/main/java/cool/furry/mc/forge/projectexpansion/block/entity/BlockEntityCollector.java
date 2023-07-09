@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class BlockEntityCollector extends BlockEntity implements IEmcStorage, IHasMatter {
+public class BlockEntityCollector extends BlockEntity implements IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
     public Matter matter;
-    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
+    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(EMCHandler::new);
     public static final Direction[] DIRECTIONS = Direction.values();
     public BlockEntityCollector(BlockPos pos, BlockState state) {
         super(BlockEntityTypes.COLLECTOR.get(), pos, state);
@@ -62,13 +62,13 @@ public class BlockEntityCollector extends BlockEntity implements IEmcStorage, IH
             BlockEntity be = level.getBlockEntity(pos.offset(dir.getStepX(), dir.getStepY(), dir.getStepZ()));
             if (be == null) continue;
             be.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
-                if (storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
+                if (storage.insertEmc(1L, IEmcStorage.EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);
                     if (be instanceof RelayMK1BlockEntity b) {
                         for (int i = 0; i < 20; i++) b.addBonus();
                         Util.markDirty(b);
                     } else if (be instanceof BlockEntityRelay b) {
-                        b.addBonus();
+                        b.getEMCHandlerCapability().addBonus();
                         Util.markDirty(b);
                     }
                 }
@@ -94,32 +94,39 @@ public class BlockEntityCollector extends BlockEntity implements IEmcStorage, IH
         this.matter = matter;
     }
 
-    @Override
-    public long getStoredEmc() {
-        return Util.safeLongValue(emc);
-    }
-
-    @Override
-    public long getMaximumEmc() {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
-    public long extractEmc(long emc, EmcAction action) {
-        long change = Math.min(Util.safeLongValue(this.emc), emc);
-        if (change < 0L) return insertEmc(-change, action);
-        else if (action.execute()) this.emc = this.emc.subtract(BigInteger.valueOf(change));
-        return change;
-    }
-
-    @Override
-    public long insertEmc(long l, EmcAction emcAction) {
-        return 0L;
-    }
 
     /****************
      * Capabilities *
      ****************/
+
+    private class EMCHandler implements IEmcStorage {
+        @Override
+        public long getStoredEmc() {
+            return Util.safeLongValue(emc);
+        }
+
+        @Override
+        public long getMaximumEmc() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public long extractEmc(long emc, EmcAction action) {
+            long change = Math.min(Util.safeLongValue(BlockEntityCollector.this.emc), emc);
+            if (change < 0L) return insertEmc(-change, action);
+            else if (action.execute()) BlockEntityCollector.this.emc = BlockEntityCollector.this.emc.subtract(BigInteger.valueOf(change));
+            return change;
+        }
+
+        @Override
+        public long insertEmc(long l, EmcAction emcAction) {
+            return 0L;
+        }
+    }
+
+    public EMCHandler getEMCHandlerCapability() {
+        return (EMCHandler) getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
+    }
 
     @Nonnull
     @Override
