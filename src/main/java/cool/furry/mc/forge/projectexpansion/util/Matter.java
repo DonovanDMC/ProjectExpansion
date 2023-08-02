@@ -92,7 +92,7 @@ public enum Matter {
     public static final int RARE_THRESHOLD = 15;
     public static final int EPIC_THRESHOLD = 16;
     Matter(long collectorOutput, long relayBonus, long relayTransfer, int fluidEfficiency, @Nullable Supplier<Item> existingItem) {
-        this.name = name().toLowerCase();
+        this.name = name().toLowerCase(Locale.US);
         this.hasItem = existingItem == null && ordinal() != 0;
         this.level = ordinal() + 1;
         // Gₙ(aₙ)(z)=4(2z²+z-1)/4z-1
