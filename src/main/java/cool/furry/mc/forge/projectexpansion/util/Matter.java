@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -99,7 +100,7 @@ public enum Matter {
     public static final int EPIC_THRESHOLD = 16;
     Matter(int fluidEfficiency, @Nullable Supplier<Item> existingItem, ILangEntry collectorLang) {
         boolean isFinal = name().equals("FINAL"); // we can't access the FINAL member because we're in the constructor
-        this.name = name().toLowerCase();
+        this.name = name().toLowerCase(Locale.US);
         this.hasItem = existingItem == null && ordinal() != 0;
         this.level = ordinal() + 1;
         this.collectorOutputBase = getValue(BASE_COLLECTOR_OUTPUT);
