@@ -1,3 +1,4 @@
 {
-  "command.projectexpansion.console": "Console"
+  "command.projectexpansion.console": "Console",
+  "command.projectexpansion.player_only": "This command must be executed by a player."
 }

@@ -18,5 +18,18 @@
   "item.projectexpansion.knowledge_sharing_book.learned_over_100": "%s item(s) were learned, but not shown.",
   "item.projectexpansion.knowledge_sharing_book.learned_total": "You have learned %s item(s) from %s.",
   "item.projectexpansion.knowledge_sharing_book.no_new_knowledge": "You learned nothing new.",
-  "item.projectexpansion.knowledge_sharing_book.no_owner": "You cannot gain knowledge from an unowned book."
+  "item.projectexpansion.knowledge_sharing_book.no_owner": "You cannot gain knowledge from an unowned book.",
+  "item.projectexpansion.alchemical_book": "Alchemical Book",
+  "item.projectexpansion.alchemical_book.tooltip": "Teleport anywhere, simply using emc.",
+  "item.projectexpansion.alchemical_book.create_failed": "Failed to create new destination: %s",
+  "item.projectexpansion.alchemical_book.delete_failed": "Failed to delete destination: %s",
+  "item.projectexpansion.alchemical_book.teleport_failed": "Failed to teleport to destination: %s",
+  "item.projectexpansion.alchemical_book.error.wrong_dimension": "Cannot teleport between dimensions.",
+  "item.projectexpansion.alchemical_book.error.dimension_not_found": "Dimension \"%s\" was not found.",
+  "item.projectexpansion.alchemical_book.error.no_back_location": "You do not have a back location to go to.",
+  "item.projectexpansion.alchemical_book.error.duplicate_name": "Name \"%s\" is already in use.",
+  "item.projectexpansion.alchemical_book.error.name_not_found": "Destination with name \"%s\" was not found.",
+  "item.projectexpansion.alchemical_book.now_bound": "This book is now bound to you. Its teleportation locations will be stored with your player, and not the book.",
+  "item.projectexpansion.alchemical_book.no_longer_bound": "This book is no longer bound to you. It now has its own set of teleportation locations. If you lose the book, its locations will also be lost.",
+  "item.projectexpansion.alchemical_book.corrupted": "The locations in this book seem to be corrupted. Check the logs for more information."
 }

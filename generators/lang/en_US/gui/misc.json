@@ -1,3 +1,12 @@
 {
-  "gui.projectexpansion.advanced_alchemical_chest.title": "Advanced Alchemical Chest"
+  "gui.projectexpansion.advanced_alchemical_chest.title": "Advanced Alchemical Chest",
+  "gui.projectexpansion.alchemical_book": "Alchemical Chest",
+  "gui.projectexpansion.alchemical_book.close": "Close",
+  "gui.projectexpansion.alchemical_book.delete": "Delete",
+  "gui.projectexpansion.alchemical_book.create": "Create",
+  "gui.projectexpansion.alchemical_book.back": "Back",
+  "gui.projectexpansion.alchemical_book.distance": "Distance: %s",
+  "gui.projectexpansion.alchemical_book.dimension": "Dimension: %s",
+  "gui.projectexpansion.alchemical_book.cost": "Cost: %s",
+  "gui.projectexpansion.alchemical_book.no_back_location": "No Back Location"
 }

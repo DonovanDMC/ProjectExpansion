@@ -1,5 +1,7 @@
 {
   "itemGroup.projectexpansion": "Project Expansion",
+  "enchantment.projectexpansion.alchemical_collection": "Alchemical Collection",
+  "enchantment.projectexpansion.alchemical_collection.desc": "Converts any mined items with an emc value directly into emc.",
   "text.projectexpansion.wip": "WIP!",
   "text.projectexpansion.provider_error": "Failed to fetch ProjectE provider.",
   "text.projectexpansion.see_wiki": "See the wiki on github for more information.",
@@ -12,7 +14,5 @@
   "text.projectexpansion.notLearned": "Not Learned ✗",
   "text.projectexpansion.enabled": "Enabled ✓",
   "text.projectexpansion.disabled": "Disabled ✗",
-  "text.projectexpansion.alchemical_collection": "Alchemical Collection: %s",
-  "enchantment.projectexpansion.alchemical_collection": "Alchemical Collection",
-  "enchantment.projectexpansion.alchemical_collection.desc": "Converts any mined items with an emc value directly into emc."
+  "text.projectexpansion.alchemical_collection": "Alchemical Collection: %s"
 }
