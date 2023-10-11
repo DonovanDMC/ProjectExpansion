@@ -1,6 +1,12 @@
 package cool.furry.mc.forge.projectexpansion.config;
 
+import cpw.mods.modlauncher.EnumerationHelper;
+import net.minecraft.client.OptionInstance;
 import net.minecraftforge.common.ForgeConfigSpec;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+
+import java.util.logging.Logger;
 
 public final class Config {
     public static final ForgeConfigSpec.Builder Builder = new ForgeConfigSpec.Builder();
@@ -9,7 +15,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Boolean> formatEMC = Builder.comment("If EMC should be formatted as M/B/T/etc").define("formatEMC", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> fullNumberNames = Builder.comment("If full number names (Million/Billion/Trillion) should be used instead of abbreviations").define("fullNumberNames", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> emcDisplay = Builder.comment("Displays your current emc and gained emc per second in the top left corner.").define("emcDisplay", true);
-    public static final ForgeConfigSpec.ConfigValue<Boolean> notifyCommandChanges = Builder.comment("Notify users something is changed about them via /emc.").define("notifyCommandChanges", true);
+    public static final ForgeConfigSpec.ConfigValue<Boolean> notifyCommandChanges = Builder.comment("Notify users when something is changed about them via commands.").define("notifyCommandChanges", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> notifyKnowledgeBookGains = Builder.comment("Tell users the list of items they gained when using a knowledge book.").define("notifyKnowledgeBookGains", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> limitEmcLinkVendor = Builder.comment("If EMC Link Right-Click functionality should be Limited by Tier or Not.").define("limitEmcLinkVendor", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> enableFluidEfficiency = Builder.comment("If fluid efficiency should be enabled.").define("enableFluidEfficiency", true);
@@ -27,5 +33,22 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Boolean> persistEnchantedBooksOnly = Builder.comment("If ProjectE's processors.EnchantmentProcessor.persistent option should only include enchanted books.").define("persistEnchantedBooksOnly", false);
     public static final ForgeConfigSpec.ConfigValue<Boolean> enabledLearnedTooltip = Builder.comment("If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this.").define("enabledLearnedTooltip", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> alchemicalCollectionSound = Builder.comment("If a sound should be played when something is collected with Alchemical Collection.").define("alchemicalCollectionSound", true);
+    private static final ForgeConfigSpec.ConfigValue<String> editOthersAlchemicalBooks = Builder.comment("If players should be allowed to edit books bound to other players. A player is considered to be \"OP\" when they have an op level of 2 or greater. Allowed values: DISABLED, OP_ONLY, ENABLED").define("editOthersAlchemicalBooks", AlchemicalBookEditLevel.DISABLED.name());
     static { Spec = Builder.build(); }
+    public static AlchemicalBookEditLevel editOthersAlchemicalBooks() {
+        try {
+            return AlchemicalBookEditLevel.valueOf(editOthersAlchemicalBooks.get().toUpperCase());
+        } catch (IllegalArgumentException ignore) {
+            LogManager.getLogger(Config.class).printf(Level.WARN, "Invalid value for editOthersAlchemicalBooks: %. Defaulting to %s", editOthersAlchemicalBooks.get(), AlchemicalBookEditLevel.DISABLED.name());
+            editOthersAlchemicalBooks.set(AlchemicalBookEditLevel.DISABLED.name());
+            return AlchemicalBookEditLevel.DISABLED;
+        }
+    }
+
+    public enum AlchemicalBookEditLevel {
+        DISABLED,
+        OP_ONLY,
+        ENABLED
+    }
+
 }

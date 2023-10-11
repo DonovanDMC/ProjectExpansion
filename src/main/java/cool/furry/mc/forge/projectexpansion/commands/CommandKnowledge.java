@@ -33,15 +33,17 @@ public class CommandKnowledge {
         CLEAR,
         TEST
     }
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
-        LiteralArgumentBuilder<CommandSourceStack> cmd = Commands.literal("knowledge")
-            .requires((source) -> source.hasPermission(2))
+    public static LiteralArgumentBuilder<CommandSourceStack> getArguments(CommandBuildContext buildContext) {
+         return Commands.literal("knowledge")
+             .requires(Permissions.KNOWLEDGE)
             .then(Commands.literal("clear")
+                .requires(Permissions.KNOWLEDGE_CLEAR)
                 .then(Commands.argument("player", EntityArgument.player())
                     .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.CLEAR))
                 )
             )
             .then(Commands.literal("learn")
+                .requires(Permissions.KNOWLEDGE_LEARN)
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("item", ItemArgument.item(buildContext))
                         .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.LEARN))
@@ -49,6 +51,7 @@ public class CommandKnowledge {
               )
             )
             .then(Commands.literal("unlearn")
+                .requires(Permissions.KNOWLEDGE_UNLEARN)
                  .then(Commands.argument("player", EntityArgument.player())
                      .then(Commands.argument("item", ItemArgument.item(buildContext))
                          .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.UNLEARN))
@@ -56,14 +59,13 @@ public class CommandKnowledge {
                 )
             )
             .then(Commands.literal("test")
+                .requires(Permissions.KNOWLEDGE_TEST)
                  .then(Commands.argument("player", EntityArgument.player())
                      .then(Commands.argument("item", ItemArgument.item(buildContext))
                          .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.TEST))
                     )
                 )
             );
-
-        dispatcher.register(cmd);
     }
 
     private static Component getSourceName(CommandSourceStack source) {
@@ -91,7 +93,7 @@ public class CommandKnowledge {
                 ctx.getSource().sendFailure(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, player.getDisplayName()));
                 return 0;
             }
-            if(provider.getKnowledge().size() == 0) {
+            if(provider.getKnowledge().isEmpty()) {
                 if(isSelf) {
                     ctx.getSource().sendFailure(Lang.Commands.KNOWLEDGE_CLEAR_FAIL_SELF.translateColored(ChatFormatting.RED));
                 } else {

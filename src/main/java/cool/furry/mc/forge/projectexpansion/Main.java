@@ -1,6 +1,8 @@
 package cool.furry.mc.forge.projectexpansion;
 
+import cool.furry.mc.forge.projectexpansion.capability.IAlchemialBookLocationsProvider;
 import cool.furry.mc.forge.projectexpansion.config.Config;
+import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
 import cool.furry.mc.forge.projectexpansion.registries.*;
 import cool.furry.mc.forge.projectexpansion.util.*;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -18,6 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nonnull;
@@ -39,6 +43,7 @@ public class Main {
                 return new ItemStack(Matter.FADING.getMatter());
             }
         };
+        PacketHandler.register();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BlockEntityTypes.Registry.register(bus);
         Blocks.Registry.register(bus);
@@ -46,12 +51,17 @@ public class Main {
         Items.Registry.register(bus);
         SoundEvents.Registry.register(bus);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);
+        bus.addListener(this::registerCapabilities);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.Spec, "project-expansion.toml");
 
         Fuel.registerAll();
         Matter.registerAll();
         Star.registerAll();
         AdvancedAlchemicalChest.register();
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.register(IAlchemialBookLocationsProvider.class);
     }
 
     private void serverTick(TickEvent.ServerTickEvent event) {
@@ -73,5 +83,9 @@ public class Main {
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(MOD_ID, path);
+    }
+
+    public static void templog(String text) {
+        Logger.printf(Level.INFO, text, Thread.currentThread().getName());
     }
 }

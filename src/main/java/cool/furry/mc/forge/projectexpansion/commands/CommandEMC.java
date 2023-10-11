@@ -32,10 +32,11 @@ public class CommandEMC {
         GET,
         TEST
     }
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> cmd = Commands.literal("emc")
-            .requires((source) -> source.hasPermission(2))
+    public static LiteralArgumentBuilder<CommandSourceStack> getArguments() {
+        return Commands.literal("emc")
+            .requires(Permissions.EMC)
             .then(Commands.literal("add")
+                .requires(Permissions.EMC_ADD)
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
                         .executes((ctx) -> handle(ctx, ActionType.ADD))
@@ -43,6 +44,7 @@ public class CommandEMC {
                 )
             )
             .then(Commands.literal("remove")
+                .requires(Permissions.EMC_REMOVE)
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
                         .executes((ctx) -> handle(ctx, ActionType.REMOVE))
@@ -50,6 +52,7 @@ public class CommandEMC {
                 )
             )
             .then(Commands.literal("set")
+                .requires(Permissions.EMC_SET)
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
                         .executes((ctx) -> handle(ctx, ActionType.SET))
@@ -57,6 +60,7 @@ public class CommandEMC {
                )
             )
             .then(Commands.literal("test")
+                .requires(Permissions.EMC_TEST)
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("value", StringArgumentType.string())
                         .executes((ctx) -> handle(ctx, ActionType.TEST))
@@ -64,12 +68,11 @@ public class CommandEMC {
                 )
             )
             .then(Commands.literal("get")
+                .requires(Permissions.EMC_GET)
                 .then(Commands.argument("player", EntityArgument.player())
                     .executes((ctx) -> handle(ctx, ActionType.GET))
                 )
             );
-
-        dispatcher.register(cmd);
     }
 
     private static Component getSourceName(CommandSourceStack source) {

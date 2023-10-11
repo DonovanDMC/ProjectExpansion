@@ -6,12 +6,13 @@
 	"refmap": "projectexpansion.refmap.json",
 	"client": [
 		"DeleteWeebShitMixin",
+		"ShutTheFuckUpMixin",
 		"EMCFormatterMixin"
 	],
 	"mixins": [
 		"AlchemicalBagMixin",
-		"AlchemicalCollectionToggleMixin",
 		"AlchemicalCollectionMixin",
+		"AlchemicalCollectionToggleMixin",
 		"EnchantmentProcessorMixin",
 		"PhilosophersStoneMixin"
 	],
