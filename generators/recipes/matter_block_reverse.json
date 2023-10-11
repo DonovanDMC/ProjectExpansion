@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/$TIER$",
+  "ingredients": [
+    {
+      "item": "projectexpansion:$TIER$_matter_block"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:$TIER$_matter",
+    "count": 9
+  }
+}

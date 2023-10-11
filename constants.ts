@@ -29,6 +29,10 @@ export const FUEL_DISABLED = [
 	"basic", "dark", "red", "fading", "final"
 ];
 
+export const OTHER_MATTER_TIERS = [
+    "basic", "dark", "red"
+]
+
 export const DYE_COLORS = [
 	"white", "orange", "magenta", "light_blue",
 	"yellow", "lime", "pink", "gray",
