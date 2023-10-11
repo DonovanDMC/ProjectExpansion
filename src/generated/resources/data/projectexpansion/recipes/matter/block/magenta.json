@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/magenta",
+  "ingredients": [
+    {
+      "item": "projectexpansion:magenta_matter"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    },
+    {
+      "item": "projectexpansion:magenta_matter"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:magenta_matter_block"
+  }
+}

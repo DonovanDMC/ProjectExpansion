@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/fading",
+  "ingredients": [
+    {
+      "item": "projectexpansion:fading_matter"
+    },
+    {
+      "item": "projectexpansion:fading_matter"
+    },
+    {
+      "item": "projectexpansion:fading_matter"
+    },
+    {
+      "item": "projectexpansion:fading_matter"
+    },
+    {
+      "item": "projectexpansion:fading_matter"
+    },
+    {
+      "item": "projectexpansion:fading_matter"
+    },
+    {
+      "item": "projectexpansion:fading_matter"
+    },
+    {
+      "item": "projectexpansion:fading_matter"
+    },
+    {
+      "item": "projectexpansion:fading_matter"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:fading_matter_block"
+  }
+}
