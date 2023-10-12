@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.commands;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -113,7 +114,9 @@ public class CommandBook {
                 .then(Commands.literal("player")
                     .requires(Permissions.BOOK_REMOVE_PLAYER)
                     .then(Commands.argument("player", EntityArgument.player())
-                        .executes((ctx) -> handleDump(ctx, new BookTarget(ctx)))
+                        .then(Commands.argument("location", StringArgumentType.string())
+                            .executes((ctx) -> handleRemove(ctx, new BookTarget(ctx)))
+                        )
                     )
                 )
                 .then(Commands.literal("hand")
@@ -238,6 +241,33 @@ public class CommandBook {
         return 1;
     }
 
+    private static Style suggestTeleportPos(CommandContext<CommandSourceStack> ctx, Style style, CapabilityAlchemicalBookLocations.TeleportLocation location) {
+        boolean isSameDimension = Objects.requireNonNull(ctx.getSource().getPlayer()).level.dimension().equals(location.dimension());
+
+        if(isSameDimension) {
+            return Util.suggestCommand(style, String.format("/tp %s %s %s", location.x(), location.y(), location.z())).withUnderlined(true);
+        } else {
+            return Util.suggestCommand(style, String.format("/execute in %s run tp %s %s %s", location.dimension().location(), location.x(), location.y(), location.z())).withUnderlined(true);
+        }
+    }
+
+    private static Style suggestTeleportDimension(CommandContext<CommandSourceStack> ctx, Style style, CapabilityAlchemicalBookLocations.TeleportLocation location) {
+        boolean isSameDimension = Objects.requireNonNull(ctx.getSource().getPlayer()).level.dimension().equals(location.dimension());
+
+        if(!isSameDimension) {
+            return Util.suggestCommand(style, String.format("/execute in %s run tp ~ ~ ~", location.dimension().location())).withUnderlined(true);
+        }
+        return style;
+    }
+
+    private static Component formatLocation(CommandContext<CommandSourceStack> ctx, CapabilityAlchemicalBookLocations.TeleportLocation location) {
+        boolean shouldSuggestCommand = ctx.getSource().getPlayer() != null;
+
+        Component pos = Component.literal(String.format("%s %s %s", location.x(), location.y(), location.z())).withStyle(style -> shouldSuggestCommand ? suggestTeleportPos(ctx, style, location) : style).withStyle(ChatFormatting.DARK_AQUA);
+        Component dimension = Component.literal(location.dimension().location().toString()).withStyle(style -> shouldSuggestCommand ? suggestTeleportDimension(ctx, style, location) : style).withStyle(ChatFormatting.DARK_AQUA);
+        return Lang.Commands.BOOK_LIST_LOCATION.translateColored(ChatFormatting.AQUA, Component.literal(location.name()).withStyle(ChatFormatting.DARK_AQUA), pos, dimension);
+    }
+
     private static int handleList(CommandContext<CommandSourceStack> ctx, BookTarget target) throws CommandSyntaxException {
         @Nullable IAlchemialBookLocationsProvider provider = getCapability(ctx, target, "list");
         if(provider == null) {
@@ -249,30 +279,9 @@ public class CommandBook {
             return 0;
         }
 
-        boolean shouldSuggestCommand = ctx.getSource().getPlayer() != null;
-
-        final BiFunction<Style, CapabilityAlchemicalBookLocations.TeleportLocation, Style> SUGGEST_TELEPORT_POS = (style, location) -> {
-            boolean isSameDimension = Objects.requireNonNull(ctx.getSource().getPlayer()).level.dimension().equals(location.dimension());
-
-            if(isSameDimension) {
-                return Util.suggestCommand(style, String.format("/tp %s %s %s", location.x(), location.y(), location.z())).withUnderlined(true);
-            } else {
-                return Util.suggestCommand(style, String.format("/execute in %s run tp %s %s %s", location.dimension().location(), location.x(), location.y(), location.z())).withUnderlined(true);
-            }
-        };
-        final BiFunction<Style, CapabilityAlchemicalBookLocations.TeleportLocation, Style> SUGGEST_TELEPORT_DIMENSION = (style, location) -> {
-            boolean isSameDimension = Objects.requireNonNull(ctx.getSource().getPlayer()).level.dimension().equals(location.dimension());
-
-            if(!isSameDimension) {
-                return Util.suggestCommand(style, String.format("/execute in %s run tp ~ ~ ~", location.dimension().location())).withUnderlined(true);
-            }
-            return style;
-        };
 
         for(CapabilityAlchemicalBookLocations.TeleportLocation location : provider.getLocations()) {
-            Component pos = Component.literal(String.format("%s %s %s", location.x(), location.y(), location.z())).withStyle(style -> shouldSuggestCommand ? SUGGEST_TELEPORT_POS.apply(style, location) : style).withStyle(ChatFormatting.DARK_AQUA);
-            Component dimension = Component.literal(location.dimension().location().toString()).withStyle(style -> shouldSuggestCommand ? SUGGEST_TELEPORT_DIMENSION.apply(style, location) : style).withStyle(ChatFormatting.DARK_AQUA);
-            ctx.getSource().sendSystemMessage(Lang.Commands.BOOK_LIST_LOCATION.translateColored(ChatFormatting.AQUA, Component.literal(location.name()).withStyle(ChatFormatting.DARK_AQUA), pos, dimension));
+            ctx.getSource().sendSystemMessage(formatLocation(ctx, location));
         }
         return 1;
     }
@@ -291,17 +300,17 @@ public class CommandBook {
 
         provider.resetLocations();
 
-        if(target.isPlayer() && provider.getMode() == ItemAlchemicalBook.Mode.PLAYER && Config.notifyCommandChanges.get()) {
-            target.playerOrException().sendSystemMessage(Lang.Commands.BOOK_CLEAR_PLAYER_NOTIFICATION.translate(getSourceName(ctx.getSource())), false);
-        }
-
         if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = ctx.getSource().getPlayer();
             ServerPlayer targetPlayer = target.playerOrException();
-            if(sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
+            if (sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
                 ctx.getSource().sendSystemMessage(Lang.Commands.BOOK_CLEAR_PLAYER_SUCCESS_SELF.translateColored(ChatFormatting.GREEN));
                 return 1;
+            }
+
+            if(Config.notifyCommandChanges.get()) {
+                target.playerOrException().sendSystemMessage(Lang.Commands.BOOK_CLEAR_PLAYER_NOTIFICATION.translate(getSourceName(ctx.getSource())), false);
             }
 
             ctx.getSource().sendSystemMessage(Lang.Commands.BOOK_CLEAR_PLAYER_SUCCESS.translateColored(ChatFormatting.GREEN, targetPlayer.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA)));
@@ -333,20 +342,19 @@ public class CommandBook {
             return 0;
         }
 
-        String locationDump = location.serialize().toString();
-        ctx.getSource().sendSuccess(Lang.Commands.BOOK_REMOVE_BACKUP.translateColored(ChatFormatting.AQUA, Component.literal(locationDump).withStyle((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, locationDump)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Lang.Commands.BOOK_REMOVE_BACKUP_INFO.translateColored(ChatFormatting.AQUA)))).withStyle(ChatFormatting.GRAY)), false);
-
-        if(target.isPlayer() && provider.getMode() == ItemAlchemicalBook.Mode.PLAYER && Config.notifyCommandChanges.get()) {
-            target.playerOrException().sendSystemMessage(Lang.Commands.BOOK_REMOVE_PLAYER_NOTIFICATION.translate(name, getSourceName(ctx.getSource())), false);
-        }
+        ctx.getSource().sendSystemMessage(formatLocation(ctx, location));
 
         if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = ctx.getSource().getPlayer();
             ServerPlayer targetPlayer = target.playerOrException();
-            if(sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
+            if (sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
                 ctx.getSource().sendSystemMessage(Lang.Commands.BOOK_REMOVE_PLAYER_SUCCESS_SELF.translateColored(ChatFormatting.GREEN));
                 return 1;
+            }
+
+            if(Config.notifyCommandChanges.get()) {
+                target.playerOrException().sendSystemMessage(Lang.Commands.BOOK_REMOVE_PLAYER_NOTIFICATION.translate(name, getSourceName(ctx.getSource())), false);
             }
 
             ctx.getSource().sendSystemMessage(Lang.Commands.BOOK_REMOVE_PLAYER_SUCCESS.translateColored(ChatFormatting.GREEN, targetPlayer.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA)));
@@ -379,17 +387,17 @@ public class CommandBook {
             return 0;
         }
 
-        if(target.isPlayer() && provider.getMode() == ItemAlchemicalBook.Mode.PLAYER && Config.notifyCommandChanges.get()) {
-                target.playerOrException().sendSystemMessage(Lang.Commands.BOOK_ADD_PLAYER_NOTIFICATION.translate(name, getSourceName(ctx.getSource())), false);
-        }
-
         if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = ctx.getSource().getPlayer();
             ServerPlayer targetPlayer = target.playerOrException();
-            if(sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
+            if (sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
                 ctx.getSource().sendSystemMessage(Lang.Commands.BOOK_ADD_PLAYER_SUCCESS_SELF.translateColored(ChatFormatting.GREEN));
                 return 1;
+            }
+
+            if (Config.notifyCommandChanges.get()) {
+                target.playerOrException().sendSystemMessage(Lang.Commands.BOOK_ADD_PLAYER_NOTIFICATION.translateColored(ChatFormatting.GREEN, name, getSourceName(ctx.getSource())), false);
             }
 
             ctx.getSource().sendSystemMessage(Lang.Commands.BOOK_ADD_PLAYER_SUCCESS.translateColored(ChatFormatting.GREEN, targetPlayer.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA)));

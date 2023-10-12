@@ -1,13 +1,8 @@
 package cool.furry.mc.forge.projectexpansion.config;
 
-import cpw.mods.modlauncher.EnumerationHelper;
-import net.minecraft.client.OptionInstance;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-
-import java.util.List;
-import java.util.logging.Logger;
 
 public final class Config {
     public static final ForgeConfigSpec.Builder Builder = new ForgeConfigSpec.Builder();

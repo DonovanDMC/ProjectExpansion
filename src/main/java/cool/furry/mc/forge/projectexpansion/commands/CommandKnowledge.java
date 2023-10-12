@@ -156,7 +156,6 @@ public class CommandKnowledge {
                     }
                 } else {
                     if (isSelf) {
-                        ctx.getSource().sendSuccess(Component.translatable("command.projectexpansion.knowledge.unlearn.successSelf", new ItemStack(item).getDisplayName()).setStyle(ColorStyle.GREEN), false);
                         ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, new ItemStack(item).getDisplayName()), false);
                     } else {
                         ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
