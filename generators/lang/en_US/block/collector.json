@@ -1,6 +1,7 @@
 {
   "block.projectexpansion.collector.tooltip": "Generates EMC once per second.",
   "block.projectexpansion.collector.emc": "Produced EMC: %s/s",
+  "block.projectexpansion.collector.stack_emc": "Stack Produced EMC: %s/s",
   "block.projectexpansion.basic_collector": "Basic Collector [MK 1]",
   "block.projectexpansion.dark_collector": "Dark Collector [MK 2]",
   "block.projectexpansion.red_collector": "Red Collector [MK 3]",
