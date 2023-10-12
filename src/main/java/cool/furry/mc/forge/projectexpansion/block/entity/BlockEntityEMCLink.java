@@ -1,5 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.block.entity;
 
+import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
@@ -43,7 +44,12 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
 public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHasMatter {
@@ -184,8 +190,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         }
 
         Fluid fluid = fluidHandler.getFluid();
-        if(fluid != null && fluidHandler.getFluidCostPer() != 0D && inHand.getItem() instanceof BucketItem bucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
-            if(Config.limitEmcLinkVendor.get() && remainingExport < 1000) {
+        if(fluid != null && fluidHandler.isValid() && inHand.getItem() instanceof BucketItem bucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
+            if(Config.limitEmcLinkVendor.get() && remainingFluid < 1000) {
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_NO_EXPORT_REMAINING.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.CONSUME;
             }
@@ -265,8 +271,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         }
     }
 
-    public EMCHandler getEMCHandlerCapability() {
-        return (EMCHandler) getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
+    public IEmcStorage getEMCHandlerCapability() {
+        return getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
     }
 
     private class ItemHandler implements IItemHandler {
@@ -370,8 +376,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         }
     }
 
-    public ItemHandler getItemHandlerCapability() {
-        return (ItemHandler) getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
+    public IItemHandler getItemHandlerCapability() {
+        return getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
     }
 
     private class FluidHandler implements IFluidHandler {
@@ -391,6 +397,14 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             }
         }
 
+        private boolean isFreeFluid() {
+            return getFluidCostPer() == 0D && Config.zeroEmcFluidsAreFree.get();
+        }
+
+        private boolean isValid() {
+            return getFluid() != null && (getFluidCostPer() != 0D || isFreeFluid());
+        }
+
         private long getFluidCost(double amount) {
             try {
                 double cost = getFluidCostPer();
@@ -408,13 +422,21 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         @Nonnull
         @Override
         public FluidStack getFluidInTank(int tank) {
+            if(tank != 0) {
+                return FluidStack.EMPTY;
+            }
+
             Fluid fluid = getFluid();
-            if(fluid == null || getFluidCostPer() == 0D) return FluidStack.EMPTY;
+            if(fluid == null || !isValid()) return FluidStack.EMPTY;
             return new FluidStack(fluid, remainingFluid);
         }
 
         @Override
         public int getTankCapacity(int tank) {
+            if(tank != 0) {
+                return 0;
+            }
+
             return remainingFluid;
         }
 
@@ -432,8 +454,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
             Fluid fluid = getFluid();
-            if(fluid != null && getFluidCostPer() != 0D && resource.getFluid().equals(fluid)) return drain(resource.getAmount(), action);
-            return FluidStack.EMPTY;
+            if(fluid == null || !isValid() || !resource.getFluid().equals(fluid)) return FluidStack.EMPTY;
+            return drain(resource.getAmount(), action);
         }
 
         @Nonnull
@@ -441,7 +463,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         public FluidStack drain(int maxDrain, FluidAction action) {
             boolean isFinal = getMatter() == Matter.FINAL;
             Fluid fluid = getFluid();
-            if(fluid == null || getFluidCostPer() == 0D || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
+            if(fluid == null || !isValid() || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
             if(!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
             if(maxDrain > remainingFluid) maxDrain = remainingFluid;
             long cost = getFluidCost(maxDrain);
@@ -461,15 +483,17 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             if(action.execute()) {
                 if(!isFinal) remainingFluid -= maxDrain;
                 markDirty();
-                provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
-                provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
+                if(!isFreeFluid()) {
+                    provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
+                    provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
+                }
             }
             return new FluidStack(fluid, maxDrain);
         }
     }
 
-    public FluidHandler getFluidHandlerCapability() {
-        return (FluidHandler) getCapability(ForgeCapabilities.FLUID_HANDLER).orElseThrow(NullPointerException::new);
+    public IFluidHandler getFluidHandlerCapability() {
+        return getCapability(ForgeCapabilities.FLUID_HANDLER).orElseThrow(NullPointerException::new);
     }
 
     @Nonnull

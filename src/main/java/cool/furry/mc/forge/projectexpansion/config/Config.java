@@ -6,6 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public final class Config {
@@ -34,6 +35,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Boolean> enabledLearnedTooltip = Builder.comment("If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this.").define("enabledLearnedTooltip", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> alchemicalCollectionSound = Builder.comment("If a sound should be played when something is collected with Alchemical Collection.").define("alchemicalCollectionSound", true);
     private static final ForgeConfigSpec.ConfigValue<String> editOthersAlchemicalBooks = Builder.comment("If players should be allowed to edit books bound to other players. A player is considered to be \"OP\" when they have an op level of 2 or greater. Allowed values: DISABLED, OP_ONLY, ENABLED").define("editOthersAlchemicalBooks", AlchemicalBookEditLevel.DISABLED.name());
+    public static final ForgeConfigSpec.ConfigValue<Boolean> zeroEmcFluidsAreFree = Builder.comment("If fluids which end their calculations at zero emc should be returned as free.").define("zeroEmcFluidsAreFree", true);
     static { Spec = Builder.build(); }
     public static AlchemicalBookEditLevel editOthersAlchemicalBooks() {
         try {
