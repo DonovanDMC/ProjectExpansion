@@ -13,7 +13,6 @@ public class ItemFuel extends Item  {
     public ItemFuel(Fuel level) {
         super(new Properties().tab(Main.tab).rarity(level.rarity));
         this.level = level;
-
     }
 
 

@@ -79,6 +79,7 @@ public enum Lang implements ILangEntry {
         // Collector
         COLLECTOR_TOOLTIP("collector", "tooltip"),
         COLLECTOR_EMC("collector", "emc"),
+        COLLECTOR_STACK_EMC("collector", "stack_emc"),
 
         // EMC Link
         EMC_LINK_TOOLTIP("emc_link", "tooltip"),
@@ -98,6 +99,7 @@ public enum Lang implements ILangEntry {
         // Power Flower
         POWER_FLOWER_TOOLTIP("power_flower", "tooltip"),
         POWER_FLOWER_EMC("power_flower", "emc"),
+        POWER_FLOWER_STACK_EMC("power_flower", "stack_emc"),
 
         // Relay
         RELAY_TOOLTIP("relay", "tooltip"),
