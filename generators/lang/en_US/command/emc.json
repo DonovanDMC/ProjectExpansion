@@ -4,7 +4,7 @@
   "command.projectexpansion.emc.add.success_self": "Successfully added %s to your emc, you now have %s",
   "command.projectexpansion.emc.add.notification": "You were given %s emc by %s, you now have %s",
   "command.projectexpansion.emc.remove.success": "Successfully removed %s emc from %s, they now have %s",
-  "command.projectexpansion.emc.remove.successSelf": "Successfully removed %s fro your emc, you now have %s",
+  "command.projectexpansion.emc.remove.success_self": "Successfully removed %s from your emc, you now have %s",
   "command.projectexpansion.emc.remove.notification": "%s emc was removed from you by %s, you now have %s",
   "command.projectexpansion.emc.remove.negative": "Cannot remove %s emc from %s as this would make their emc negative.",
   "command.projectexpansion.emc.set.success": "Successfully set the emc of %s to %s",
