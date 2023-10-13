@@ -47,11 +47,11 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmcStorage, IItemHandler, IHasMatter, IFluidHandler {
+public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
-    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
-    private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(() -> this);
-    private final LazyOptional<IFluidHandler> fluidHandlerCapability = LazyOptional.of(() -> this);
+    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(EMCHandler::new);
+    private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(ItemHandler::new);
+    private final LazyOptional<IFluidHandler> fluidHandlerCapability = LazyOptional.of(FluidHandler::new);
     public ItemStack itemStack;
     public Matter matter;
     public BigInteger remainingEMC = BigInteger.ZERO;
@@ -147,240 +147,257 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
         this.matter = matter;
     }
 
-    /*******
-     * EMC *
-     *******/
+    /****************
+     * Capabilities *
+     ****************/
 
-    @Override
-    public long getStoredEmc() {
-        return 0L;
-    }
-
-    @Override
-    public long getMaximumEmc() {
-        return Util.safeLongValue(getMatter().getEMCLinkEMCLimit());
-    }
-
-    @Override
-    public long extractEmc(long emc, EmcAction action) {
-        return emc < 0L ? insertEmc(-emc, action) : 0L;
-    }
-
-    @Override
-    public long insertEmc(long emc, EmcAction action) {
-        boolean isFinal = getMatter() == Matter.FINAL;
-        long v = isFinal ? emc : Math.min(Util.safeLongValue(remainingEMC), emc);
-
-        if (emc <= 0L) return 0L;
-        if (action.execute()) {
-            if(!isFinal) remainingEMC = remainingEMC.subtract(BigInteger.valueOf(v));
-            this.emc = this.emc.add(BigInteger.valueOf(v));
-            Util.markDirty(this);
+    class EMCHandler implements IEmcStorage {
+        @Override
+        public long getStoredEmc() {
+            return 0L;
         }
 
-        return v;
-    }
+        @Override
+        public long getMaximumEmc() {
+            return Util.safeLongValue(getMatter().getEMCLinkEMCLimit());
+        }
 
-    /*********
-     * Items *
-     *********/
+        @Override
+        public long extractEmc(long emc, EmcAction action) {
+            return emc < 0L ? insertEmc(-emc, action) : 0L;
+        }
 
-    @Override
-    public int getSlots() {
-        return getMatter().getEMCLinkInventorySize();
-    }
+        @Override
+        public long insertEmc(long emc, EmcAction action) {
+            boolean isFinal = getMatter() == Matter.FINAL;
+            long v = isFinal ? emc : Math.min(Util.safeLongValue(remainingEMC), emc);
 
-    @Nonnull
-    @Override
-    public ItemStack getStackInSlot(int slot) {
-        if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-        if (provider == null) return ItemStack.EMPTY;
-        BigInteger val = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
-        if(val.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
-        BigInteger maxCount = provider.getEmc().divide(val).min(BigInteger.valueOf(Integer.MAX_VALUE));
-        int count = maxCount.intValueExact();
-        if (count <= 0) return ItemStack.EMPTY;
-
-        return ItemHandlerHelper.copyStackWithSize(itemStack, count);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        boolean isFinal = getMatter() == Matter.FINAL;
-        if (slot == 0 || (!isFinal && remainingImport <= 0) || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) return stack;
-
-        int count = stack.getCount();
-        stack = ItemHandlerHelper.copyStackWithSize(stack, 1);
-
-        if (count <= 0) return stack;
-
-        ItemInfo info = ItemInfo.fromStack(stack);
-        if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
-
-        int insertCount = isFinal ? count : Math.min(count, remainingImport);
-        if (!simulate) {
-            long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-            if (provider == null) return stack;
-            BigInteger totalValue = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(insertCount));
-            provider.setEmc(provider.getEmc().add(totalValue));
-            ServerPlayer player = Util.getPlayer(owner);
-            if (player != null) {
-                if (provider.addKnowledge(stack))
-                    provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
-                provider.syncEmc(player);
+            if (emc <= 0L) return 0L;
+            if (action.execute()) {
+                if (!isFinal) remainingEMC = remainingEMC.subtract(BigInteger.valueOf(v));
+                BlockEntityEMCLink.this.emc = BlockEntityEMCLink.this.emc.add(BigInteger.valueOf(v));
+                Util.markDirty(BlockEntityEMCLink.this);
             }
-            if(!isFinal) remainingImport -= insertCount;
-            Util.markDirty(this);
-        }
 
-        if (insertCount == count) return ItemStack.EMPTY;
-
-        stack.setCount(count - insertCount);
-        return stack;
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return extractItemInternal(slot, amount, simulate, true);
-    }
-
-    public ItemStack extractItemInternal(int slot, int amount, boolean simulate, boolean limit) {
-        boolean isFinal = getMatter() == Matter.FINAL;
-        if (slot != 0 || (!isFinal && remainingExport <= 0) || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
-
-        BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
-        if(itemValue.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-        if (provider == null) return ItemStack.EMPTY;
-        BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
-        int extractCount = Math.min(amount, limit && !isFinal ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
-        if (extractCount <= 0) return ItemStack.EMPTY;
-
-        ItemStack r = NBTManager.getPersistentInfo(ItemInfo.fromStack(itemStack.copy())).createStack();
-        r.setCount(extractCount);
-        if (simulate) return r;
-
-        BigInteger totalPrice = itemValue.multiply(BigInteger.valueOf(extractCount));
-        provider.setEmc(provider.getEmc().subtract(totalPrice));
-        ServerPlayer player = Util.getPlayer(owner);
-        if (player != null) provider.syncEmc(player);
-
-        if (limit && !isFinal) remainingExport -= extractCount;
-        Util.markDirty(this);
-        return r;
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        return getMatter().getEMCLinkItemLimit();
-    }
-
-    @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return ProjectEAPI.getEMCProxy().hasValue(stack);
-    }
-
-
-    /*********
-     * Fluids *
-     *********/
-
-    public @Nullable Fluid getFluid() {
-        if(!itemStack.isEmpty() && itemStack.getItem() instanceof BucketItem bucketItem) return bucketItem.getFluid();
-        else return null;
-    }
-
-    private double getFluidCostPer() {
-        try {
-            long fullCost = ProjectEAPI.getEMCProxy().getValue(itemStack);
-            long bucketCost = ProjectEAPI.getEMCProxy().getValue(net.minecraft.world.item.Items.BUCKET);
-            if(bucketCost == 0 && fullCost == 0) return 0D;
-            return (fullCost - ((bucketCost * getMatter().getFluidEfficiencyPercentage()) / 100F))  / 1000D;
-        } catch(ArithmeticException ignore) {
-            return Long.MAX_VALUE;
+            return v;
         }
     }
 
-    private long getFluidCost(double amount) {
-        try {
-            double cost = getFluidCostPer();
-            return (long) Math.ceil(cost * amount);
-        } catch(ArithmeticException ignore) {
-            return Long.MAX_VALUE;
+    EMCHandler getEMCHandlerCapability() {
+        return (EMCHandler) getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
+    }
+
+    class ItemHandler implements IItemHandler {
+        @Override
+        public int getSlots() {
+            return getMatter().getEMCLinkInventorySize();
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+            if (provider == null) return ItemStack.EMPTY;
+            BigInteger val = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
+            if (val.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
+            BigInteger maxCount = provider.getEmc().divide(val).min(BigInteger.valueOf(Integer.MAX_VALUE));
+            int count = maxCount.intValueExact();
+            if (count <= 0) return ItemStack.EMPTY;
+
+            return ItemHandlerHelper.copyStackWithSize(itemStack, count);
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            boolean isFinal = getMatter() == Matter.FINAL;
+            if (slot == 0 || (!isFinal && remainingImport <= 0) || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null)
+                return stack;
+
+            int count = stack.getCount();
+            stack = ItemHandlerHelper.copyStackWithSize(stack, 1);
+
+            if (count <= 0) return stack;
+
+            ItemInfo info = ItemInfo.fromStack(stack);
+            if (getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
+
+            int insertCount = isFinal ? count : Math.min(count, remainingImport);
+            if (!simulate) {
+                long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
+                @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+                if (provider == null) return stack;
+                BigInteger totalValue = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(insertCount));
+                provider.setEmc(provider.getEmc().add(totalValue));
+                ServerPlayer player = Util.getPlayer(owner);
+                if (player != null) {
+                    if (provider.addKnowledge(stack))
+                        provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(info), true);
+                    provider.syncEmc(player);
+                }
+                if (!isFinal) remainingImport -= insertCount;
+                Util.markDirty(BlockEntityEMCLink.this);
+            }
+
+            if (insertCount == count) return ItemStack.EMPTY;
+
+            stack.setCount(count - insertCount);
+            return stack;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return extractItemInternal(slot, amount, simulate, true);
+        }
+
+        public ItemStack extractItemInternal(int slot, int amount, boolean simulate, boolean limit) {
+            boolean isFinal = getMatter() == Matter.FINAL;
+            if (slot != 0 || (!isFinal && remainingExport <= 0) || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null)
+                return ItemStack.EMPTY;
+
+            BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
+            if (itemValue.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+            if (provider == null) return ItemStack.EMPTY;
+            BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
+            int extractCount = Math.min(amount, limit && !isFinal ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
+            if (extractCount <= 0) return ItemStack.EMPTY;
+
+            ItemStack r = NBTManager.getPersistentInfo(ItemInfo.fromStack(itemStack.copy())).createStack();
+            r.setCount(extractCount);
+            if (simulate) return r;
+
+            BigInteger totalPrice = itemValue.multiply(BigInteger.valueOf(extractCount));
+            provider.setEmc(provider.getEmc().subtract(totalPrice));
+            ServerPlayer player = Util.getPlayer(owner);
+            if (player != null) provider.syncEmc(player);
+
+            if (limit && !isFinal) remainingExport -= extractCount;
+            Util.markDirty(BlockEntityEMCLink.this);
+            return r;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return getMatter().getEMCLinkItemLimit();
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return ProjectEAPI.getEMCProxy().hasValue(stack);
+        }
+
+    }
+
+    ItemHandler getItemHandlerCapability() {
+        return (ItemHandler) getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
+    }
+
+    class FluidHandler implements IFluidHandler {
+        public @Nullable Fluid getFluid() {
+            if (!itemStack.isEmpty() && itemStack.getItem() instanceof BucketItem bucketItem)
+                return bucketItem.getFluid();
+            else return null;
+        }
+
+        private double getFluidCostPer() {
+            try {
+                long fullCost = ProjectEAPI.getEMCProxy().getValue(itemStack);
+                long bucketCost = ProjectEAPI.getEMCProxy().getValue(net.minecraft.world.item.Items.BUCKET);
+                if (bucketCost == 0 && fullCost == 0) return 0D;
+                return (fullCost - ((bucketCost * getMatter().getFluidEfficiencyPercentage()) / 100F)) / 1000D;
+            } catch (ArithmeticException ignore) {
+                return Long.MAX_VALUE;
+            }
+        }
+
+        private long getFluidCost(double amount) {
+            try {
+                double cost = getFluidCostPer();
+                return (long) Math.ceil(cost * amount);
+            } catch (ArithmeticException ignore) {
+                return Long.MAX_VALUE;
+            }
+        }
+
+        @Override
+        public int getTanks() {
+            return 1;
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            Fluid fluid = getFluid();
+            if (fluid == null || getFluidCostPer() == 0D) return FluidStack.EMPTY;
+            return new FluidStack(fluid, remainingFluid);
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return remainingFluid;
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return false;
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            return 0;
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            Fluid fluid = getFluid();
+            if (fluid != null && getFluidCostPer() != 0D && resource.getFluid().equals(fluid))
+                return drain(resource.getAmount(), action);
+            return FluidStack.EMPTY;
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            boolean isFinal = getMatter() == Matter.FINAL;
+            Fluid fluid = getFluid();
+            if (fluid == null || getFluidCostPer() == 0D || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
+            if (!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
+            long cost = getFluidCost(maxDrain);
+            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+            if (provider == null) return FluidStack.EMPTY;
+            BigInteger emc = provider.getEmc();
+            BigDecimal dEMC = new BigDecimal(emc);
+            if (dEMC.compareTo(BigDecimal.valueOf(getFluidCostPer())) < 0) return FluidStack.EMPTY;
+            if (emc.compareTo(BigInteger.valueOf(cost)) < 0) {
+                // this is a bad way to estimate, it rounds up so we'll usually say less than what's really possible
+                BigDecimal max = dEMC.divide(BigDecimal.valueOf(getFluidCostPer()), RoundingMode.FLOOR);
+                maxDrain = Util.safeIntValue(max);
+                if (!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
+                if (maxDrain < 1) return FluidStack.EMPTY;
+                cost = getFluidCost(maxDrain);
+            }
+            if (action.execute()) {
+                if (!isFinal) remainingFluid -= maxDrain;
+                Util.markDirty(BlockEntityEMCLink.this);
+                provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
+                provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
+            }
+            return new FluidStack(fluid, maxDrain);
         }
     }
 
-    @Override
-    public int getTanks() {
-        return 1;
+    FluidHandler getFluidHandlerCapability() {
+        return (FluidHandler) getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
     }
 
-    @Nonnull
-    @Override
-    public FluidStack getFluidInTank(int tank) {
-        Fluid fluid = getFluid();
-        if(fluid == null || getFluidCostPer() == 0D) return FluidStack.EMPTY;
-        return new FluidStack(fluid, remainingFluid);
-    }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return remainingFluid;
-    }
-
-    @Override
-    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        return false;
-    }
-
-    @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        Fluid fluid = getFluid();
-        if(fluid != null && getFluidCostPer() != 0D && resource.getFluid().equals(fluid)) return drain(resource.getAmount(), action);
-        return FluidStack.EMPTY;
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        boolean isFinal = getMatter() == Matter.FINAL;
-        Fluid fluid = getFluid();
-        if(fluid == null || getFluidCostPer() == 0D || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
-        if(!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
-        long cost = getFluidCost(maxDrain);
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-        if(provider == null) return FluidStack.EMPTY;
-        BigInteger emc = provider.getEmc();
-        BigDecimal dEMC = new BigDecimal(emc);
-        if(dEMC.compareTo(BigDecimal.valueOf(getFluidCostPer())) < 0) return FluidStack.EMPTY;
-        if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
-            // this is a bad way to estimate, it rounds up so we'll usually say less than what's really possible
-            BigDecimal max = dEMC.divide(BigDecimal.valueOf(getFluidCostPer()), RoundingMode.FLOOR);
-            maxDrain = Util.safeIntValue(max);
-            if(!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
-            if(maxDrain < 1) return FluidStack.EMPTY;
-            cost = getFluidCost(maxDrain);
-        }
-        if(action.execute()) {
-            if(!isFinal) remainingFluid -= maxDrain;
-            Util.markDirty(this);
-            provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
-            provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
-        }
-        return new FluidStack(fluid, maxDrain);
-    }
     public InteractionResult handleActivation(Player player, InteractionHand hand) {
         ItemStack inHand = player.getItemInHand(hand);
+        ItemHandler itemHandler = getItemHandlerCapability();
+        FluidHandler fluidHandler = getFluidHandlerCapability();
 
         if(!super.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return InteractionResult.CONSUME;
 
@@ -401,7 +418,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_SET.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.CONSUME;
             }
-            if (!isItemValid(0, inHand)) {
+            if (!itemHandler.isItemValid(0, inHand)) {
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_EMPTY_HAND.translateColored(ChatFormatting.RED, new TextComponent(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)), true);
                 return InteractionResult.CONSUME;
             }
@@ -410,13 +427,13 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
             return InteractionResult.SUCCESS;
         }
 
-        Fluid fluid = getFluid();
-        if(fluid != null && getFluidCostPer() != 0D && inHand.getItem() instanceof BucketItem bucketItem && bucketItem.getFluid() == Fluids.EMPTY) {
+        Fluid fluid = fluidHandler.getFluid();
+        if(fluid != null && fluidHandler.getFluidCostPer() != 0D && inHand.getItem() instanceof BucketItem bucketItem && bucketItem.getFluid() == Fluids.EMPTY) {
             if(Config.limitEmcLinkVendor.get() && remainingExport < 1000) {
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_NO_EXPORT_REMAINING.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.CONSUME;
             }
-            long cost = getFluidCost(1000);
+            long cost = fluidHandler.getFluidCost(1000);
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if(provider == null) {
                 player.displayClientMessage(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()), true);
@@ -427,7 +444,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, new TextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
                 return InteractionResult.CONSUME;
             }
-            FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, this, 1000, player, true);
+            FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, fluidHandler, 1000, player, true);
             if(!fillResult.isSuccess()) return InteractionResult.FAIL;
             player.getInventory().removeItem(player.getInventory().selected, 1);
             ItemHandlerHelper.giveItemToPlayer(player, fillResult.getResult());
@@ -443,7 +460,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_NO_EXPORT_REMAINING.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.CONSUME;
             }
-            ItemStack extract = extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
+            ItemStack extract = itemHandler.extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
             if (extract.isEmpty()) {
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, new TextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
                 return InteractionResult.CONSUME;
