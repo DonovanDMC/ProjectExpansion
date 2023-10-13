@@ -31,7 +31,7 @@ public enum Lang implements ILangEntry {
 
     private final String key;
     Lang(String type, String... path) {
-        this(net.minecraft.util.Util.makeDescriptionId(type, new ResourceLocation(Main.MOD_ID, String.join(".", path))));
+        this(net.minecraft.util.Util.makeDescriptionId(type, Main.rl(String.join(".", path))));
     }
 
     Lang(String key) {
@@ -80,11 +80,28 @@ public enum Lang implements ILangEntry {
 
         // Misc
         TRANSMUTATION_INTERFACE_TOOLTIP("transmutation_interface", "tooltip"),
+
+        BASIC_COLLECTOR("basic_collector"),
+        DARK_COLLECTOR("dark_collector"),
+        RED_COLLECTOR("red_collector"),
+        MAGENTA_COLLECTOR("magenta_collector"),
+        PINK_COLLECTOR("pink_collector"),
+        PURPLE_COLLECTOR("purple_collector"),
+        VIOLET_COLLECTOR("violet_collector"),
+        BLUE_COLLECTOR("blue_collector"),
+        CYAN_COLLECTOR("cyan_collector"),
+        GREEN_COLLECTOR("green_collector"),
+        LIME_COLLECTOR("lime_collector"),
+        YELLOW_COLLECTOR("yellow_collector"),
+        ORANGE_COLLECTOR("orange_collector"),
+        WHITE_COLLECTOR("white_collector"),
+        FADING_COLLECTOR("fading_collector"),
+        FINAL_COLLECTOR("final_collector"),
         ;
 
         private final String key;
         Blocks(String... path) {
-            this.key = net.minecraft.util.Util.makeDescriptionId("block", new ResourceLocation(Main.MOD_ID, String.join(".", path)));
+            this.key = net.minecraft.util.Util.makeDescriptionId("block", Main.rl(String.join(".", path)));
         }
 
         @Override
@@ -141,7 +158,7 @@ public enum Lang implements ILangEntry {
 
         private final String key;
         Commands(String... path) {
-            this.key = net.minecraft.util.Util.makeDescriptionId("command", new ResourceLocation(Main.MOD_ID, String.join(".", path)));
+            this.key = net.minecraft.util.Util.makeDescriptionId("command", Main.rl(String.join(".", path)));
         }
 
         @Override
@@ -185,7 +202,7 @@ public enum Lang implements ILangEntry {
         private final String key;
 
         Items(String... path) {
-            this.key = net.minecraft.util.Util.makeDescriptionId("item", new ResourceLocation(Main.MOD_ID, String.join(".", path)));
+            this.key = net.minecraft.util.Util.makeDescriptionId("item", Main.rl(String.join(".", path)));
         }
 
         @Override

@@ -10,13 +10,12 @@ import cool.furry.mc.forge.projectexpansion.item.ItemCompressedEnergyCollector;
 import cool.furry.mc.forge.projectexpansion.registries.Blocks;
 import cool.furry.mc.forge.projectexpansion.registries.Items;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.utils.text.ILangEntry;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -29,22 +28,25 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public enum Matter {
-    BASIC(  4L,             1L,             64L,            0,  null),
-    DARK(   12L,            3L,             192L,           2,  PEItems.DARK_MATTER),
-    RED(    40L,            10L,            640L,           4,  PEItems.RED_MATTER),
-    MAGENTA(160L,           40L,            2560L,          4,  null),
-    PINK(   640L,           150L,           10240L,         5,  null),
-    PURPLE( 2560L,          750L,           40960L,         5,  null),
-    VIOLET( 10240L,         3750L,          163840L,        6,  null),
-    BLUE(   40960L,         15000L,         655360L,        6,  null),
-    CYAN(   163840L,        60000L,         2621440L,       7,  null),
-    GREEN(  655360L,        240000L,        10485760L,      7,  null),
-    LIME(   2621440L,       960000L,        41943040L,      8,  null),
-    YELLOW( 10485760L,      3840000L,       167772160L,     8,  null),
-    ORANGE( 41943040L,      15360000L,      671088640L,     9,  null),
-    WHITE(  167772160L,     61440000L,      2684354560L,    9,  null),
-    FADING( 671088640L,     245760000L,     10737418240L,   10, null),
-    FINAL(  1000000000000L, 1000000000000L, Long.MAX_VALUE, 10, Items.FINAL_STAR_SHARD);
+    BASIC(  0,  null, Lang.Blocks.BASIC_COLLECTOR),
+    DARK(   2,  PEItems.DARK_MATTER, Lang.Blocks.DARK_COLLECTOR),
+    RED(    4,  PEItems.RED_MATTER, Lang.Blocks.RED_COLLECTOR),
+    MAGENTA(4,  null, Lang.Blocks.MAGENTA_COLLECTOR),
+    PINK(   5,  null, Lang.Blocks.PINK_COLLECTOR),
+    PURPLE( 5,  null, Lang.Blocks.PURPLE_COLLECTOR),
+    VIOLET( 6,  null, Lang.Blocks.VIOLET_COLLECTOR),
+    BLUE(   6,  null, Lang.Blocks.BLUE_COLLECTOR),
+    CYAN(   7,  null, Lang.Blocks.CYAN_COLLECTOR),
+    GREEN(  7,  null, Lang.Blocks.GREEN_COLLECTOR),
+    LIME(   8,  null, Lang.Blocks.LIME_COLLECTOR),
+    YELLOW( 8,  null, Lang.Blocks.YELLOW_COLLECTOR),
+    ORANGE( 9,  null, Lang.Blocks.ORANGE_COLLECTOR),
+    WHITE(  9,  null, Lang.Blocks.WHITE_COLLECTOR),
+    FADING( 10, null, Lang.Blocks.FADING_COLLECTOR),
+    FINAL(  10, Items.FINAL_STAR_SHARD, Lang.Blocks.FINAL_COLLECTOR);
+    public final BigDecimal BASE_COLLECTOR_OUTPUT = BigDecimal.valueOf(4L);
+    public final BigDecimal BASE_RELAY_BONUS = BigDecimal.valueOf(1L);
+    public final BigDecimal BASE_RELAY_TRANSFER = BigDecimal.valueOf(64L);
 
     public static final Matter[] VALUES = values();
 
@@ -62,6 +64,9 @@ public enum Matter {
     public final BigDecimal collectorOutputBase;
     public final BigDecimal relayBonusBase;
     public final BigDecimal relayTransferBase;
+    /** @deprecated Due to how 1.19.2 config values work, this will not be set to 100 when fluid efficiency is disabled. */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
     public final int fluidEfficiency;
     @Nullable
     public final Supplier<Item> existingItem;
@@ -86,37 +91,41 @@ public enum Matter {
     private RegistryObject<BlockEMCLink> emcLink = null;
     @Nullable
     private RegistryObject<BlockItem> itemEMCLink = null;
+    @Nullable
+    private ILangEntry collectorLang = null;
 
     public static final int UNCOMMON_THRESHOLD = 4;
     public static final int RARE_THRESHOLD = 15;
     public static final int EPIC_THRESHOLD = 16;
-    Matter(long collectorOutput, long relayBonus, long relayTransfer, int fluidEfficiency, @Nullable Supplier<Item> existingItem) {
+    Matter(int fluidEfficiency, @Nullable Supplier<Item> existingItem, ILangEntry collectorLang) {
+        boolean isFinal = name().equals("FINAL"); // we can't access the FINAL member because we're in the constructor
         this.name = name().toLowerCase();
         this.hasItem = existingItem == null && ordinal() != 0;
         this.level = ordinal() + 1;
-        // Gₙ(aₙ)(z)=4(2z²+z-1)/4z-1
-        this.collectorOutputBase = BigDecimal.valueOf(collectorOutput);
-        // ¯\_(ツ)_/¯
-        this.relayBonusBase = BigDecimal.valueOf(relayBonus);
-        // Gₙ(aₙ)(z)=64(2z²+z-1)/4z-1
-        this.relayTransferBase = BigDecimal.valueOf(relayTransfer);
-        this.fluidEfficiency = Config.enableFluidEfficiency.get() ? fluidEfficiency : 100;
+        this.collectorOutputBase = getValue(BASE_COLLECTOR_OUTPUT);
+        this.relayBonusBase = getValue(BASE_RELAY_BONUS);
+        this.relayTransferBase = isFinal ? BigDecimal.valueOf(Long.MAX_VALUE) : getValue(BASE_RELAY_TRANSFER);
+        this.fluidEfficiency = fluidEfficiency;
         this.existingItem = existingItem;
+        this.collectorLang = collectorLang;
         this.rarity =
-            level >= EPIC_THRESHOLD ? Rarity.EPIC :
-                level >= RARE_THRESHOLD ? Rarity.RARE :
-                    level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
-                        Rarity.COMMON;
-    }
-
-    private BigDecimal calcOldValue(BigDecimal base, int level) {
-        BigDecimal i = base;
-        for (int v = 1; v <= level; v++) i = i.multiply(BigDecimal.valueOf(v));
-        return i;
+                level >= EPIC_THRESHOLD ? Rarity.EPIC :
+                        level >= RARE_THRESHOLD ? Rarity.RARE :
+                                level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
+                                        Rarity.COMMON;
     }
 
     public int getLevel() {
         return level;
+    }
+
+    private BigDecimal getValue(BigDecimal base) {
+        BigDecimal val = base;
+        for(int i = 0; i < ordinal(); i++) {
+            val = val.multiply(BigDecimal.valueOf(6));
+        }
+
+        return val;
     }
 
     public int getFluidEfficiencyPercentage() {
@@ -127,7 +136,6 @@ public enum Matter {
     }
 
     /* Limits */
-
     public BigInteger getPowerFlowerOutput() {
         return collectorOutputBase.multiply(BigDecimal.valueOf(18)).add(relayBonusBase.multiply(BigDecimal.valueOf(30))).multiply(BigDecimal.valueOf(Config.powerflowerMultiplier.get())).toBigInteger();
     }
@@ -142,8 +150,6 @@ public enum Matter {
     unless we figure out a way to skip ticks or hard code numbers, dynamically changing the
     tick rate of these 3 will grossly duplicate emc
     */
-
-
 
     public BigInteger getCollectorOutput() {
         return collectorOutputBase.multiply(BigDecimal.valueOf(Config.collectorMultiplier.get())).toBigInteger();
@@ -174,8 +180,8 @@ public enum Matter {
 
     public BigInteger getEMCLinkEMCLimit() {
         return BigDecimal.valueOf(16)
-            .pow(level)
-            .multiply(BigDecimal.valueOf(Config.emcLinkEMCLimitMultiplier.get())).toBigInteger();
+                .pow(level)
+                .multiply(BigDecimal.valueOf(Config.emcLinkEMCLimitMultiplier.get())).toBigInteger();
     }
 
     public int getEMCLinkItemLimit() {
@@ -204,7 +210,7 @@ public enum Matter {
 
     public IFormattableTextComponent getFormattedComponent(BigInteger value) {
         //  && !Screen.hasShiftDown()
-        return (this == FINAL ? new StringTextComponent("INFINITY") : EMCFormat.getComponent(value)).setStyle(ColorStyle.GREEN);
+        return (equals(FINAL) ? new StringTextComponent("INFINITY") : EMCFormat.getComponent(value)).setStyle(ColorStyle.GREEN);
     }
 
     public IFormattableTextComponent getEMCLinkItemLimitComponent() {
@@ -263,6 +269,10 @@ public enum Matter {
 
     public @Nullable BlockItem getEMCLinkItem() {
         return itemEMCLink == null ? null : itemEMCLink.get();
+    }
+
+    public @Nullable ILangEntry getCollectorLang() {
+        return collectorLang;
     }
 
     /* Registration */

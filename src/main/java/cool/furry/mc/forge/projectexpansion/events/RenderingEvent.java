@@ -26,7 +26,7 @@ public class RenderingEvent {
         for(DyeColor color: DyeColor.values()) {
             RegistryObject<BlockAdvancedAlchemicalChest> block = AdvancedAlchemicalChest.getRegistryBlock(color);
             TileEntityType<TileAdvancedAlchemicalChest> blockEntityType = AdvancedAlchemicalChest.getBlockEntityType(color);
-            ClientRegistry.bindTileEntityRenderer(blockEntityType, context -> new ChestRenderer(context, new ResourceLocation(Main.MOD_ID, String.format("textures/block/advanced_alchemical_chest/%s.png", color.getName())), (b) -> b == block.get()));
+            ClientRegistry.bindTileEntityRenderer(blockEntityType, context -> new ChestRenderer(context, Main.rl(String.format("textures/block/advanced_alchemical_chest/%s.png", color.getName())), (b) -> b == block.get()));
         }
     }
 }
