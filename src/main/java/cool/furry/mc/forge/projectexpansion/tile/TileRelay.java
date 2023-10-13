@@ -23,11 +23,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcStorage, IHasMatter {
+public class TileRelay extends TileEntity implements ITickableTileEntity, IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
     public Matter matter;
     public static final Direction[] DIRECTIONS = Direction.values();
-    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
+    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(EMCHandler::new);
 
     public TileRelay() {
         super(TileEntityTypes.RELAY.get());
@@ -59,7 +59,7 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
             TileEntity tile = level.getBlockEntity(worldPosition.offset(dir.getNormal()));
             if (tile == null) continue;
             tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
-                if (!storage.isRelay() && storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) temp.add(storage);
+                if (!storage.isRelay() && storage.insertEmc(1L, IEmcStorage.EmcAction.SIMULATE) > 0L) temp.add(storage);
             });
         }
 
@@ -81,48 +81,55 @@ public class TileRelay extends TileEntity implements ITickableTileEntity, IEmcSt
         this.matter = matter;
     }
 
-    @Override
-    public long getStoredEmc() {
-        return Util.safeLongValue(emc);
-    }
-
-    @Override
-    public long getMaximumEmc() {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
-    public long extractEmc(long emc, EmcAction action) {
-        long v = Math.min(Util.safeLongValue(this.emc), emc);
-
-        if (v < 0L) return insertEmc(-v, action);
-        else if (action.execute()) this.emc = this.emc.subtract(BigInteger.valueOf(v));
-
-        return v;
-    }
-
-    @Override
-    public long insertEmc(long emc, EmcAction action) {
-        long v = Math.min(getMaximumEmc() - Util.safeLongValue(this.emc), emc);
-
-        if (v < 0L) return extractEmc(-v, action);
-        else if (action.execute()) this.emc = this.emc.add(BigInteger.valueOf(v));
-
-        return v;
-    }
-
-    @Override
-    public boolean isRelay() {
-        return true;
-    }
-
-    public void addBonus() {
-        if (getBlockState().getBlock() instanceof BlockRelay) Util.stepBigInteger(((BlockRelay) getBlockState().getBlock()).getMatter().getRelayBonus(), (val) -> insertEmc(val, EmcAction.EXECUTE));
-    }
-
     /****************
      * Capabilities *
      ****************/
+
+    class EMCHandler implements IEmcStorage {
+        @Override
+        public long getStoredEmc() {
+            return Util.safeLongValue(emc);
+        }
+
+        @Override
+        public long getMaximumEmc() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public long extractEmc(long emc, EmcAction action) {
+            long v = Math.min(Util.safeLongValue(TileRelay.this.emc), emc);
+
+            if (v < 0L) return insertEmc(-v, action);
+            else if (action.execute()) TileRelay.this.emc = TileRelay.this.emc.subtract(BigInteger.valueOf(v));
+
+            return v;
+        }
+
+        @Override
+        public long insertEmc(long emc, EmcAction action) {
+            long v = Math.min(getMaximumEmc() - Util.safeLongValue(TileRelay.this.emc), emc);
+
+            if (v < 0L) return extractEmc(-v, action);
+            else if (action.execute()) TileRelay.this.emc = TileRelay.this.emc.add(BigInteger.valueOf(v));
+
+            return v;
+        }
+
+        @Override
+        public boolean isRelay() {
+            return true;
+        }
+
+        public void addBonus() {
+            if (getBlockState().getBlock() instanceof BlockRelay)
+                Util.stepBigInteger(((BlockRelay) getBlockState().getBlock()).getMatter().getRelayBonus(), (val) -> insertEmc(val, EmcAction.EXECUTE));
+        }
+    }
+
+    EMCHandler getEMCHandlerCapability() {
+        return (EMCHandler) getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
+    }
 
     @Nonnull
     @Override

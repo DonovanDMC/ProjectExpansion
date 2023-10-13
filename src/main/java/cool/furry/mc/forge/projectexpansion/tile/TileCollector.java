@@ -25,11 +25,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileCollector extends TileEntity implements ITickableTileEntity, IEmcStorage, IHasMatter {
+public class TileCollector extends TileEntity implements ITickableTileEntity, IHasMatter {
     public BigInteger emc = BigInteger.ZERO;
     public Matter matter;
     public static final Direction[] DIRECTIONS = Direction.values();
-    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(() -> this);
+    private final LazyOptional<IEmcStorage> emcStorageCapability = LazyOptional.of(EMCHandler::new);
 
     public TileCollector() {
         super(TileEntityTypes.COLLECTOR.get());
@@ -60,12 +60,12 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
             TileEntity tile = level.getBlockEntity(worldPosition.offset(dir.getNormal()));
             if(tile == null) continue;
             tile.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, dir.getOpposite()).ifPresent((storage) -> {
-                if (storage.insertEmc(1L, EmcAction.SIMULATE) > 0L) {
+                if (storage.insertEmc(1L, IEmcStorage.EmcAction.SIMULATE) > 0L) {
                     temp.add(storage);
                     if (tile instanceof RelayMK1Tile) {
                         for (int i = 0; i < 20; i++) ((RelayMK1Tile) tile).addBonus();
                     } else if (tile instanceof TileRelay) {
-                        ((TileRelay) tile).addBonus();
+                        ((TileRelay) tile).getEMCHandlerCapability().addBonus();
                     }
                     Util.markDirty(this);
                 }
@@ -90,35 +90,43 @@ public class TileCollector extends TileEntity implements ITickableTileEntity, IE
         this.matter = matter;
     }
 
-    @Override
-    public long getStoredEmc() {
-        return Util.safeLongValue(emc);
-    }
-
-    @Override
-    public long getMaximumEmc() {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
-    public long extractEmc(long emc, EmcAction action) {
-        long change = Math.min(Util.safeLongValue(this.emc), emc);
-        if (change < 0L) return insertEmc(-change, action);
-        else if (action.execute()) {
-            this.emc = this.emc.subtract(BigInteger.valueOf(change));
-            Util.markDirty(this);
-        }
-        return change;
-    }
-
-    @Override
-    public long insertEmc(long l, EmcAction emcAction) {
-        return 0L;
-    }
 
     /****************
      * Capabilities *
      ****************/
+
+    class EMCHandler implements IEmcStorage {
+        @Override
+        public long getStoredEmc() {
+            return Util.safeLongValue(emc);
+        }
+
+        @Override
+        public long getMaximumEmc() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public long extractEmc(long emc, EmcAction action) {
+            long change = Math.min(Util.safeLongValue(TileCollector.this.emc), emc);
+            if (change < 0L) return insertEmc(-change, action);
+            else if (action.execute()) {
+                TileCollector.this.emc = TileCollector.this.emc.subtract(BigInteger.valueOf(change));
+                Util.markDirty(TileCollector.this);
+            }
+            return change;
+        }
+
+        @Override
+        public long insertEmc(long l, EmcAction emcAction) {
+            return 0L;
+        }
+
+    }
+
+    EMCHandler getEMCHandlerCapability() {
+        return (EMCHandler) getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
+    }
 
     @Nonnull
     @Override
