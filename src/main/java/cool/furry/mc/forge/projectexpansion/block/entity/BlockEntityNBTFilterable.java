@@ -1,6 +1,8 @@
 package cool.furry.mc.forge.projectexpansion.block.entity;
 
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
@@ -19,10 +21,10 @@ public class BlockEntityNBTFilterable extends BlockEntityOwnable {
         boolean status = getFilterStatus();
         if(status) {
             setFilterStatus(false);
-            player.displayClientMessage(new TranslatableComponent("text.projectexpansion.nbt_filter.disable").setStyle(ColorStyle.RED), true);
+            player.displayClientMessage(Lang.NBT_FILTER_DISABLED.translateColored(ChatFormatting.RED), true);
         } else {
             setFilterStatus(true);
-            player.displayClientMessage(new TranslatableComponent("text.projectexpansion.nbt_filter.enable").setStyle(ColorStyle.GREEN), true);
+            player.displayClientMessage(Lang.NBT_FILTER_ENABLED.translateColored(ChatFormatting.GREEN), true);
         }
     }
 

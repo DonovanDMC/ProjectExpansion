@@ -3,10 +3,8 @@ package cool.furry.mc.forge.projectexpansion.block;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityPowerFlower;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
+import cool.furry.mc.forge.projectexpansion.util.*;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -80,9 +78,9 @@ public class BlockPowerFlower extends Block implements IHasMatter, EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(new TranslatableComponent("block.projectexpansion.power_flower.tooltip", new TextComponent(Config.tickDelay.get().toString()).setStyle(ColorStyle.GREEN), new TextComponent(Config.tickDelay.get() == 1 ? "" : "s").setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("block.projectexpansion.power_flower.emc", EMCFormat.getComponent(getMatter().getPowerFlowerOutput()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(Lang.Blocks.POWER_FLOWER_TOOLTIP.translateColored(ChatFormatting.GRAY, new TextComponent(Config.tickDelay.get().toString()).setStyle(ColorStyle.GREEN), new TextComponent(Config.tickDelay.get() == 1 ? "" : "s").setStyle(ColorStyle.GRAY)));
+        list.add(Lang.Blocks.POWER_FLOWER_EMC.translateColored(ChatFormatting.GRAY, EMCFormat.getComponent(getMatter().getPowerFlowerOutput()).setStyle(ColorStyle.GREEN)));
+        list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
     }
 
     @Override

@@ -10,12 +10,12 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -386,45 +386,45 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
 
         if (player.isCrouching()) {
             if (itemStack.isEmpty()) {
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_SET.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.CONSUME;
             }
             if (inHand.isEmpty()) {
                 setInternalItem(ItemStack.EMPTY);
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.cleared").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_CLEARED.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.SUCCESS;
             }
         }
 
         if (itemStack.isEmpty()) {
             if (inHand.isEmpty()) {
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_SET.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.CONSUME;
             }
             if (!isItemValid(0, inHand)) {
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.no_emc_value", new TranslatableComponent(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_EMPTY_HAND.translateColored(ChatFormatting.RED, new TextComponent(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)), true);
                 return InteractionResult.CONSUME;
             }
             setInternalItem(inHand);
-            player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.set", new TextComponent(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
+            player.displayClientMessage(Lang.Blocks.EMC_LINK_SET.translateColored(ChatFormatting.GREEN, new TextComponent(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)), true);
             return InteractionResult.SUCCESS;
         }
 
         Fluid fluid = getFluid();
         if(fluid != null && getFluidCostPer() != 0D && inHand.getItem() instanceof BucketItem bucketItem && bucketItem.getFluid() == Fluids.EMPTY) {
             if(Config.limitEmcLinkVendor.get() && remainingExport < 1000) {
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NO_EXPORT_REMAINING.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.CONSUME;
             }
             long cost = getFluidCost(1000);
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if(provider == null) {
-                player.displayClientMessage(new TranslatableComponent("text.projectexpansion.failed_to_get_knowledge_provider", Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()), true);
                 return InteractionResult.FAIL;
             }
             BigInteger emc = provider.getEmc();
             if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_enough_emc", new TextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, new TextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
                 return InteractionResult.CONSUME;
             }
             FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, this, 1000, player, true);
@@ -440,19 +440,19 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IEmc
 
         if (inHand.isEmpty() || itemStack.is(inHand.getItem())) {
             if (Config.limitEmcLinkVendor.get() && remainingExport <= 0) {
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NO_EXPORT_REMAINING.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.CONSUME;
             }
             ItemStack extract = extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
             if (extract.isEmpty()) {
-                player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.not_enough_emc", new TextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, new TextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
                 return InteractionResult.CONSUME;
             }
             ItemHandlerHelper.giveItemToPlayer(player, extract);
             return InteractionResult.SUCCESS;
         }
 
-        player.displayClientMessage(new TranslatableComponent("block.projectexpansion.emc_link.empty_hand").setStyle(ColorStyle.RED), true);
+        player.displayClientMessage(Lang.Blocks.EMC_LINK_EMPTY_HAND.translateColored(ChatFormatting.RED), true);
         return InteractionResult.CONSUME;
     }
 

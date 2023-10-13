@@ -5,7 +5,9 @@ import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityNBTFilterabl
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -55,12 +57,12 @@ public class BlockEMCLink extends Block implements IHasMatter, EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(new TranslatableComponent("block.projectexpansion.emc_link.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("block.projectexpansion.emc_link.limit_items", getMatter().getEMCLinkItemLimitComponent()).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("block.projectexpansion.emc_link.limit_fluids", getMatter().getEMCLinkFluidLimitComponent()).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("block.projectexpansion.emc_link.fluid_export_efficiency", new TextComponent(getMatter().getFluidEfficiencyPercentage() + "%").setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("block.projectexpansion.emc_link.limit_emc", getMatter().getEMCLinkEMCLimitComponent()).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(Lang.Blocks.EMC_LINK_TOOLTIP.translateColored(ChatFormatting.GRAY, getMatter().getEMCLinkItemLimitComponent()));
+        list.add(Lang.Blocks.EMC_LINK_LIMIT_ITEMS.translateColored(ChatFormatting.GRAY, getMatter().getEMCLinkFluidLimitComponent()));
+        list.add(Lang.Blocks.EMC_LINK_LIMIT_FLUIDS.translateColored(ChatFormatting.GRAY, getMatter().getEMCLinkEMCLimitComponent()));
+        list.add(Lang.Blocks.EMC_LINK_FLUID_EXPORT_EFFICIENCY.translateColored(ChatFormatting.GRAY, new TextComponent(getMatter().getFluidEfficiencyPercentage() + "%").setStyle(ColorStyle.GREEN)));
+        list.add(Lang.Blocks.EMC_LINK_LIMIT_EMC.translateColored(ChatFormatting.GRAY, getMatter().getEMCLinkEMCLimitComponent()));
+        list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
     }
 
     @Override

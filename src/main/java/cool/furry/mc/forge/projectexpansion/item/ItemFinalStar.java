@@ -2,6 +2,8 @@ package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
@@ -24,8 +26,8 @@ public class ItemFinalStar extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(new TranslatableComponent("item.projectexpansion.final_star.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(Lang.Items.FINAL_STAR_SHARD_TOOLTIP.translateColored(ChatFormatting.GRAY));
+        list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
     }
 
     @Override

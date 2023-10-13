@@ -2,7 +2,9 @@ package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
@@ -26,7 +28,7 @@ public class ItemCompressedEnergyCollector extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(new TranslatableComponent("item.projectexpansion.compressed_collector.tooltip").setStyle(ColorStyle.GRAY));
+        list.add(Lang.Items.COMRESSED_COLLECTOR_TOOLTIP.translateColored(ChatFormatting.GRAY));
     }
 
     @Override

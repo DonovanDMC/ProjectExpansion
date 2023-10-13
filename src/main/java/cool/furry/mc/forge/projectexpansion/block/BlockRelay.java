@@ -3,10 +3,8 @@ package cool.furry.mc.forge.projectexpansion.block;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityRelay;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
+import cool.furry.mc.forge.projectexpansion.util.*;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -55,10 +53,10 @@ public class BlockRelay extends Block implements IHasMatter, EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(new TranslatableComponent("block.projectexpansion.relay.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("block.projectexpansion.relay.bonus", EMCFormat.getComponent(getMatter().getRelayBonusForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("block.projectexpansion.relay.transfer", getMatter().getRelayTransferComponent().setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(Lang.Blocks.RELAY_TOOLTIP.translateColored(ChatFormatting.GRAY));
+        list.add(Lang.Blocks.RELAY_BONUS.translateColored(ChatFormatting.GRAY, EMCFormat.getComponent(getMatter().getRelayBonusForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)));
+        list.add(Lang.Blocks.RELAY_TRANSFER.translateColored(ChatFormatting.GRAY, getMatter().getRelayTransferComponent().setStyle(ColorStyle.GREEN)));
+        list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
     }
 
     @Nullable

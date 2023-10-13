@@ -4,6 +4,8 @@ import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityNBTFilterabl
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityTransmutationInterface;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -50,8 +52,8 @@ public class BlockTransmutationInterface extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(new TranslatableComponent("block.projectexpansion.transmutation_interface.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(Lang.Blocks.TRANSMUTATION_INTERFACE_TOOLTIP.translateColored(ChatFormatting.GRAY));
+        list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
     }
 
     @Override

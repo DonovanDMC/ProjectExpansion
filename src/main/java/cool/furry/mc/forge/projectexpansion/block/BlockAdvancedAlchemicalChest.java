@@ -6,6 +6,8 @@ import cool.furry.mc.forge.projectexpansion.gui.container.ContainerAdvancedAlche
 import cool.furry.mc.forge.projectexpansion.util.AdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.IHasColor;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -85,8 +87,8 @@ public class BlockAdvancedAlchemicalChest extends HorizontalDirectionalBlock imp
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
 		super.appendHoverText(stack, level, list, flag);
-		list.add(new TranslatableComponent("block.projectexpansion.advanced_alchemical_chest.tooltip").setStyle(ColorStyle.GRAY));
-		list.add(new TranslatableComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+		list.add(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_TOOLTIP.translateColored(ChatFormatting.GRAY));
+		list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -219,7 +221,7 @@ public class BlockAdvancedAlchemicalChest extends HorizontalDirectionalBlock imp
 			@Nonnull
 			@Override
 			public Component getDisplayName() {
-				return new TranslatableComponent("gui.projectexpansion.advanced_alchemical_chest.title");
+				return Lang.ADVANCED_ALCHEMICAL_CHEST_TITLE.translate();
 			}
 		}
 
