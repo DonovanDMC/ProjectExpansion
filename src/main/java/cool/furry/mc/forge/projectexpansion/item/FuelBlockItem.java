@@ -12,7 +12,7 @@ import java.util.Objects;
 public class FuelBlockItem extends BlockItem {
     private final Fuel level;
     public FuelBlockItem(Fuel level) {
-        super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Properties().tab(Main.tab).rarity(level.rarity));
+        super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Properties().tab(Main.tab).rarity(level.getRarity()));
         this.level = level;
     }
 

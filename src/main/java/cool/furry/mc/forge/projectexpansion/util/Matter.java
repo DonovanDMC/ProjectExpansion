@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,6 +63,10 @@ public enum Matter {
         return VALUES[(ordinal() + 1) % VALUES.length];
     }
 
+    public static final List<Matter> COMMON_ITEMS = List.of(BASIC, DARK, RED);
+    public static final List<Matter> UNCOMMON_ITEMS = List.of(MAGENTA, PURPLE, VIOLET, BLUE);
+    public static final List<Matter> RARE_ITEMS = List.of(CYAN, GREEN, LIME, YELLOW);
+    public static final List<Matter> EPIC_ITEMS = List.of(ORANGE, WHITE, FADING, FINAL);
     public final String name;
     public final boolean hasItem;
     public final boolean hasBlock;
@@ -77,7 +82,6 @@ public enum Matter {
     public final Supplier<Item> existingItem;
     @Nullable
     public final Supplier<Block> existingBlock;
-    public final Rarity rarity;
     @Nullable
     private RegistryObject<Item> itemMatter = null;
     @Nullable
@@ -118,15 +122,18 @@ public enum Matter {
         this.fluidEfficiency = fluidEfficiency;
         this.existingItem = existingItem;
         this.existingBlock = existingBlock;
-        this.rarity =
-                level >= EPIC_THRESHOLD ? Rarity.EPIC :
-                        level >= RARE_THRESHOLD ? Rarity.RARE :
-                                level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
-                                        Rarity.COMMON;
     }
 
     public int getLevel() {
         return level;
+    }
+
+    public Rarity getRarity() {
+        if (COMMON_ITEMS.contains(this)) return Rarity.COMMON;
+        if (UNCOMMON_ITEMS.contains(this)) return Rarity.UNCOMMON;
+        if (RARE_ITEMS.contains(this)) return Rarity.RARE;
+        if (EPIC_ITEMS.contains(this)) return Rarity.EPIC;
+        return Rarity.COMMON;
     }
 
     private BigDecimal getValue(BigDecimal base) {
@@ -287,33 +294,33 @@ public enum Matter {
         switch (reg) {
             case MATTER -> {
                 if (hasItem) {
-                    itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().tab(Main.tab).rarity(rarity)));
+                    itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().tab(Main.tab).rarity(getRarity())));
                 }
             }
 
             case MATTER_BLOCK -> {
                 if (hasBlock) {
                     blockMatterBlock = Blocks.Registry.register(String.format("%s_matter_block", name), () -> new Block(Block.Properties.of(Material.STONE).strength(2000000.0F, 6000000.0F).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(ordinal(), 15))));
-                    itemMatterBlock = Items.Registry.register(String.format("%s_matter_block", name), () -> new BlockItem(Objects.requireNonNull(blockMatterBlock).get(), new Item.Properties().tab(Main.tab).rarity(rarity)));
+                    itemMatterBlock = Items.Registry.register(String.format("%s_matter_block", name), () -> new BlockItem(Objects.requireNonNull(blockMatterBlock).get(), new Item.Properties().tab(Main.tab).rarity(getRarity())));
                 }
             }
 
             case COLLECTOR -> {
                 collector = Blocks.Registry.register(String.format("%s_collector", name), () -> new BlockCollector(this));
-                itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(collector).get(), new Item.Properties().tab(Main.tab).rarity(rarity)));
+                itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(collector).get(), new Item.Properties().tab(Main.tab).rarity(getRarity())));
             }
             case COMPRESSED_COLLECTOR -> itemCompressedCollector = Items.Registry.register(String.format("%s_compressed_collector", name), () -> new ItemCompressedEnergyCollector(this));
             case POWER_FLOWER -> {
                 powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(this));
-                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().tab(Main.tab).rarity(rarity)));
+                itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().tab(Main.tab).rarity(getRarity())));
             }
             case RELAY -> {
                 relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(this));
-                itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().tab(Main.tab).rarity(rarity)));
+                itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().tab(Main.tab).rarity(getRarity())));
             }
             case EMC_LINK -> {
                 emcLink = Blocks.Registry.register(String.format("%s_emc_link", name), () -> new BlockEMCLink(this));
-                itemEMCLink = Items.Registry.register(String.format("%s_emc_link", name), () -> new BlockItem(Objects.requireNonNull(emcLink).get(), new Item.Properties().tab(Main.tab).rarity(rarity)));
+                itemEMCLink = Items.Registry.register(String.format("%s_emc_link", name), () -> new BlockItem(Objects.requireNonNull(emcLink).get(), new Item.Properties().tab(Main.tab).rarity(getRarity())));
             }
         }
     }

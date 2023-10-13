@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 public class ItemFuel extends Item  {
     private final Fuel level;
     public ItemFuel(Fuel level) {
-        super(new Properties().tab(Main.tab).rarity(level.rarity));
+        super(new Properties().tab(Main.tab).rarity(level.getRarity()));
         this.level = level;
     }
 

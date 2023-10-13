@@ -13,9 +13,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.RegistryObject;
+import org.lwjgl.openal.ALC;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
 
@@ -37,9 +40,10 @@ public enum Fuel {
     WHITE("white", true, 14, null);
 
 
-    public static final int UNCOMMON_THRESHOLD = 4;
-    public static final int RARE_THRESHOLD = 15;
-    public static final int EPIC_THRESHOLD = 16;
+    public static final List<Fuel> COMMON_ITEMS = List.of(ALCHEMICAL, MOBIUS, AETERNALIS);
+    public static final List<Fuel> UNCOMMON_ITEMS = List.of(MAGENTA, PURPLE, VIOLET, BLUE);
+    public static final List<Fuel> RARE_ITEMS = List.of(CYAN, GREEN, LIME, YELLOW);
+    public static final List<Fuel> EPIC_ITEMS = List.of(ORANGE, WHITE);
 
     public static final Fuel[] VALUES = values();
 
@@ -48,7 +52,6 @@ public enum Fuel {
     public final int level;
     @Nullable
     public final Supplier<Item> existingItem;
-    public final Rarity rarity;
     @Nullable
     private RegistryObject<Item> item = null;
     @Nullable
@@ -60,11 +63,14 @@ public enum Fuel {
         this.hasItem = hasItem;
         this.level = level;
         this.existingItem = existingItem;
-        this.rarity =
-            level >= EPIC_THRESHOLD ? Rarity.EPIC :
-                level >= RARE_THRESHOLD ? Rarity.RARE :
-                    level >= UNCOMMON_THRESHOLD ? Rarity.UNCOMMON :
-                        Rarity.COMMON;
+    }
+
+    public Rarity getRarity() {
+        if (COMMON_ITEMS.contains(this)) return Rarity.COMMON;
+        if (UNCOMMON_ITEMS.contains(this)) return Rarity.UNCOMMON;
+        if (RARE_ITEMS.contains(this)) return Rarity.RARE;
+        if (EPIC_ITEMS.contains(this)) return Rarity.EPIC;
+        return Rarity.COMMON;
     }
 
     public int getBurnTime() { return getBurnTime(null); }
