@@ -9,13 +9,16 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.item.ItemCompressedEnergyCollector;
 import cool.furry.mc.forge.projectexpansion.registries.Blocks;
 import cool.furry.mc.forge.projectexpansion.registries.Items;
+import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import moze_intel.projecte.utils.text.ILangEntry;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.extensions.IForgeAdvancementBuilder;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -29,22 +32,22 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public enum Matter {
-    BASIC(  0,  null, Lang.Blocks.BASIC_COLLECTOR),
-    DARK(   2,  PEItems.DARK_MATTER, Lang.Blocks.DARK_COLLECTOR),
-    RED(    4,  PEItems.RED_MATTER, Lang.Blocks.RED_COLLECTOR),
-    MAGENTA(4,  null, Lang.Blocks.MAGENTA_COLLECTOR),
-    PINK(   5,  null, Lang.Blocks.PINK_COLLECTOR),
-    PURPLE( 5,  null, Lang.Blocks.PURPLE_COLLECTOR),
-    VIOLET( 6,  null, Lang.Blocks.VIOLET_COLLECTOR),
-    BLUE(   6,  null, Lang.Blocks.BLUE_COLLECTOR),
-    CYAN(   7,  null, Lang.Blocks.CYAN_COLLECTOR),
-    GREEN(  7,  null, Lang.Blocks.GREEN_COLLECTOR),
-    LIME(   8,  null, Lang.Blocks.LIME_COLLECTOR),
-    YELLOW( 8,  null, Lang.Blocks.YELLOW_COLLECTOR),
-    ORANGE( 9,  null, Lang.Blocks.ORANGE_COLLECTOR),
-    WHITE(  9,  null, Lang.Blocks.WHITE_COLLECTOR),
-    FADING( 10, null, Lang.Blocks.FADING_COLLECTOR),
-    FINAL(  10, Items.FINAL_STAR_SHARD, Lang.Blocks.FINAL_COLLECTOR);
+    BASIC(  0,  null, null),
+    DARK(   2,  PEItems.DARK_MATTER, PEBlocks.DARK_MATTER::getBlock),
+    RED(    4,  PEItems.RED_MATTER, PEBlocks.RED_MATTER::getBlock),
+    MAGENTA(4,  null,  null),
+    PINK(   5,  null,  null),
+    PURPLE( 5,  null,  null),
+    VIOLET( 6,  null,  null),
+    BLUE(   6,  null,  null),
+    CYAN(   7,  null,  null),
+    GREEN(  7,  null,  null),
+    LIME(   8,  null,  null),
+    YELLOW( 8,  null,  null),
+    ORANGE( 9,  null,  null),
+    WHITE(  9,  null,  null),
+    FADING( 10, null, null),
+    FINAL(  10, Items.FINAL_STAR_SHARD, null);
     public final BigDecimal BASE_COLLECTOR_OUTPUT = BigDecimal.valueOf(4L);
     public final BigDecimal BASE_RELAY_BONUS = BigDecimal.valueOf(1L);
     public final BigDecimal BASE_RELAY_TRANSFER = BigDecimal.valueOf(64L);
@@ -61,6 +64,7 @@ public enum Matter {
 
     public final String name;
     public final boolean hasItem;
+    public final boolean hasBlock;
     public final int level;
     public final BigDecimal collectorOutputBase;
     public final BigDecimal relayBonusBase;
@@ -71,6 +75,8 @@ public enum Matter {
     public final int fluidEfficiency;
     @Nullable
     public final Supplier<Item> existingItem;
+    @Nullable
+    public final Supplier<Block> existingBlock;
     public final Rarity rarity;
     @Nullable
     private RegistryObject<Item> itemMatter = null;
@@ -93,22 +99,25 @@ public enum Matter {
     @Nullable
     private RegistryObject<BlockItem> itemEMCLink = null;
     @Nullable
-    private ILangEntry collectorLang = null;
+    private RegistryObject<BlockItem> itemMatterBlock = null;
+    @Nullable
+    private RegistryObject<Block> blockMatterBlock = null;
 
     public static final int UNCOMMON_THRESHOLD = 4;
     public static final int RARE_THRESHOLD = 15;
     public static final int EPIC_THRESHOLD = 16;
-    Matter(int fluidEfficiency, @Nullable Supplier<Item> existingItem, ILangEntry collectorLang) {
+    Matter(int fluidEfficiency, @Nullable Supplier<Item> existingItem, @Nullable Supplier<Block> existingBlock) {
         boolean isFinal = name().equals("FINAL"); // we can't access the FINAL member because we're in the constructor
         this.name = name().toLowerCase(Locale.US);
         this.hasItem = existingItem == null && ordinal() != 0;
+        this.hasBlock = existingBlock == null && ordinal() != 0 && ordinal() != 15;
         this.level = ordinal() + 1;
         this.collectorOutputBase = getValue(BASE_COLLECTOR_OUTPUT);
         this.relayBonusBase = getValue(BASE_RELAY_BONUS);
         this.relayTransferBase = isFinal ? BigDecimal.valueOf(Long.MAX_VALUE) : getValue(BASE_RELAY_TRANSFER);
         this.fluidEfficiency = fluidEfficiency;
         this.existingItem = existingItem;
-        this.collectorLang = collectorLang;
+        this.existingBlock = existingBlock;
         this.rarity =
                 level >= EPIC_THRESHOLD ? Rarity.EPIC :
                         level >= RARE_THRESHOLD ? Rarity.RARE :
@@ -272,10 +281,6 @@ public enum Matter {
         return itemEMCLink == null ? null : itemEMCLink.get();
     }
 
-    public @Nullable ILangEntry getCollectorLang() {
-        return collectorLang;
-    }
-
     /* Registration */
 
     private void register(RegistrationType reg) {
@@ -283,6 +288,14 @@ public enum Matter {
             case MATTER: {
                 if (hasItem) {
                     itemMatter = Items.Registry.register(String.format("%s_matter", name), () -> new Item(new Item.Properties().tab(Main.tab).rarity(rarity)));
+                }
+                break;
+            }
+
+            case MATTER_BLOCK: {
+                if (hasBlock) {
+                    blockMatterBlock = Blocks.Registry.register(String.format("%s_matter_block", name), () -> new Block(Block.Properties.of(Material.STONE).strength(2000000.0F, 6000000.0F).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(ordinal(), 15))));
+                    itemMatterBlock = Items.Registry.register(String.format("%s_matter_block", name), () -> new BlockItem(Objects.requireNonNull(blockMatterBlock).get(), new Item.Properties().tab(Main.tab).rarity(rarity)));
                 }
                 break;
             }
@@ -317,13 +330,13 @@ public enum Matter {
             }
         }
     }
-
     public static void registerAll() {
         Arrays.stream(RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
     }
 
     private enum RegistrationType {
         MATTER,
+        MATTER_BLOCK,
         COLLECTOR,
         COMPRESSED_COLLECTOR,
         POWER_FLOWER,
