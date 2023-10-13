@@ -22,7 +22,7 @@ public class RenderingEvent {
         for(DyeColor color: DyeColor.values()) {
             RegistryObject<BlockAdvancedAlchemicalChest> block = AdvancedAlchemicalChest.getRegistryBlock(color);
             BlockEntityType<BlockEntityAdvancedAlchemicalChest> blockEntityType = AdvancedAlchemicalChest.getBlockEntityType(color);
-            event.registerBlockEntityRenderer(blockEntityType, context -> new ChestRenderer<>(context, new ResourceLocation(Main.MOD_ID, String.format("textures/block/advanced_alchemical_chest/%s.png", color.getName())), () -> block));
+            event.registerBlockEntityRenderer(blockEntityType, context -> new ChestRenderer<>(context, Main.rl(String.format("textures/block/advanced_alchemical_chest/%s.png", color.getName())), () -> block));
         }
     }
 }
