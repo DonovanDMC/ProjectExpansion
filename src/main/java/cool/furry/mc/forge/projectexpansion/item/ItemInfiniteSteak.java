@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.client.util.ITooltipFlag;
@@ -19,6 +20,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,8 +40,8 @@ public class ItemInfiniteSteak extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.appendHoverText(stack, world, list, flag);
-        list.add(new TranslationTextComponent("item.projectexpansion.infinite_steak.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.cost", EMCFormat.getComponent(Config.infiniteSteakCost.get()).setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.RED));
+        list.add(Lang.Items.INFINITE_STEAK_TOOLTIP.translateColored(TextFormatting.GRAY));
+        list.add(Lang.COST.translateColored(TextFormatting.RED, EMCFormat.getComponent(Config.infiniteSteakCost.get()).setStyle(ColorStyle.GRAY)));
     }
 
     @Override
@@ -78,12 +80,12 @@ public class ItemInfiniteSteak extends Item {
         ServerPlayerEntity player = (ServerPlayerEntity) entity;
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
         if (provider == null) {
-            player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED), true);
+            player.displayClientMessage(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(TextFormatting.RED, player.getDisplayName()), true);
             return stack;
         }
         BigInteger emc = provider.getEmc().subtract(BigInteger.valueOf(Config.infiniteSteakCost.get()));
         if (emc.compareTo(BigInteger.ZERO) < 0) {
-            player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.infinite_steak.not_enough_emc", new StringTextComponent(Config.infiniteSteakCost.get().toString())).setStyle(ColorStyle.RED), true);
+            player.displayClientMessage(Lang.Items.INFINITE_STEAK_NOT_ENOUGH_EMC.translateColored(TextFormatting.RED, new StringTextComponent(Config.infiniteSteakCost.get().toString())), true);
             return stack;
         }
         provider.setEmc(emc);

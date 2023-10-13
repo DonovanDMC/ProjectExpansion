@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -18,6 +19,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -70,7 +72,7 @@ public class ItemTooltipEvent {
             } else {
                 // if we can't find an existing EMC element, add a new more detailed element
                 event.getToolTip().add(hasKnowledge ?
-                        new TranslationTextComponent("text.projectexpansion.learned").setStyle(ColorStyle.GREEN) : new TranslationTextComponent("text.projectexpansion.notLearned").setStyle(ColorStyle.RED)
+                        Lang.LEARNED.translateColored(TextFormatting.GREEN) : Lang.NOT_LEARNED.translateColored(TextFormatting.RED)
                 );
             }
 
@@ -82,7 +84,7 @@ public class ItemTooltipEvent {
         boolean hasEnch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
         if(hasEnch) {
             boolean enabled = stack.getOrCreateTag().getBoolean(NBTNames.ALCHEMICAL_COLLECTION_ENABLED);
-            event.getToolTip().add(new TranslationTextComponent("text.projectexpansion.alchemical_collection", new TranslationTextComponent(enabled ? "text.projectexpansion.enabled" : "text.projectexpansion.disabled").setStyle(enabled ? ColorStyle.GREEN : ColorStyle.RED)));
+            event.getToolTip().add(Lang.ALCHEMICAL_COLLECTION.translate(enabled ? Lang.ENABLED.translateColored(TextFormatting.GREEN) : Lang.DISABLED.translateColored(TextFormatting.RED)));
         }
     }
 }

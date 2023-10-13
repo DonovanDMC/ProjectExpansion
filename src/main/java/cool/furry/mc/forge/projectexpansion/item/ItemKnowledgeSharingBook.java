@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -23,7 +24,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,7 +48,7 @@ public class ItemKnowledgeSharingBook extends Item {
                 nbt.putUUID(NBTNames.OWNER, player.getUUID());
                 nbt.putString(NBTNames.OWNER_NAME, player.getScoreboardName());
                 level.playSound(null, player.position().x, player.position().y, player.position().z, SoundEvents.KNOWLEDGE_SHARING_BOOK_STORE.get(), SoundCategory.PLAYERS, 0.8F, 0.8F + level.random.nextFloat() * 0.4F);
-                player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.knowledge_sharing_book.stored").setStyle(ColorStyle.GREEN), true);
+                player.displayClientMessage(Lang.Items.KNOWLEDGE_SHARING_BOOK_STORED.translateColored(TextFormatting.GREEN), true);
             }
 
             return ActionResult.sidedSuccess(stack, level.isClientSide);
@@ -56,25 +57,25 @@ public class ItemKnowledgeSharingBook extends Item {
             if (nbt.hasUUID(NBTNames.OWNER)) {
                 UUID owner = nbt.getUUID(NBTNames.OWNER);
                 if (player.getUUID().equals(nbt.getUUID(NBTNames.OWNER))) {
-                    player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.knowledge_sharing_book.self").setStyle(ColorStyle.RED), true);
+                    player.displayClientMessage(Lang.Items.KNOWLEDGE_SHARING_BOOK_SELF.translateColored(TextFormatting.RED), true);
                     return ActionResult.fail(stack);
                 }
                 if (!level.isClientSide) {
                     @Nullable IKnowledgeProvider ownerProvider = Util.getKnowledgeProvider(owner);
                     @Nullable IKnowledgeProvider learnerProvider = Util.getKnowledgeProvider(player);
                     if(ownerProvider == null) {
-                        player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()).setStyle(ColorStyle.RED), true);
+                        player.displayClientMessage(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(TextFormatting.RED, Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()), true);
                         return ActionResult.fail(stack);
                     }
                     if(learnerProvider == null) {
-                        player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED), true);
+                        player.displayClientMessage(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(TextFormatting.RED, player.getDisplayName()), true);
                         return ActionResult.fail(stack);
                     }
                     long learned = 0;
                     for (ItemInfo info : ownerProvider.getKnowledge()) {
                         if (!learnerProvider.hasKnowledge(info)) {
                             if (Config.notifyKnowledgeBookGains.get() && learned < 100) {
-                                player.sendMessage(new TranslationTextComponent("item.projectexpansion.knowledge_sharing_book.learned", info.createStack().getDisplayName()).setStyle(ColorStyle.GREEN), Util.DUMMY_UUID);
+                                player.sendMessage(Lang.Items.KNOWLEDGE_SHARING_BOOK_LEARNED.translateColored(TextFormatting.GREEN, info.createStack().getDisplayName()), Util.DUMMY_UUID);
                             }
                             learnerProvider.addKnowledge(info);
                             learned++;
@@ -85,12 +86,12 @@ public class ItemKnowledgeSharingBook extends Item {
                     if (learned > 0) {
                         learnerProvider.sync((ServerPlayerEntity) player);
                         if (learned > 100) {
-                            player.sendMessage(new TranslationTextComponent("item.projectexpansion.knowledge_sharing_book.learned_over_100", learned - 100).setStyle(ColorStyle.GREEN), Util.DUMMY_UUID);
+                            player.sendMessage(Lang.Items.KNOWLEDGE_SHARING_BOOK_LEARNED_OVER_100.translateColored(TextFormatting.GREEN, learned - 100), Util.DUMMY_UUID);
                         }
-                        player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.knowledge_sharing_book.learned_total", learned, new StringTextComponent(nbt.getString(NBTNames.OWNER_NAME)).setStyle(ColorStyle.AQUA)).setStyle(ColorStyle.GREEN), true);
+                        player.displayClientMessage(Lang.Items.KNOWLEDGE_SHARING_BOOK_LEARNED_TOTAL.translateColored(TextFormatting.GREEN, learned, new StringTextComponent(nbt.getString(NBTNames.OWNER_NAME)).setStyle(ColorStyle.AQUA)), true);
                         level.playSound(null, player.position().x, player.position().y, player.position().z, SoundEvents.KNOWLEDGE_SHARING_BOOK_USE.get(), SoundCategory.PLAYERS, 0.8F, 0.8F + level.random.nextFloat() * 0.4F);
                     } else {
-                        player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.knowledge_sharing_book.no_new_knowledge").setStyle(ColorStyle.RED), true);
+                        player.displayClientMessage(Lang.Items.KNOWLEDGE_SHARING_BOOK_NO_NEW_KNOWLEDGE.translateColored(TextFormatting.RED), true);
                         level.playSound(null, player.position().x, player.position().y, player.position().z, SoundEvents.KNOWLEDGE_SHARING_BOOK_USE_NONE.get(), SoundCategory.PLAYERS, 0.8F, 0.8F + level.random.nextFloat() * 0.4F);
                     }
                 } else {
@@ -110,7 +111,7 @@ public class ItemKnowledgeSharingBook extends Item {
                 stack.shrink(1);
                 return ActionResult.sidedSuccess(stack, level.isClientSide);
             } else {
-                player.displayClientMessage(new TranslationTextComponent("item.projectexpansion.knowledge_sharing_book.no_owner").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Items.KNOWLEDGE_SHARING_BOOK_NO_OWNER.translateColored(TextFormatting.RED), true);
                 return ActionResult.fail(stack);
             }
         }
@@ -127,7 +128,7 @@ public class ItemKnowledgeSharingBook extends Item {
         super.appendHoverText(stack, world, tooltip, flag);
         CompoundNBT nbt = stack.getOrCreateTag();
         if(nbt.hasUUID(NBTNames.OWNER)) {
-            tooltip.add(new TranslationTextComponent("item.projectexpansion.knowledge_sharing_book.selected", new StringTextComponent(nbt.getString(NBTNames.OWNER_NAME)).setStyle(ColorStyle.AQUA)).setStyle(ColorStyle.GRAY));
+            tooltip.add(Lang.Items.KNOWLEDGE_SHARING_BOOK_SELECTED.translateColored(TextFormatting.GRAY, new StringTextComponent(nbt.getString(NBTNames.OWNER_NAME)).setStyle(ColorStyle.AQUA)));
         }
     }
 }

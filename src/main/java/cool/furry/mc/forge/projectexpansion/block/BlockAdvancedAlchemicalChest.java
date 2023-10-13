@@ -6,6 +6,7 @@ import cool.furry.mc.forge.projectexpansion.tile.TileOwnable;
 import cool.furry.mc.forge.projectexpansion.util.AdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.IHasColor;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -38,6 +39,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -78,8 +80,8 @@ public class BlockAdvancedAlchemicalChest extends HorizontalBlock implements IWa
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
 		super.appendHoverText(stack, level, list, flag);
-		list.add(new TranslationTextComponent("block.projectexpansion.advanced_alchemical_chest.tooltip").setStyle(ColorStyle.GRAY));
-		list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+		list.add(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_TOOLTIP.translateColored(TextFormatting.GRAY));
+		list.add(Lang.SEE_WIKI.translateColored(TextFormatting.AQUA));
 	}
 
 	@Override
@@ -196,7 +198,7 @@ public class BlockAdvancedAlchemicalChest extends HorizontalBlock implements IWa
 		@Nonnull
 		@Override
 		public ITextComponent getDisplayName() {
-			return new TranslationTextComponent("gui.projectexpansion.advanced_alchemical_chest.title");
+			return Lang.ADVANCED_ALCHEMICAL_CHEST_TITLE.translate();
 		}
 	}
 

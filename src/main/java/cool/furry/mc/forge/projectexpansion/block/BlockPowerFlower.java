@@ -2,10 +2,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.tile.TilePowerFlower;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import cool.furry.mc.forge.projectexpansion.util.IHasMatter;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
+import cool.furry.mc.forge.projectexpansion.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -24,6 +21,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -80,9 +78,9 @@ public class BlockPowerFlower extends Block implements IHasMatter {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(new TranslationTextComponent("block.projectexpansion.power_flower.tooltip", new StringTextComponent(Config.tickDelay.get().toString()).setStyle(ColorStyle.GREEN), new StringTextComponent(Config.tickDelay.get() == 1 ? "" : "s").setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("block.projectexpansion.power_flower.emc", EMCFormat.getComponent(getMatter().getPowerFlowerOutput()).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(Lang.Blocks.POWER_FLOWER_TOOLTIP.translateColored(TextFormatting.GRAY, new StringTextComponent(Config.tickDelay.get().toString()).setStyle(ColorStyle.GREEN), new StringTextComponent(Config.tickDelay.get() == 1 ? "" : "s").setStyle(ColorStyle.GRAY)));
+        list.add(Lang.Blocks.POWER_FLOWER_EMC.translateColored(TextFormatting.GRAY, EMCFormat.getComponent(getMatter().getPowerFlowerOutput()).setStyle(ColorStyle.GREEN)));
+        list.add(Lang.SEE_WIKI.translateColored(TextFormatting.AQUA));
     }
 
     @Deprecated

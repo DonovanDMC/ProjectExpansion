@@ -2,6 +2,7 @@ package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.block.BlockAdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.util.AdvancedAlchemicalChest;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.gameObjs.items.AlchemicalBag;
@@ -62,7 +63,7 @@ public class TileAdvancedAlchemicalChest extends TileOwnable implements IItemHan
 
 		ItemStack stack = player.getItemInHand(hand);
 		if(stack.isEmpty()) {
-			player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.advanced_alchemical_chest.color", color.getName()), true );
+			player.displayClientMessage(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_INVLID_ITEM.translate(color.getName()), true );
 			return ActionResultType.FAIL;
 		}
 
@@ -81,9 +82,9 @@ public class TileAdvancedAlchemicalChest extends TileOwnable implements IItemHan
 				level.setBlockEntity(worldPosition, newBlockEntity);
 				Util.markDirty(level, worldPosition);
 			}
-			player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.advanced_alchemical_chest.color_set", bag.color.getName()), true);
+			player.displayClientMessage(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_COLOR_SET.translate(bag.color.getName()), true);
 		} else {
-			player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.advanced_alchemical_chest.invalid_item"), true );
+			player.displayClientMessage(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_INVLID_ITEM.translate(), true);
 		}
 
 		return ActionResultType.SUCCESS;

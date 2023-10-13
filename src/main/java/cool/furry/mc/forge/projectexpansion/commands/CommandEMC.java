@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.command.CommandSource;
@@ -17,7 +18,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
@@ -77,7 +78,7 @@ public class CommandEMC {
         try {
             return source.getPlayerOrException().getDisplayName();
         } catch (CommandSyntaxException e) {
-            return new TranslationTextComponent("command.projectexpansion.console").setStyle(ColorStyle.RED);
+            return Lang.Commands.CONSOLE.translateColored(TextFormatting.RED);
         }
     }
 
@@ -106,11 +107,14 @@ public class CommandEMC {
         if(action == ActionType.GET) {
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
             if(provider == null) {
-                ctx.getSource().sendFailure(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+                ctx.getSource().sendFailure(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(TextFormatting.RED, player.getDisplayName()));
                 return 0;
             }
-            if (compareUUID(ctx.getSource(), player)) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.get.successSelf", formatEMC(provider.getEmc())), false);
-            else ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.get.success", player.getDisplayName(), formatEMC(provider.getEmc())), true);
+            if (compareUUID(ctx.getSource(), player)) {
+                ctx.getSource().sendSuccess(Lang.Commands.EMC_GET_SUCCESS_SELF.translate(formatEMC(provider.getEmc())), false);
+            } else {
+                ctx.getSource().sendSuccess(Lang.Commands.EMC_GET_SUCCESS.translate(formatEMC(provider.getEmc())), true);
+            }
 
             return 1;
         }
@@ -137,20 +141,22 @@ public class CommandEMC {
 
                 case SET:
                 case TEST: {
-                    if(value.compareTo(BigInteger.ZERO) < 0) value = null;
+                    if(value.compareTo(BigInteger.ZERO) < 0) {
+                        value = null;
+                    }
                     break;
                 }
             }
         } catch (NumberFormatException ignore) {}
         if(value == null) {
-            ctx.getSource().sendFailure(new TranslationTextComponent("command.projectexpansion.emc.invalid", val).setStyle(ColorStyle.RED));
+            ctx.getSource().sendFailure(Lang.Commands.EMC_INVALID.translateColored(TextFormatting.RED));
             return 0;
         }
 
         int response = 1;
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
         if(provider == null) {
-            ctx.getSource().sendFailure(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", player.getDisplayName()).setStyle(ColorStyle.RED));
+            ctx.getSource().sendFailure(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(TextFormatting.RED, player.getDisplayName()));
             return 0;
         }
         BigInteger newEMC = provider.getEmc();
@@ -158,52 +164,62 @@ public class CommandEMC {
         switch (action) {
             case ADD: {
                 newEMC = newEMC.add(value);
-                if (isSelf) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.add.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
-                else {
-                    ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.add.success", formatEMC(value), player.getDisplayName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
-                    if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.add.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
+                if (compareUUID(ctx.getSource(), player)) {
+                    ctx.getSource().sendSuccess(Lang.Commands.EMC_ADD_SUCCESS_SELF.translateColored(TextFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
+                } else {
+                    ctx.getSource().sendSuccess(Lang.Commands.EMC_ADD_SUCCESS.translateColored(TextFormatting.GREEN, formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
+                    if (Config.notifyCommandChanges.get()) {
+                        player.sendMessage(Lang.Commands.EMC_ADD_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
+                    }
                 }
                 break;
             }
 
             case REMOVE: {
                 newEMC = newEMC.subtract(value);
-                if(newEMC.compareTo(BigInteger.ZERO) < 0) {
-                    ctx.getSource().sendFailure(new TranslationTextComponent("command.projectexpansion.emc.remove.negative", formatEMC(value), player.getScoreboardName()).setStyle(ColorStyle.RED));
+                if (newEMC.compareTo(BigInteger.ZERO) < 0) {
+                    ctx.getSource().sendFailure(Lang.Commands.EMC_REMOVE_NEGATIVE.translateColored(TextFormatting.RED, formatEMC(value), player.getScoreboardName()));
                     return 0;
                 }
-                if (isSelf) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.remove.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
-                else {
-                    ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.remove.success", formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
-                    if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.remove.notification", formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
+                if (compareUUID(ctx.getSource(), player)) {
+                    ctx.getSource().sendSuccess(Lang.Commands.EMC_REMOVE_SUCCESS_SELF.translateColored(TextFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
+                } else {
+                    ctx.getSource().sendSuccess(Lang.Commands.EMC_REMOVE_SUCCESS.translateColored(TextFormatting.GREEN, formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)), true);
+                    if (Config.notifyCommandChanges.get()) {
+                        player.sendMessage(Lang.Commands.EMC_REMOVE_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
+                    }
                 }
                 break;
             }
 
             case SET: {
                 newEMC = value;
-                if (isSelf)
-                    ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.set.successSelf", formatEMC(value), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), false);
-                else {
-                    ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.set.success", player.getDisplayName(), formatEMC(newEMC)).setStyle(ColorStyle.GREEN), true);
-                    if (Config.notifyCommandChanges.get()) player.sendMessage(new TranslationTextComponent("command.projectexpansion.emc.set.notification", formatEMC(newEMC), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                if (compareUUID(ctx.getSource(), player)) {
+                    ctx.getSource().sendSuccess(Lang.Commands.EMC_SET_SUCCESS_SELF.translateColored(TextFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
+                } else {
+                    ctx.getSource().sendSuccess(Lang.Commands.EMC_SET_SUCCESS.translateColored(TextFormatting.GREEN, player.getDisplayName(), formatEMC(newEMC)), true);
+                    if (Config.notifyCommandChanges.get()) {
+                        player.sendMessage(Lang.Commands.EMC_REMOVE_SUCCESS.translate(formatEMC(newEMC), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                    }
                 }
                 break;
             }
 
             case TEST: {
                 boolean canTake = newEMC.compareTo(value) > -1;
-                if (isSelf)
-                    if(canTake) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.test.successSelf", formatEMC(value)).setStyle(ColorStyle.GREEN), false);
-                    else {
+                if (compareUUID(ctx.getSource(), player))
+                    if (canTake) {
+                        ctx.getSource().sendSuccess(Lang.Commands.EMC_TEST_SUCCESS_SELF.translateColored(TextFormatting.GREEN, formatEMC(value)), false);
+                    } else {
                         response = 0;
-                        ctx.getSource().sendFailure(new TranslationTextComponent("command.projectexpansion.emc.test.failSelf", formatEMC(value)).setStyle(ColorStyle.RED));
+                        ctx.getSource().sendFailure(Lang.Commands.EMC_TEST_FAIL_SELF.translateColored(TextFormatting.RED, formatEMC(value)));
                     }
                 else {
-                    if(canTake) ctx.getSource().sendSuccess(new TranslationTextComponent("command.projectexpansion.emc.test.success", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.GREEN), false);
+                    if (canTake)
+                        ctx.getSource().sendSuccess(Lang.Commands.EMC_TEST_SUCCESS.translateColored(TextFormatting.GREEN, player.getScoreboardName(), formatEMC(value)), false);
                     else {
                         response = 0;
-                        ctx.getSource().sendFailure(new TranslationTextComponent("command.projectexpansion.emc.test.fail", player.getScoreboardName(), formatEMC(value)).setStyle(ColorStyle.RED));
+                        ctx.getSource().sendFailure(Lang.Commands.KNOWLEDGE_TEST_FAIL_SELF.translateColored(TextFormatting.RED, player.getScoreboardName(), formatEMC(value)));
                     }
                 }
             }

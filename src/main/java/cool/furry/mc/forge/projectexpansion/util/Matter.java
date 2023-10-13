@@ -13,8 +13,10 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -192,32 +194,32 @@ public enum Matter {
         }
     }
 
-    public ITextComponent getFormattedComponent(int value) {
+    public IFormattableTextComponent getFormattedComponent(int value) {
         return getFormattedComponent(BigInteger.valueOf(value));
     }
 
-    public ITextComponent getFormattedComponent(long value) {
+    public IFormattableTextComponent getFormattedComponent(long value) {
         return getFormattedComponent(BigInteger.valueOf(value));
     }
 
-    public ITextComponent getFormattedComponent(BigInteger value) {
+    public IFormattableTextComponent getFormattedComponent(BigInteger value) {
         //  && !Screen.hasShiftDown()
         return (this == FINAL ? new StringTextComponent("INFINITY") : EMCFormat.getComponent(value)).setStyle(ColorStyle.GREEN);
     }
 
-    public ITextComponent getEMCLinkItemLimitComponent() {
+    public IFormattableTextComponent getEMCLinkItemLimitComponent() {
         return getFormattedComponent(getEMCLinkItemLimit());
     }
 
-    public ITextComponent getEMCLinkFluidLimitComponent() {
+    public IFormattableTextComponent getEMCLinkFluidLimitComponent() {
         return getFormattedComponent(getEMCLinkFluidLimit());
     }
 
-    public ITextComponent getEMCLinkEMCLimitComponent() {
+    public IFormattableTextComponent getEMCLinkEMCLimitComponent() {
         return getFormattedComponent(getEMCLinkEMCLimit());
     }
 
-    public ITextComponent getRelayTransferComponent() {
+    public IFormattableTextComponent getRelayTransferComponent() {
         return getFormattedComponent(getRelayTransferForTicks(Config.tickDelay.get()));
     }
 

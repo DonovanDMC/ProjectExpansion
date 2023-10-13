@@ -24,7 +24,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -384,27 +384,27 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
 
         if (player.isCrouching()) {
             if (itemStack.isEmpty()) {
-                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_SET.translateColored(TextFormatting.RED), true);
                 return ActionResultType.CONSUME;
             }
             if (inHand.isEmpty()) {
                 setInternalItem(ItemStack.EMPTY);
-                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.cleared").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_CLEARED.translateColored(TextFormatting.RED), true);
                 return ActionResultType.SUCCESS;
             }
         }
 
         if (itemStack.isEmpty()) {
             if (inHand.isEmpty()) {
-                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_set").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_SET.translateColored(TextFormatting.RED), true);
                 return ActionResultType.CONSUME;
             }
             if (!isItemValid(0, inHand)) {
-                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_emc_value", itemStack.getDisplayName().copy().setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_EMPTY_HAND.translateColored(TextFormatting.RED, new StringTextComponent(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)), true);
                 return ActionResultType.CONSUME;
             }
             setInternalItem(inHand);
-            player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.set", itemStack.getDisplayName().copy().setStyle(ColorStyle.BLUE)).setStyle(ColorStyle.GREEN), true);
+            player.displayClientMessage(Lang.Blocks.EMC_LINK_SET.translateColored(TextFormatting.GREEN, new StringTextComponent(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)), true);
             return ActionResultType.SUCCESS;
         }
 
@@ -412,18 +412,18 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         if(fluid != null && getFluidCostPer() != 0D && inHand.getItem() instanceof BucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
             BucketItem bucketItem = (BucketItem) inHand.getItem();
             if(Config.limitEmcLinkVendor.get() && remainingExport < 1000) {
-                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NO_EXPORT_REMAINING.translateColored(TextFormatting.RED), true);
                 return ActionResultType.CONSUME;
             }
             long cost = getFluidCost(1000);
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if(provider == null) {
-                player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.failed_to_get_knowledge_provider", Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(TextFormatting.RED, Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()), true);
                 return ActionResultType.FAIL;
             }
             BigInteger emc = provider.getEmc();
             if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
-                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(TextFormatting.RED, new StringTextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
                 return ActionResultType.CONSUME;
             }
             FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, this, 1000, player, true);
@@ -439,19 +439,19 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
 
         if (inHand.isEmpty() || itemStack.equals(inHand)) {
             if (Config.limitEmcLinkVendor.get() && remainingExport <= 0) {
-                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.no_export_remaining").setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NO_EXPORT_REMAINING.translateColored(TextFormatting.RED), true);
                 return ActionResultType.CONSUME;
             }
             ItemStack extract = extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
             if (extract.isEmpty()) {
-                player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.not_enough_emc", new StringTextComponent(String.valueOf(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)).setStyle(ColorStyle.RED), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(TextFormatting.RED, new StringTextComponent(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
                 return ActionResultType.CONSUME;
             }
             ItemHandlerHelper.giveItemToPlayer(player, extract);
             return ActionResultType.SUCCESS;
         }
 
-        player.displayClientMessage(new TranslationTextComponent("block.projectexpansion.emc_link.empty_hand").setStyle(ColorStyle.RED), true);
+        player.displayClientMessage(Lang.Blocks.EMC_LINK_EMPTY_HAND.translateColored(TextFormatting.RED), true);
         return ActionResultType.CONSUME;
     }
 

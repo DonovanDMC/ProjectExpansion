@@ -4,6 +4,7 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;

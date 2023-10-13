@@ -1,9 +1,11 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class TileNBTFilterable extends TileOwnable {
@@ -17,10 +19,10 @@ public class TileNBTFilterable extends TileOwnable {
         boolean status = getFilterStatus();
         if(status) {
             setFilterStatus(false);
-            player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.nbt_filter.disable").setStyle(ColorStyle.RED), true);
+            player.displayClientMessage(Lang.NBT_FILTER_DISABLED.translateColored(TextFormatting.RED), true);
         } else {
             setFilterStatus(true);
-            player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.nbt_filter.enable").setStyle(ColorStyle.GREEN), true);
+            player.displayClientMessage(Lang.NBT_FILTER_ENABLED.translateColored(TextFormatting.GREEN), true);
         }
     }
 

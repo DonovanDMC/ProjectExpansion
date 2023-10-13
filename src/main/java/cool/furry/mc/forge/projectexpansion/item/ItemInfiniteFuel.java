@@ -2,10 +2,7 @@ package cool.furry.mc.forge.projectexpansion.item;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
-import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
-import cool.furry.mc.forge.projectexpansion.util.NBTNames;
-import cool.furry.mc.forge.projectexpansion.util.Util;
+import cool.furry.mc.forge.projectexpansion.util.*;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -14,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,8 +33,8 @@ public class ItemInfiniteFuel extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.appendHoverText(stack, world, list, flag);
-        list.add(new TranslationTextComponent("item.projectexpansion.infinite_fuel.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.cost", EMCFormat.getComponent(Config.infiniteFuelCost.get()).setStyle(ColorStyle.GRAY)).setStyle(ColorStyle.RED));
+        list.add(Lang.Items.INFINITE_FUEL_TOOLTIP.translateColored(TextFormatting.GRAY));
+        list.add(Lang.COST.translateColored(TextFormatting.RED, EMCFormat.getComponent(Config.infiniteFuelCost.get()).setStyle(ColorStyle.GRAY)));
     }
 
     @Override

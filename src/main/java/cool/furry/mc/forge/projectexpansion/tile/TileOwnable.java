@@ -1,6 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.tile;
 
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.NBTNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import net.minecraft.block.BlockState;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 
@@ -59,7 +61,7 @@ public class TileOwnable extends TileEntity {
 
             case CHECK_OWNERSHIP: {
                 if (!owner.equals(player.getUUID())) {
-                    player.displayClientMessage(new TranslationTextComponent("text.projectexpansion.not_owner", new StringTextComponent(ownerName).setStyle(ColorStyle.RED)).setStyle(ColorStyle.RED), true);
+                    player.displayClientMessage(Lang.NOT_OWNER.translateColored(TextFormatting.RED, new StringTextComponent(ownerName).setStyle(ColorStyle.RED)), true);
                     return false;
                 }
                 break;

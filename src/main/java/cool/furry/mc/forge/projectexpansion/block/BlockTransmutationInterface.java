@@ -3,6 +3,7 @@ package cool.furry.mc.forge.projectexpansion.block;
 import cool.furry.mc.forge.projectexpansion.tile.TileNBTFilterable;
 import cool.furry.mc.forge.projectexpansion.tile.TileTransmutationInterface;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -19,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -50,8 +52,8 @@ public class BlockTransmutationInterface extends Block {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable IBlockReader level, List<ITextComponent> list, ITooltipFlag flag) {
         super.appendHoverText(stack, level, list, flag);
-        list.add(new TranslationTextComponent("block.projectexpansion.transmutation_interface.tooltip").setStyle(ColorStyle.GRAY));
-        list.add(new TranslationTextComponent("text.projectexpansion.see_wiki").setStyle(ColorStyle.AQUA));
+        list.add(Lang.Blocks.TRANSMUTATION_INTERFACE_TOOLTIP.translateColored(TextFormatting.GRAY));
+        list.add(Lang.SEE_WIKI.translateColored(TextFormatting.AQUA));
     }
 
     @Override
