@@ -99,6 +99,9 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}")
     runtimeOnly fg.deobf("curse.maven:jei-238222:${getProperty("jeiVersion")}")
     runtimeOnly fg.deobf("curse.maven:pipez-443900:${getProperty("pipezVersion")}")
+    runtimeOnly fg.deobf("curse.maven:ae2-223794:${getProperty("ae2Version")}")
+    runtimeOnly fg.deobf("curse.maven:itank-256991:${getProperty("itankVersion")}")
+    runtimeOnly fg.deobf("curse.maven:cloth-config-348521:${getProperty("clothVersion")}")
 }
 
 jar {
