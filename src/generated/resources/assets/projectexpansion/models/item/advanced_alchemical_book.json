@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "projectexpansion:item/advanced_alchemical_book"
+  }
+}
