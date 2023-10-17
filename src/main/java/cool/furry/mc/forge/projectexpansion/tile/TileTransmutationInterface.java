@@ -73,11 +73,11 @@ public class TileTransmutationInterface extends TileNBTFilterable implements ITi
             if (owner == null || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
             fetchKnowledge();
 
-            if (slot <= 0 || info.length < slot) return ItemStack.EMPTY;
+            if (slot <= 0 || fetchKnowledge().length < slot) return ItemStack.EMPTY;
             int maxCount = getMaxCount(slot - 1);
             if (maxCount <= 0) return ItemStack.EMPTY;
 
-            ItemStack item = info[slot - 1].createStack();
+            ItemStack item = fetchKnowledge()[slot - 1].createStack();
             item.setCount(maxCount);
             return item;
         }
@@ -117,18 +117,18 @@ public class TileTransmutationInterface extends TileNBTFilterable implements ITi
         @Nonnull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot <= 0 || owner == null || info.length < slot || Util.getPlayer(owner) == null)
+            if (slot <= 0 || owner == null || fetchKnowledge().length < slot || Util.getPlayer(owner) == null)
                 return ItemStack.EMPTY;
             fetchKnowledge();
 
             amount = Math.min(amount, getMaxCount(slot - 1));
 
             if (amount <= 0) return ItemStack.EMPTY;
-            ItemStack item = info[slot - 1].createStack();
+            ItemStack item = fetchKnowledge()[slot - 1].createStack();
             item.setCount(amount);
 
             if (simulate) return item;
-            long emcValue = ProjectEAPI.getEMCProxy().getValue(info[slot - 1]);
+            long emcValue = ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot - 1]);
             BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if (provider == null) return ItemStack.EMPTY;
