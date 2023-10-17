@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EOE",
+    "OBO",
+    "EOE"
+  ],
+  "key": {
+    "B": {
+      "item": "projectexpansion:basic_alchemical_book"
+    },
+    "O": {
+      "item": "projectexpansion:magnum_star_omega"
+    },
+    "E": {
+      "item": "projectexpansion:magnum_star_ein"
+    }
+  },
+  "result": {
+    "item": "projectexpansion:advanced_alchemical_book"
+  }
+}

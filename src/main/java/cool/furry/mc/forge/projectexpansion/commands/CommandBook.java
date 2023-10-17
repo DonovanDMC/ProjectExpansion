@@ -36,86 +36,88 @@ import java.util.function.BiFunction;
 public class CommandBook {
     public static LiteralArgumentBuilder<CommandSourceStack> getArguments() {
         return Commands.literal("book")
-                .requires(Permissions.BOOK)
-                .then(Commands.literal("add")
-                        .requires(Permissions.BOOK_ADD)
-                        .then(Commands.literal("player")
-                                .requires(Permissions.BOOK_ADD_PLAYER)
-                                .then(Commands.argument("player", EntityArgument.player())
-                                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                                                .then(Commands.argument("dimension", DimensionArgument.dimension())
-                                                        .then(Commands.argument("name", StringArgumentType.greedyString())
-                                                                .executes(ctx -> handleAdd(ctx, new BookTarget(ctx)))
-                                                        )
-                                                )
-                                        )
+            .requires(Permissions.BOOK)
+            .then(Commands.literal("add")
+                .requires(Permissions.BOOK_ADD)
+                .then(Commands.literal("player")
+                    .requires(Permissions.BOOK_ADD_PLAYER)
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                            .then(Commands.argument("dimension", DimensionArgument.dimension())
+                                .then(Commands.argument("name", StringArgumentType.greedyString())
+                                    .executes(ctx -> handleAdd(ctx, new BookTarget(ctx)))
                                 )
+                            )
                         )
-                        .then(Commands.literal("hand")
-                                .requires(Permissions.BOOK_ADD_HAND)
-                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                                        .then(Commands.argument("dimension", DimensionArgument.dimension())
-                                                .then(Commands.argument("name", StringArgumentType.greedyString())
-                                                        .executes(ctx -> handleAdd(ctx, new BookTarget(ctx)))
-                                                )
-                                        )
-                                )
-                        )
+                    )
                 )
-                .then(Commands.literal("clear")
-                        .requires(Permissions.BOOK_CLEAR)
-                        .then(Commands.literal("player")
-                                .requires(Permissions.BOOK_CLEAR_PLAYER)
-                                .then(Commands.argument("player", EntityArgument.player())
-                                        .executes((ctx) -> handleClear(ctx, new BookTarget(ctx)))
-                                )
+                .then(Commands.literal("hand")
+                    .requires(Permissions.BOOK_ADD_HAND)
+                    .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                        .then(Commands.argument("dimension", DimensionArgument.dimension())
+                            .then(Commands.argument("name", StringArgumentType.greedyString())
+                                .executes(ctx -> handleAdd(ctx, new BookTarget(ctx)))
+                            )
                         )
-                        .then(Commands.literal("hand")
-                                .requires(Permissions.BOOK_CLEAR_HAND)
-                                .executes((ctx) -> handleClear(ctx, new BookTarget(ctx)))
-                        )
+                    )
                 )
-                .then(Commands.literal("dump")
-                        .requires(Permissions.BOOK_DUMP)
-                        .then(Commands.literal("player")
-                                .requires(Permissions.BOOK_DUMP_PLAYER)
-                                .then(Commands.argument("player", EntityArgument.player())
-                                        .executes((ctx) -> handleDump(ctx, new BookTarget(ctx)))
-                                )
-                        )
-                        .then(Commands.literal("hand")
-                                .requires(Permissions.BOOK_DUMP_HAND)
-                                .executes((ctx) -> handleDump(ctx, new BookTarget(ctx)))
-                        )
+            )
+            .then(Commands.literal("clear")
+                .requires(Permissions.BOOK_CLEAR)
+                .then(Commands.literal("player")
+                    .requires(Permissions.BOOK_CLEAR_PLAYER)
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .executes((ctx) -> handleClear(ctx, new BookTarget(ctx)))
+                    )
                 )
-                .then(Commands.literal("list")
-                        .requires(Permissions.BOOK_LIST)
-                        .then(Commands.literal("player")
-                                .requires(Permissions.BOOK_LIST_PLAYER)
-                                .then(Commands.argument("player", EntityArgument.player())
-                                        .executes((ctx) -> handleList(ctx, new BookTarget(ctx)))
-                                )
-                        )
-                        .then(Commands.literal("hand")
-                                .requires(Permissions.BOOK_LIST_HAND)
-                                .executes((ctx) -> handleList(ctx, new BookTarget(ctx)))
-                        )
+                .then(Commands.literal("hand")
+                    .requires(Permissions.BOOK_CLEAR_HAND)
+                    .executes((ctx) -> handleClear(ctx, new BookTarget(ctx)))
                 )
-                .then(Commands.literal("remove")
-                        .requires(Permissions.BOOK_REMOVE)
-                        .then(Commands.literal("player")
-                                .requires(Permissions.BOOK_REMOVE_PLAYER)
-                                .then(Commands.argument("player", EntityArgument.player())
-                                        .executes((ctx) -> handleDump(ctx, new BookTarget(ctx)))
-                                )
+            )
+            .then(Commands.literal("dump")
+                .requires(Permissions.BOOK_DUMP)
+                .then(Commands.literal("player")
+                    .requires(Permissions.BOOK_DUMP_PLAYER)
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .executes((ctx) -> handleDump(ctx, new BookTarget(ctx)))
+                    )
+                )
+                .then(Commands.literal("hand")
+                    .requires(Permissions.BOOK_DUMP_HAND)
+                    .executes((ctx) -> handleDump(ctx, new BookTarget(ctx)))
+                )
+            )
+            .then(Commands.literal("list")
+                .requires(Permissions.BOOK_LIST)
+                .then(Commands.literal("player")
+                    .requires(Permissions.BOOK_LIST_PLAYER)
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .executes((ctx) -> handleList(ctx, new BookTarget(ctx)))
+                    )
+                )
+                .then(Commands.literal("hand")
+                    .requires(Permissions.BOOK_LIST_HAND)
+                    .executes((ctx) -> handleList(ctx, new BookTarget(ctx)))
+                )
+            )
+            .then(Commands.literal("remove")
+                .requires(Permissions.BOOK_REMOVE)
+                .then(Commands.literal("player")
+                    .requires(Permissions.BOOK_REMOVE_PLAYER)
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("location", StringArgumentType.string())
+                            .executes((ctx) -> handleRemove(ctx, new BookTarget(ctx)))
                         )
-                        .then(Commands.literal("hand")
-                                .requires(Permissions.BOOK_REMOVE_HAND)
-                                .then(Commands.argument("location", StringArgumentType.string())
-                                        .executes(ctx -> handleRemove(ctx, new BookTarget(ctx)))
-                                )
-                        )
-                );
+                    )
+                )
+                .then(Commands.literal("hand")
+                    .requires(Permissions.BOOK_REMOVE_HAND)
+                    .then(Commands.argument("location", StringArgumentType.string())
+                        .executes(ctx -> handleRemove(ctx, new BookTarget(ctx)))
+                    )
+                )
+            );
     }
 
     public static class BookTarget {
@@ -239,6 +241,33 @@ public class CommandBook {
         return 1;
     }
 
+    private static Style suggestTeleportPos(CommandContext<CommandSourceStack> ctx, Style style, CapabilityAlchemicalBookLocations.TeleportLocation location) {
+        boolean isSameDimension = Objects.requireNonNull(getPlayer(ctx)).level.dimension().equals(location.dimension());
+
+        if(isSameDimension) {
+            return Util.suggestCommand(style, String.format("/tp %s %s %s", location.x(), location.y(), location.z())).withUnderlined(true);
+        } else {
+            return Util.suggestCommand(style, String.format("/execute in %s run tp %s %s %s", location.dimension().location(), location.x(), location.y(), location.z())).withUnderlined(true);
+        }
+    }
+
+    private static Style suggestTeleportDimension(CommandContext<CommandSourceStack> ctx, Style style, CapabilityAlchemicalBookLocations.TeleportLocation location) {
+        boolean isSameDimension = Objects.requireNonNull(getPlayer(ctx)).level.dimension().equals(location.dimension());
+
+        if(!isSameDimension) {
+            return Util.suggestCommand(style, String.format("/execute in %s run tp ~ ~ ~", location.dimension().location())).withUnderlined(true);
+        }
+        return style;
+    }
+
+    private static Component formatLocation(CommandContext<CommandSourceStack> ctx, CapabilityAlchemicalBookLocations.TeleportLocation location) {
+        boolean shouldSuggestCommand = getPlayer(ctx) != null;
+
+        Component pos = new TextComponent(String.format("%s %s %s", location.x(), location.y(), location.z())).withStyle(style -> shouldSuggestCommand ? suggestTeleportPos(ctx, style, location) : style).withStyle(ChatFormatting.DARK_AQUA);
+        Component dimension = new TextComponent(location.dimension().location().toString()).withStyle(style -> shouldSuggestCommand ? suggestTeleportDimension(ctx, style, location) : style).withStyle(ChatFormatting.DARK_AQUA);
+        return Lang.Commands.BOOK_LIST_LOCATION.translateColored(ChatFormatting.AQUA, new TextComponent(location.name()).withStyle(ChatFormatting.DARK_AQUA), pos, dimension);
+    }
+
     private static int handleList(CommandContext<CommandSourceStack> ctx, BookTarget target) throws CommandSyntaxException {
         @Nullable IAlchemicalBookLocationsProvider provider = getCapability(ctx, target, "list");
         if(provider == null) {
@@ -250,33 +279,10 @@ public class CommandBook {
             return 0;
         }
 
-        @Nullable ServerPlayer player = getPlayer(ctx);
-
-        boolean shouldSuggestCommand = player != null;
-
-        final BiFunction<Style, CapabilityAlchemicalBookLocations.TeleportLocation, Style> SUGGEST_TELEPORT_POS = (style, location) -> {
-            boolean isSameDimension = Objects.requireNonNull(player).level.dimension().equals(location.dimension());
-
-            if(isSameDimension) {
-                return Util.suggestCommand(style, String.format("/tp %s %s %s", location.x(), location.y(), location.z())).withUnderlined(true);
-            } else {
-                return Util.suggestCommand(style, String.format("/execute in %s run tp %s %s %s", location.dimension().location(), location.x(), location.y(), location.z())).withUnderlined(true);
-            }
-        };
-        final BiFunction<Style, CapabilityAlchemicalBookLocations.TeleportLocation, Style> SUGGEST_TELEPORT_DIMENSION = (style, location) -> {
-            boolean isSameDimension = Objects.requireNonNull(player).level.dimension().equals(location.dimension());
-
-            if(!isSameDimension) {
-                return Util.suggestCommand(style, String.format("/execute in %s run tp ~ ~ ~", location.dimension().location())).withUnderlined(true);
-            }
-            return style;
-        };
-
         for(CapabilityAlchemicalBookLocations.TeleportLocation location : provider.getLocations()) {
-            Component pos = new TextComponent(String.format("%s %s %s", location.x(), location.y(), location.z())).withStyle(style -> shouldSuggestCommand ? SUGGEST_TELEPORT_POS.apply(style, location) : style).withStyle(ChatFormatting.DARK_AQUA);
-            Component dimension = new TextComponent(location.dimension().location().toString()).withStyle(style -> shouldSuggestCommand ? SUGGEST_TELEPORT_DIMENSION.apply(style, location) : style).withStyle(ChatFormatting.DARK_AQUA);
-            Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_LIST_LOCATION.translateColored(ChatFormatting.AQUA, new TextComponent(location.name()).withStyle(ChatFormatting.DARK_AQUA), pos, dimension));
+            Util.sendSystemMessage(ctx.getSource(), formatLocation(ctx, location));
         }
+
         return 1;
     }
 
@@ -294,10 +300,6 @@ public class CommandBook {
 
         provider.resetLocations();
 
-        if(target.isPlayer() && provider.getMode() == ItemAlchemicalBook.Mode.PLAYER && Config.notifyCommandChanges.get()) {
-            Util.sendSystemMessage(target.playerOrException(), Lang.Commands.BOOK_CLEAR_PLAYER_NOTIFICATION.translate(getSourceName(ctx.getSource())));
-        }
-
         if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = getPlayer(ctx);
@@ -305,6 +307,10 @@ public class CommandBook {
             if(sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
                 Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_CLEAR_PLAYER_SUCCESS_SELF.translateColored(ChatFormatting.GREEN));
                 return 1;
+            }
+
+            if(Config.notifyCommandChanges.get()) {
+                Util.sendSystemMessage(target.playerOrException(), Lang.Commands.BOOK_CLEAR_PLAYER_NOTIFICATION.translate(getSourceName(ctx.getSource())));
             }
 
             Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_CLEAR_PLAYER_SUCCESS.translateColored(ChatFormatting.GREEN, targetPlayer.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA)));
@@ -339,10 +345,6 @@ public class CommandBook {
         String locationDump = location.serialize().toString();
         ctx.getSource().sendSuccess(Lang.Commands.BOOK_REMOVE_BACKUP.translateColored(ChatFormatting.AQUA, new TextComponent(locationDump).withStyle((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, locationDump)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Lang.Commands.BOOK_REMOVE_BACKUP_INFO.translateColored(ChatFormatting.AQUA)))).withStyle(ChatFormatting.GRAY)), false);
 
-        if(target.isPlayer() && provider.getMode() == ItemAlchemicalBook.Mode.PLAYER && Config.notifyCommandChanges.get()) {
-            Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_REMOVE_PLAYER_NOTIFICATION.translate(name, getSourceName(ctx.getSource())), false);
-        }
-
         if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = getPlayer(ctx);
@@ -350,6 +352,10 @@ public class CommandBook {
             if(sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
                 Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_REMOVE_PLAYER_SUCCESS_SELF.translateColored(ChatFormatting.GREEN));
                 return 1;
+            }
+
+            if (Config.notifyCommandChanges.get()) {
+                Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_REMOVE_PLAYER_NOTIFICATION.translate(name, getSourceName(ctx.getSource())), false);
             }
 
             Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_REMOVE_PLAYER_SUCCESS.translateColored(ChatFormatting.GREEN, targetPlayer.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA)));
@@ -382,10 +388,6 @@ public class CommandBook {
             return 0;
         }
 
-        if(target.isPlayer() && provider.getMode() == ItemAlchemicalBook.Mode.PLAYER && Config.notifyCommandChanges.get()) {
-            Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_ADD_PLAYER_NOTIFICATION.translate(name, getSourceName(ctx.getSource())), false);
-        }
-
         if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = getPlayer(ctx);
@@ -393,6 +395,10 @@ public class CommandBook {
             if(sourcePlayer != null && sourcePlayer.getUUID().equals(targetPlayer.getUUID())) {
                 Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_ADD_PLAYER_SUCCESS_SELF.translateColored(ChatFormatting.GREEN));
                 return 1;
+            }
+
+            if (Config.notifyCommandChanges.get()) {
+                Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_ADD_PLAYER_NOTIFICATION.translate(name, getSourceName(ctx.getSource())), false);
             }
 
             Util.sendSystemMessage(ctx.getSource(), Lang.Commands.BOOK_ADD_PLAYER_SUCCESS.translateColored(ChatFormatting.GREEN, targetPlayer.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA)));
