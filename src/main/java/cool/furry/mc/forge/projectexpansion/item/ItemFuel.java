@@ -13,9 +13,7 @@ public class ItemFuel extends Item  {
     public ItemFuel(Fuel level) {
         super(new Item.Properties().tab(Main.tab).rarity(level.rarity));
         this.level = level;
-
     }
-
 
     @Override
     public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {

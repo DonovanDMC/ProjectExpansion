@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -80,6 +81,9 @@ public class BlockPowerFlower extends Block implements IHasMatter, EntityBlock {
         super.appendHoverText(stack, level, list, flag);
         list.add(Lang.Blocks.POWER_FLOWER_TOOLTIP.translateColored(ChatFormatting.GRAY, new TextComponent(Config.tickDelay.get().toString()).setStyle(ColorStyle.GREEN), new TextComponent(Config.tickDelay.get() == 1 ? "" : "s").setStyle(ColorStyle.GRAY)));
         list.add(Lang.Blocks.POWER_FLOWER_EMC.translateColored(ChatFormatting.GRAY, EMCFormat.getComponent(getMatter().getPowerFlowerOutput()).setStyle(ColorStyle.GREEN)));
+        if(stack.getCount() > 1) {
+            list.add(Lang.Blocks.POWER_FLOWER_STACK_EMC.translateColored(ChatFormatting.GRAY, EMCFormat.getComponent(getMatter().getPowerFlowerOutput().multiply(BigInteger.valueOf(stack.getCount()))).setStyle(ColorStyle.GREEN)));
+        }
         list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
     }
 

@@ -25,6 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -56,6 +57,9 @@ public class BlockRelay extends Block implements IHasMatter, EntityBlock {
         list.add(Lang.Blocks.RELAY_TOOLTIP.translateColored(ChatFormatting.GRAY));
         list.add(Lang.Blocks.RELAY_BONUS.translateColored(ChatFormatting.GRAY, EMCFormat.getComponent(getMatter().getRelayBonusForTicks(Config.tickDelay.get())).setStyle(ColorStyle.GREEN)));
         list.add(Lang.Blocks.RELAY_TRANSFER.translateColored(ChatFormatting.GRAY, getMatter().getRelayTransferComponent().setStyle(ColorStyle.GREEN)));
+        if(stack.getCount() > 1) {
+            list.add(Lang.Blocks.COLLECTOR_STACK_EMC.translateColored(ChatFormatting.GRAY, EMCFormat.getComponent(getMatter().getCollectorOutputForTicks(Config.tickDelay.get()).multiply(BigInteger.valueOf(stack.getCount()))).setStyle(ColorStyle.GREEN)));
+        }
         list.add(Lang.SEE_WIKI.translateColored(ChatFormatting.AQUA));
     }
 
