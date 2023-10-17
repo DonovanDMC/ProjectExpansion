@@ -90,7 +90,7 @@ public class ItemMatterUpgrader extends Item {
             upgrade = Objects.requireNonNull(upgradeTo.getPowerFlowerItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getPowerFlower());
             if (be.owner == null) return ActionResultType.FAIL;
-            if (be.owner != player.getUUID()) {
+            if (!be.owner.equals(player.getUUID())) {
                 player.displayClientMessage(Lang.Items.MATTER_UPGRADER_NOT_OWNER.translateColored(TextFormatting.RED), true);
                 return ActionResultType.FAIL;
             }
@@ -108,7 +108,7 @@ public class ItemMatterUpgrader extends Item {
             upgrade = Objects.requireNonNull(upgradeTo.getEMCLinkItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
             if (be.owner == null) return ActionResultType.FAIL;
-            if (be.owner != player.getUUID()) {
+            if (!be.owner.equals(player.getUUID())) {
                 player.displayClientMessage(Lang.Items.MATTER_UPGRADER_NOT_OWNER.translateColored(TextFormatting.RED), true);
                 return ActionResultType.FAIL;
             }
