@@ -1,6 +1,8 @@
 package cool.furry.mc.forge.projectexpansion.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 
 public final class Config {
     public static final ForgeConfigSpec.Builder Builder = new ForgeConfigSpec.Builder();
@@ -27,5 +29,21 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<Boolean> persistEnchantedBooksOnly = Builder.comment("If ProjectE's processors.EnchantmentProcessor.persistent option should only include enchanted books.").define("persistEnchantedBooksOnly", false);
     public static final ForgeConfigSpec.ConfigValue<Boolean> enabledLearnedTooltip = Builder.comment("If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this.").define("enabledLearnedTooltip", true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> alchemicalCollectionSound = Builder.comment("If a sound should be played when something is collected with Alchemical Collection.").define("alchemicalCollectionSound", true);
+    private static final ForgeConfigSpec.ConfigValue<String> editOthersAlchemicalBooks = Builder.comment("If players should be allowed to edit books bound to other players. A player is considered to be \"OP\" when they have an op level of 2 or greater. Allowed values: DISABLED, OP_ONLY, ENABLED").define("editOthersAlchemicalBooks", AlchemicalBookEditLevel.DISABLED.name());
     static { Spec = Builder.build(); }
+    public static AlchemicalBookEditLevel editOthersAlchemicalBooks() {
+        try {
+            return AlchemicalBookEditLevel.valueOf(editOthersAlchemicalBooks.get().toUpperCase());
+        } catch (IllegalArgumentException ignore) {
+            LogManager.getLogger(Config.class).printf(Level.WARN, "Invalid value for editOthersAlchemicalBooks: %. Defaulting to %s", editOthersAlchemicalBooks.get(), AlchemicalBookEditLevel.DISABLED.name());
+            editOthersAlchemicalBooks.set(AlchemicalBookEditLevel.DISABLED.name());
+            return AlchemicalBookEditLevel.DISABLED;
+        }
+    }
+
+    public enum AlchemicalBookEditLevel {
+        DISABLED,
+        OP_ONLY,
+        ENABLED
+    }
 }

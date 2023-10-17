@@ -163,6 +163,8 @@ public class ConfigMenu extends Screen {
                 (__, newValue) -> Config.alchemicalCollectionSound.set(newValue)
         ));
 
+        // editOthersAlchemicalBooks intentionally left out
+
         addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), (button) -> minecraft.pushGuiLayer(parentScreen)));
     }
 

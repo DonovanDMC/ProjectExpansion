@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -23,7 +22,6 @@ import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
 
 public class CommandEMC {
 
@@ -34,44 +32,47 @@ public class CommandEMC {
         GET,
         TEST
     }
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        LiteralArgumentBuilder<CommandSource> cmd = Commands.literal("emc")
-            .requires((source) -> source.hasPermission(2))
-            .then(Commands.literal("add")
-                .then(Commands.argument("player", EntityArgument.player())
-                    .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> handle(ctx, ActionType.ADD))
-                    )
-                )
-            )
-            .then(Commands.literal("remove")
-                .then(Commands.argument("player", EntityArgument.player())
-                    .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> handle(ctx, ActionType.REMOVE))
-                    )
-                )
-            )
-            .then(Commands.literal("set")
-                .then(Commands.argument("player", EntityArgument.player())
-                    .then(Commands.argument("value", StringArgumentType.string())
-                        .executes((ctx) -> handle(ctx, ActionType.SET))
-                    )
-                )
-            )
-            .then(Commands.literal("test")
-                  .then(Commands.argument("player", EntityArgument.player())
-                        .then(Commands.argument("value", StringArgumentType.string())
-                              .executes((ctx) -> handle(ctx, ActionType.TEST))
+    public static LiteralArgumentBuilder<CommandSource> getArguments() {
+        return Commands.literal("emc")
+                .requires(Permissions.EMC)
+                .then(Commands.literal("add")
+                        .requires(Permissions.EMC_ADD)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("value", StringArgumentType.string())
+                                        .executes((ctx) -> handle(ctx, ActionType.ADD))
+                                )
                         )
-                  )
-            )
-            .then(Commands.literal("get")
-                .then(Commands.argument("player", EntityArgument.player())
-                              .executes((ctx) -> handle(ctx, ActionType.GET))
                 )
-            );
-
-        dispatcher.register(cmd);
+                .then(Commands.literal("remove")
+                        .requires(Permissions.EMC_REMOVE)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("value", StringArgumentType.string())
+                                        .executes((ctx) -> handle(ctx, ActionType.REMOVE))
+                                )
+                        )
+                )
+                .then(Commands.literal("set")
+                        .requires(Permissions.EMC_SET)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("value", StringArgumentType.string())
+                                        .executes((ctx) -> handle(ctx, ActionType.SET))
+                                )
+                        )
+                )
+                .then(Commands.literal("test")
+                        .requires(Permissions.EMC_TEST)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("value", StringArgumentType.string())
+                                        .executes((ctx) -> handle(ctx, ActionType.TEST))
+                                )
+                        )
+                )
+                .then(Commands.literal("get")
+                        .requires(Permissions.EMC_GET)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes((ctx) -> handle(ctx, ActionType.GET))
+                        )
+                );
     }
 
     private static ITextComponent getSourceName(CommandSource source) {
@@ -79,14 +80,6 @@ public class CommandEMC {
             return source.getPlayerOrException().getDisplayName();
         } catch (CommandSyntaxException e) {
             return Lang.Commands.CONSOLE.translateColored(TextFormatting.RED);
-        }
-    }
-
-    private static UUID getSourceUUID(CommandSource source) {
-        try {
-            return source.getPlayerOrException().getUUID();
-        } catch (CommandSyntaxException e) {
-            return Util.DUMMY_UUID;
         }
     }
 
@@ -122,9 +115,9 @@ public class CommandEMC {
         @Nullable BigInteger value = null;
         try {
             value = new BigInteger(val);
-            switch(action) {
+            switch (action) {
                 case ADD: {
-                    if(value.compareTo(BigInteger.ZERO) < 0) {
+                    if (value.compareTo(BigInteger.ZERO) < 0) {
                         action = ActionType.REMOVE;
                         value = value.abs();
                     }
@@ -132,7 +125,7 @@ public class CommandEMC {
                 }
 
                 case REMOVE: {
-                    if(value.compareTo(BigInteger.ZERO) < 0) {
+                    if (value.compareTo(BigInteger.ZERO) < 0) {
                         action = ActionType.ADD;
                         value = value.abs();
                     }
@@ -141,7 +134,7 @@ public class CommandEMC {
 
                 case SET:
                 case TEST: {
-                    if(value.compareTo(BigInteger.ZERO) < 0) {
+                    if (value.compareTo(BigInteger.ZERO) < 0) {
                         value = null;
                     }
                     break;
@@ -160,7 +153,6 @@ public class CommandEMC {
             return 0;
         }
         BigInteger newEMC = provider.getEmc();
-        boolean isSelf = compareUUID(ctx.getSource(), player);
         switch (action) {
             case ADD: {
                 newEMC = newEMC.add(value);
@@ -169,7 +161,7 @@ public class CommandEMC {
                 } else {
                     ctx.getSource().sendSuccess(Lang.Commands.EMC_ADD_SUCCESS.translateColored(TextFormatting.GREEN, formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
-                        player.sendMessage(Lang.Commands.EMC_ADD_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
+                        Util.sendSystemMessage(player, Lang.Commands.EMC_ADD_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)));
                     }
                 }
                 break;
@@ -186,7 +178,7 @@ public class CommandEMC {
                 } else {
                     ctx.getSource().sendSuccess(Lang.Commands.EMC_REMOVE_SUCCESS.translateColored(TextFormatting.GREEN, formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
-                        player.sendMessage(Lang.Commands.EMC_REMOVE_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
+                        Util.sendSystemMessage(player, Lang.Commands.EMC_REMOVE_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)));
                     }
                 }
                 break;
@@ -199,7 +191,7 @@ public class CommandEMC {
                 } else {
                     ctx.getSource().sendSuccess(Lang.Commands.EMC_SET_SUCCESS.translateColored(TextFormatting.GREEN, player.getDisplayName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
-                        player.sendMessage(Lang.Commands.EMC_REMOVE_SUCCESS.translate(formatEMC(newEMC), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                        Util.sendSystemMessage(player, Lang.Commands.EMC_REMOVE_SUCCESS.translate(formatEMC(newEMC), getSourceName(ctx.getSource())));
                     }
                 }
                 break;
@@ -222,12 +214,14 @@ public class CommandEMC {
                         ctx.getSource().sendFailure(Lang.Commands.KNOWLEDGE_TEST_FAIL_SELF.translateColored(TextFormatting.RED, player.getScoreboardName(), formatEMC(value)));
                     }
                 }
+
+                break;
             }
         }
         if(response == 1 && action != ActionType.TEST) {
             provider.setEmc(newEMC);
             provider.syncEmc(player);
         }
-        return 1;
+        return response;
     }
 }

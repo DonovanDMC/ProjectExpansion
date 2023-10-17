@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -23,7 +22,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class CommandKnowledge {
     private enum ActionType {
@@ -32,37 +30,39 @@ public class CommandKnowledge {
         CLEAR,
         TEST
     }
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        LiteralArgumentBuilder<CommandSource> cmd = Commands.literal("knowledge")
-            .requires((source) -> source.hasPermission(2))
-            .then(Commands.literal("clear")
-                .then(Commands.argument("player", EntityArgument.player())
-                    .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.CLEAR))
+    public static LiteralArgumentBuilder<CommandSource> getArguments() {
+        return Commands.literal("knowledge")
+                .requires(Permissions.KNOWLEDGE)
+                .then(Commands.literal("clear")
+                        .requires(Permissions.KNOWLEDGE_CLEAR)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.CLEAR))
+                        )
                 )
-            )
-            .then(Commands.literal("learn")
-                .then(Commands.argument("player", EntityArgument.player())
-                    .then(Commands.argument("item", ItemArgument.item())
-                        .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.LEARN))
-                    )
-              )
-            )
-            .then(Commands.literal("unlearn")
-                 .then(Commands.argument("player", EntityArgument.player())
-                     .then(Commands.argument("item", ItemArgument.item())
-                         .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.UNLEARN))
-                    )
+                .then(Commands.literal("learn")
+                        .requires(Permissions.KNOWLEDGE_LEARN)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("item", ItemArgument.item())
+                                        .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.LEARN))
+                                )
+                        )
                 )
-            )
-            .then(Commands.literal("test")
-                 .then(Commands.argument("player", EntityArgument.player())
-                     .then(Commands.argument("item", ItemArgument.item())
-                         .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.TEST))
-                    )
+                .then(Commands.literal("unlearn")
+                        .requires(Permissions.KNOWLEDGE_UNLEARN)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("item", ItemArgument.item())
+                                        .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.UNLEARN))
+                                )
+                        )
                 )
-            );
-
-        dispatcher.register(cmd);
+                .then(Commands.literal("test")
+                        .requires(Permissions.KNOWLEDGE_TEST)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("item", ItemArgument.item())
+                                        .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.TEST))
+                                )
+                        )
+                );
     }
 
     private static ITextComponent getSourceName(CommandSource source) {
@@ -70,14 +70,6 @@ public class CommandKnowledge {
             return source.getPlayerOrException().getDisplayName();
         } catch (CommandSyntaxException e) {
             return Lang.Commands.CONSOLE.translateColored(TextFormatting.RED);
-        }
-    }
-
-    private static UUID getSourceUUID(CommandSource source) {
-        try {
-            return source.getPlayerOrException().getUUID();
-        } catch (CommandSyntaxException e) {
-            return Util.DUMMY_UUID;
         }
     }
 
@@ -113,7 +105,7 @@ public class CommandKnowledge {
             } else {
                 ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_CLEAR_SUCCESS.translateColored(TextFormatting.GREEN, player.getDisplayName()), true);
                 if(Config.notifyCommandChanges.get()) {
-                    player.sendMessage(Lang.Commands.KNOWLEDGE_CLEAR_NOTIFICATION.translate(getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                    Util.sendSystemMessage(player, Lang.Commands.KNOWLEDGE_CLEAR_NOTIFICATION.translate(getSourceName(ctx.getSource())));
                 }
             }
             return 1;
@@ -131,7 +123,7 @@ public class CommandKnowledge {
             return 0;
         }
         int response = 1;
-        switch(action) {
+        switch (action) {
             case LEARN: {
                 if (!provider.addKnowledge(ItemInfo.fromItem(item))) {
                     response = 0;
@@ -146,7 +138,7 @@ public class CommandKnowledge {
                     } else {
                         ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_LEARN_SUCCESS.translateColored(TextFormatting.GRAY, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
                         if (Config.notifyCommandChanges.get()) {
-                            player.sendMessage(Lang.Commands.KNOWLEDGE_LEARN_NOTIFICATION.translateColored(TextFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                            Util.sendSystemMessage(player, Lang.Commands.KNOWLEDGE_LEARN_NOTIFICATION.translateColored(TextFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())));
                         }
                     }
                 }
@@ -167,7 +159,7 @@ public class CommandKnowledge {
                     } else {
                         ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS.translateColored(TextFormatting.GREEN, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
                         if (Config.notifyCommandChanges.get()) {
-                            player.sendMessage(Lang.Commands.KNOWLEDGE_UNLEARN_NOTIFICATION.translateColored(TextFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                            Util.sendSystemMessage(player, Lang.Commands.KNOWLEDGE_UNLEARN_NOTIFICATION.translateColored(TextFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())));
                         }
                     }
                 }
@@ -189,8 +181,8 @@ public class CommandKnowledge {
                         ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_TEST_SUCCESS.translateColored(TextFormatting.GREEN, player.getDisplayName(), new ItemStack(item).getDisplayName()), false);
                     }
                 }
-                break;
             }
+            break;
         }
         if(response == 1 && action != ActionType.TEST) provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromItem(item)), true);
 

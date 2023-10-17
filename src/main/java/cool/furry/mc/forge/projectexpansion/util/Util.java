@@ -6,13 +6,19 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -187,5 +193,31 @@ public class Util {
         FAIL,
         UNKNOWN,
         SUCCESS,
+    }
+
+    public static @Nullable ServerWorld getDimension(RegistryKey<World> dimension) {
+        return ServerLifecycleHooks.getCurrentServer().getLevel(dimension);
+    }
+
+    public static Style suggestCommand(Style style, String command) {
+        return style
+                .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(command).withStyle(TextFormatting.RED)));
+    }
+
+    public static void sendSystemMessage(PlayerEntity player, ITextComponent content, UUID uuid) {
+        player.sendMessage(content, uuid);
+    }
+
+    public static void sendSystemMessage(PlayerEntity player, ITextComponent content) {
+        sendSystemMessage(player, content, DUMMY_UUID);
+    }
+
+    public static void sendSystemMessage(CommandSource ctx, ITextComponent content, boolean broadcast) {
+        ctx.sendSuccess(content, broadcast);
+    }
+
+    public static void sendSystemMessage(CommandSource ctx, ITextComponent content) {
+        sendSystemMessage(ctx, content, false);
     }
 }
