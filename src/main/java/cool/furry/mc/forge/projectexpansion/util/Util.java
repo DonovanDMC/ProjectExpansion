@@ -6,7 +6,12 @@ import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.*;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -187,5 +192,31 @@ public class Util {
         FAIL,
         UNKNOWN,
         SUCCESS,
+    }
+
+    public static @Nullable ServerLevel getDimension(ResourceKey<Level> dimension) {
+        return ServerLifecycleHooks.getCurrentServer().getLevel(dimension);
+    }
+
+    public static Style suggestCommand(Style style, String command) {
+        return style
+                .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(command).withStyle(ChatFormatting.RED)));
+    }
+
+    public static void sendSystemMessage(Player player, Component content, UUID uuid) {
+        player.sendMessage(content, uuid);
+    }
+
+    public static void sendSystemMessage(Player player, Component content) {
+        sendSystemMessage(player, content, DUMMY_UUID);
+    }
+
+    public static void sendSystemMessage(CommandSourceStack ctx, Component content, boolean broadcast) {
+        ctx.sendSuccess(content, broadcast);
+    }
+
+    public static void sendSystemMessage(CommandSourceStack ctx, Component content) {
+        sendSystemMessage(ctx, content, false);
     }
 }

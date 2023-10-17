@@ -15,12 +15,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.UUID;
 
 public class CommandEMC {
 
@@ -31,10 +33,11 @@ public class CommandEMC {
         GET,
         TEST
     }
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> cmd = Commands.literal("emc")
-                .requires((source) -> source.hasPermission(2))
+    public static LiteralArgumentBuilder<CommandSourceStack> getArguments() {
+        return Commands.literal("emc")
+                .requires(Permissions.EMC)
                 .then(Commands.literal("add")
+                        .requires(Permissions.EMC_ADD)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("value", StringArgumentType.string())
                                         .executes((ctx) -> handle(ctx, ActionType.ADD))
@@ -42,6 +45,7 @@ public class CommandEMC {
                         )
                 )
                 .then(Commands.literal("remove")
+                        .requires(Permissions.EMC_REMOVE)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("value", StringArgumentType.string())
                                         .executes((ctx) -> handle(ctx, ActionType.REMOVE))
@@ -49,6 +53,7 @@ public class CommandEMC {
                         )
                 )
                 .then(Commands.literal("set")
+                        .requires(Permissions.EMC_SET)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("value", StringArgumentType.string())
                                         .executes((ctx) -> handle(ctx, ActionType.SET))
@@ -56,6 +61,7 @@ public class CommandEMC {
                         )
                 )
                 .then(Commands.literal("test")
+                        .requires(Permissions.EMC_TEST)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("value", StringArgumentType.string())
                                         .executes((ctx) -> handle(ctx, ActionType.TEST))
@@ -63,12 +69,11 @@ public class CommandEMC {
                         )
                 )
                 .then(Commands.literal("get")
+                        .requires(Permissions.EMC_GET)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes((ctx) -> handle(ctx, ActionType.GET))
                         )
                 );
-
-        dispatcher.register(cmd);
     }
 
     private static Component getSourceName(CommandSourceStack source) {
@@ -79,16 +84,8 @@ public class CommandEMC {
         }
     }
 
-    private static UUID getSourceUUID(CommandSourceStack source) {
-        try {
-            return source.getPlayerOrException().getUUID();
-        } catch (CommandSyntaxException e) {
-            return Util.DUMMY_UUID;
-        }
-    }
-
     private static Component formatEMC(BigInteger value) {
-        return new TranslatableComponent(EMCFormat.formatForceShort(value)).setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(EMCFormat.formatForceLong(value))))).setStyle(ColorStyle.GRAY);
+        return new TextComponent(EMCFormat.formatForceShort(value)).setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(EMCFormat.formatForceLong(value))))).setStyle(ColorStyle.GRAY);
     }
 
     private static boolean compareUUID(CommandSourceStack source, ServerPlayer player) {
@@ -159,7 +156,7 @@ public class CommandEMC {
                 } else {
                     ctx.getSource().sendSuccess(Lang.Commands.EMC_ADD_SUCCESS.translateColored(ChatFormatting.GREEN, formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
-                        player.sendMessage(Lang.Commands.EMC_ADD_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
+                        Util.sendSystemMessage(player, Lang.Commands.EMC_ADD_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)));
                     }
                 }
             }
@@ -174,7 +171,7 @@ public class CommandEMC {
                 } else {
                     ctx.getSource().sendSuccess(Lang.Commands.EMC_REMOVE_SUCCESS.translateColored(ChatFormatting.GREEN, formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
-                        player.sendMessage(Lang.Commands.EMC_REMOVE_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)), getSourceUUID(ctx.getSource()));
+                        Util.sendSystemMessage(player, Lang.Commands.EMC_REMOVE_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)));
                     }
                 }
             }
@@ -185,7 +182,7 @@ public class CommandEMC {
                 } else {
                     ctx.getSource().sendSuccess(Lang.Commands.EMC_SET_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
-                        player.sendMessage(Lang.Commands.EMC_REMOVE_SUCCESS.translate(formatEMC(newEMC), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                        Util.sendSystemMessage(player, Lang.Commands.EMC_REMOVE_SUCCESS.translate(formatEMC(newEMC), getSourceName(ctx.getSource())));
                     }
                 }
             }

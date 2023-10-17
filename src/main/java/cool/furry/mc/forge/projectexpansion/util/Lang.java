@@ -2,8 +2,11 @@ package cool.furry.mc.forge.projectexpansion.util;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import moze_intel.projecte.utils.text.ILangEntry;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
+@SuppressWarnings("unused")
 public enum Lang implements ILangEntry {
     // Text
     WIP("text", "wip"),
@@ -26,9 +29,18 @@ public enum Lang implements ILangEntry {
 
     // Misc
     ADVANCED_ALCHEMICAL_CHEST_TITLE("gui", "advanced_alchemical_chest", "title"),
+    ALCHEMICAL_BOOK("gui", "alchemical_book"),
+    ALCHEMICAL_BOOK_CLOSE("gui", "alchemical_book", "close"),
+    ALCHEMICAL_BOOK_DELETE("gui", "alchemical_book", "delete"),
+    ALCHEMICAL_BOOK_CREATE("gui", "alchemical_book", "create"),
+    ALCHEMICAL_BOOK_BACK("gui", "alchemical_book", "back"),
+    ALCHEMICAL_BOOK_COST("gui", "alchemical_book", "cost"),
+    ALCHEMICAL_BOOK_DISTANCE("gui", "alchemical_book", "distance"),
+    ALCHEMICAL_BOOK_DIMENSION("gui", "alchemical_book", "dimension"),
+    ALCHEMICAL_BOOK_NO_BACK_LOCATION("gui", "alchemical_book", "no_back_location"),
     ;
 
-    private final String key;
+    private String key;
     Lang(String type, String... path) {
         this(net.minecraft.Util.makeDescriptionId(type, Main.rl(String.join(".", path))));
     }
@@ -40,6 +52,22 @@ public enum Lang implements ILangEntry {
     @Override
     public String getTranslationKey() {
         return key;
+    }
+
+    public MutableComponent extend(String extension, Object... args) {
+        String originalKey = this.key;
+        this.key += "." + extension;
+        MutableComponent component = translate(args);
+        this.key = originalKey;
+        return component;
+    }
+
+    public MutableComponent extendColored(String extension, ChatFormatting color, Object... args) {
+        String originalKey = this.key;
+        this.key += "." + extension;
+        MutableComponent component = translateColored(color, args);
+        this.key = originalKey;
+        return component;
     }
 
     public enum Blocks implements ILangEntry {
@@ -98,7 +126,7 @@ public enum Lang implements ILangEntry {
         FINAL_COLLECTOR("final_collector"),
         ;
 
-        private final String key;
+        private String key;
         Blocks(String... path) {
             this.key = net.minecraft.Util.makeDescriptionId("block", Main.rl(String.join(".", path)));
         }
@@ -106,6 +134,22 @@ public enum Lang implements ILangEntry {
         @Override
         public String getTranslationKey() {
             return key;
+        }
+
+        public MutableComponent extend(String extension, Object... args) {
+            String originalKey = this.key;
+            this.key += "." + extension;
+            MutableComponent component = translate(args);
+            this.key = originalKey;
+            return component;
+        }
+
+        public MutableComponent extendColored(String extension, ChatFormatting color, Object... args) {
+            String originalKey = this.key;
+            this.key += "." + extension;
+            MutableComponent component = translateColored(color, args);
+            this.key = originalKey;
+            return component;
         }
     }
 
@@ -151,11 +195,38 @@ public enum Lang implements ILangEntry {
         KNOWLEDGE_TEST_FAIL("knowledge", "test", "fail"),
         KNOWLEDGE_TEST_FAIL_SELF("knowledge", "test", "fail_self"),
 
+        // Book
+        BOOK_INVALID_HAND_ITEM("book", "invalid_hand_item"),
+        BOOK_FAILED_TO_GET_CAPABILITY("book", "failed_to_get_capability"),
+        BOOK_EMPTY("book", "empty"),
+        BOOK_CLICK_TO_COPY("book", "click_to_copy"),
+        BOOK_BOUND_TO_PLAYER("book", "bound_to_player"),
+        BOOK_LIST_LOCATION("book", "list", "location"),
+        BOOK_CLEAR_ITEMSTACK_SUCCESS("book", "clear", "itemstack_success"),
+        BOOK_CLEAR_PLAYER_SUCCESS("book", "clear", "player_success"),
+        BOOK_CLEAR_PLAYER_SUCCESS_SELF("book", "clear", "player_success_self"),
+        BOOK_CLEAR_PLAYER_NOTIFICATION("book", "clear", "player_notification"),
+        BOOK_REMOVE_INVALID_LOCATION("book", "remove", "invalid_location"),
+        BOOK_REMOVE_INTERNAL_LOCATION("book", "remove", "internal_location"),
+        BOOK_REMOVE_ITEMSTACK_SUCCESS("book", "remove", "itemstack_success"),
+        BOOK_REMOVE_PLAYER_SUCCESS("book", "remove", "player_success"),
+        BOOK_REMOVE_PLAYER_SUCCESS_SELF("book", "remove", "player_success_self"),
+        BOOK_REMOVE_PLAYER_NOTIFICATION("book", "remove", "player_notification"),
+        BOOK_REMOVE_BACKUP("book", "remove", "backup"),
+        BOOK_REMOVE_BACKUP_INFO("book", "remove", "backup_info"),
+        BOOK_ADD_DUPLICATE_NAME("book", "add", "duplicate_name"),
+        BOOK_ADD_INVALID_NAME("book", "add", "invalid_name"),
+        BOOK_ADD_ITEMSTACK_SUCCESS("book", "add", "itemstack_success"),
+        BOOK_ADD_PLAYER_SUCCESS("book", "add", "player_success"),
+        BOOK_ADD_PLAYER_SUCCESS_SELF("book", "add", "player_success_self"),
+        BOOK_ADD_PLAYER_NOTIFICATION("book", "add", "player_notification"),
+
         // Misc
         CONSOLE("console"),
+        PLAYER_ONLY("player_only"),
         ;
 
-        private final String key;
+        private String key;
         Commands(String... path) {
             this.key = net.minecraft.Util.makeDescriptionId("command", Main.rl(String.join(".", path)));
         }
@@ -164,11 +235,36 @@ public enum Lang implements ILangEntry {
         public String getTranslationKey() {
             return key;
         }
+
+        public MutableComponent extend(String extension, Object... args) {
+            String originalKey = this.key;
+            this.key += "." + extension;
+            MutableComponent component = translate(args);
+            this.key = originalKey;
+            return component;
+        }
+
+        public MutableComponent extendColored(String extension, ChatFormatting color, Object... args) {
+            String originalKey = this.key;
+            this.key += "." + extension;
+            MutableComponent component = translateColored(color, args);
+            this.key = originalKey;
+            return component;
+        }
     }
 
     public enum Items implements ILangEntry {
-        // Compressed Collector
+        // Misc
         COMRESSED_COLLECTOR_TOOLTIP("compressed_collector", "tooltip"),
+        ALCHEMICAL_BOOK_TOOLTIP("alchemical_book", "tooltip"),
+        ALCHEMICAL_BOOK_TOOLTIP_BASIC("alchemical_book", "tooltip_basic"),
+        ALCHEMICAL_BOOK_TOOLTIP_ADVANCED("alchemical_book", "tooltip_advanced"),
+        ALCHEMICAL_BOOK_TOOLTIP_MASTER("alchemical_book", "tooltip_master"),
+        ALCHEMICAL_BOOK_TOOLTIP_ARCANE("alchemical_book", "tooltip_arcane"),
+        ALCHEMICAL_BOOK_TOOLTIP_ACROSS_DIMENSIONS("alchemical_book", "tooltip_across_dimensions"),
+        ALCHEMICAL_BOOK_TOOLTIP_BIND("alchemical_book", "tooltip_bind"),
+        ALCHEMICAL_BOOK_BOUND_TO("alchemical_book", "bound_to"),
+        ALCHEMICAL_BOOK_OWNER_NOT_ONLINE("alchemical_book", "owner_not_online"),
 
         // Matter Upgrader
         MATTER_UPGRADER_TOOLTIP("matter_upgrader", "tooltip"),
@@ -196,9 +292,19 @@ public enum Lang implements ILangEntry {
         KNOWLEDGE_SHARING_BOOK_LEARNED_TOTAL("knowledge_sharing_book", "learned_total"),
         KNOWLEDGE_SHARING_BOOK_NO_NEW_KNOWLEDGE("knowledge_sharing_book", "no_new_knowledge"),
         KNOWLEDGE_SHARING_BOOK_NO_OWNER("knowledge_sharing_book", "no_owner"),
+
+        // Alchemical Book
+        ALCHEMICAL_BOOK_ERROR("alchemical_book", "error"),
+        ALCHEMICAL_BOOK_CREATE_FAILED("alchemical_book", "create_failed"),
+        ALCHEMICAL_BOOK_DELETE_FAILED("alchemical_book", "delete_failed"),
+        ALCHEMICAL_BOOK_TELEPORT_FAILED("alchemical_book", "teleport_failed"),
+        ALCHEMICAL_BOOK_NO_LONGER_BOUND("alchemical_book", "no_longer_bound"),
+        ALCHEMICAL_BOOK_NOW_BOUND("alchemical_book", "now_bound"),
+        ALCHEMICAL_BOOK_CORRUPTED("alchemical_book", "corrupted"),
+        ALCHEMICAL_BOOK_NOT_ENOUGH_EMC("alchemical_book", "not_enough_emc"),
         ;
 
-        private final String key;
+        private String key;
 
         Items(String... path) {
             this.key = net.minecraft.Util.makeDescriptionId("item", Main.rl(String.join(".", path)));
@@ -207,6 +313,22 @@ public enum Lang implements ILangEntry {
         @Override
         public String getTranslationKey() {
             return key;
+        }
+
+        public MutableComponent extend(String extension, Object... args) {
+            String originalKey = this.key;
+            this.key += "." + extension;
+            MutableComponent component = translate(args);
+            this.key = originalKey;
+            return component;
+        }
+
+        public MutableComponent extendColored(String extension, ChatFormatting color, Object... args) {
+            String originalKey = this.key;
+            this.key += "." + extension;
+            MutableComponent component = translateColored(color, args);
+            this.key = originalKey;
+            return component;
         }
     }
 }

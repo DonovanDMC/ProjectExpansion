@@ -14,4 +14,10 @@ public class TagNames {
     public static String LAST_USED = "LastUsed";
     public static String KNOWLEDGE_GAINED = "KnowledgeGained";
     public static String ALCHEMICAL_COLLECTION_ENABLED = "AlchemicalCollectionEnabled";
+    public static String X = "X";
+    public static String Y = "Y";
+    public static String Z = "Z";
+    public static String NAME = "Name";
+    public static String DIMENSION = "Dimension";
+    public static String INDEX = "Index";
 }

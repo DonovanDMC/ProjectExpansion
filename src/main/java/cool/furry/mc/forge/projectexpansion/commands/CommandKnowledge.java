@@ -1,10 +1,10 @@
 package cool.furry.mc.forge.projectexpansion.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -18,12 +18,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class CommandKnowledge {
     private enum ActionType {
@@ -32,15 +32,17 @@ public class CommandKnowledge {
         CLEAR,
         TEST
     }
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> cmd = Commands.literal("knowledge")
-                .requires((source) -> source.hasPermission(2))
+    public static LiteralArgumentBuilder<CommandSourceStack> getArguments() {
+        return Commands.literal("knowledge")
+                .requires(Permissions.KNOWLEDGE)
                 .then(Commands.literal("clear")
+                        .requires(Permissions.KNOWLEDGE_CLEAR)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.CLEAR))
                         )
                 )
                 .then(Commands.literal("learn")
+                        .requires(Permissions.KNOWLEDGE_LEARN)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("item", ItemArgument.item())
                                         .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.LEARN))
@@ -48,6 +50,7 @@ public class CommandKnowledge {
                         )
                 )
                 .then(Commands.literal("unlearn")
+                        .requires(Permissions.KNOWLEDGE_UNLEARN)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("item", ItemArgument.item())
                                         .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.UNLEARN))
@@ -55,14 +58,13 @@ public class CommandKnowledge {
                         )
                 )
                 .then(Commands.literal("test")
+                        .requires(Permissions.KNOWLEDGE_TEST)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("item", ItemArgument.item())
                                         .executes((ctx) -> CommandKnowledge.handle(ctx, ActionType.TEST))
                                 )
                         )
                 );
-
-        dispatcher.register(cmd);
     }
 
     private static Component getSourceName(CommandSourceStack source) {
@@ -70,14 +72,6 @@ public class CommandKnowledge {
             return source.getPlayerOrException().getDisplayName();
         } catch (CommandSyntaxException e) {
             return Lang.Commands.CONSOLE.translateColored(ChatFormatting.RED);
-        }
-    }
-
-    private static UUID getSourceUUID(CommandSourceStack source) {
-        try {
-            return source.getPlayerOrException().getUUID();
-        } catch (CommandSyntaxException e) {
-            return Util.DUMMY_UUID;
         }
     }
 
@@ -113,7 +107,7 @@ public class CommandKnowledge {
             } else {
                 ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
                 if(Config.notifyCommandChanges.get()) {
-                    player.sendMessage(Lang.Commands.KNOWLEDGE_CLEAR_NOTIFICATION.translate(getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                    Util.sendSystemMessage(player, Lang.Commands.KNOWLEDGE_CLEAR_NOTIFICATION.translate(getSourceName(ctx.getSource())));
                 }
             }
             return 1;
@@ -146,7 +140,7 @@ public class CommandKnowledge {
                     } else {
                         ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GRAY, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
                         if (Config.notifyCommandChanges.get()) {
-                            player.sendMessage(Lang.Commands.KNOWLEDGE_LEARN_NOTIFICATION.translateColored(ChatFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                            Util.sendSystemMessage(player, Lang.Commands.KNOWLEDGE_LEARN_NOTIFICATION.translateColored(ChatFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())));
                         }
                     }
                 }
@@ -161,11 +155,12 @@ public class CommandKnowledge {
                     }
                 } else {
                     if (isSelf) {
+                        ctx.getSource().sendSuccess(new TranslatableComponent("command.projectexpansion.knowledge.unlearn.successSelf", new ItemStack(item).getDisplayName()).setStyle(ColorStyle.GREEN), false);
                         ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, new ItemStack(item).getDisplayName()), false);
                     } else {
                         ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
                         if (Config.notifyCommandChanges.get()) {
-                            player.sendMessage(Lang.Commands.KNOWLEDGE_UNLEARN_NOTIFICATION.translateColored(ChatFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())), getSourceUUID(ctx.getSource()));
+                            Util.sendSystemMessage(player, Lang.Commands.KNOWLEDGE_UNLEARN_NOTIFICATION.translateColored(ChatFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())));
                         }
                     }
                 }
