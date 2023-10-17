@@ -1,33 +1,18 @@
 package cool.furry.mc.forge.projectexpansion;
 
 import cool.furry.mc.forge.projectexpansion.capability.CapabilityAlchemicalBookLocations;
-import cool.furry.mc.forge.projectexpansion.capability.IAlchemicalBookLocationsProvider;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
-import cool.furry.mc.forge.projectexpansion.registries.Blocks;
-import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
-import cool.furry.mc.forge.projectexpansion.registries.Items;
-import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
-import cool.furry.mc.forge.projectexpansion.registries.TileEntityTypes;
-import cool.furry.mc.forge.projectexpansion.util.AdvancedAlchemicalChest;
-import cool.furry.mc.forge.projectexpansion.util.Fuel;
-import cool.furry.mc.forge.projectexpansion.util.Matter;
-import cool.furry.mc.forge.projectexpansion.util.NBTNames;
-import cool.furry.mc.forge.projectexpansion.util.Star;
-import moze_intel.projecte.utils.DummyIStorage;
+import cool.furry.mc.forge.projectexpansion.registries.*;
+import cool.furry.mc.forge.projectexpansion.util.*;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -39,7 +24,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @Mod(Main.MOD_ID)
 public class Main {

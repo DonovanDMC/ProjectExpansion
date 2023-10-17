@@ -4,8 +4,6 @@ import cool.furry.mc.forge.projectexpansion.capability.IAlchemicalBookLocationsP
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-import javax.annotation.Nonnull;
-
 public class Capabilities {
     @CapabilityInject(IAlchemicalBookLocationsProvider.class)
     public static final Capability<IAlchemicalBookLocationsProvider> ALCHEMICAL_BOOK_LOCATIONS = null;

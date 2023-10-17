@@ -42,9 +42,7 @@ public final class PacketSyncAlchemicalBookLocations implements IPacket {
 
     public static void writeLocationsToBuffer(PacketBuffer buf, List<CapabilityAlchemicalBookLocations.TeleportLocation> locations) {
         buf.writeInt(locations.size());
-        locations.forEach(location -> {
-            buf.writeNbt(location.serialize());
-        });
+        locations.forEach(location -> buf.writeNbt(location.serialize()));
     }
 
     public static List<CapabilityAlchemicalBookLocations.TeleportLocation> readLocationsFromBuffer(PacketBuffer buf) {

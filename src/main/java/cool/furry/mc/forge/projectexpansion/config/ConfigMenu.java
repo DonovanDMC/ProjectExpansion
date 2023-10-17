@@ -165,6 +165,12 @@ public class ConfigMenu extends Screen {
 
         // editOthersAlchemicalBooks intentionally left out
 
+        optionsRowList.addBig(new BooleanOption(
+                "gui.projectexpansion.config.zero_emc_fluids_are_free",
+                __ -> Config.zeroEmcFluidsAreFree.get(),
+                (__, newValue) -> Config.zeroEmcFluidsAreFree.set(newValue)
+        ));
+
         addButton(new Button((width - BUTTON_WIDTH) / 2, height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslationTextComponent("gui.done"), (button) -> minecraft.pushGuiLayer(parentScreen)));
     }
 

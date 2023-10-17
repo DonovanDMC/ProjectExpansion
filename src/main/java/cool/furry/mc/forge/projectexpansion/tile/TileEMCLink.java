@@ -310,6 +310,14 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
             }
         }
 
+        private boolean isFreeFluid() {
+            return getFluidCostPer() == 0D && Config.zeroEmcFluidsAreFree.get();
+        }
+
+        private boolean isValid() {
+            return getFluid() != null && (getFluidCostPer() != 0D || isFreeFluid());
+        }
+
         private long getFluidCost(double amount) {
             try {
                 double cost = getFluidCostPer();
@@ -327,13 +335,21 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         @Nonnull
         @Override
         public FluidStack getFluidInTank(int tank) {
+            if(tank != 0) {
+                return FluidStack.EMPTY;
+            }
+
             Fluid fluid = getFluid();
-            if (fluid == null || getFluidCostPer() == 0D) return FluidStack.EMPTY;
+            if (fluid == null || !isValid()) return FluidStack.EMPTY;
             return new FluidStack(fluid, remainingFluid);
         }
 
         @Override
         public int getTankCapacity(int tank) {
+            if(tank != 0) {
+                return 0;
+            }
+
             return remainingFluid;
         }
 
@@ -351,9 +367,8 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
             Fluid fluid = getFluid();
-            if (fluid != null && getFluidCostPer() != 0D && resource.getFluid().equals(fluid))
-                return drain(resource.getAmount(), action);
-            return FluidStack.EMPTY;
+            if (fluid == null || !isValid() || !resource.getFluid().equals(fluid)) return FluidStack.EMPTY;
+            return drain(resource.getAmount(), action);
         }
 
         @Nonnull
@@ -361,7 +376,7 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         public FluidStack drain(int maxDrain, FluidAction action) {
             boolean isFinal = getMatter() == Matter.FINAL;
             Fluid fluid = getFluid();
-            if (fluid == null || getFluidCostPer() == 0D || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
+            if (fluid == null || !isValid() || Util.getPlayer(owner) == null) return FluidStack.EMPTY;
             if (!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
             long cost = getFluidCost(maxDrain);
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
@@ -380,8 +395,10 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
             if (action.execute()) {
                 if (!isFinal) remainingFluid -= maxDrain;
                 Util.markDirty(TileEMCLink.this);
-                provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
-                provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
+                if(!isFreeFluid()) {
+                    provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
+                    provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
+                }
             }
             return new FluidStack(fluid, maxDrain);
         }
@@ -425,9 +442,9 @@ public class TileEMCLink extends TileNBTFilterable implements ITickableTileEntit
         }
 
         Fluid fluid = fluidHandler.getFluid();
-        if(fluid != null && fluidHandler.getFluidCostPer() != 0D && inHand.getItem() instanceof BucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
+        if(fluid != null && fluidHandler.isValid() && inHand.getItem() instanceof BucketItem && ((BucketItem) inHand.getItem()).getFluid() == Fluids.EMPTY) {
             BucketItem bucketItem = (BucketItem) inHand.getItem();
-            if(Config.limitEmcLinkVendor.get() && remainingExport < 1000) {
+            if(Config.limitEmcLinkVendor.get() && remainingFluid < 1000) {
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_NO_EXPORT_REMAINING.translateColored(TextFormatting.RED), true);
                 return ActionResultType.CONSUME;
             }

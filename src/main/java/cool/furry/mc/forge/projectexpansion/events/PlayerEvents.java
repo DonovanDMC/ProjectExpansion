@@ -19,9 +19,7 @@ public class PlayerEvents {
     public static void cloneEvent(PlayerEvent.Clone event) {
         event.getOriginal().getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).ifPresent(old -> {
             CompoundNBT tag = old.serializeNBT();
-            event.getPlayer().getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).ifPresent(newCap -> {
-                newCap.deserializeNBT(tag);
-            });
+            event.getPlayer().getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).ifPresent(newCap -> newCap.deserializeNBT(tag));
         });
     }
 
