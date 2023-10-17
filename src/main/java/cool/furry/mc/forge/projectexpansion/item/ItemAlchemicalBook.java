@@ -67,6 +67,7 @@ public class ItemAlchemicalBook extends Item {
             PlayerEntity player = getPlayer(stack);
             list.add(Lang.Items.ALCHEMICAL_BOOK_BOUND_TO.translateColored(TextFormatting.RED, player == null ? new StringTextComponent(stack.getOrCreateTag().getString(NBTNames.OWNER_NAME)).withStyle(TextFormatting.DARK_AQUA) : player.getDisplayName().copy().withStyle(TextFormatting.DARK_AQUA)));
         }
+        list.add(Lang.SEE_WIKI.translateColored(TextFormatting.AQUA));
     }
 
     public @Nullable ServerPlayerEntity getPlayer(ItemStack stack) {
