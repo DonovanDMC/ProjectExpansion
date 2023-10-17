@@ -22,9 +22,7 @@ public class PlayerEvents {
         original.reviveCaps();
         original.getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).ifPresent(old -> {
             CompoundTag tag = old.serializeNBT();
-            event.getEntity().getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).ifPresent(newCap -> {
-                newCap.deserializeNBT(tag);
-            });
+            event.getEntity().getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).ifPresent(newCap -> newCap.deserializeNBT(tag));
         });
         original.invalidateCaps();
     }

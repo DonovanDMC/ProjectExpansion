@@ -1,7 +1,6 @@
 package cool.furry.mc.forge.projectexpansion.capability;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import cool.furry.mc.forge.projectexpansion.item.ItemAlchemicalBook;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
@@ -10,9 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
 
 public interface IAlchemicalBookLocationsProvider extends INBTSerializable<CompoundTag> {
     void addLocation(Player player, String name) throws CapabilityAlchemicalBookLocations.BookError.DuplicateNameError;

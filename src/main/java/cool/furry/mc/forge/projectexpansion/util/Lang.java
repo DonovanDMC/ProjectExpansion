@@ -4,7 +4,6 @@ import cool.furry.mc.forge.projectexpansion.Main;
 import moze_intel.projecte.utils.text.ILangEntry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings("unused")
 public enum Lang implements ILangEntry {

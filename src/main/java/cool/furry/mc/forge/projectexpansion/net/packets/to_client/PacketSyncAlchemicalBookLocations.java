@@ -34,9 +34,7 @@ public record PacketSyncAlchemicalBookLocations(List<CapabilityAlchemicalBookLoc
 
     public static void writeLocationsToBuffer(FriendlyByteBuf buf, List<CapabilityAlchemicalBookLocations.TeleportLocation> locations) {
         buf.writeVarInt(locations.size());
-        locations.forEach(location -> {
-            buf.writeNbt(location.serialize());
-        });
+        locations.forEach(location -> buf.writeNbt(location.serialize()));
     }
 
     public static List<CapabilityAlchemicalBookLocations.TeleportLocation> readLocationsFromBuffer(FriendlyByteBuf buf) {
