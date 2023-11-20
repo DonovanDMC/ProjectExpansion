@@ -124,7 +124,7 @@ public class BlockEntityCollector extends BlockEntity implements IHasMatter {
         }
     }
 
-    public EMCHandler getEMCHandlerCapability() {
+    EMCHandler getEMCHandlerCapability() {
         return (EMCHandler) getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
     }
 

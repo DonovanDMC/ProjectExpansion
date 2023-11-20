@@ -164,7 +164,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
         }
     }
 
-    public ItemHandler getItemHandlerCapability() {
+    ItemHandler getItemHandlerCapability() {
         return (ItemHandler) getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
     }
 

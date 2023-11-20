@@ -42,4 +42,13 @@ public class PlayerEvents {
         event.addCapability(name, provider);
         event.addListener(provider::invalidateAll);
     }
+    @SubscribeEvent
+    public static void playerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        event.getEntity().getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).ifPresent(cap -> cap.sync((ServerPlayer) event.getEntity()));
+    }
+
+    @SubscribeEvent
+    public static void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
+        event.getEntity().getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).ifPresent(cap -> cap.sync((ServerPlayer) event.getEntity()));
+    }
 }

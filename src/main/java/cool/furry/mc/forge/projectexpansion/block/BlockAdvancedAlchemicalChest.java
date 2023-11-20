@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -226,5 +227,10 @@ public class BlockAdvancedAlchemicalChest extends HorizontalDirectionalBlock imp
 		super.triggerEvent(state, level, pos, id, param);
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		return blockEntity != null && blockEntity.triggerEvent(id, param);
+	}
+
+	@Override
+	public MaterialColor getMapColor(BlockState state, BlockGetter level, BlockPos pos, MaterialColor defaultColor) {
+		return MaterialColor.byId(this.color.getId());
 	}
 }

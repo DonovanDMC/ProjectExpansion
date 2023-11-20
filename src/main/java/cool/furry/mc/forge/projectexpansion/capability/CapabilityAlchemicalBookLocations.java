@@ -2,7 +2,6 @@ package cool.furry.mc.forge.projectexpansion.capability;
 
 import com.google.common.collect.ImmutableList;
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
 import cool.furry.mc.forge.projectexpansion.net.packets.to_client.PacketSyncAlchemicalBookLocations;
@@ -36,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocationsProvider {
+public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocationsProvider {
     public static final int BASIC_DISTANCE_RATIO = 1000;
     public static final int ADVANCED_DISTANCE_RATIO = 500;
     public static final int MASTER_DISTANCE_RATIO = 100;
@@ -49,14 +48,14 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
         this.player = player;
         this.itemStack = itemStack;
     }
-    public static IAlchemialBookLocationsProvider fromPlayer(Player player) {
+    public static IAlchemicalBookLocationsProvider fromPlayer(Player player) {
         return player.getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).orElseThrow(() -> new IllegalStateException("Player does not have expected capability"));
     }
-    public static IAlchemialBookLocationsProvider fromItemStack(ItemStack stack) {
+    public static IAlchemicalBookLocationsProvider fromItemStack(ItemStack stack) {
         return stack.getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).orElseThrow(() -> new IllegalStateException("ItemStack does not have expected capability"));
     }
 
-    public static IAlchemialBookLocationsProvider from(ItemStack stack) throws BookError.OwnerOfflineError {
+    public static IAlchemicalBookLocationsProvider from(ItemStack stack) throws BookError.OwnerOfflineError {
         if(!(stack.getItem() instanceof ItemAlchemicalBook book)) {
             throw new IllegalArgumentException("ItemStack is not an alchemical book");
         }
@@ -76,13 +75,13 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
         return name.equalsIgnoreCase(BACK_KEY);
     }
 
-    public static IAlchemialBookLocationsProvider getDefault(ItemAlchemicalBook.Mode mode, @Nullable ServerPlayer player, @Nullable ItemStack itemStack) {
+    public static IAlchemicalBookLocationsProvider getDefault(ItemAlchemicalBook.Mode mode, @Nullable ServerPlayer player, @Nullable ItemStack itemStack) {
         return new CapabilityAlchemicalBookLocations(mode, player, itemStack);
     }
-    public static class Provider implements ICapabilityResolver<IAlchemialBookLocationsProvider>, ICapabilitySerializable<CompoundTag> {
-        private @Nullable LazyOptional<IAlchemialBookLocationsProvider> cached;
+    public static class Provider implements ICapabilityResolver<IAlchemicalBookLocationsProvider>, ICapabilitySerializable<CompoundTag> {
+        private @Nullable LazyOptional<IAlchemicalBookLocationsProvider> cached;
         public static final ResourceLocation NAME = Main.rl("alchemical_book_locations");
-        private final IAlchemialBookLocationsProvider defaultImpl;
+        private final IAlchemicalBookLocationsProvider defaultImpl;
         private final @Nullable ServerPlayer player;
         private final @Nullable ItemStack itemStack;
         public Provider(ItemAlchemicalBook.Mode mode, @Nullable ServerPlayer player, @Nullable ItemStack itemStack) {
@@ -92,7 +91,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
         }
 
         @Override
-        public @NotNull Capability<IAlchemialBookLocationsProvider> getMatchingCapability() {
+        public @NotNull Capability<IAlchemicalBookLocationsProvider> getMatchingCapability() {
             return Capabilities.ALCHEMICAL_BOOK_LOCATIONS;
         }
 

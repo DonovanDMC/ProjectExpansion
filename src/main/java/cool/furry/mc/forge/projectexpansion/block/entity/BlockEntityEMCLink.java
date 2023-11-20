@@ -158,8 +158,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
     }
     public InteractionResult handleActivation(Player player, InteractionHand hand) {
         ItemStack inHand = player.getItemInHand(hand);
-        ItemHandler itemHandler = (ItemHandler) getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
-        FluidHandler fluidHandler = (FluidHandler) getCapability(ForgeCapabilities.FLUID_HANDLER).orElseThrow(NullPointerException::new);
+        ItemHandler itemHandler = getItemHandlerCapability();
+        FluidHandler fluidHandler = getFluidHandlerCapability();
 
         if(!super.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return InteractionResult.CONSUME;
 
@@ -271,8 +271,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         }
     }
 
-    public IEmcStorage getEMCHandlerCapability() {
-        return getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
+    EMCHandler getEMCHandlerCapability() {
+        return (EMCHandler) getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
     }
 
     private class ItemHandler implements IItemHandler {
@@ -376,8 +376,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         }
     }
 
-    public IItemHandler getItemHandlerCapability() {
-        return getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
+    ItemHandler getItemHandlerCapability() {
+        return (ItemHandler) getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
     }
 
     private class FluidHandler implements IFluidHandler {
@@ -492,8 +492,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         }
     }
 
-    public IFluidHandler getFluidHandlerCapability() {
-        return getCapability(ForgeCapabilities.FLUID_HANDLER).orElseThrow(NullPointerException::new);
+    FluidHandler getFluidHandlerCapability() {
+        return (FluidHandler) getCapability(ForgeCapabilities.FLUID_HANDLER).orElseThrow(NullPointerException::new);
     }
 
     @Nonnull

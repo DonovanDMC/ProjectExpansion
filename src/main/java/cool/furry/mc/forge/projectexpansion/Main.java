@@ -1,6 +1,6 @@
 package cool.furry.mc.forge.projectexpansion;
 
-import cool.furry.mc.forge.projectexpansion.capability.IAlchemialBookLocationsProvider;
+import cool.furry.mc.forge.projectexpansion.capability.IAlchemicalBookLocationsProvider;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
 import cool.furry.mc.forge.projectexpansion.registries.*;
@@ -61,7 +61,7 @@ public class Main {
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(IAlchemialBookLocationsProvider.class);
+        event.register(IAlchemicalBookLocationsProvider.class);
     }
 
     private void serverTick(TickEvent.ServerTickEvent event) {

@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -8,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.capability.CapabilityAlchemicalBookLocations;
-import cool.furry.mc.forge.projectexpansion.capability.IAlchemialBookLocationsProvider;
+import cool.furry.mc.forge.projectexpansion.capability.IAlchemicalBookLocationsProvider;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
@@ -26,19 +25,14 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.UnaryOperator;
 
 // TODO: consolidate player/hand & add autocomplete to location
 public class CommandBook {
@@ -193,8 +187,8 @@ public class CommandBook {
         }
     }
 
-    private static @Nullable IAlchemialBookLocationsProvider getCapability(CommandContext<CommandSourceStack> ctx, BookTarget target, String commandSource) throws CommandSyntaxException {
-        IAlchemialBookLocationsProvider provider;
+    private static @Nullable IAlchemicalBookLocationsProvider getCapability(CommandContext<CommandSourceStack> ctx, BookTarget target, String commandSource) throws CommandSyntaxException {
+        IAlchemicalBookLocationsProvider provider;
         try {
             if (target.isPlayer()) {
                 provider = CapabilityAlchemicalBookLocations.fromPlayer(target.playerOrException());
@@ -226,7 +220,7 @@ public class CommandBook {
     }
 
     private static int handleDump(CommandContext<CommandSourceStack> ctx, BookTarget target) throws CommandSyntaxException {
-        @Nullable IAlchemialBookLocationsProvider provider = getCapability(ctx, target, "dump");
+        @Nullable IAlchemicalBookLocationsProvider provider = getCapability(ctx, target, "dump");
         if(provider == null) {
             return 0;
         }
@@ -269,7 +263,7 @@ public class CommandBook {
     }
 
     private static int handleList(CommandContext<CommandSourceStack> ctx, BookTarget target) throws CommandSyntaxException {
-        @Nullable IAlchemialBookLocationsProvider provider = getCapability(ctx, target, "list");
+        @Nullable IAlchemicalBookLocationsProvider provider = getCapability(ctx, target, "list");
         if(provider == null) {
             return 0;
         }
@@ -287,7 +281,7 @@ public class CommandBook {
     }
 
     private static int handleClear(CommandContext<CommandSourceStack> ctx, BookTarget target) throws CommandSyntaxException {
-        @Nullable IAlchemialBookLocationsProvider provider = getCapability(ctx, target, "clear");
+        @Nullable IAlchemicalBookLocationsProvider provider = getCapability(ctx, target, "clear");
         if(provider == null) {
             return 0;
         }
@@ -322,7 +316,7 @@ public class CommandBook {
     }
 
     private static int handleRemove(CommandContext<CommandSourceStack> ctx, BookTarget target) throws CommandSyntaxException {
-        @Nullable IAlchemialBookLocationsProvider provider = getCapability(ctx, target, "remove");
+        @Nullable IAlchemicalBookLocationsProvider provider = getCapability(ctx, target, "remove");
         if(provider == null) {
             return 0;
         }
@@ -366,7 +360,7 @@ public class CommandBook {
     }
 
     private static int handleAdd(CommandContext<CommandSourceStack> ctx, BookTarget target) throws CommandSyntaxException {
-        @Nullable IAlchemialBookLocationsProvider provider = getCapability(ctx, target, "remove");
+        @Nullable IAlchemicalBookLocationsProvider provider = getCapability(ctx, target, "remove");
         if(provider == null) {
             return 0;
         }

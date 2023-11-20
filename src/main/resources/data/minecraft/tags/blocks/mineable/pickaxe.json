@@ -92,6 +92,18 @@
     "projectexpansion:brown_advanced_alchemical_chest",
     "projectexpansion:green_advanced_alchemical_chest",
     "projectexpansion:red_advanced_alchemical_chest",
-    "projectexpansion:black_advanced_alchemical_chest"
+    "projectexpansion:black_advanced_alchemical_chest",
+    "projectexpansion:magenta_matter_block",
+    "projectexpansion:pink_matter_block",
+    "projectexpansion:purple_matter_block",
+    "projectexpansion:violet_matter_block",
+    "projectexpansion:blue_matter_block",
+    "projectexpansion:cyan_matter_block",
+    "projectexpansion:green_matter_block",
+    "projectexpansion:lime_matter_block",
+    "projectexpansion:yellow_matter_block",
+    "projectexpansion:orange_matter_block",
+    "projectexpansion:white_matter_block",
+    "projectexpansion:fading_matter_block"
   ]
 }

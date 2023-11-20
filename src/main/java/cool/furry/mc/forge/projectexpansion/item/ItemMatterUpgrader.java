@@ -105,7 +105,7 @@ public class ItemMatterUpgrader extends Item {
             upgrade = Objects.requireNonNull(upgradeTo.getEMCLinkItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
             if (be.owner == null) return InteractionResult.FAIL;
-            if (be.owner != player.getUUID()) {
+            if (!be.owner.equals(player.getUUID())) {
                 player.displayClientMessage(Lang.Items.MATTER_UPGRADER_NOT_OWNER.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.FAIL;
             }

@@ -1,29 +1,20 @@
 package cool.furry.mc.forge.projectexpansion.net.packets.to_server;
 
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.capability.CapabilityAlchemicalBookLocations;
-import cool.furry.mc.forge.projectexpansion.capability.IAlchemialBookLocationsProvider;
+import cool.furry.mc.forge.projectexpansion.capability.IAlchemicalBookLocationsProvider;
 import cool.furry.mc.forge.projectexpansion.item.ItemAlchemicalBook;
-import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
 import cool.furry.mc.forge.projectexpansion.net.packets.IPacket;
-import cool.furry.mc.forge.projectexpansion.net.packets.to_client.PacketSyncAlchemicalBookLocations;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.jmx.Server;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class PacketCreateTeleportDestination implements IPacket {
@@ -40,7 +31,7 @@ public class PacketCreateTeleportDestination implements IPacket {
         ItemStack stack = player.getItemInHand(hand);
         if(stack.getItem() instanceof ItemAlchemicalBook) {
             try {
-                IAlchemialBookLocationsProvider provider = CapabilityAlchemicalBookLocations.from(stack);
+                IAlchemicalBookLocationsProvider provider = CapabilityAlchemicalBookLocations.from(stack);
                 provider.ensureEditable((ServerPlayer) player);
                 provider.addLocation(player, name);
                 provider.sync((ServerPlayer) player);
