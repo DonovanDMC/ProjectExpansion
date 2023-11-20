@@ -10,8 +10,8 @@
   "gui.projectexpansion.config.emc_display.desc": "Displays your current emc and gained emc per second in the top left corner.",
   "gui.projectexpansion.config.notify_command_changes": "Notify Command Changes",
   "gui.projectexpansion.config.notify_command_changes.desc": "Notify users something is changed about them via /emc.",
-  "gui.projectexpansion.config.notify_knowledge_book_gains": "Notify Knowledge Book Gains",
-  "gui.projectexpansion.config.notify_knowledge_book_gains.desc": "Tell users the list of items they gained when using a knowledge book.",
+  "gui.projectexpansion.config.notify_knowledge_book_changes": "Notify Knowledge Book Changes",
+  "gui.projectexpansion.config.notify_knowledge_book_changes.desc": "Tell users the list of items they gained when using a knowledge book.",
   "gui.projectexpansion.config.limit_emc_link_vendor": "Limit EMC Link Vendor Output",
   "gui.projectexpansion.config.limit_emc_link_vendor.desc": "If EMC Link Right-Click functionality should be Limited by Tier or Not.",
   "gui.projectexpansion.config.transmutation_interface_item_count": "Transmutation Interface Item Count",
@@ -43,5 +43,7 @@
   "gui.projectexpansion.config.enable_learned_tooltip": "Enable Learned Tooltip",
   "gui.projectexpansion.config.enable_learned_tooltip.desc": "If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this.",
   "gui.projectexpansion.config.alchemical_collection_sound": "Alchemical Collection Sound",
-  "gui.projectexpansion.config.alchemical_collection_sound.desc": "If a sound should be played when something is collected with Alchemical Collection."
+  "gui.projectexpansion.config.alchemical_collection_sound.desc": "If a sound should be played when something is collected with Alchemical Collection.",
+  "gui.projectexpansion.config.zero_emc_fluids_are_free": "Zero EMC Fluids are Free",
+  "gui.projectexpansion.config.zero_emc_fluids_are_free.desc": "If fluids with an EMC value of 0 should be free."
 }

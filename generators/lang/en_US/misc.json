@@ -14,5 +14,6 @@
   "text.projectexpansion.notLearned": "Not Learned ✗",
   "text.projectexpansion.enabled": "Enabled ✓",
   "text.projectexpansion.disabled": "Disabled ✗",
-  "text.projectexpansion.alchemical_collection": "Alchemical Collection: %s"
+  "text.projectexpansion.alchemical_collection": "Alchemical Collection: %s",
+  "text.projectexpansion.pos.outofbounds": "That position is outside the allowed boundaries."
 }
