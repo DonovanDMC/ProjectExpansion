@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:$PREV$_fuel",
+  "criteria": {
+    "$TIER$_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:$TIER$_fuel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.$TIER$_fuel.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:$TIER$_fuel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.$TIER$_fuel"
+    }
+  },
+  "requirements": [
+    [
+      "$TIER$_fuel"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

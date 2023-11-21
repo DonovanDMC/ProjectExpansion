@@ -1,0 +1,38 @@
+{
+  "parent": "projecte:philosophers_stone",
+  "criteria": {
+    "basic_alchemical_book": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:basic_alchemical_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.basic_alchemical_book.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:basic_alchemical_book"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.basic_alchemical_book"
+    }
+  },
+  "requirements": [
+    [
+      "basic_alchemical_book"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

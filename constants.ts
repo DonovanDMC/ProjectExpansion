@@ -29,6 +29,8 @@ export const FUEL_DISABLED = [
 	"basic", "dark", "red", "fading", "final"
 ];
 
+export const FUEL_TYPES = MATTER_TIERS.filter(tier => !FUEL_DISABLED.includes(tier));
+
 export const OTHER_MATTER_TIERS = [
     "basic", "dark", "red"
 ]

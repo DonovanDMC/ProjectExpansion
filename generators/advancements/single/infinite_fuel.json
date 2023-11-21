@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:infinite_steak",
+  "criteria": {
+    "infinite_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:infinite_fuel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.infinite_fuel.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:infinite_fuel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.infinite_fuel"
+    }
+  },
+  "requirements": [
+    [
+      "infinite_fuel"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

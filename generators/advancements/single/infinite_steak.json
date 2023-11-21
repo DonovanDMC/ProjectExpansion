@@ -1,0 +1,38 @@
+{
+  "parent": "projecte:philosophers_stone",
+  "criteria": {
+    "infinite_steak": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:infinite_steak"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.infinite_steak.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:infinite_steak"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.infinite_steak"
+    }
+  },
+  "requirements": [
+    [
+      "infinite_steak"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
