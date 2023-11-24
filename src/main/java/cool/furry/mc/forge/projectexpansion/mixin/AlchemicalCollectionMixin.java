@@ -6,7 +6,6 @@ import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.nbt.NBTManager;
@@ -40,7 +39,7 @@ public abstract class AlchemicalCollectionMixin {
         if(!(entity instanceof ServerPlayer player)) return;
         @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
         if(provider == null) return;
-        IEMCProxy proxy = ProjectEAPI.getEMCProxy();
+        IEMCProxy proxy = IEMCProxy.INSTANCE;
         boolean hasEnch = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
         if(!state.canHarvestBlock(level, pos, player) || !hasEnch) return;
         boolean enabled = stack.getOrCreateTag().getBoolean(TagNames.ALCHEMICAL_COLLECTION_ENABLED);
@@ -63,7 +62,7 @@ public abstract class AlchemicalCollectionMixin {
 
         if (newDrops.size() < initialDrops.size() || addEMC.get() > 0) {
             provider.setEmc(provider.getEmc().add(BigInteger.valueOf(addEMC.get())));
-            if(knowledgeAdditions.size() > 0) {
+            if(!knowledgeAdditions.isEmpty()) {
                 knowledgeAdditions.forEach(knowledge -> {
                     if(provider.addKnowledge(knowledge)) provider.syncKnowledgeChange(player, NBTManager.getPersistentInfo(ItemInfo.fromStack(stack)), true);
                 });

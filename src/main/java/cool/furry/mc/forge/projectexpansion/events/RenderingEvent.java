@@ -5,7 +5,6 @@ import cool.furry.mc.forge.projectexpansion.block.BlockAdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityAdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.rendering.ChestRenderer;
 import cool.furry.mc.forge.projectexpansion.util.AdvancedAlchemicalChest;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;

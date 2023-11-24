@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
@@ -33,7 +32,7 @@ import java.util.UUID;
 
 public class ItemKnowledgeSharingBook extends Item {
     public ItemKnowledgeSharingBook() {
-        super(new Properties().stacksTo(1).rarity(Rarity.RARE).tab(Main.tab));
+        super(new Properties().stacksTo(1).rarity(Rarity.RARE));
     }
 
     @Override

@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
 
 // yet again more "inspiration" from ProjectE
 // https://github.com/sinkillerj/ProjectE/blob/98aee771bd/src/main/java/moze_intel/projecte/gameObjs/container/EmcChestBlockEntityContainer.java
@@ -21,6 +22,11 @@ public class ContainerAdvancedAlchemicalChest extends AlchBagContainer {
 	public void removed(Player player) {
 		super.removed(player);
 		blockEntity.stopOpen(player);
+	}
+
+	@Override
+	public boolean stillValid(@NotNull Player player) {
+		return true;
 	}
 
 	public boolean blockEntityMatches(BlockEntityAdvancedAlchemicalChest be) {

@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.util.Fuel;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +11,7 @@ import java.util.Objects;
 public class FuelBlockItem extends BlockItem {
     private final Fuel level;
     public FuelBlockItem(Fuel level) {
-        super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Properties().tab(Main.tab).rarity(level.getRarity()));
+        super(Objects.requireNonNull(Objects.requireNonNull(level).getBlock()), new Properties().rarity(level.getRarity()));
         this.level = level;
     }
 

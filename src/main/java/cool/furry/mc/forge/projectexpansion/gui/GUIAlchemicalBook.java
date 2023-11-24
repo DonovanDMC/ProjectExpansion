@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import cool.furry.mc.forge.projectexpansion.capability.CapabilityAlchemicalBookLocations;
 import cool.furry.mc.forge.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
@@ -13,12 +12,14 @@ import cool.furry.mc.forge.projectexpansion.util.Lang;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +29,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 public class GUIAlchemicalBook extends Screen {
@@ -83,9 +87,9 @@ public class GUIAlchemicalBook extends Screen {
     protected void init() {
         addRenderableWidget(buttonCreate = new ButtonCreate(this.width / 2 - w, 20, w, h));
         addRenderableWidget(buttonClose = new ButtonClose(this.width / 2 - w - 50, 20));
-        createName = new EditBox(font, buttonCreate.x + buttonCreate.getWidth() + 10, buttonCreate.y, w, h, Lang.ALCHEMICAL_BOOK_CREATE.translate());
+        createName = new EditBox(font, buttonCreate.getX() + buttonCreate.getWidth() + 10, buttonCreate.getY(), w, h, Lang.ALCHEMICAL_BOOK_CREATE.translate());
         createName.setMaxLength(20);
-        createName.setFocus(true);
+        createName.setFocused(true);
         if(!canEdit) {
             buttonCreate.active = false;
             createName.setEditable(false);
@@ -95,9 +99,9 @@ public class GUIAlchemicalBook extends Screen {
                 buttonCreate.setName(str);
             });
         }
-        String biomeName = Objects.requireNonNull(player.getLevel().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(player.getLevel().getBiome(player.getOnPos()).get())).getPath();
+        String biomeName = Objects.requireNonNull(player.level().registryAccess().registryOrThrow(Registries.BIOME).getKey(player.level().getBiome(player.getOnPos()).get())).getPath();
         createName.setValue(Arrays.stream(biomeName.split("_")).map(StringUtils::capitalize).reduce("", (a, b) -> a + " " + b).trim());
-        addRenderableWidget(buttonBack = new ButtonBack(createName.x + createName.getWidth() + 8, buttonClose.y, w / 2, h));
+        addRenderableWidget(buttonBack = new ButtonBack(createName.getX() + createName.getWidth() + 8, buttonClose.getY(), w / 2, h));
         addRenderableWidget(createName);
         drawLocations();
     }
@@ -153,14 +157,14 @@ public class GUIAlchemicalBook extends Screen {
 
     private class ButtonClose extends Button {
         public ButtonClose(int x, int y) {
-            super(x, y, 40, 20, Lang.ALCHEMICAL_BOOK_CLOSE.translate(), (button) -> player.closeContainer());
+            super(Button.builder(Lang.ALCHEMICAL_BOOK_CLOSE.translate(), (button) -> player.closeContainer()).pos(x, y).size(40, 20));
         }
     }
 
     private class ButtonCreate extends Button {
         String name;
         public ButtonCreate(int x, int y, int w, int h) {
-            super(x, y, w, h, Lang.ALCHEMICAL_BOOK_CREATE.translate(), (button) -> {});
+            super(Button.builder(Lang.ALCHEMICAL_BOOK_CREATE.translate(), (button) -> {}).pos(x, y).size(w, h));
         }
 
         @Override
@@ -178,7 +182,7 @@ public class GUIAlchemicalBook extends Screen {
 
     private class ButtonDelete extends Button {
         public ButtonDelete(int x, int y, int w, int h, String name) {
-            super(x, y, w, h, Component.literal("X"), (button) -> PacketHandler.sendToServer(new PacketDeleteTeleportDestination(name, player, hand)));
+            super(Button.builder(Component.literal("X"), (button) -> PacketHandler.sendToServer(new PacketDeleteTeleportDestination(name, player, hand))).pos(x, y).size(w, h));
         }
     }
 
@@ -187,23 +191,22 @@ public class GUIAlchemicalBook extends Screen {
         boolean canTeleport;
         boolean hasEnoughEMC;
         public ButtonTeleport(int x, int y, int w, int h, CapabilityAlchemicalBookLocations.TeleportLocation location) {
-            super(x, y, w, h, Component.literal(location.name()), (button) -> {
+            super(Button.builder(Component.literal(location.name()), (button) -> {
                 PacketHandler.sendToServer(new PacketTeleportToDestination(location.name(), player, hand));
                 player.closeContainer();
-            });
+            }).pos(x, y).size(w, h));
             this.location = location;
             this.hasEnoughEMC = GUIAlchemicalBook.this.canTeleport(location);
-            this.canTeleport = acrossDimensions || location.dimension().equals(player.getLevel().dimension());
+            this.canTeleport = acrossDimensions || location.dimension().equals(player.level().dimension());
             this.active = canTeleport && hasEnoughEMC;
         }
 
         @Override
-        public void renderToolTip(PoseStack matrix, int pMouseX, int pMouseY) {
+        protected void renderWidget(GuiGraphics graphics, int pMouseX, int pMouseY, float unknown) {
             if(isHoveredOrFocused()) {
-                List<Component> tooltips = getTeleportationTooltips(location, canTeleport);
-                renderComponentTooltip(matrix, tooltips, pMouseX, pMouseY);
+                setTooltipForNextRenderPass(getTeleportationTooltip(location, canTeleport));
             }
-            super.renderToolTip(matrix, pMouseX, pMouseY);
+            super.renderWidget(graphics, pMouseX, pMouseY, unknown);
         }
     }
 
@@ -211,20 +214,19 @@ public class GUIAlchemicalBook extends Screen {
         private @Nullable CapabilityAlchemicalBookLocations.TeleportLocation location;
         private boolean canTeleport;
         public ButtonBack(int x, int y, int w, int h) {
-            super(x, y, w, h, Lang.ALCHEMICAL_BOOK_BACK.translate(), (button) -> PacketHandler.sendToServer(new PacketTeleportBack(player, hand)));
+            super(Button.builder(Lang.ALCHEMICAL_BOOK_BACK.translate(), (button) -> PacketHandler.sendToServer(new PacketTeleportBack(player, hand))).pos(x, y).size(w, h));
         }
 
         @Override
-        public void renderToolTip(PoseStack matrix, int pMouseX, int pMouseY) {
+        protected void renderWidget(GuiGraphics graphics, int pMouseX, int pMouseY, float unknown) {
             if(isHoveredOrFocused()) {
                 if(location == null) {
-                    renderComponentTooltip(matrix, Collections.singletonList(Lang.ALCHEMICAL_BOOK_NO_BACK_LOCATION.translate()), pMouseX, pMouseY);
+                    setTooltipForNextRenderPass(Lang.ALCHEMICAL_BOOK_NO_BACK_LOCATION.translate());
                     return;
                 }
-                List<Component> tooltips = getTeleportationTooltips(location, canTeleport);
-                renderComponentTooltip(matrix, tooltips, pMouseX, pMouseY);
+                setTooltipForNextRenderPass(getTeleportationTooltip(location, canTeleport));
             }
-            super.renderToolTip(matrix, pMouseX, pMouseY);
+            super.renderWidget(graphics, pMouseX, pMouseY, unknown);
         }
 
         public void updateLocation(@Nullable CapabilityAlchemicalBookLocations.TeleportLocation location) {
@@ -235,12 +237,13 @@ public class GUIAlchemicalBook extends Screen {
             } else {
                 this.active = true;
                 this.location = location;
-                this.canTeleport = acrossDimensions || location.dimension().equals(player.getLevel().dimension());
+                this.canTeleport = acrossDimensions || location.dimension().equals(player.level().dimension());
             }
         }
     }
 
-    public ArrayList<Component> getTeleportationTooltips(CapabilityAlchemicalBookLocations.TeleportLocation location, boolean canTeleport) {
+    // TODO: make sure this works
+    public Component getTeleportationTooltip(CapabilityAlchemicalBookLocations.TeleportLocation location, boolean canTeleport) {
         ArrayList<Component> tooltips = new ArrayList<>();
         if(canTeleport) {
             tooltips.add(Component.literal(String.format("%d, %d, %d", location.x(), location.y(), location.z())));
@@ -256,6 +259,14 @@ public class GUIAlchemicalBook extends Screen {
             tooltips.add(Lang.ALCHEMICAL_BOOK_DIMENSION.translate(Component.translatable(location.dimension().location().toString())));
         }
 
-        return tooltips;
+        MutableComponent tooltip = Component.empty();
+        for (int i = 0; i < tooltips.size(); i++) {
+            tooltip = tooltip.append(tooltips.get(i));
+            if (i < tooltips.size() - 1) {
+                tooltip = tooltip.append(Component.literal("\n"));
+            }
+        }
+
+        return tooltip;
     }
 }

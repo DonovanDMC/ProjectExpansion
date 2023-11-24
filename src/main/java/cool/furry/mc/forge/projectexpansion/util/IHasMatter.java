@@ -1,8 +1,8 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public interface IHasMatter {
-    @Nonnull
+    @NotNull
     Matter getMatter();
 }

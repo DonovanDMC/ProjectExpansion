@@ -102,7 +102,7 @@ public class EMCFormat extends DecimalFormat {
             }
             current.append(str.charAt(i - 1));
         }
-        if(current.length() != 0) {
+        if(!current.isEmpty()) {
             list.add(current.reverse().toString());
             current.delete(0, current.length());
         }

@@ -35,7 +35,7 @@ public class AlchemicalBagMixin {
 		HitResult hr = player.pick(20.0D, 0.0F, false);
 		if(hr instanceof BlockHitResult bhr) {
 			BlockPos pos = bhr.getBlockPos();
-			return player.level.getBlockEntity(pos);
+			return player.level().getBlockEntity(pos);
 		}
 
 		return null;

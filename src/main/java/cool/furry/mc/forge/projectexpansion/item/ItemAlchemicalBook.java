@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.capability.CapabilityAlchemicalBookLocations;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
@@ -30,7 +29,7 @@ import java.util.List;
 public class ItemAlchemicalBook extends Item {
     private final Tier tier;
     public ItemAlchemicalBook(Tier tier) {
-        super(new Properties().tab(Main.tab).rarity(tier.getRarity()).stacksTo(1).fireResistant());
+        super(new Properties().rarity(tier.getRarity()).stacksTo(1).fireResistant());
         this.tier = tier;
     }
 
@@ -40,9 +39,7 @@ public class ItemAlchemicalBook extends Item {
         super.appendHoverText(stack, level, list, flag);
         list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP.translateColored(ChatFormatting.GRAY));
         switch(tier) {
-            case BASIC -> {
-                list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP_BASIC.translateColored(ChatFormatting.RED, CapabilityAlchemicalBookLocations.BASIC_DISTANCE_RATIO));
-            }
+            case BASIC -> list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP_BASIC.translateColored(ChatFormatting.RED, CapabilityAlchemicalBookLocations.BASIC_DISTANCE_RATIO));
             case ADVANCED -> {
                 list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP_ADVANCED.translateColored(ChatFormatting.RED, CapabilityAlchemicalBookLocations.ADVANCED_DISTANCE_RATIO));
                 list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP_BIND.translateColored(ChatFormatting.GREEN));

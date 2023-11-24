@@ -8,8 +8,8 @@ import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
@@ -37,7 +37,7 @@ public class ItemTooltipEvent {
         }
 
         learnedTooltip: if(Config.enabledLearnedTooltip.get() && (!ProjectEConfig.client.shiftEmcToolTips.get() || Screen.hasShiftDown())) {
-            boolean hasValue = ProjectEAPI.getEMCProxy().hasValue(stack);
+            boolean hasValue = IEMCProxy.INSTANCE.hasValue(stack);
             if (!hasValue) {
                 break learnedTooltip;
             }
@@ -48,7 +48,7 @@ public class ItemTooltipEvent {
             }
 
             boolean hasKnowledge = provider.hasKnowledge(ItemInfo.fromStack(stack));
-            long value = ProjectEAPI.getEMCProxy().getValue(stack);
+            long value = IEMCProxy.INSTANCE.getValue(stack);
             AtomicInteger index = new AtomicInteger(-1);
             AtomicInteger peTransmutableIndex = new AtomicInteger(-1);
             for (Component c : event.getToolTip()) {

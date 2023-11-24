@@ -2,7 +2,7 @@ package cool.furry.mc.forge.projectexpansion.net.packets.to_server;
 
 
 import cool.furry.mc.forge.projectexpansion.capability.CapabilityAlchemicalBookLocations;
-import cool.furry.mc.forge.projectexpansion.capability.IAlchemialBookLocationsProvider;
+import cool.furry.mc.forge.projectexpansion.capability.IAlchemicalBookLocationsProvider;
 import cool.furry.mc.forge.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.forge.projectexpansion.net.packets.IPacket;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
@@ -35,7 +35,7 @@ public class PacketTeleportToDestination implements IPacket {
         ItemStack stack = player.getItemInHand(hand);
         if(stack.getItem() instanceof ItemAlchemicalBook book) {
             try {
-                IAlchemialBookLocationsProvider provider = CapabilityAlchemicalBookLocations.from(stack);
+                IAlchemicalBookLocationsProvider provider = CapabilityAlchemicalBookLocations.from(stack);
                 IKnowledgeProvider knowledgeProvider = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY)
                     .orElseThrow(() -> new IllegalStateException("Player does not have knowledge capability"));
                 BigInteger emc = knowledgeProvider.getEmc();
@@ -48,7 +48,7 @@ public class PacketTeleportToDestination implements IPacket {
                     knowledgeProvider.setEmc(emc.subtract(cost));
                     knowledgeProvider.syncEmc((ServerPlayer) player);
                 }
-                GlobalPos pos = GlobalPos.of(player.getLevel().dimension(), player.getOnPos());
+                GlobalPos pos = GlobalPos.of(player.level().dimension(), player.getOnPos());
                 location.teleportTo((ServerPlayer) player, book.getTier().isAcrossDimensions());
                 if(location.distanceFrom(pos.pos()) > 1) {
                     provider.saveBackLocation(player, pos);

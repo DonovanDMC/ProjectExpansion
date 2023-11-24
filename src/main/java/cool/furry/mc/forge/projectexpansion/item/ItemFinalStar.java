@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -17,7 +16,7 @@ import java.util.List;
 
 public class ItemFinalStar extends Item {
     public ItemFinalStar() {
-        super(new Properties().stacksTo(1).rarity(Rarity.EPIC).tab(Main.tab));
+        super(new Properties().stacksTo(1).rarity(Rarity.EPIC));
     }
 
     @OnlyIn(Dist.CLIENT)

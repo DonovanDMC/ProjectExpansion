@@ -2,7 +2,7 @@ package cool.furry.mc.forge.projectexpansion.net.packets.to_server;
 
 
 import cool.furry.mc.forge.projectexpansion.capability.CapabilityAlchemicalBookLocations;
-import cool.furry.mc.forge.projectexpansion.capability.IAlchemialBookLocationsProvider;
+import cool.furry.mc.forge.projectexpansion.capability.IAlchemicalBookLocationsProvider;
 import cool.furry.mc.forge.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.forge.projectexpansion.net.packets.IPacket;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
@@ -29,7 +29,7 @@ public class PacketTeleportBack implements IPacket {
         ItemStack stack = player.getItemInHand(hand);
         if(stack.getItem() instanceof ItemAlchemicalBook book) {
             try {
-                IAlchemialBookLocationsProvider provider = CapabilityAlchemicalBookLocations.from(stack);
+                IAlchemicalBookLocationsProvider provider = CapabilityAlchemicalBookLocations.from(stack);
                 provider.teleportBack((ServerPlayer) player, book.getTier().isAcrossDimensions());
                 provider.syncToOtherPlayers();
             } catch (CapabilityAlchemicalBookLocations.BookError error) {

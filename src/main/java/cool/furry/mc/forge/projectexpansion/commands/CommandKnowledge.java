@@ -1,15 +1,12 @@
 package cool.furry.mc.forge.projectexpansion.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
-import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.nbt.NBTManager;
@@ -84,6 +81,10 @@ public class CommandKnowledge {
         }
     }
 
+    private static void sendSuccess(CommandSourceStack source, Component message, boolean notify) {
+        source.sendSuccess(() -> message, notify);
+    }
+
     private static int handle(CommandContext<CommandSourceStack> ctx, ActionType action) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         boolean isSelf = compareUUID(ctx.getSource(), player);
@@ -104,11 +105,11 @@ public class CommandKnowledge {
             provider.clearKnowledge();
             provider.sync(player);
             if (compareUUID(ctx.getSource(), player)) {
-                ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_CLEAR_SUCCESS_SELF.translateColored(ChatFormatting.GREEN), false);
+                sendSuccess(ctx.getSource(), Lang.Commands.KNOWLEDGE_CLEAR_SUCCESS_SELF.translateColored(ChatFormatting.GREEN), false);
             } else {
-                ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
+                sendSuccess(ctx.getSource(), Lang.Commands.KNOWLEDGE_CLEAR_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName()), true);
                 if(Config.notifyCommandChanges.get()) {
-                    player.sendSystemMessage(Lang.Commands.KNOWLEDGE_CLEAR_NOTIFICATION.translate(getSourceName(ctx.getSource())));;
+                    player.sendSystemMessage(Lang.Commands.KNOWLEDGE_CLEAR_NOTIFICATION.translate(getSourceName(ctx.getSource())));
                 }
             }
             return 1;
@@ -120,7 +121,7 @@ public class CommandKnowledge {
             ctx.getSource().sendFailure(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, player.getDisplayName()));
             return 0;
         }
-        IEMCProxy proxy = ProjectEAPI.getEMCProxy();
+        IEMCProxy proxy = IEMCProxy.INSTANCE;
         if (!proxy.hasValue(item)) {
             ctx.getSource().sendFailure(Lang.Commands.KNOWLEDGE_INVALID.translate());
             return 0;
@@ -137,9 +138,9 @@ public class CommandKnowledge {
                     }
                 } else {
                     if (isSelf) {
-                        ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_LEARN_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, new ItemStack(item).getDisplayName()), false);
+                        sendSuccess(ctx.getSource(), Lang.Commands.KNOWLEDGE_LEARN_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, new ItemStack(item).getDisplayName()), false);
                     } else {
-                        ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GRAY, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
+                        sendSuccess(ctx.getSource(), Lang.Commands.KNOWLEDGE_LEARN_SUCCESS.translateColored(ChatFormatting.GRAY, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
                         if (Config.notifyCommandChanges.get()) {
                             player.sendSystemMessage(Lang.Commands.KNOWLEDGE_LEARN_NOTIFICATION.translateColored(ChatFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())));
                         }
@@ -156,9 +157,9 @@ public class CommandKnowledge {
                     }
                 } else {
                     if (isSelf) {
-                        ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, new ItemStack(item).getDisplayName()), false);
+                        sendSuccess(ctx.getSource(), Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, new ItemStack(item).getDisplayName()), false);
                     } else {
-                        ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
+                        sendSuccess(ctx.getSource(), Lang.Commands.KNOWLEDGE_UNLEARN_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), new ItemStack(item).getDisplayName()), true);
                         if (Config.notifyCommandChanges.get()) {
                             player.sendSystemMessage(Lang.Commands.KNOWLEDGE_UNLEARN_NOTIFICATION.translateColored(ChatFormatting.GRAY, new ItemStack(item).getDisplayName(), getSourceName(ctx.getSource())));
                         }
@@ -175,9 +176,9 @@ public class CommandKnowledge {
                     }
                 } else {
                     if (isSelf) {
-                        ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_TEST_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, new ItemStack(item).getDisplayName()), false);
+                        sendSuccess(ctx.getSource(), Lang.Commands.KNOWLEDGE_TEST_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, new ItemStack(item).getDisplayName()), false);
                     } else {
-                        ctx.getSource().sendSuccess(Lang.Commands.KNOWLEDGE_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), new ItemStack(item).getDisplayName()), false);
+                        sendSuccess(ctx.getSource(), Lang.Commands.KNOWLEDGE_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), new ItemStack(item).getDisplayName()), false);
                     }
                 }
             }

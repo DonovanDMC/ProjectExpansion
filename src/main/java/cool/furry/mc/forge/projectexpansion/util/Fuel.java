@@ -5,18 +5,12 @@ import cool.furry.mc.forge.projectexpansion.item.ItemFuel;
 import cool.furry.mc.forge.projectexpansion.registries.Blocks;
 import cool.furry.mc.forge.projectexpansion.registries.Items;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.RegistryObject;
-import org.lwjgl.openal.ALC;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
@@ -95,7 +89,7 @@ public enum Fuel {
         switch (reg) {
             case ITEM -> item = Items.Registry.register(String.format("%s_fuel", name), () -> new ItemFuel(this));
             case BLOCK -> {
-                block = Blocks.Registry.register(String.format("%s_fuel_block", name), () -> new Block(Block.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(0.5F, 1.5F)));
+                block = Blocks.Registry.register(String.format("%s_fuel_block", name), () -> new Block(Block.Properties.of().requiresCorrectToolForDrops().strength(0.5F, 1.5F)));
                 blockItem = Items.Registry.register(String.format("%s_fuel_block", name), () -> new FuelBlockItem(this));
             }
         }
@@ -103,6 +97,17 @@ public enum Fuel {
 
     public static void registerAll() {
         Arrays.stream(RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.register(type)));
+    }
+
+    public static void setAllCreativeTab(CreativeModeTab.Output output) {
+        Arrays.stream(RegistrationType.values()).forEach(type -> {
+            Arrays.stream(VALUES).forEach(val -> val.setCreativeTab(output, type));
+        });
+    }
+
+    private void setCreativeTab(CreativeModeTab.Output output, RegistrationType type) {
+        if (type == RegistrationType.ITEM && item != null) output.accept(item.get());
+        if (type == RegistrationType.BLOCK && blockItem != null) output.accept(blockItem.get());
     }
 
     private enum RegistrationType {

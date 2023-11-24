@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -95,6 +94,10 @@ public class CommandEMC {
         }
     }
 
+    private static void sendSuccess(CommandSourceStack source, Component message, boolean notify) {
+        source.sendSuccess(() -> message, notify);
+    }
+
     private static int handle(CommandContext<CommandSourceStack> ctx, ActionType action) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if(action == ActionType.GET) {
@@ -104,9 +107,9 @@ public class CommandEMC {
                 return 0;
             }
             if (compareUUID(ctx.getSource(), player)) {
-                ctx.getSource().sendSuccess(Lang.Commands.EMC_GET_SUCCESS_SELF.translate(formatEMC(provider.getEmc())), false);
+                sendSuccess(ctx.getSource(), Lang.Commands.EMC_GET_SUCCESS_SELF.translate(formatEMC(provider.getEmc())), false);
             } else {
-                ctx.getSource().sendSuccess(Lang.Commands.EMC_GET_SUCCESS.translate(formatEMC(provider.getEmc())), true);
+                sendSuccess(ctx.getSource(), Lang.Commands.EMC_GET_SUCCESS.translate(formatEMC(provider.getEmc())), true);
             }
 
             return 1;
@@ -151,9 +154,9 @@ public class CommandEMC {
             case ADD -> {
                 newEMC = newEMC.add(value);
                 if (compareUUID(ctx.getSource(), player)) {
-                    ctx.getSource().sendSuccess(Lang.Commands.EMC_ADD_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
+                    sendSuccess(ctx.getSource(), Lang.Commands.EMC_ADD_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
                 } else {
-                    ctx.getSource().sendSuccess(Lang.Commands.EMC_ADD_SUCCESS.translateColored(ChatFormatting.GREEN, formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
+                    sendSuccess(ctx.getSource(), Lang.Commands.EMC_ADD_SUCCESS.translateColored(ChatFormatting.GREEN, formatEMC(value), player.getDisplayName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
                         player.sendSystemMessage(Lang.Commands.EMC_ADD_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)));
                     }
@@ -166,9 +169,9 @@ public class CommandEMC {
                     return 0;
                 }
                 if (compareUUID(ctx.getSource(), player)) {
-                    ctx.getSource().sendSuccess(Lang.Commands.EMC_REMOVE_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
+                    sendSuccess(ctx.getSource(), Lang.Commands.EMC_REMOVE_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
                 } else {
-                    ctx.getSource().sendSuccess(Lang.Commands.EMC_REMOVE_SUCCESS.translateColored(ChatFormatting.GREEN, formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)), true);
+                    sendSuccess(ctx.getSource(), Lang.Commands.EMC_REMOVE_SUCCESS.translateColored(ChatFormatting.GREEN, formatEMC(value), player.getScoreboardName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
                         player.sendSystemMessage(Lang.Commands.EMC_REMOVE_NOTIFICATION.translate(formatEMC(value), getSourceName(ctx.getSource()), formatEMC(newEMC)));
                     }
@@ -177,9 +180,9 @@ public class CommandEMC {
             case SET -> {
                 newEMC = value;
                 if (compareUUID(ctx.getSource(), player)) {
-                    ctx.getSource().sendSuccess(Lang.Commands.EMC_SET_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
+                    sendSuccess(ctx.getSource(), Lang.Commands.EMC_SET_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, formatEMC(value), formatEMC(newEMC)), false);
                 } else {
-                    ctx.getSource().sendSuccess(Lang.Commands.EMC_SET_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(newEMC)), true);
+                    sendSuccess(ctx.getSource(), Lang.Commands.EMC_SET_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(newEMC)), true);
                     if (Config.notifyCommandChanges.get()) {
                         player.sendSystemMessage(Lang.Commands.EMC_REMOVE_SUCCESS.translate(formatEMC(newEMC), getSourceName(ctx.getSource())));
                     }
@@ -189,14 +192,14 @@ public class CommandEMC {
                 boolean canTake = newEMC.compareTo(value) > -1;
                 if (compareUUID(ctx.getSource(), player))
                     if (canTake) {
-                        ctx.getSource().sendSuccess(Lang.Commands.EMC_TEST_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, formatEMC(value)), false);
+                        sendSuccess(ctx.getSource(), Lang.Commands.EMC_TEST_SUCCESS_SELF.translateColored(ChatFormatting.GREEN, formatEMC(value)), false);
                     } else {
                         response = 0;
                         ctx.getSource().sendFailure(Lang.Commands.EMC_TEST_FAIL_SELF.translateColored(ChatFormatting.RED, formatEMC(value)));
                     }
                 else {
                     if (canTake)
-                        ctx.getSource().sendSuccess(Lang.Commands.EMC_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getScoreboardName(), formatEMC(value)), false);
+                        sendSuccess(ctx.getSource(), Lang.Commands.EMC_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getScoreboardName(), formatEMC(value)), false);
                     else {
                         response = 0;
                         ctx.getSource().sendFailure(Lang.Commands.KNOWLEDGE_TEST_FAIL_SELF.translateColored(ChatFormatting.RED, player.getScoreboardName(), formatEMC(value)));

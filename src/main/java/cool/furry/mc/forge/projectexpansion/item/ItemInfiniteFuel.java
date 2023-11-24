@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.*;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -24,7 +23,7 @@ import java.util.UUID;
 public class ItemInfiniteFuel extends Item {
 
     public ItemInfiniteFuel() {
-        super(new Properties().stacksTo(1).rarity(Rarity.RARE).tab(Main.tab));
+        super(new Properties().stacksTo(1).rarity(Rarity.RARE));
     }
 
     @OnlyIn(Dist.CLIENT)

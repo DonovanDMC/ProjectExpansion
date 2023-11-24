@@ -4,8 +4,8 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -61,7 +61,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
         }
         BigInteger playerEmc = provider.getEmc();
         if (playerEmc.compareTo(BigInteger.ZERO) < 1) return 0;
-        BigInteger targetItemEmc = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot]));
+        BigInteger targetItemEmc = BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(fetchKnowledge()[slot]));
         if (targetItemEmc.compareTo(BigInteger.ZERO) < 1) return 0;
         return playerEmc.divide(targetItemEmc).min(BigInteger.valueOf(Math.max(1, Config.transmutationInterfaceItemCount.get()))).intValue();
     }
@@ -114,7 +114,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
             if(getFilterStatus() && !NBTManager.getPersistentInfo(info).equals(info)) return stack;
             if (simulate) return ItemStack.EMPTY;
 
-            long emcValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
+            long emcValue = IEMCProxy.INSTANCE.getSellValue(stack);
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if(provider == null) return stack;
             BigInteger totalEmcValue = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(count));
@@ -142,7 +142,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
             item.setCount(amount);
 
             if (simulate) return item;
-            long emcValue = ProjectEAPI.getEMCProxy().getValue(fetchKnowledge()[slot - 1]);
+            long emcValue = IEMCProxy.INSTANCE.getValue(fetchKnowledge()[slot - 1]);
             BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if(provider == null) return ItemStack.EMPTY;
@@ -160,11 +160,11 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return slot == 0 && ProjectEAPI.getEMCProxy().hasValue(stack);
+            return slot == 0 && IEMCProxy.INSTANCE.hasValue(stack);
         }
     }
 
-    public ItemHandler getItemHandlerCapability() {
+    ItemHandler getItemHandlerCapability() {
         return (ItemHandler) getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
     }
 

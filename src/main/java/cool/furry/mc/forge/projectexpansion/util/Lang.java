@@ -37,6 +37,7 @@ public enum Lang implements ILangEntry {
     ALCHEMICAL_BOOK_DISTANCE("gui", "alchemical_book", "distance"),
     ALCHEMICAL_BOOK_DIMENSION("gui", "alchemical_book", "dimension"),
     ALCHEMICAL_BOOK_NO_BACK_LOCATION("gui", "alchemical_book", "no_back_location"),
+    CREATIVE_TAB("gui", "creative_tab"),
     ;
 
     private String key;

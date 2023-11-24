@@ -2,7 +2,6 @@ package cool.furry.mc.forge.projectexpansion.capability;
 
 import com.google.common.collect.ImmutableList;
 import cool.furry.mc.forge.projectexpansion.Main;
-import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.forge.projectexpansion.net.PacketHandler;
 import cool.furry.mc.forge.projectexpansion.net.packets.to_client.PacketSyncAlchemicalBookLocations;
@@ -15,7 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -36,7 +35,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocationsProvider {
+@SuppressWarnings("unused")
+public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocationsProvider {
     public static final int BASIC_DISTANCE_RATIO = 1000;
     public static final int ADVANCED_DISTANCE_RATIO = 500;
     public static final int MASTER_DISTANCE_RATIO = 100;
@@ -49,14 +49,14 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
         this.player = player;
         this.itemStack = itemStack;
     }
-    public static IAlchemialBookLocationsProvider fromPlayer(Player player) {
+    public static IAlchemicalBookLocationsProvider fromPlayer(Player player) {
         return player.getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).orElseThrow(() -> new IllegalStateException("Player does not have expected capability"));
     }
-    public static IAlchemialBookLocationsProvider fromItemStack(ItemStack stack) {
+    public static IAlchemicalBookLocationsProvider fromItemStack(ItemStack stack) {
         return stack.getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS).orElseThrow(() -> new IllegalStateException("ItemStack does not have expected capability"));
     }
 
-    public static IAlchemialBookLocationsProvider from(ItemStack stack) throws BookError.OwnerOfflineError {
+    public static IAlchemicalBookLocationsProvider from(ItemStack stack) throws BookError.OwnerOfflineError {
         if(!(stack.getItem() instanceof ItemAlchemicalBook book)) {
             throw new IllegalArgumentException("ItemStack is not an alchemical book");
         }
@@ -76,13 +76,13 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
         return name.equalsIgnoreCase(BACK_KEY);
     }
 
-    public static IAlchemialBookLocationsProvider getDefault(ItemAlchemicalBook.Mode mode, @Nullable ServerPlayer player, @Nullable ItemStack itemStack) {
+    public static IAlchemicalBookLocationsProvider getDefault(ItemAlchemicalBook.Mode mode, @Nullable ServerPlayer player, @Nullable ItemStack itemStack) {
         return new CapabilityAlchemicalBookLocations(mode, player, itemStack);
     }
-    public static class Provider implements ICapabilityResolver<IAlchemialBookLocationsProvider>, ICapabilitySerializable<CompoundTag> {
-        private @Nullable LazyOptional<IAlchemialBookLocationsProvider> cached;
+    public static class Provider implements ICapabilityResolver<IAlchemicalBookLocationsProvider>, ICapabilitySerializable<CompoundTag> {
+        private @Nullable LazyOptional<IAlchemicalBookLocationsProvider> cached;
         public static final ResourceLocation NAME = Main.rl("alchemical_book_locations");
-        private final IAlchemialBookLocationsProvider defaultImpl;
+        private final IAlchemicalBookLocationsProvider defaultImpl;
         private final @Nullable ServerPlayer player;
         private final @Nullable ItemStack itemStack;
         public Provider(ItemAlchemicalBook.Mode mode, @Nullable ServerPlayer player, @Nullable ItemStack itemStack) {
@@ -92,7 +92,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
         }
 
         @Override
-        public @NotNull Capability<IAlchemialBookLocationsProvider> getMatchingCapability() {
+        public @NotNull Capability<IAlchemicalBookLocationsProvider> getMatchingCapability() {
             return Capabilities.ALCHEMICAL_BOOK_LOCATIONS;
         }
 
@@ -130,7 +130,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
 
     public record TeleportLocation(String name, int x, int y, int z, ResourceKey<Level> dimension, int index) {
         public void teleportTo(ServerPlayer player, boolean acrossDimensions) throws BookError.DimensionNotFoundError, BookError.WrongDimensionError {
-            ResourceKey<Level> dim = player.getLevel().dimension();
+            ResourceKey<Level> dim = player.level().dimension();
 
             ServerLevel level = Util.getDimension(dimension);
             if(level == null) {
@@ -189,7 +189,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
             int y = tag.getInt(TagNames.Y);
             int z = tag.getInt(TagNames.Z);
             int index = tag.getInt(TagNames.INDEX);
-            ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString(TagNames.DIMENSION)));
+            ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString(TagNames.DIMENSION)));
             return new TeleportLocation(name, x, y, z, dimension, index);
         }
 
@@ -361,7 +361,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
 
     @Override
     public void addLocation(Player player, String name) throws BookError.DuplicateNameError {
-        addLocation(name, GlobalPos.of(player.level.dimension(), player.blockPosition()));
+        addLocation(name, GlobalPos.of(player.level().dimension(), player.blockPosition()));
     }
 
     @Override
@@ -395,7 +395,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
 
     @Override
     public void saveBackLocation(Player player) {
-        saveBackLocation(player, GlobalPos.of(player.level.dimension(), player.blockPosition()));
+        saveBackLocation(player, GlobalPos.of(player.level().dimension(), player.blockPosition()));
     }
 
     private static final String BACK_KEY = "@back";
@@ -425,7 +425,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
             throw new BookError.NoBackLocationError();
         }
 
-        ResourceKey<Level> dim = player.getLevel().dimension();
+        ResourceKey<Level> dim = player.level().dimension();
 
         ServerLevel level = Util.getDimension(backLocation.dimension());
         if(level == null) {
@@ -447,7 +447,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemialBookLocation
 
     @Override
     public void teleportTo(String name, ServerPlayer player, boolean acrossDimensions) throws BookError.NameNotFoundError, BookError.WrongDimensionError, BookError.DimensionNotFoundError {
-        GlobalPos pos = GlobalPos.of(player.level.dimension(), player.blockPosition());
+        GlobalPos pos = GlobalPos.of(player.level().dimension(), player.blockPosition());
         getLocationOrThrow(name).teleportTo(player, acrossDimensions);
         saveBackLocation(player, pos);
     }

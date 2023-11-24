@@ -1,15 +1,14 @@
 package cool.furry.mc.forge.projectexpansion.block.entity;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.util.*;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
+import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -38,18 +37,14 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
 public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHasMatter {
@@ -140,7 +135,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
 
     @Nonnull
     @Override
-    public Matter getMatter() {
+    public @NotNull Matter getMatter() {
         if (level != null) {
             BlockEMCLink block = (BlockEMCLink) getBlockState().getBlock();
             if (block.getMatter() != matter) setMatter(block.getMatter());
@@ -158,8 +153,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
     }
     public InteractionResult handleActivation(Player player, InteractionHand hand) {
         ItemStack inHand = player.getItemInHand(hand);
-        ItemHandler itemHandler = (ItemHandler) getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
-        FluidHandler fluidHandler = (FluidHandler) getCapability(ForgeCapabilities.FLUID_HANDLER).orElseThrow(NullPointerException::new);
+        ItemHandler itemHandler = getItemHandlerCapability();
+        FluidHandler fluidHandler = getFluidHandlerCapability();
 
         if(!super.handleActivation(player, ActivationType.CHECK_OWNERSHIP)) return InteractionResult.CONSUME;
 
@@ -203,7 +198,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             }
             BigInteger emc = provider.getEmc();
             if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
-                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, Component.literal(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, Component.literal(EMCFormat.format(BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
                 return InteractionResult.CONSUME;
             }
             FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, fluidHandler, 1000, player, true);
@@ -224,7 +219,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             }
             ItemStack extract = itemHandler.extractItemInternal(0, itemStack.getMaxStackSize(), false, Config.limitEmcLinkVendor.get());
             if (extract.isEmpty()) {
-                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, Component.literal(EMCFormat.format(BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
+                player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, Component.literal(EMCFormat.format(BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
                 return InteractionResult.CONSUME;
             }
             ItemHandlerHelper.giveItemToPlayer(player, extract);
@@ -271,8 +266,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         }
     }
 
-    public IEmcStorage getEMCHandlerCapability() {
-        return getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
+    EMCHandler getEMCHandlerCapability() {
+        return (EMCHandler) getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
     }
 
     private class ItemHandler implements IItemHandler {
@@ -287,7 +282,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if (provider == null) return ItemStack.EMPTY;
-            BigInteger val = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
+            BigInteger val = BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(itemStack));
             if(val.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
             BigInteger maxCount = provider.getEmc().divide(val).min(BigInteger.valueOf(Integer.MAX_VALUE));
             int count = maxCount.intValueExact();
@@ -312,7 +307,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
 
             int insertCount = isFinal ? count : Math.min(count, remainingImport);
             if (!simulate) {
-                long itemValue = ProjectEAPI.getEMCProxy().getSellValue(stack);
+                long itemValue = IEMCProxy.INSTANCE.getSellValue(stack);
                 @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
                 if (provider == null) return stack;
                 BigInteger totalValue = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(insertCount));
@@ -343,7 +338,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             boolean isFinal = getMatter() == Matter.FINAL;
             if (slot != 0 || (!isFinal && remainingExport <= 0) || owner == null || itemStack.isEmpty() || Util.getPlayer(owner) == null) return ItemStack.EMPTY;
 
-            BigInteger itemValue = BigInteger.valueOf(ProjectEAPI.getEMCProxy().getValue(itemStack));
+            BigInteger itemValue = BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(itemStack));
             if(itemValue.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if (provider == null) return ItemStack.EMPTY;
@@ -372,12 +367,12 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return ProjectEAPI.getEMCProxy().hasValue(stack);
+            return IEMCProxy.INSTANCE.hasValue(stack);
         }
     }
 
-    public IItemHandler getItemHandlerCapability() {
-        return getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
+    ItemHandler getItemHandlerCapability() {
+        return (ItemHandler) getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(NullPointerException::new);
     }
 
     private class FluidHandler implements IFluidHandler {
@@ -388,8 +383,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
 
         private double getFluidCostPer() {
             try {
-                long fullCost = ProjectEAPI.getEMCProxy().getValue(itemStack);
-                long bucketCost = ProjectEAPI.getEMCProxy().getValue(net.minecraft.world.item.Items.BUCKET);
+                long fullCost = IEMCProxy.INSTANCE.getValue(itemStack);
+                long bucketCost = IEMCProxy.INSTANCE.getValue(net.minecraft.world.item.Items.BUCKET);
                 if (bucketCost == 0 && fullCost == 0) return 0D;
                 return (fullCost - ((bucketCost * getMatter().getFluidEfficiencyPercentage()) / 100F))  / 1000D;
             } catch(ArithmeticException ignore) {
@@ -473,7 +468,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             BigDecimal dEMC = new BigDecimal(emc);
             if(dEMC.compareTo(BigDecimal.valueOf(getFluidCostPer())) < 0) return FluidStack.EMPTY;
             if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
-                // this is a bad way to estimate, it rounds up so we'll usually say less than what's really possible
+                // this is a bad way to estimate, it rounds up, so we'll usually say less than what's really possible
                 BigDecimal max = dEMC.divide(BigDecimal.valueOf(getFluidCostPer()), RoundingMode.FLOOR);
                 maxDrain = Util.safeIntValue(max);
                 if(!isFinal &&maxDrain > remainingFluid) maxDrain = remainingFluid;
@@ -492,8 +487,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         }
     }
 
-    public IFluidHandler getFluidHandlerCapability() {
-        return getCapability(ForgeCapabilities.FLUID_HANDLER).orElseThrow(NullPointerException::new);
+    FluidHandler getFluidHandlerCapability() {
+        return (FluidHandler) getCapability(ForgeCapabilities.FLUID_HANDLER).orElseThrow(NullPointerException::new);
     }
 
     @Nonnull

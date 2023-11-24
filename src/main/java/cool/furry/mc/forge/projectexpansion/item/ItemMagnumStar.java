@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.util.Star;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -31,7 +30,7 @@ public class ItemMagnumStar extends ItemPE implements IItemEmcHolder, IBarHelper
 
     public ItemMagnumStar(Star tier) { this(tier, 1); }
     public ItemMagnumStar(Star tier, int type) {
-        super(new Properties().stacksTo(1).tab(Main.tab).rarity(tier == Star.OMEGA ? Rarity.EPIC : type == 1 ? Rarity.UNCOMMON : Rarity.RARE));
+        super(new Properties().stacksTo(1).rarity(tier == Star.OMEGA ? Rarity.EPIC : type == 1 ? Rarity.UNCOMMON : Rarity.RARE));
 
         this.tier = tier;
         this.type = type;

@@ -1,6 +1,5 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.Matter;
 import net.minecraft.ChatFormatting;
@@ -18,7 +17,7 @@ import java.util.List;
 public class ItemCompressedEnergyCollector extends Item {
     public final Matter matter;
     public ItemCompressedEnergyCollector(Matter matter) {
-        super(new Properties().tab(Main.tab).rarity(matter.rarity));
+        super(new Properties().rarity(matter.getRarity()));
         this.matter = matter;
     }
 

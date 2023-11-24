@@ -11,7 +11,6 @@ import cool.furry.mc.forge.projectexpansion.net.packets.to_server.PacketTeleport
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -58,7 +57,7 @@ public class PacketHandler {
     }
     public static <MSG extends IPacket> void sendTo(MSG msg, ServerPlayer player) {
         if (!(player instanceof FakePlayer)) {
-            HANDLER.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+            HANDLER.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         }
     }
 }

@@ -1,9 +1,7 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.entity.*;
 import cool.furry.mc.forge.projectexpansion.util.*;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.ChatFormatting;
@@ -31,7 +29,7 @@ import java.util.Objects;
 
 public class ItemMatterUpgrader extends Item {
     public ItemMatterUpgrader() {
-        super(new Properties().tab(Main.tab));
+        super(new Properties());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -72,7 +70,7 @@ public class ItemMatterUpgrader extends Item {
             player.displayClientMessage(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, player.getDisplayName()), true);
             return InteractionResult.FAIL;
         }
-        IEMCProxy proxy = ProjectEAPI.getEMCProxy();
+        IEMCProxy proxy = IEMCProxy.INSTANCE;
 
         @Nullable BlockItem upgrade = null;
         @Nullable Block upgradeBlock = null;
@@ -105,7 +103,7 @@ public class ItemMatterUpgrader extends Item {
             upgrade = Objects.requireNonNull(upgradeTo.getEMCLinkItem());
             upgradeBlock = Objects.requireNonNull(upgradeTo.getEMCLink());
             if (be.owner == null) return InteractionResult.FAIL;
-            if (be.owner != player.getUUID()) {
+            if (!be.owner.equals(player.getUUID())) {
                 player.displayClientMessage(Lang.Items.MATTER_UPGRADER_NOT_OWNER.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.FAIL;
             }

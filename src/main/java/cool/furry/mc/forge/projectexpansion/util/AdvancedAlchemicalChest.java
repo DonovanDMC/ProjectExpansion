@@ -1,17 +1,18 @@
 package cool.furry.mc.forge.projectexpansion.util;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.block.BlockAdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.block.entity.BlockEntityAdvancedAlchemicalChest;
 import cool.furry.mc.forge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.forge.projectexpansion.registries.Blocks;
 import cool.furry.mc.forge.projectexpansion.registries.Items;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +26,12 @@ public class AdvancedAlchemicalChest {
 			blocks.put(color, Blocks.Registry.register(String.format("%s_advanced_alchemical_chest", color.getName()), () -> new BlockAdvancedAlchemicalChest(color)));
 			//noinspection ConstantConditions
 			blockEntityTypes.put(color, BlockEntityTypes.Registry.register(String.format("%s_advanced_alchemical_chest", color.getName()), () -> BlockEntityType.Builder.of((pos, state) -> new BlockEntityAdvancedAlchemicalChest(pos, state, getBlockEntityType(color), color), getBlock(color)).build(null)));
-			blockItems.put(color, Items.Registry.register(String.format("%s_advanced_alchemical_chest", color.getName()), () -> new BlockItem(getBlock(color), new Item.Properties().tab(Main.tab))));
+			blockItems.put(color, Items.Registry.register(String.format("%s_advanced_alchemical_chest", color.getName()), () -> new BlockItem(getBlock(color), new Item.Properties())));
 		}
+	}
+
+	public static void setAllCreativeTab(CreativeModeTab.Output output) {
+		Arrays.stream(DyeColor.values()).forEach(color -> output.accept(blockItems.get(color).get()));
 	}
 
 	public static RegistryObject<BlockAdvancedAlchemicalChest> getRegistryBlock(DyeColor color) {

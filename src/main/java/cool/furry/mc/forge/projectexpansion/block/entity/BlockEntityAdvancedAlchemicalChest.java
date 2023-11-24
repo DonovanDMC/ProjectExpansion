@@ -89,7 +89,7 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 
 		ItemStack stack = player.getItemInHand(hand);
 		if(stack.isEmpty()) {
-			player.displayClientMessage(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_INVLID_ITEM.translate(color.getName()), true );
+			player.displayClientMessage(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_INVLID_ITEM.translate(color.getName()), true);
 			return InteractionResult.FAIL;
 		}
 
@@ -109,7 +109,7 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 			}
 			player.displayClientMessage(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_COLOR_SET.translate(bag.color.getName()), true);
 		} else {
-			player.displayClientMessage(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_INVLID_ITEM.translate(), true );
+			player.displayClientMessage(Lang.Blocks.ADVANCED_ALCHEMICAL_CHEST_INVLID_ITEM.translate(), true);
 		}
 
 		return InteractionResult.SUCCESS;

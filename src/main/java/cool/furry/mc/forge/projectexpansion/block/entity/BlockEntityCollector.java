@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,7 +82,7 @@ public class BlockEntityCollector extends BlockEntity implements IHasMatter {
 
     @Nonnull
     @Override
-    public Matter getMatter() {
+    public @NotNull Matter getMatter() {
         if (level != null) {
             BlockCollector block = (BlockCollector) getBlockState().getBlock();
             if (block.getMatter() != matter) setMatter(block.getMatter());
@@ -124,7 +125,7 @@ public class BlockEntityCollector extends BlockEntity implements IHasMatter {
         }
     }
 
-    public EMCHandler getEMCHandlerCapability() {
+    EMCHandler getEMCHandlerCapability() {
         return (EMCHandler) getCapability(PECapabilities.EMC_STORAGE_CAPABILITY).orElseThrow(NullPointerException::new);
     }
 
