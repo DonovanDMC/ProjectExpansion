@@ -1,0 +1,38 @@
+{
+	"parent": "projecte:condenser",
+	"criteria": {
+		"relay": {
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projecte:relay_mk1"
+						]
+					}
+				]
+			},
+			"trigger": "minecraft:inventory_changed"
+		}
+	},
+	"display": {
+		"announce_to_chat": true,
+		"description": {
+			"translate": "advancements.projecte.relay.description"
+		},
+		"frame": "task",
+		"hidden": false,
+		"icon": {
+			"item": "projecte:relay_mk1"
+		},
+		"show_toast": true,
+		"title": {
+			"translate": "advancements.projecte.relay"
+		}
+	},
+	"requirements": [
+		[
+			"relay"
+		]
+	],
+	"sends_telemetry_event": true
+}

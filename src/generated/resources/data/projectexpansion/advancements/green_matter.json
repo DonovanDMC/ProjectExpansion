@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:cyan_matter",
+  "criteria": {
+    "green_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:green_matter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.green_matter.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:green_matter"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.green_matter"
+    }
+  },
+  "requirements": [
+    [
+      "green_matter"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

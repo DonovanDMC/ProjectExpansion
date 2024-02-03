@@ -31,21 +31,21 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public enum Matter {
-    BASIC(  0,  MaterialColor.COLOR_GRAY, null, null),
-    DARK(   2,  PEBlocks.DARK_MATTER.getBlock().defaultMaterialColor(), PEItems.DARK_MATTER, PEBlocks.DARK_MATTER::getBlock),
-    RED(    4,  PEBlocks.RED_MATTER.getBlock().defaultMaterialColor(), PEItems.RED_MATTER, PEBlocks.RED_MATTER::getBlock),
-    MAGENTA(4,  MaterialColor.COLOR_MAGENTA, null,  null),
-    PINK(   5,  MaterialColor.COLOR_PINK,  null,  null),
-    PURPLE( 5,  MaterialColor.COLOR_PURPLE,  null,  null),
-    VIOLET( 6,  MaterialColor.COLOR_PURPLE,  null,  null),
-    BLUE(   6,  MaterialColor.COLOR_BLACK,  null,  null),
-    CYAN(   7,  MaterialColor.COLOR_CYAN,  null,  null),
-    GREEN(  7,  MaterialColor.COLOR_GREEN,  null,  null),
-    LIME(   8,  MaterialColor.COLOR_LIGHT_GREEN,  null,  null),
-    YELLOW( 8,  MaterialColor.COLOR_YELLOW,  null,  null),
-    ORANGE( 9,  MaterialColor.COLOR_ORANGE,  null,  null),
+    BASIC(  0,  () -> MaterialColor.COLOR_GRAY, null, null),
+    DARK(   2,  () -> PEBlocks.DARK_MATTER.getBlock().defaultMaterialColor(), PEItems.DARK_MATTER, PEBlocks.DARK_MATTER::getBlock),
+    RED(    4,  () -> PEBlocks.RED_MATTER.getBlock().defaultMaterialColor(), PEItems.RED_MATTER, PEBlocks.RED_MATTER::getBlock),
+    MAGENTA(4,  () -> MaterialColor.COLOR_MAGENTA, null,  null),
+    PINK(   5,  () -> MaterialColor.COLOR_PINK,  null,  null),
+    PURPLE( 5,  () -> MaterialColor.COLOR_PURPLE,  null,  null),
+    VIOLET( 6,  () -> MaterialColor.COLOR_PURPLE,  null,  null),
+    BLUE(   6,  () -> MaterialColor.COLOR_BLACK,  null,  null),
+    CYAN(   7,  () -> MaterialColor.COLOR_CYAN,  null,  null),
+    GREEN(  7,  () -> MaterialColor.COLOR_GREEN,  null,  null),
+    LIME(   8,  () -> MaterialColor.COLOR_LIGHT_GREEN,  null,  null),
+    YELLOW( 8,  () -> MaterialColor.COLOR_YELLOW,  null,  null),
+    ORANGE( 9,  () -> MaterialColor.COLOR_ORANGE,  null,  null),
     WHITE(  9,  null,  null,  null),
-    FADING( 10,  MaterialColor.COLOR_BLACK, null, null),
+    FADING( 10,  () -> MaterialColor.COLOR_BLACK, null, null),
     FINAL(  10,  null, Items.FINAL_STAR_SHARD, null);
     public final BigDecimal BASE_COLLECTOR_OUTPUT = BigDecimal.valueOf(4L);
     public final BigDecimal BASE_RELAY_BONUS = BigDecimal.valueOf(1L);
@@ -79,7 +79,7 @@ public enum Matter {
     @Deprecated
     public final int fluidEfficiency;
     @Nullable
-    public final MaterialColor materialColor;
+    public final Supplier<MaterialColor> materialColor;
     @Nullable
     public final Supplier<Item> existingItem;
     @Nullable
@@ -108,7 +108,7 @@ public enum Matter {
     private RegistryObject<BlockItem> itemMatterBlock = null;
     @Nullable
     private RegistryObject<BlockMatter> blockMatterBlock = null;
-    Matter(int fluidEfficiency, @Nullable MaterialColor materialColor, @Nullable Supplier<Item> existingItem, @Nullable Supplier<Block> existingBlock) {
+    Matter(int fluidEfficiency, @Nullable Supplier<MaterialColor> materialColor, @Nullable Supplier<Item> existingItem, @Nullable Supplier<Block> existingBlock) {
         boolean isFinal = name().equals("FINAL"); // we can't access the FINAL member because we're in the constructor
         this.name = name().toLowerCase(Locale.US);
         this.hasItem = existingItem == null && ordinal() != 0;

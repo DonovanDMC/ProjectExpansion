@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:green_matter",
+  "criteria": {
+    "lime_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:lime_matter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.lime_matter.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:lime_matter"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.lime_matter"
+    }
+  },
+  "requirements": [
+    [
+      "lime_matter"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

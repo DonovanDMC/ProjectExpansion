@@ -1,0 +1,38 @@
+{
+	"parent": "projecte:root",
+	"criteria": {
+		"tome": {
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projecte:tome"
+						]
+					}
+				]
+			},
+			"trigger": "minecraft:inventory_changed"
+		}
+	},
+	"display": {
+		"announce_to_chat": true,
+		"description": {
+			"translate": "advancements.projecte.tome.description"
+		},
+		"frame": "goal",
+		"hidden": true,
+		"icon": {
+			"item": "projecte:tome"
+		},
+		"show_toast": true,
+		"title": {
+			"translate": "advancements.projecte.tome"
+		}
+	},
+	"requirements": [
+		[
+			"tome"
+		]
+	],
+	"sends_telemetry_event": true
+}

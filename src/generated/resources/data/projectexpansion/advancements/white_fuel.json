@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:orange_fuel",
+  "criteria": {
+    "white_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:white_fuel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.white_fuel.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:white_fuel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.white_fuel"
+    }
+  },
+  "requirements": [
+    [
+      "white_fuel"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,20 @@
+{
+	"values": [
+		"projectexpansion:basic_relay",
+		"projectexpansion:dark_relay",
+		"projectexpansion:red_relay",
+		"projectexpansion:magenta_relay",
+		"projectexpansion:pink_relay",
+		"projectexpansion:purple_relay",
+		"projectexpansion:violet_relay",
+		"projectexpansion:blue_relay",
+		"projectexpansion:cyan_relay",
+		"projectexpansion:green_relay",
+		"projectexpansion:lime_relay",
+		"projectexpansion:yellow_relay",
+		"projectexpansion:orange_relay",
+		"projectexpansion:white_relay",
+		"projectexpansion:fading_relay",
+		"projectexpansion:final_relay"
+	]
+}

@@ -21,7 +21,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nonnull;
@@ -83,9 +82,5 @@ public class Main {
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(MOD_ID, path);
-    }
-
-    public static void templog(String text) {
-        Logger.printf(Level.INFO, text, Thread.currentThread().getName());
     }
 }

@@ -106,6 +106,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:ae2-223794:${getProperty("ae2Version")}")
     runtimeOnly fg.deobf("curse.maven:itank-256991:${getProperty("itankVersion")}")
     runtimeOnly fg.deobf("curse.maven:cloth-config-348521:${getProperty("clothVersion")}")
+    runtimeOnly fg.deobf("curse.maven:better-advancements-272515:${getProperty("baVersion")}")
 }
 
 jar {

@@ -15,6 +15,7 @@
 		"AlchemicalCollectionToggleMixin",
 		"EnchantmentProcessorMixin",
 		"PhilosophersStoneMixin",
+		"TomeMixin",
 		"ToolHelperMixin"
 	],
 	"injectors": {

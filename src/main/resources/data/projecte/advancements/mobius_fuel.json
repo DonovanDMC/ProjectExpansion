@@ -1,0 +1,38 @@
+{
+  "parent": "projecte:alchemical_coal",
+  "criteria": {
+    "mobius_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:mobius_fuel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projecte.mobius_fuel.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projecte:mobius_fuel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projecte.mobius_fuel"
+    }
+  },
+  "requirements": [
+    [
+      "mobius_fuel"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

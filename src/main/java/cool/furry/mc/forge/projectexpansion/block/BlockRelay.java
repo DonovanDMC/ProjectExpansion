@@ -73,7 +73,7 @@ public class BlockRelay extends Block implements IHasMatter, EntityBlock {
 
     @Override
     public MaterialColor getMapColor(BlockState state, BlockGetter level, BlockPos pos, MaterialColor defaultColor) {
-        MaterialColor color = matter.materialColor;
+        MaterialColor color = matter.materialColor == null ? null : matter.materialColor.get();
         return color != null ? color : super.getMapColor(state, level, pos, defaultColor);
     }
 }

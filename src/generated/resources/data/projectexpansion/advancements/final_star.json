@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:final_star_shard",
+  "criteria": {
+    "final_star": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:final_star"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.final_star.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:final_star"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.final_star"
+    }
+  },
+  "requirements": [
+    [
+      "final_star"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

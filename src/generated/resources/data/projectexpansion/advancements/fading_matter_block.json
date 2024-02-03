@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:fading_matter",
+  "criteria": {
+    "fading_matter_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:fading_matter_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.fading_matter_block.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:fading_matter_block"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.fading_matter_block"
+    }
+  },
+  "requirements": [
+    [
+      "fading_matter_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

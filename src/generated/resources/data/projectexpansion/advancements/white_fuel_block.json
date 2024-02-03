@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:white_fuel",
+  "criteria": {
+    "white_fuel_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:white_fuel_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.white_fuel_block.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:white_fuel_block"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.white_fuel_block"
+    }
+  },
+  "requirements": [
+    [
+      "white_fuel_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

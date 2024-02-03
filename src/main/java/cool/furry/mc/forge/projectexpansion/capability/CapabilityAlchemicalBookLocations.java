@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 import java.util.HashMap;
 
+@SuppressWarnings("unused")
 public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocationsProvider {
     public static final int BASIC_DISTANCE_RATIO = 1000;
     public static final int ADVANCED_DISTANCE_RATIO = 500;

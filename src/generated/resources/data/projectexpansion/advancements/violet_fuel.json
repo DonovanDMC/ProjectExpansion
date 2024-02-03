@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:purple_fuel",
+  "criteria": {
+    "violet_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:violet_fuel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.violet_fuel.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:violet_fuel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.violet_fuel"
+    }
+  },
+  "requirements": [
+    [
+      "violet_fuel"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

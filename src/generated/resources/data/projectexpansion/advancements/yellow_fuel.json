@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:lime_fuel",
+  "criteria": {
+    "yellow_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:yellow_fuel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.yellow_fuel.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:yellow_fuel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.yellow_fuel"
+    }
+  },
+  "requirements": [
+    [
+      "yellow_fuel"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

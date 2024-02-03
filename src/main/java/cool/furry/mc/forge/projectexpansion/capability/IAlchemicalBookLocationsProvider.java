@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("unused")
 public interface IAlchemicalBookLocationsProvider extends INBTSerializable<CompoundTag> {
     void addLocation(Player player, String name) throws CapabilityAlchemicalBookLocations.BookError.DuplicateNameError;
     void addLocation(String name, GlobalPos pos) throws CapabilityAlchemicalBookLocations.BookError.DuplicateNameError;

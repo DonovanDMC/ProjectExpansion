@@ -1,0 +1,38 @@
+{
+  "parent": "projectexpansion:violet_matter",
+  "criteria": {
+    "blue_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:blue_matter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.projectexpansion.blue_matter.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "projectexpansion:blue_matter"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.projectexpansion.blue_matter"
+    }
+  },
+  "requirements": [
+    [
+      "blue_matter"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
