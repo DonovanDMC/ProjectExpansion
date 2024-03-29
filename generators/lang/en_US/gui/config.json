@@ -45,5 +45,7 @@
   "gui.projectexpansion.config.alchemical_collection_sound": "Alchemical Collection Sound",
   "gui.projectexpansion.config.alchemical_collection_sound.desc": "If a sound should be played when something is collected with Alchemical Collection.",
   "gui.projectexpansion.config.zero_emc_fluids_are_free": "Zero EMC Fluids are Free",
-  "gui.projectexpansion.config.zero_emc_fluids_are_free.desc": "If fluids with an EMC value of 0 should be free."
+  "gui.projectexpansion.config.zero_emc_fluids_are_free.desc": "If fluids with an EMC value of 0 should be free.",
+  "gui.projectexpansion.config.enable_collector_optimizations": "Enable Collector Optimizations",
+  "gui.projectexpansion.config.enable_collector_optimizations.desc": "If optimizations (ticking only once per second) should be enabled for collectors. This will make them process at most one item each second."
 }
