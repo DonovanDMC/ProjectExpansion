@@ -15,5 +15,9 @@
   "text.projectexpansion.enabled": "Enabled ✓",
   "text.projectexpansion.disabled": "Disabled ✗",
   "text.projectexpansion.alchemical_collection": "Alchemical Collection: %s",
-  "text.projectexpansion.pos.outofbounds": "That position is outside the allowed boundaries."
+  "text.projectexpansion.pos.outofbounds": "That position is outside the allowed boundaries.",
+  "death.attack.walk_on_sun": "%s tried to walk on the sun.",
+  "death.attack.walk_on_sun.player": "%s tried to walk on the sun whilst fighting %s.",
+  "death.attack.stare_at_sun": "%s decided staring at the sun was a good idea.",
+  "death.attack.stare_at_sun.player": "%s decided to stare at the sun whilst fighting %s."
 }

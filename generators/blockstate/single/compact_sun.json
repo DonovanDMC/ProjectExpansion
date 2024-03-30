@@ -1,0 +1,8 @@
+{
+	"forge_marker": 1,
+	"variants": {
+		"": {
+			"model": "projectexpansion:block/compact_sun"
+		}
+	}
+}

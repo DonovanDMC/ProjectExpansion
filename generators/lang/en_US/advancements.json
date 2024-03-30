@@ -150,5 +150,9 @@
   "advancements.projectexpansion.arcane_alchemical_book": "Arcane Alchemical Book",
   "advancements.projectexpansion.arcane_alchemical_book.description": "Obtain an arcane alchemical book.",
   "advancements.projectexpansion.knowledge_sharing_book": "Sharing is caring!",
-  "advancements.projectexpansion.knowledge_sharing_book.description": "But I don't care."
+  "advancements.projectexpansion.knowledge_sharing_book.description": "But I don't care.",
+  "advancements.projectexpansion.compact_sun": "The power of the sun in your hands",
+  "advancements.projectexpansion.compact_sun.description": "Don't stare at it for too long..",
+  "advancements.projectexpansion.blinded_by_the_light": "Blinded By The Light",
+  "advancements.projectexpansion.blinded_by_the_light.description": "You were warned."
 }
