@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:star",
+  "ingredients": [
+    {
+      "item": "projectexpansion:gargantuan_star_sphere"
+    },
+    {
+      "item": "projectexpansion:gargantuan_star_sphere"
+    },
+    {
+      "item": "projectexpansion:gargantuan_star_sphere"
+    },
+    {
+      "item": "projectexpansion:gargantuan_star_sphere"
+    }
+  ],
+  "result": {
+    "item": "projectexpansion:gargantuan_star_omega"
+  }
+}

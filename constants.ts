@@ -6,8 +6,9 @@ export const MATTER_TIERS = [
 ];
 
 export const STAR_TYPES = [
+	"magnum",
 	"colossal",
-	"magnum"
+	"gargantuan"
 ];
 
 export const STAR_TIERS = [
