@@ -4,11 +4,10 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
 import cool.furry.mc.forge.projectexpansion.registries.SoundEvents;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
-import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +24,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +37,7 @@ public abstract class AlchemicalCollectionMixin {
     @Inject(at = @At("RETURN"), method = "getDrops(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", cancellable = true)
     private static void getDrops(BlockState state, ServerLevel level, BlockPos pos, BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfoReturnable<List<ItemStack>> cir) {
         if(!(entity instanceof ServerPlayer player)) return;
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
-        if(provider == null) return;
+        IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(player.getUUID());
         IEMCProxy proxy = IEMCProxy.INSTANCE;
         boolean hasEnch = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.ALCHEMICAL_COLLECTION.get(), stack) > 0;
         if(!state.canHarvestBlock(level, pos, player) || !hasEnch) return;

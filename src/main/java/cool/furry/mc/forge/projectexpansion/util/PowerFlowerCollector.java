@@ -2,12 +2,12 @@ package cool.furry.mc.forge.projectexpansion.util;
 
 import cool.furry.mc.forge.projectexpansion.Main;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -28,12 +28,10 @@ public class PowerFlowerCollector {
             Set<UUID> toRemove = new HashSet<>();
             for(UUID uuid : stored.keySet()) {
                 BigInteger amount = stored.get(uuid);
-                ServerPlayer player = Util.getPlayer(uuid);
-                if (player == null) continue;
-                @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(uuid);
-                if(provider == null) continue;
+                IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(uuid);
                 provider.setEmc(provider.getEmc().add(amount));
-                provider.syncEmc(player);
+                ServerPlayer player = Util.getPlayer(uuid);
+                if (player != null) provider.syncEmc(player);
                 toRemove.add(uuid);
             }
             toRemove.forEach(stored::remove);

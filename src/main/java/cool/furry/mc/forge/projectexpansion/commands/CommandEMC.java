@@ -8,8 +8,8 @@ import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
-import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -101,11 +101,7 @@ public class CommandEMC {
     private static int handle(CommandContext<CommandSourceStack> ctx, ActionType action) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if(action == ActionType.GET) {
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
-            if(provider == null) {
-                ctx.getSource().sendFailure(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, player.getDisplayName()));
-                return 0;
-            }
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(player.getUUID());
             if (compareUUID(ctx.getSource(), player)) {
                 sendSuccess(ctx.getSource(), Lang.Commands.EMC_GET_SUCCESS_SELF.translate(formatEMC(provider.getEmc())), false);
             } else {
@@ -144,11 +140,7 @@ public class CommandEMC {
         }
 
         int response = 1;
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
-        if(provider == null) {
-            ctx.getSource().sendFailure(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, player.getDisplayName()));
-            return 0;
-        }
+        IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(player.getUUID());
         BigInteger newEMC = provider.getEmc();
         switch (action) {
             case ADD -> {

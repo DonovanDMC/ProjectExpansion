@@ -6,6 +6,7 @@ import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,18 +37,12 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
 
     private ItemInfo[] fetchKnowledge() {
         if (info != null) return info;
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-        if(provider == null) {
-            return new ItemInfo[]{};
-        }
+        IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
         return info = provider.getKnowledge().toArray(new ItemInfo[0]);
     }
 
     private int getMaxCount(int slot) {
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-        if(provider == null) {
-            return 0;
-        }
+        IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
         BigInteger playerEmc = provider.getEmc();
         if (playerEmc.compareTo(BigInteger.ZERO) < 1) return 0;
         BigInteger targetItemEmc = BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(fetchKnowledge()[slot]));
@@ -104,8 +99,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
             if (simulate) return ItemStack.EMPTY;
 
             long emcValue = IEMCProxy.INSTANCE.getSellValue(stack);
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-            if(provider == null) return stack;
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
             BigInteger totalEmcValue = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(count));
             provider.setEmc(provider.getEmc().add(totalEmcValue));
 
@@ -133,8 +127,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
             if (simulate) return item;
             long emcValue = IEMCProxy.INSTANCE.getValue(fetchKnowledge()[slot - 1]);
             BigInteger totalEmcCost = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(amount));
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-            if(provider == null) return ItemStack.EMPTY;
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
             provider.setEmc(provider.getEmc().subtract(totalEmcCost));
             ServerPlayer player = Util.getPlayer(level, owner);
             if (player != null) provider.syncEmc(player);

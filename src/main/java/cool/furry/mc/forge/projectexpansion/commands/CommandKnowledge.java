@@ -5,10 +5,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
-import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
@@ -20,8 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 public class CommandKnowledge {
     private enum ActionType {
@@ -89,11 +87,7 @@ public class CommandKnowledge {
         ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         boolean isSelf = compareUUID(ctx.getSource(), player);
         if(action == ActionType.CLEAR) {
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
-            if(provider == null) {
-                ctx.getSource().sendFailure(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, player.getDisplayName()));
-                return 0;
-            }
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(player.getUUID());
             if(provider.getKnowledge().isEmpty()) {
                 if(isSelf) {
                     ctx.getSource().sendFailure(Lang.Commands.KNOWLEDGE_CLEAR_FAIL_SELF.translateColored(ChatFormatting.RED));
@@ -116,11 +110,7 @@ public class CommandKnowledge {
         }
         Item item = ItemArgument.getItem(ctx, "item").getItem();
 
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(player);
-        if(provider == null) {
-            ctx.getSource().sendFailure(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, player.getDisplayName()));
-            return 0;
-        }
+        IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(player.getUUID());
         IEMCProxy proxy = IEMCProxy.INSTANCE;
         if (!proxy.hasValue(item)) {
             ctx.getSource().sendFailure(Lang.Commands.KNOWLEDGE_INVALID.translate());

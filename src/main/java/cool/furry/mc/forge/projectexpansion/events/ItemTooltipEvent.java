@@ -6,11 +6,10 @@ import cool.furry.mc.forge.projectexpansion.registries.Enchantments;
 import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
 import cool.furry.mc.forge.projectexpansion.util.Lang;
 import cool.furry.mc.forge.projectexpansion.util.TagNames;
-import cool.furry.mc.forge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
@@ -43,10 +42,7 @@ public class ItemTooltipEvent {
                 break learnedTooltip;
             }
 
-            IKnowledgeProvider provider = Util.getKnowledgeProvider(event.getEntity());
-            if (provider == null) {
-                break learnedTooltip;
-            }
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(event.getEntity().getUUID());
 
             boolean hasKnowledge = provider.hasKnowledge(ItemInfo.fromStack(stack));
             long value = IEMCProxy.INSTANCE.getValue(stack);

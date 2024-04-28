@@ -9,6 +9,7 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import moze_intel.projecte.emc.nbt.NBTManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -44,7 +45,6 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHasMatter {
@@ -104,9 +104,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         resetLimits();
         if (emc.equals(BigInteger.ZERO)) return;
         ServerPlayer player = Util.getPlayer(level, owner);
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-        if (provider == null) return;
-
+        IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
         BigInteger toAdd = getMatter() == Matter.FINAL ? emc : remainingEMC.min(emc);
         provider.setEmc(provider.getEmc().add(toAdd));
         emc = emc.subtract(toAdd).max(BigInteger.ZERO);
@@ -187,11 +185,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
                 return InteractionResult.CONSUME;
             }
             long cost = fluidHandler.getFluidCost(1000);
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-            if(provider == null) {
-                player.displayClientMessage(Lang.FAILED_TO_GET_KNOWLEDGE_PROVIDER.translateColored(ChatFormatting.RED, Util.getPlayer(owner) == null ? owner : Objects.requireNonNull(Util.getPlayer(owner)).getDisplayName()), true);
-                return InteractionResult.FAIL;
-            }
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
             BigInteger emc = provider.getEmc();
             if(emc.compareTo(BigInteger.valueOf(cost)) < 0) {
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_NOT_ENOUGH_EMC.translateColored(ChatFormatting.RED, Component.literal(EMCFormat.format(BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(itemStack)))).setStyle(ColorStyle.GREEN)), true);
@@ -276,8 +270,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         @Override
         public ItemStack getStackInSlot(int slot) {
             if (slot != 0 || itemStack.isEmpty()) return ItemStack.EMPTY;
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-            if (provider == null) return ItemStack.EMPTY;
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
             BigInteger val = BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(itemStack));
             if(val.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
             BigInteger maxCount = provider.getEmc().divide(val).min(BigInteger.valueOf(Integer.MAX_VALUE));
@@ -304,8 +297,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             int insertCount = isFinal ? count : Math.min(count, remainingImport);
             if (!simulate) {
                 long itemValue = IEMCProxy.INSTANCE.getSellValue(stack);
-                @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-                if (provider == null) return stack;
+                IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
                 BigInteger totalValue = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(insertCount));
                 provider.setEmc(provider.getEmc().add(totalValue));
                 ServerPlayer player = Util.getPlayer(owner);
@@ -336,8 +328,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
 
             BigInteger itemValue = BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(itemStack));
             if(itemValue.equals(BigInteger.ZERO)) return ItemStack.EMPTY;
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-            if (provider == null) return ItemStack.EMPTY;
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
             BigInteger maxCount = provider.getEmc().divide(itemValue).min(BigInteger.valueOf(Integer.MAX_VALUE));
             int extractCount = Math.min(amount, limit && !isFinal ? Math.min(maxCount.intValueExact(), remainingExport) : maxCount.intValueExact());
             if (extractCount <= 0) return ItemStack.EMPTY;
@@ -458,8 +449,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             if(!isFinal && maxDrain > remainingFluid) maxDrain = remainingFluid;
             if(maxDrain > remainingFluid) maxDrain = remainingFluid;
             long cost = getFluidCost(maxDrain);
-            @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-            if(provider == null) return FluidStack.EMPTY;
+            IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
             BigInteger emc = provider.getEmc();
             BigDecimal dEMC = new BigDecimal(emc);
             if(dEMC.compareTo(BigDecimal.valueOf(getFluidCostPer())) < 0) return FluidStack.EMPTY;
@@ -476,7 +466,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
                 markDirty();
                 if(!isFreeFluid()) {
                     provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
-                    provider.syncEmc(Objects.requireNonNull(Util.getPlayer(owner)));
+                    ServerPlayer player = Util.getPlayer(owner);
+                    if (player != null) provider.syncEmc(player);
                 }
             }
             return new FluidStack(fluid, maxDrain);

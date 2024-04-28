@@ -2,7 +2,6 @@ package cool.furry.mc.forge.projectexpansion.util;
 
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
-import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.emc.nbt.NBTManager;
@@ -126,22 +125,6 @@ public class Util {
     public static void markDirty(Level level, BlockPos pos) {
         level.getChunkAt(pos).setUnsaved(true);
         level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), Block.UPDATE_CLIENTS);
-    }
-
-    public static @Nullable IKnowledgeProvider getKnowledgeProvider(UUID uuid) {
-        @Nullable ServerPlayer player = getPlayer(uuid);
-        if(player == null) {
-            return null;
-        }
-        return getKnowledgeProvider(player);
-    }
-
-    public static @Nullable IKnowledgeProvider getKnowledgeProvider(Player player) {
-        try {
-            return player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY).orElseThrow(NullPointerException::new);
-        } catch(NullPointerException ignore) {
-            return null;
-        }
     }
 
     public static long spreadEMC(long emc, List<IEmcStorage> storageList) {

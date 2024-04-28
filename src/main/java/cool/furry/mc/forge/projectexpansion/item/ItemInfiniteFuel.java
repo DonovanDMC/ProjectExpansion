@@ -1,9 +1,9 @@
 package cool.furry.mc.forge.projectexpansion.item;
 
-import cool.furry.mc.forge.projectexpansion.Main;
 import cool.furry.mc.forge.projectexpansion.config.Config;
 import cool.furry.mc.forge.projectexpansion.util.*;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,8 +38,8 @@ public class ItemInfiniteFuel extends Item {
     @Override
     public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {
         @Nullable UUID owner = stack.getTag() == null ? null : stack.getTag().getUUID(TagNames.OWNER);
-        @Nullable IKnowledgeProvider provider = owner == null ? null : Util.getKnowledgeProvider(owner);
-        if (owner == null || provider == null) return 0;
+        if (owner == null) return 0;
+        IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
         return (Config.infiniteFuelCost.get() == 0 || Config.infiniteFuelBurnTime.get() == 0) ? 0 : provider.getEmc().compareTo(BigInteger.valueOf(Config.infiniteFuelCost.get())) < 0 ? 0 : Config.infiniteFuelBurnTime.get();
     }
 
@@ -54,8 +54,7 @@ public class ItemInfiniteFuel extends Item {
         if (owner == null)
             return stack;
         ServerPlayer player = Util.getPlayer(owner);
-        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
-        if (provider == null) return stack;
+        IKnowledgeProvider provider = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
         provider.setEmc(provider.getEmc().subtract(BigInteger.valueOf(Config.infiniteFuelCost.get())));
         if (player != null) provider.syncEmc(player);
         return stack;
