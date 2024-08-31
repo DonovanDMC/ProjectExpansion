@@ -3,5 +3,6 @@
   "block.projectexpansion.transmutation_interface": "Transmutation Interface",
   "block.projectexpansion.transmutation_interface.tooltip": "This can be used with compatible mods like Applied Energistics to access your transmutation inventory.",
   "block.projectexpansion.compact_sun": "Compact Sun",
-  "block.projectexpansion.compact_sun.tooltip": "The power of the sun in a single block."
+  "block.projectexpansion.compact_sun.tooltip": "The power of the sun in a single block.",
+  "block.projectexpansion.compact_sun.tooltip2": "When put above or below certain blocks, multiplies their output by %s."
 }
