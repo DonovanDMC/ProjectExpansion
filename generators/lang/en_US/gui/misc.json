@@ -8,5 +8,7 @@
   "gui.projectexpansion.alchemical_book.distance": "Distance: %s",
   "gui.projectexpansion.alchemical_book.dimension": "Dimension: %s",
   "gui.projectexpansion.alchemical_book.cost": "Cost: %s",
-  "gui.projectexpansion.alchemical_book.no_back_location": "No Back Location"
+  "gui.projectexpansion.alchemical_book.no_back_location": "No Back Location",
+  "gui.projectexpansion.alchemical_book.prev": "Prev Page",
+  "gui.projectexpansion.alchemical_book.next": "Next Page"
 }
