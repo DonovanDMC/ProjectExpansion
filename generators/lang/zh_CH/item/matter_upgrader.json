@@ -1,0 +1,12 @@
+{
+	"item.projectexpansion.matter_upgrader.tooltip": "就地升级收集器、花盆栽罐和继电器",
+	"item.projectexpansion.matter_upgrader.tooltip2": "必须已经学习了下一级，并拥有足够的EMC差价来升级",
+	"item.projectexpansion.matter_upgrader.tooltip_creative": "上述限制不适用于创造模式。",
+	"item.projectexpansion.matter_upgrader": "物质升级器",
+	"item.projectexpansion.matter_upgrader.not_owner": "该方块不属于你。",
+	"item.projectexpansion.matter_upgrader.max_upgrade": "该方块已经是最高等级了。",
+	"item.projectexpansion.matter_upgrader.not_learned": "你必须先学习“%s”才能升级。",
+	"item.projectexpansion.matter_upgrader.not_enough_emc": "你没有足够的EMC来升级，需要%s。",
+	"item.projectexpansion.matter_upgrader.done": "升级完成，已消耗%sEMC。",
+	"item.projectexpansion.matter_upgrader.done_creative": "升级完成，创造模式不消耗EMC。"
+}

@@ -1,0 +1,20 @@
+{
+	"item.projectexpansion.compressed_collector.tooltip": "合成物品",
+	"item.projectexpansion.basic_compressed_collector": "基础能量压缩收集器1型",
+	"item.projectexpansion.dark_compressed_collector": "黑物质压缩收集器2型",
+	"item.projectexpansion.red_compressed_collector": "红物质压缩收集器3型",
+	"item.projectexpansion.magenta_compressed_collector": "品红物质压缩收集器4型",
+	"item.projectexpansion.pink_compressed_collector": "粉红物质压缩收集器5型",
+	"item.projectexpansion.purple_compressed_collector": "紫物质压缩收集器6型",
+	"item.projectexpansion.violet_compressed_collector": "紫罗兰物质压缩收集器7型",
+	"item.projectexpansion.blue_compressed_collector": "蓝物质压缩收集器8型",
+	"item.projectexpansion.cyan_compressed_collector": "青物质压缩收集器9型",
+	"item.projectexpansion.green_compressed_collector": "绿物质压缩收集器10型",
+	"item.projectexpansion.lime_compressed_collector": "黄绿物质压缩收集器11型",
+	"item.projectexpansion.yellow_compressed_collector": "黄物质压缩收集器12型",
+	"item.projectexpansion.orange_compressed_collector": "橙物质压缩收集器13型",
+	"item.projectexpansion.white_compressed_collector": "白物质压缩收集器14型",
+	"item.projectexpansion.fading_compressed_collector": "渐消物质压缩收集器15型",
+	"item.projectexpansion.final_compressed_collector": "终极能量压缩收集器16型",
+	"item.projectexpansion.magenta_fuel": "品红燃料"
+}

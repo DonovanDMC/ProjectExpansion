@@ -1,0 +1,23 @@
+{
+  "block.projectexpansion.collector": "收集器。",
+  "block.projectexpansion.collector.tooltip": "在光照下会产生EMC。",
+	"block.projectexpansion.collector.emc": "最大EMC产生速度：%s/秒",
+	"block.projectexpansion.collector.stack_emc": "堆叠EMC产生速度：%s/秒",
+	"block.projectexpansion.collector.max_storage": "最大EMC容量：%s",
+  "block.projectexpansion.basic_collector": "基础能量收集器1型",
+	"block.projectexpansion.dark_collector": "黑物质收集器2型",
+	"block.projectexpansion.red_collector": "红物质收集器3型",
+	"block.projectexpansion.magenta_collector": "品红物质收集器4型",
+	"block.projectexpansion.pink_collector": "粉红物质收集器5型",
+	"block.projectexpansion.purple_collector": "紫物质收集器6型",
+	"block.projectexpansion.violet_collector": "紫罗兰物质收集器7型",
+	"block.projectexpansion.blue_collector": "蓝物质收集器8型",
+	"block.projectexpansion.cyan_collector": "青物质收集器9型",
+	"block.projectexpansion.green_collector": "绿物质收集器10型",
+	"block.projectexpansion.lime_collector": "黄绿物质收集器11型",
+	"block.projectexpansion.yellow_collector": "黄物质收集器12型",
+	"block.projectexpansion.orange_collector": "橙物质收集器13型",
+	"block.projectexpansion.white_collector": "白物质收集器14型",
+	"block.projectexpansion.fading_collector": "渐消物质收集器15型",
+	"block.projectexpansion.final_collector": "终极能量收集器16型"
+}
