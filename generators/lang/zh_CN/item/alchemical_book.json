@@ -22,7 +22,7 @@
 	"item.projectexpansion.alchemical_book.error.not_enough_emc": "你没有足够的EMC来传送。",
 	"item.projectexpansion.alchemical_book.error.edit_not_allowed": "你没有编辑该炼金术书的权限。",
 	"item.projectexpansion.alchemical_book.now_bound": "该炼金术书已与你绑定，其传送点将存储于玩家数据中。",
-  "item.projectexpansion.alchemical_book.no_longer_bound": "该炼金术书不再与你绑定，其传送点将存储于炼金术书。如果你丢失了这本炼金术书，将无法访问其传送点。",
+	"item.projectexpansion.alchemical_book.no_longer_bound": "该炼金术书不再与你绑定，其传送点将存储于炼金术书。如果你丢失了这本炼金术书，将无法访问其传送点。",
 	"item.projectexpansion.alchemical_book.corrupted": "该炼金术书中的传送点已损坏，查看日志以了解更多信息。",
 	"item.projectexpansion.alchemical_book.bound_to": "已绑定至%s.",
 	"item.projectexpansion.alchemical_book.owner_not_online": "该炼金术书的所有者不在线。"

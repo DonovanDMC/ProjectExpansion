@@ -9,7 +9,7 @@
 	"block.projectexpansion.emc_link.empty_hand": "请空出手来清除输出物品。",
 	"block.projectexpansion.emc_link.cleared": "已清除输出物品。",
 	"block.projectexpansion.emc_link.not_enough_emc": "你没有足够的EMC来购买此物品，需要%s EMC才能购买。",
-	"block.projectexpansion.emc_link.set": "输出物品已设置为%s.",
+	"block.projectexpansion.emc_link.set": "输出物品已设置为%s。",
 	"block.projectexpansion.emc_link.no_emc_value": "%s此物品没有EMC值，无法设置输出物品。",
 	"block.projectexpansion.emc_link.no_export_remaining": "已超出输出限制，请稍等。",
 	"block.projectexpansion.basic_emc_link": "基础EMC接口1型",

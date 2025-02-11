@@ -1,10 +1,10 @@
 {
-  "block.projectexpansion.collector": "收集器。",
-  "block.projectexpansion.collector.tooltip": "在光照下会产生EMC。",
+	"block.projectexpansion.collector": "收集器。",
+	"block.projectexpansion.collector.tooltip": "在光照下会产生EMC。",
 	"block.projectexpansion.collector.emc": "最大EMC产生速度：%s/秒",
 	"block.projectexpansion.collector.stack_emc": "堆叠EMC产生速度：%s/秒",
 	"block.projectexpansion.collector.max_storage": "最大EMC容量：%s",
-  "block.projectexpansion.basic_collector": "基础能量收集器1型",
+	"block.projectexpansion.basic_collector": "基础能量收集器1型",
 	"block.projectexpansion.dark_collector": "黑物质收集器2型",
 	"block.projectexpansion.red_collector": "红物质收集器3型",
 	"block.projectexpansion.magenta_collector": "品红物质收集器4型",

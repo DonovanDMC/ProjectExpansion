@@ -1,5 +1,5 @@
 {
-	"itemGroup.projectexpansion": "等价交换-拓展",
+	"itemGroup.projectexpansion": "等价交换拓展",
 	"enchantment.projectexpansion.alchemical_collection": "炼金收集",
 	"enchantment.projectexpansion.alchemical_collection.desc": "将任何具有EMC值且可开采的方块直接转化为EMC。",
 	"text.projectexpansion.wip": "正在开发中",
@@ -36,5 +36,5 @@
 	"death.attack.walk_on_sun.player": "%s在与%s战斗时试图在太阳上行走",
 	"death.attack.stare_at_sun": "%s觉得盯着太阳看是个好主意",
 	"death.attack.stare_at_sun.player": "%s决定在与%s战斗时盯着太阳看",
-	"config.jade.plugin_projectexpansion.provider": "方块信息"
+	"config.jade.plugin_projectexpansion.provider": "等价交换拓展-方块信息"
 }
