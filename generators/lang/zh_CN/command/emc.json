@@ -1,0 +1,19 @@
+{
+	"command.projectexpansion.emc.invalid": "你提供的值（“%s”）无效，必须是正整数。",
+	"command.projectexpansion.emc.add.success": "已成功添加%sEMC到%s，他现在有%sEMC。",
+	"command.projectexpansion.emc.add.success_self": "已成功添加%sEMC，你现在有%sEMC。",
+	"command.projectexpansion.emc.add.notification": "%2$s给了你%1$sEMC，你现在有%3$s",
+	"command.projectexpansion.emc.remove.success": "已成功减少%sEMC，%s现在有%sEMC。",
+	"command.projectexpansion.emc.remove.success_self": "已成功减少%sEMC，你现在有%sEMC。",
+	"command.projectexpansion.emc.remove.notification": "%2$s拿走了你%1$sEMC，你现在有%3$sEMC",
+	"command.projectexpansion.emc.remove.negative": "无法减少%sEMC，因为这会使%s其EMC为负值。",
+	"command.projectexpansion.emc.set.success": "已成功将%s的EMC设置为%s",
+	"command.projectexpansion.emc.set.success_self": "已成功将你的EMC设置为%s",
+	"command.projectexpansion.emc.set.notification": "你的EMC被%s设置为%s",
+	"command.projectexpansion.emc.get.success_self": "你拥有%sEMC",
+	"command.projectexpansion.emc.get.success": "对方拥有%sEMC",
+	"command.projectexpansion.emc.test.success": "%s拥有足够的EMC来减少%sEMC。",
+	"command.projectexpansion.emc.test.success_self": "你拥有有足够的EMC来减少%sEMC。",
+	"command.projectexpansion.emc.test.fail": "%s没有足够的EMC来减少%sEMC。",
+	"command.projectexpansion.emc.test.fail_self": "你没有足够的EMC来减少%sEMC。"
+}

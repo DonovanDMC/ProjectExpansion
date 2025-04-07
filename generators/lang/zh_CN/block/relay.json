@@ -1,0 +1,21 @@
+{
+	"block.projectexpansion.relay.tooltip": "每秒传递一次EMC。",
+	"block.projectexpansion.relay.bonus": "传递EMC效率：%s/秒",
+	"block.projectexpansion.relay.transfer": "最大EMC传递量：%s/秒",
+	"block.projectexpansion.basic_relay": "基础反物质继电器1型",
+	"block.projectexpansion.dark_relay": "黑反物质继电器2型",
+	"block.projectexpansion.red_relay": "红反物质继电器3型",
+	"block.projectexpansion.magenta_relay": "品红反物质继电器4型",
+	"block.projectexpansion.pink_relay": "粉反物质继电器5型",
+	"block.projectexpansion.purple_relay": "紫反物质继电器6型",
+	"block.projectexpansion.violet_relay": "紫罗兰反物质继电器7型",
+	"block.projectexpansion.blue_relay": "蓝反物质继电器8型",
+	"block.projectexpansion.cyan_relay": "青反物质继电器9型",
+	"block.projectexpansion.green_relay": "绿反物质继电器10型",
+	"block.projectexpansion.lime_relay": "黄绿反物质继电器11型",
+	"block.projectexpansion.yellow_relay": "黄反物质继电器12型",
+	"block.projectexpansion.orange_relay": "橙反物质继电器13型",
+	"block.projectexpansion.white_relay": "白反物质继电器14型",
+	"block.projectexpansion.fading_relay": "渐消反物质继电器15型",
+	"block.projectexpansion.final_relay": "终极反物质继电器16型"
+}

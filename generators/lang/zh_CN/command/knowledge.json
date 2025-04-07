@@ -1,0 +1,22 @@
+{
+	"command.projectexpansion.knowledge.invalid": "该物品没有EMC值，无法学习。",
+	"command.projectexpansion.knowledge.clear.success": "成功清除%s的知识",
+	"command.projectexpansion.knowledge.clear.success_self": "成功清除你的知识",
+	"command.projectexpansion.knowledge.clear.fail": "%s没有知识可以清除。",
+	"command.projectexpansion.knowledge.clear.fail_self": "你没有知识可以清除。",
+	"command.projectexpansion.knowledge.clear.notification": "你的知识已被%s清除",
+	"command.projectexpansion.knowledge.learn.success": "%s已学习%s。",
+	"command.projectexpansion.knowledge.learn.success_self": "你已学习%s。",
+	"command.projectexpansion.knowledge.learn.fail": "%s已经学习%s过了。",
+	"command.projectexpansion.knowledge.learn.failSelf": "你已经学习%s过了。",
+	"command.projectexpansion.knowledge.learn.notification": "你从%s获得了%s的知识。",
+	"command.projectexpansion.knowledge.unlearn.success": "%s已忘记%s。",
+	"command.projectexpansion.knowledge.unlearn.success_self": "已忘记%s。",
+	"command.projectexpansion.knowledge.unlearn.fail": "%s已经忘记%s了。",
+	"command.projectexpansion.knowledge.unlearn.fail_self": "你已经忘记%s了。",
+	"command.projectexpansion.knowledge.unlearn.notification": "你从%s中丢失了%s的知识。",
+	"command.projectexpansion.knowledge.test.success": "%s已经了解过了%s.",
+	"command.projectexpansion.knowledge.test.success_self": "你已经了解过了%s。",
+	"command.projectexpansion.knowledge.test.fail": "%s没有了解过%s。",
+	"command.projectexpansion.knowledge.test.fail_self": "你没有了解过%s。"
+}

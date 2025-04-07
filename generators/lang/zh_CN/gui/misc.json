@@ -1,0 +1,14 @@
+{
+	"gui.projectexpansion.advanced_alchemical_chest.title": "高级炼金术之箱",
+	"gui.projectexpansion.alchemical_book": "炼金术之书",
+	"gui.projectexpansion.alchemical_book.close": "关闭",
+	"gui.projectexpansion.alchemical_book.delete": "删除",
+	"gui.projectexpansion.alchemical_book.create": "创建",
+	"gui.projectexpansion.alchemical_book.back": "返回",
+	"gui.projectexpansion.alchemical_book.distance": "距离：%s",
+	"gui.projectexpansion.alchemical_book.dimension": "维度：%s",
+	"gui.projectexpansion.alchemical_book.cost": "传送费用：%s EMC",
+	"gui.projectexpansion.alchemical_book.no_back_location": "没有可返回的传送点",
+	"gui.projectexpansion.alchemical_book.prev": "上一页",
+	"gui.projectexpansion.alchemical_book.next": "下一页"
+}

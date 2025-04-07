@@ -1,0 +1,21 @@
+{
+	"block.projectexpansion.power_flower.tooltip": "每%s游戏刻生成一次EMC。（20/秒）",
+	"block.projectexpansion.power_flower.emc": "生成EMC量：%s/秒",
+	"block.projectexpansion.power_flower.stack_emc": "堆叠EMC容量：%s/秒",
+	"block.projectexpansion.basic_power_flower": "基础力量花盆栽罐1型",
+	"block.projectexpansion.dark_power_flower": "黑物质力量花盆栽罐2型",
+	"block.projectexpansion.red_power_flower": "红物质力量花盆栽罐3型",
+	"block.projectexpansion.magenta_power_flower": "品红物质力量花盆栽罐4型",
+	"block.projectexpansion.pink_power_flower": "粉物质力量花盆栽罐5型",
+	"block.projectexpansion.purple_power_flower": "紫物质力量花盆栽罐6型",
+	"block.projectexpansion.violet_power_flower": "紫罗兰物质力量花盆栽罐7型",
+	"block.projectexpansion.blue_power_flower": "蓝物质力量花盆栽罐8型",
+	"block.projectexpansion.cyan_power_flower": "青物质力量花盆栽罐9型",
+	"block.projectexpansion.green_power_flower": "绿物质力量花盆栽罐10型",
+	"block.projectexpansion.lime_power_flower": "黄绿物质力量花盆栽罐11型",
+	"block.projectexpansion.yellow_power_flower": "黄物质力量花盆栽罐12型",
+	"block.projectexpansion.orange_power_flower": "橙物质力量花盆栽罐13型",
+	"block.projectexpansion.white_power_flower": "白物质力量花盆栽罐14型",
+	"block.projectexpansion.fading_power_flower": "渐消物质力量花盆栽罐15型",
+	"block.projectexpansion.final_power_flower": "终极力量花盆栽罐16型"
+}

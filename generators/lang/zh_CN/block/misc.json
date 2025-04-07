@@ -1,0 +1,8 @@
+{
+	"block.projectexpansion.arcane_table": "炼金术桌",
+	"block.projectexpansion.transmutation_interface": "转化接口",
+	"block.projectexpansion.transmutation_interface.tooltip": "搭配联动模组（如AE）使用以与转化桌交互。",
+	"block.projectexpansion.compact_sun": "压缩太阳",
+	"block.projectexpansion.compact_sun.tooltip": "以径寸之匣，承烈日之力。",
+	"block.projectexpansion.compact_sun.tooltip2": "当放置于某些机器的上方或下方时，将其效率乘以%s。"
+}
