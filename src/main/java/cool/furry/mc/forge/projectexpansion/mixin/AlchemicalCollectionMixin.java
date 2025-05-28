@@ -56,7 +56,7 @@ public abstract class AlchemicalCollectionMixin {
         List<ItemStack> newDrops = initialDrops.stream()
             .map(drop -> {
                 if(proxy.hasValue(drop)) {
-                    addEMC.addAndGet(BigInteger.valueOf(proxy.getValue(drop)));
+                    addEMC.addAndGet(BigInteger.valueOf(proxy.getSellValue(drop)).multiply(BigInteger.valueOf(drop.getCount())));
                     if(!provider.hasKnowledge(drop) && !knowledgeAdditions.contains(drop)) knowledgeAdditions.add(drop);
                     return null;
                 } else return drop;
