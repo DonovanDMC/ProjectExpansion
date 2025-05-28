@@ -58,8 +58,64 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 			return player.containerMenu instanceof ContainerAdvancedAlchemicalChest chest && chest.blockEntityMatches(BlockEntityAdvancedAlchemicalChest.this);
 		}
 	};
-	@SuppressWarnings("NullableProblems")
-	private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(this::getBag);
+
+	private class BagItemHandler implements IItemHandler {
+		@Override
+		public int getSlots() {
+			IItemHandler bag = getBag();
+			if(bag != null) {
+				return bag.getSlots();
+			}
+			return 0;
+		}
+
+		@Override
+		public @NotNull ItemStack getStackInSlot(int slot) {
+			IItemHandler bag = getBag();
+			if(bag != null) {
+				return bag.getStackInSlot(slot);
+			}
+			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+			IItemHandler bag = getBag();
+			if(bag != null) {
+				return bag.insertItem(slot, stack, simulate);
+			}
+			return stack;
+		}
+
+		@Override
+		public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+			IItemHandler bag = getBag();
+			if(bag != null) {
+				return bag.extractItem(slot, amount, simulate);
+			}
+			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			IItemHandler bag = getBag();
+			if(bag != null) {
+				return bag.getSlotLimit(slot);
+			}
+			return 0;
+		}
+
+		@Override
+		public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+			IItemHandler bag = getBag();
+			if(bag != null) {
+				return bag.isItemValid(slot, stack);
+			}
+			return false;
+		}
+	}
+
+	private final LazyOptional<IItemHandler> itemHandlerCapability = LazyOptional.of(BagItemHandler::new);
 	public final DyeColor color;
 	public BlockEntityAdvancedAlchemicalChest(BlockPos pos, BlockState state, BlockEntityType<BlockEntityAdvancedAlchemicalChest> blockEntityType, DyeColor color) {
 		super(blockEntityType, pos, state);
