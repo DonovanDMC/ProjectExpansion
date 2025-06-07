@@ -166,26 +166,26 @@ public class BlockEntityCollector extends BlockEntityEMC implements IHasMatter, 
                     forceExtractEmcBigInteger(v, EmcAction.EXECUTE);
                 });
             } else if (hasFuel) {
-                if (FuelMapper.getFuelUpgrade(upgrading).isEmpty()) {
-                    auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
-                }
+                ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(upgrading);
+                if (!fuelUpgrade.isEmpty()) {
+                    ItemStack lock = getLock();
+                    ItemStack result = lock.isEmpty() ? fuelUpgrade : lock.copy();
 
-                ItemStack result = getLock().isEmpty() ? FuelMapper.getFuelUpgrade(upgrading) : getLock().copy();
+                    BigInteger upgradeCost = BigInteger.valueOf(EMCHelper.getEmcValue(result)).subtract(BigInteger.valueOf(EMCHelper.getEmcValue(upgrading)));
 
-                BigInteger upgradeCost = BigInteger.valueOf(EMCHelper.getEmcValue(result)).subtract(BigInteger.valueOf(EMCHelper.getEmcValue(upgrading)));
+                    if (upgradeCost.compareTo(BigInteger.ZERO) >= 0 && this.getStoredEmcBigInteger().compareTo(upgradeCost) >= 0) {
+                        ItemStack upgrade = getUpgraded();
 
-                if (upgradeCost.compareTo(BigInteger.ZERO) >= 0 && this.getStoredEmcBigInteger().compareTo(upgradeCost) >= 0) {
-                    ItemStack upgrade = getUpgraded();
-
-                    if (getUpgraded().isEmpty()) {
-                        forceExtractEmcBigInteger(upgradeCost, EmcAction.EXECUTE);
-                        auxSlots.setStackInSlot(UPGRADE_SLOT, result);
-                        upgrading.shrink(1);
-                    } else if (result.getItem() == upgrade.getItem() && upgrade.getCount() < upgrade.getMaxStackSize()) {
-                        forceExtractEmcBigInteger(upgradeCost, EmcAction.EXECUTE);
-                        getUpgraded().grow(1);
-                        upgrading.shrink(1);
-                        auxSlots.onContentsChanged(UPGRADE_SLOT);
+                        if (getUpgraded().isEmpty()) {
+                            forceExtractEmcBigInteger(upgradeCost, EmcAction.EXECUTE);
+                            auxSlots.setStackInSlot(UPGRADE_SLOT, result);
+                            upgrading.shrink(1);
+                        } else if (result.getItem() == upgrade.getItem() && upgrade.getCount() < upgrade.getMaxStackSize()) {
+                            forceExtractEmcBigInteger(upgradeCost, EmcAction.EXECUTE);
+                            getUpgraded().grow(1);
+                            upgrading.shrink(1);
+                            auxSlots.onContentsChanged(UPGRADE_SLOT);
+                        }
                     }
                 }
             } else {
@@ -263,7 +263,6 @@ public class BlockEntityCollector extends BlockEntityEMC implements IHasMatter, 
             }
         } else {
             if (FuelMapper.getFuelUpgrade(getUpgrading()).isEmpty()) {
-                auxSlots.setStackInSlot(UPGRADING_SLOT, ItemStack.EMPTY);
                 return 0;
             }
             reqEmc = BigDecimal.valueOf(EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(getUpgrading()))).subtract(BigDecimal.valueOf(EMCHelper.getEmcValue(getUpgrading())));
