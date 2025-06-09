@@ -26,10 +26,10 @@ const git = simpleGit(baseDir);
 await git.pull(["--tags"]);
 const currentCommit = await git.revparse("HEAD");
 const latestTag = (await git.raw(["describe", "--tags", "--abbrev=0"])).toString().trim();
-const mcVersion = getProperty("mcVersion") as string | null;
-const version = getProperty("localVersion") as string | null;
-assert(mcVersion, "mcVersion isn't present");
-assert(version, "version isn't present");
+const mcVersion = getProperty("minecraft_version") as string | null;
+const version = getProperty("mod_version") as string | null;
+assert(mcVersion, "minecraft_version isn't present");
+assert(version, "mod_version isn't present");
 
 if (latestTag.split("-")[1] === version) throw new Error("Local Version Matches Latest");
 if (!await exists(`${baseDir}/build/libs/signed`)) throw new Error("Signed Jar Is Not Present");
