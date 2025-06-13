@@ -1,32 +1,17 @@
 package cool.furry.mc.neoforge.projectexpansion.gui.container;
 
 import cool.furry.mc.neoforge.projectexpansion.block.entity.BlockEntityCondenserMK3;
-import cool.furry.mc.neoforge.projectexpansion.net.packets.to_client.PacketUpdateCondenserLock;
 import cool.furry.mc.neoforge.projectexpansion.registries.MenuTypes;
-import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.gameObjs.container.PEContainer;
-import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.function.Predicate;
 
 public class ContainerCondenserMK3Output extends ContainerBase {
     private final BlockEntityCondenserMK3.SidedHandler handler;
-    BlockEntityCondenserMK3 blockEntity;
+    final BlockEntityCondenserMK3 blockEntity;
     public ContainerCondenserMK3Output(int windowId, Inventory playerInv, BlockEntityCondenserMK3 blockEntity) {
         this(MenuTypes.CONDENSER_MK3_OUTPUT.get(), windowId, playerInv, blockEntity);
     }

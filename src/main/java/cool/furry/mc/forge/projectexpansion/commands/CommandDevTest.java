@@ -12,6 +12,7 @@ public class CommandDevTest {
                 .executes(CommandDevTest::handle);
     }
 
+    @SuppressWarnings({"SameReturnValue", "unused"})
     public static int handle(CommandContext<CommandSourceStack> ctx) {
         return 1;
     }

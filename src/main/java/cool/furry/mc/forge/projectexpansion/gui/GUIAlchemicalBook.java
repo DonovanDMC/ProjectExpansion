@@ -43,10 +43,10 @@ public class GUIAlchemicalBook extends Screen {
     @Nullable ButtonPrev buttonPrev = null;
     @Nullable ButtonNext buttonNext = null;
     EditBox createName;
-    LocalPlayer player;
-    InteractionHand hand;
-    ArrayList<ButtonTeleport> teleportButtons = new ArrayList<>();
-    ArrayList<ButtonDelete> deleteButtons = new ArrayList<>();
+    final LocalPlayer player;
+    final InteractionHand hand;
+    final ArrayList<ButtonTeleport> teleportButtons = new ArrayList<>();
+    final ArrayList<ButtonDelete> deleteButtons = new ArrayList<>();
     private @Nullable IKnowledgeProvider knowledgeProvider = null;
     private boolean canEdit;
     private final boolean acrossDimensions;
@@ -112,6 +112,7 @@ public class GUIAlchemicalBook extends Screen {
         drawLocations();
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     public void drawLocations() {
         int rowpad = 1, delete_w = 20, delpad = 2, colpad = 8;
         teleportButtons.forEach(this::removeWidget);
@@ -246,9 +247,9 @@ public class GUIAlchemicalBook extends Screen {
     }
 
     private class ButtonTeleport extends Button {
-        CapabilityAlchemicalBookLocations.TeleportLocation location;
-        boolean canTeleport;
-        boolean hasEnoughEMC;
+        final CapabilityAlchemicalBookLocations.TeleportLocation location;
+        final boolean canTeleport;
+        final boolean hasEnoughEMC;
         public ButtonTeleport(int x, int y, int w, int h, CapabilityAlchemicalBookLocations.TeleportLocation location) {
             super(Button.builder(Component.literal(location.name()), (button) -> {
                 PacketDistributor.sendToServer(new PacketTeleportToLocation(location.name(), player, hand));

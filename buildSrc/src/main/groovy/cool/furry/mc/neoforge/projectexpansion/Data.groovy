@@ -13,16 +13,16 @@ import javax.inject.Inject
 
 abstract class Data extends Exec {
     @InputFile
-    final RegularFile script;
+    final RegularFile script
     @InputDirectory
-    final DirectoryProperty inputDirectory;
+    final DirectoryProperty inputDirectory
     @OutputDirectory
-    final DirectoryProperty outputDirectory;
+    final DirectoryProperty outputDirectory
     Data() {
         script = projectLayout.projectDirectory.file("scripts/generate-assets.sh")
         inputDirectory = getObjectFactory().directoryProperty().convention(projectLayout.projectDirectory.dir("src/main/generation"))
         outputDirectory = getObjectFactory().directoryProperty().convention(projectLayout.projectDirectory.dir("src/generated/resources"))
-        setCommandLine(script.getAsFile().getAbsolutePath());
+        setCommandLine(script.getAsFile().getAbsolutePath())
     }
 
     @Inject

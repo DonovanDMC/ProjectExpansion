@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.text.NumberFormat;
 
 // This mixin changes ProjectE's formatting to ours
+@SuppressWarnings("unused")
 @Mixin(EMCHelper.class)
 public class EMCFormatterMixin {
     @Final

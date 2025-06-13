@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Unique;
 @SuppressWarnings("unused")
 @Mixin(Tome.class)
 public class TomeMixin {
+    @SuppressWarnings("SameReturnValue")
     @Unique
     public boolean isFoil(ItemStack stack) {
         return true;

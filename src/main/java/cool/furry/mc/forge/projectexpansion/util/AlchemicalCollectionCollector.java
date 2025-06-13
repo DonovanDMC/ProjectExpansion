@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class AlchemicalCollectionCollector {
-    public static HashMap<UUID, Collected> saved = new HashMap<>();
+    public static final HashMap<UUID, Collected> saved = new HashMap<>();
     public record Collected(UUID player, BigInteger emc, List<ItemInfo> items, long lastUpdatedAt) {
         public boolean inCooldown() {
             return System.currentTimeMillis() < lastUpdatedAt + 250;

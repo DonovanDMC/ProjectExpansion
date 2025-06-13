@@ -42,9 +42,7 @@ public class ItemAlchemicalBook extends Item {
         super.appendHoverText(stack, context, list, tooltipFlag);
         list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP.translateColored(ChatFormatting.GRAY));
         switch(tier) {
-            case BASIC -> {
-                list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP_BASIC.translateColored(ChatFormatting.RED, CapabilityAlchemicalBookLocations.BASIC_DISTANCE_RATIO));
-            }
+            case BASIC -> list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP_BASIC.translateColored(ChatFormatting.RED, CapabilityAlchemicalBookLocations.BASIC_DISTANCE_RATIO));
             case ADVANCED -> {
                 list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP_ADVANCED.translateColored(ChatFormatting.RED, CapabilityAlchemicalBookLocations.ADVANCED_DISTANCE_RATIO));
                 list.add(Lang.Items.ALCHEMICAL_BOOK_TOOLTIP_BIND.translateColored(ChatFormatting.GREEN));
@@ -88,6 +86,7 @@ public class ItemAlchemicalBook extends Item {
         MASTER,
         ARCANE;
 
+        @SuppressWarnings("unused")
         public boolean isAcrossDimensions() {
             return this == MASTER || this == ARCANE;
         }
@@ -96,6 +95,7 @@ public class ItemAlchemicalBook extends Item {
             return this == ADVANCED || this == MASTER || this == ARCANE;
         }
 
+        @SuppressWarnings("unused")
         public float distanceRatio() {
             switch(this) {
                 case BASIC -> {
@@ -110,9 +110,7 @@ public class ItemAlchemicalBook extends Item {
                 case ARCANE -> {
                     return CapabilityAlchemicalBookLocations.ARCANE_DISTANCE_RATIO;
                 }
-                default -> {
-                    throw new IllegalStateException("Unexpected value: " + this);
-                }
+                default -> throw new IllegalStateException("Unexpected value: " + this);
             }
         }
 
@@ -130,9 +128,7 @@ public class ItemAlchemicalBook extends Item {
                 case ARCANE -> {
                     return Rarity.EPIC;
                 }
-                default -> {
-                    throw new IllegalStateException("Unexpected value: " + this);
-                }
+                default -> throw new IllegalStateException("Unexpected value: " + this);
             }
         }
     }

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ItemMatterUpgrader extends Item {
+    @SuppressWarnings("unused")
     public ItemMatterUpgrader() {
         super(new Properties());
     }

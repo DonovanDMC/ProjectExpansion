@@ -6,6 +6,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
+@SuppressWarnings("unused")
 public class BasicDataComponentTypes {
     public record StringValue(String value) {
         public static final Codec<StringValue> CODEC = RecordCodecBuilder.create(instance ->

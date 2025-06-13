@@ -114,7 +114,7 @@ public enum Matter implements StringRepresentable, IMatterType {
     private DeferredHolder<Item, BlockItem> itemMatterBlock = null;
     @Nullable
     private DeferredHolder<Block, BlockMatter> blockMatterBlock = null;
-    private DyeColor color;
+    private final DyeColor color;
     Matter(int fluidEfficiency, float attackDamage, float efficiency, float chargeModifier, TagKey<Block> incorrectBlockForDrops, @Nullable Supplier<MapColor> mapColor, @Nullable Supplier<Item> existingItem, @Nullable Supplier<Block> existingBlock, DyeColor color) {
         boolean isFinal = name().equals("FINAL"); // we can't access the FINAL member because we're in the constructor
         this.name = name().toLowerCase(Locale.US);
@@ -325,27 +325,27 @@ public enum Matter implements StringRepresentable, IMatterType {
 
             case MATTER_BLOCK -> {
                 if (hasBlock) {
-                    blockMatterBlock = Blocks.Registry.register(String.format("%s_matter_block", name), () -> new BlockMatter(this));
+                    blockMatterBlock = Blocks.Registry.register(String.format("%s_matter_block", name), () -> new BlockMatter(BlockMatter.getProperties(this), this));
                     itemMatterBlock = Items.Registry.register(String.format("%s_matter_block", name), () -> new BlockItem(Objects.requireNonNull(blockMatterBlock).get(), new Item.Properties().rarity(getRarity())));
                 }
             }
 
             case COLLECTOR -> {
-                collector = Blocks.Registry.register(String.format("%s_collector", name), () -> new BlockCollector(this));
+                collector = Blocks.Registry.register(String.format("%s_collector", name), () -> new BlockCollector(BlockCollector.getProperties(this), this));
                 itemCollector = Items.Registry.register(String.format("%s_collector", name), () -> new BlockItem(Objects.requireNonNull(collector).get(), new Item.Properties().rarity(getRarity())));
             }
 
             case COMPRESSED_COLLECTOR -> itemCompressedCollector = Items.Registry.register(String.format("%s_compressed_collector", name), () -> new ItemCompressedCollector(this));
             case POWER_FLOWER -> {
-                powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(this));
+                powerFlower = Blocks.Registry.register(String.format("%s_power_flower", name), () -> new BlockPowerFlower(BlockPowerFlower.getProperties(this), this));
                 itemPowerFlower = Items.Registry.register(String.format("%s_power_flower", name), () -> new BlockItem(Objects.requireNonNull(powerFlower).get(), new Item.Properties().rarity(getRarity())));
             }
             case RELAY -> {
-                relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(this));
+                relay = Blocks.Registry.register(String.format("%s_relay", name), () -> new BlockRelay(BlockRelay.getProperties(this), this));
                 itemRelay = Items.Registry.register(String.format("%s_relay", name), () -> new BlockItem(Objects.requireNonNull(relay).get(), new Item.Properties().rarity(getRarity())));
             }
             case EMC_LINK -> {
-                emcLink = Blocks.Registry.register(String.format("%s_emc_link", name), () -> new BlockEMCLink(this));
+                emcLink = Blocks.Registry.register(String.format("%s_emc_link", name), () -> new BlockEMCLink(BlockEMCLink.getProperties(this), this));
                 itemEMCLink = Items.Registry.register(String.format("%s_emc_link", name), () -> new BlockItem(Objects.requireNonNull(emcLink).get(), new Item.Properties().rarity(getRarity())));
             }
         }
@@ -356,9 +356,7 @@ public enum Matter implements StringRepresentable, IMatterType {
     }
 
     public static void setAllCreativeTab(CreativeModeTab.Output output) {
-        Arrays.stream(RegistrationType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.setCreativeTab(output, type));
-        });
+        Arrays.stream(RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.setCreativeTab(output, type)));
     }
 
     private void setCreativeTab(CreativeModeTab.Output output, RegistrationType type) {

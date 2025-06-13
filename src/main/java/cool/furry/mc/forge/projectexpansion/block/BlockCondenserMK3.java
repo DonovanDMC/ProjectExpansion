@@ -1,10 +1,9 @@
 package cool.furry.mc.neoforge.projectexpansion.block;
 
 import com.mojang.serialization.MapCodec;
-import cool.furry.mc.neoforge.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.neoforge.projectexpansion.block.entity.BlockEntityCondenserMK3;
 import cool.furry.mc.neoforge.projectexpansion.registries.BlockEntityTypes;
-import cool.furry.mc.neoforge.projectexpansion.util.IChestLike;
+import cool.furry.mc.neoforge.projectexpansion.registries.BlockTypes;
 import cool.furry.mc.neoforge.projectexpansion.util.Lang;
 import moze_intel.projecte.gameObjs.block_entities.EmcChestBlockEntity;
 import moze_intel.projecte.gameObjs.registries.PEItems;
@@ -55,9 +54,13 @@ import java.util.List;
 public class BlockCondenserMK3 extends BaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-    public BlockCondenserMK3() {
-        super(Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(10, 3_600_000));
+    public BlockCondenserMK3(Properties properties) {
+        super(properties);
         this.registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(BlockStateProperties.WATERLOGGED, false));
+    }
+
+    public static Properties getProperties() {
+        return Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(10, 3_600_000);
     }
 
     @Override
@@ -117,6 +120,7 @@ public class BlockCondenserMK3 extends BaseEntityBlock {
         return triggerBlockEntityEvent(state, level, pos, id, param);
     }
 
+    @SuppressWarnings("unused")
     public boolean triggerBlockEntityEvent(@NotNull BlockState state, Level level, BlockPos pos, int id, int param) {
         BlockEntity blockEntity = WorldHelper.getBlockEntity(BlockEntityCondenserMK3.class, level, pos);
         return blockEntity != null && blockEntity.triggerEvent(id, param);
@@ -196,7 +200,7 @@ public class BlockCondenserMK3 extends BaseEntityBlock {
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
-        return null;
+        return BlockTypes.CONDENSER_MK3.get();
     }
 
     @Override

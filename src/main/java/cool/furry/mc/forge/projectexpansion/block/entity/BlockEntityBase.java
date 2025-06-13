@@ -80,9 +80,9 @@ public class BlockEntityBase extends BlockEntity {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    protected class StackHandler extends ItemStackHandler {
+    public class StackHandler extends ItemStackHandler {
 
-        protected StackHandler(int size) {
+        public StackHandler(int size) {
             super(size);
         }
 
@@ -93,13 +93,14 @@ public class BlockEntityBase extends BlockEntity {
         }
     }
 
-    protected class CompactableStackHandler extends StackHandler {
+    @SuppressWarnings("unused")
+    public class CompactableStackHandler extends StackHandler {
 
         //Start as needing to check for compacting when loaded
         private boolean needsCompacting = true;
         private boolean empty;
 
-        protected CompactableStackHandler(int size) {
+        public CompactableStackHandler(int size) {
             super(size);
         }
 

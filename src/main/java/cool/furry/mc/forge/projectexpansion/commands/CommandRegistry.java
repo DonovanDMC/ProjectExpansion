@@ -11,7 +11,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME)
 public class CommandRegistry {
-    public static String COMMAND_BASE = "pex";
+    public static final String COMMAND_BASE = "pex";
     @SubscribeEvent
     public static void onRegisterCommandsEvent(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();

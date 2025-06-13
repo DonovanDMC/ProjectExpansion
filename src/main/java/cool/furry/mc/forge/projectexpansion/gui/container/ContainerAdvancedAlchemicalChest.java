@@ -10,7 +10,7 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 // yet again more "inspiration" from ProjectE
 // https://github.com/sinkillerj/ProjectE/blob/98aee771bd/src/main/java/moze_intel/projecte/gameObjs/container/EmcChestBlockEntityContainer.java
 public class ContainerAdvancedAlchemicalChest extends AlchBagContainer {
-	BlockEntityAdvancedAlchemicalChest blockEntity;
+	final BlockEntityAdvancedAlchemicalChest blockEntity;
 	public ContainerAdvancedAlchemicalChest(int windowId, Inventory playerInv, InteractionHand hand, IItemHandlerModifiable invBag, int selected, boolean immutable, BlockEntityAdvancedAlchemicalChest blockEntity) {
 		super(windowId, playerInv, hand, invBag, selected, immutable);
 		this.blockEntity = blockEntity;

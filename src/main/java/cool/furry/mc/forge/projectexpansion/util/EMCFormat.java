@@ -18,7 +18,7 @@ import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class EMCFormat extends DecimalFormat {
-    public static EMCFormat INSTANCE = new EMCFormat();
+    public static final EMCFormat INSTANCE = new EMCFormat();
     private static final DecimalFormat decimalFormat = new DecimalFormat();
     public static final BigDecimal FORMAT_START = BigDecimal.valueOf(1000000);
 

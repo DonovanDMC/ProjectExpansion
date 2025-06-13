@@ -2,7 +2,9 @@ package cool.furry.mc.neoforge.projectexpansion.events;
 
 import cool.furry.mc.neoforge.projectexpansion.Main;
 import cool.furry.mc.neoforge.projectexpansion.block.BlockCompactSun;
-import cool.furry.mc.neoforge.projectexpansion.registries.*;
+import cool.furry.mc.neoforge.projectexpansion.registries.Advancements;
+import cool.furry.mc.neoforge.projectexpansion.registries.DamageSources;
+import cool.furry.mc.neoforge.projectexpansion.registries.Items;
 import cool.furry.mc.neoforge.projectexpansion.util.SunExposureHelper;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +25,7 @@ import java.util.Set;
 
 @EventBusSubscriber(modid = Main.MOD_ID)
 public class ServerEvents {
-    static ArrayList<SunExposureTimer> timers = new ArrayList<>();
+    static final ArrayList<SunExposureTimer> timers = new ArrayList<>();
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
@@ -34,7 +36,7 @@ public class ServerEvents {
         }
     }
 
-    private static void handleWeighedDown(ServerTickEvent.Post event, ServerPlayer player) {
+    private static void handleWeighedDown(@SuppressWarnings("unused") ServerTickEvent.Post event, ServerPlayer player) {
         int protectionAmount = SunExposureHelper.getProtectionAmount(player);
         int protectionLevel = SunExposureHelper.getProtectionLevel(player);
 
@@ -124,6 +126,7 @@ public class ServerEvents {
             timers.add(newTimer);
         }
 
+        @SuppressWarnings("unused")
         public void reset() {
             timers.remove(this);
         }

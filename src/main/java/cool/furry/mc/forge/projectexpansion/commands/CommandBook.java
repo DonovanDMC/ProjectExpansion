@@ -148,6 +148,7 @@ public class CommandBook {
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static void sendSuccess(CommandSourceStack source, Component message, boolean notify) {
         source.sendSuccess(() -> message, notify);
     }
@@ -201,7 +202,7 @@ public class CommandBook {
             return 0;
         }
 
-        if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
+        if(provider.mode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = ctx.getSource().getPlayer();
             ServerPlayer targetPlayer = target.playerOrException();
@@ -236,7 +237,7 @@ public class CommandBook {
 
         provider.resetLocations();
 
-        if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
+        if(provider.mode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = ctx.getSource().getPlayer();
             ServerPlayer targetPlayer = target.playerOrException();
@@ -314,7 +315,7 @@ public class CommandBook {
 
         provider.reindex();
 
-        if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
+        if(provider.mode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = ctx.getSource().getPlayer();
             ServerPlayer targetPlayer = target.playerOrException();
@@ -358,7 +359,7 @@ public class CommandBook {
 
         ctx.getSource().sendSystemMessage(formatLocation(ctx, location));
 
-        if(provider.getMode() == ItemAlchemicalBook.Mode.PLAYER) {
+        if(provider.mode() == ItemAlchemicalBook.Mode.PLAYER) {
             provider.syncToOtherPlayers();
             @Nullable Player sourcePlayer = ctx.getSource().getPlayer();
             ServerPlayer targetPlayer = target.playerOrException();

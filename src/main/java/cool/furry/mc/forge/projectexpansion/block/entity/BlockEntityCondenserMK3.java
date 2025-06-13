@@ -133,6 +133,7 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
         if (blockEntity instanceof BlockEntityCondenserMK3 be) be.tickServer(level, pos, state);
     }
 
+    @SuppressWarnings("unused")
     public void tickServer(Level level, BlockPos pos, BlockState state) {
         for (Direction direction : Direction.values()) {
             if (direction == OUTPUT_DIRECTION) {
@@ -233,6 +234,7 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
     }
 
     public class SidedHandler implements IEmcStorage {
+        @SuppressWarnings({"FieldCanBeLocal", "unused"})
         private final Direction direction;
         private final StackHandler inventory;
         private final WrappedItemHandler automationInventory;
@@ -325,6 +327,7 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
             };
         }
 
+        @SuppressWarnings("SameReturnValue")
         protected boolean emcAffectsComparators() {
             return true;
         }
@@ -376,6 +379,7 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
             return Long.MAX_VALUE;
         }
 
+        @SuppressWarnings("SameReturnValue")
         public boolean canProvideEmc() {
             return false;
         }

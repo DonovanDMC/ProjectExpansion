@@ -19,6 +19,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -30,8 +31,12 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockCompactSun extends Block implements IMatterBlock {
-    public BlockCompactSun() {
-        super(Block.Properties.of().strength(2_000_000, 6_000_000).requiresCorrectToolForDrops().lightLevel((state) -> 15));
+    public BlockCompactSun(BlockBehaviour.Properties properties) {
+        super(properties);
+    }
+
+    public static BlockBehaviour.Properties getProperties() {
+        return BlockBehaviour.Properties.of().strength(2_000_000, 6_000_000).requiresCorrectToolForDrops().lightLevel((state) -> 15);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -69,6 +74,7 @@ public class BlockCompactSun extends Block implements IMatterBlock {
         return Util.getMatterForProjectE(Matter.FINAL);
     }
 
+    @SuppressWarnings("unused")
     public static boolean adjacent(@Nullable BlockGetter level, @NotNull BlockPos pos) {
         return adjacent(level, pos, null);
     }

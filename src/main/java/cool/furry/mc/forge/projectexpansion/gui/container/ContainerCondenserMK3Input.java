@@ -31,7 +31,7 @@ public class ContainerCondenserMK3Input extends ContainerBase {
     public final PEContainer.BoxedLong requiredEmc = new PEContainer.BoxedLong();
     private @Nullable ItemInfo lastLockInfo;
     private final BlockEntityCondenserMK3.SidedHandler handler;
-    BlockEntityCondenserMK3 blockEntity;
+    final BlockEntityCondenserMK3 blockEntity;
     public ContainerCondenserMK3Input(int windowId, Inventory playerInv, BlockEntityCondenserMK3 blockEntity) {
         this(MenuTypes.CONDENSER_MK3_INPUT.get(), windowId, playerInv, blockEntity);
     }

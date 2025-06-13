@@ -1,4 +1,4 @@
-package cool.furry.mc.neoforge.projectexpansion;
+package cool.furry.mc.neoforge.projectexpansion
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper

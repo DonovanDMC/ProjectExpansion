@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameType;
 
+@SuppressWarnings("unused")
 public class SunExposureHelper {
     public static final TagKey<Item> PROTECTIVE_ITEMS = ItemTags.create(Main.rl("sun_exposure_protection"));
 

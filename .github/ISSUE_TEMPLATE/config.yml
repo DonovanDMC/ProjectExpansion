@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Wiki Pages
+    url: https://github.com/DonovanDMC/ProjectExpansion/wiki
+    about: Go here for information about how to use things in the mod.
+  - name: Discord
+    url: https://discord.gg/SwxbbmMKQH
+    about: Go here to ask how to use things/suggest features.

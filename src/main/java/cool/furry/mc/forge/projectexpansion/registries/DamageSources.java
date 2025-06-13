@@ -26,10 +26,12 @@ public class DamageSources {
         return new DamageSource(this.damageTypes.getHolderOrThrow(damageType));
     }
 
+    @SuppressWarnings("unused")
     private DamageSource source(ResourceKey<DamageType> damageType, @Nullable Entity causingEntity) {
         return new DamageSource(this.damageTypes.getHolderOrThrow(damageType), causingEntity);
     }
 
+    @SuppressWarnings("unused")
     private DamageSource source(ResourceKey<DamageType> damageType, @Nullable Entity causingEntity, @Nullable Entity directEntity) {
         return new DamageSource(this.damageTypes.getHolderOrThrow(damageType), causingEntity, directEntity);
     }

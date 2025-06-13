@@ -28,9 +28,9 @@ import java.util.List;
 @EventBusSubscriber(modid = Main.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class EMCDisplay {
     public static final Overlay INSTANCE = new Overlay();
-    public static int PADDING_X = 2;
-    public static int PADDING_Y = 2;
-    public static List<String> POSITIONS = List.of("TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT");
+    public static final int PADDING_X = 2;
+    public static final int PADDING_Y = 2;
+    public static final List<String> POSITIONS = List.of("TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT");
     private static BigInteger emc = BigInteger.ZERO;
     private static final BigInteger[] history = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
     private static BigInteger lastEMC = BigInteger.ZERO;

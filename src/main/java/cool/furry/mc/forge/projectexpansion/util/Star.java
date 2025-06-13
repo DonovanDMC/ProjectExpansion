@@ -61,9 +61,7 @@ public enum Star {
     }
 
     public static void setAllCreativeTab(CreativeModeTab.Output output) {
-        Arrays.stream(StarType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.setCreativeTab(output, type));
-        });
+        Arrays.stream(StarType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.setCreativeTab(output, type)));
     }
 
     private void setCreativeTab(CreativeModeTab.Output output, StarType type) {

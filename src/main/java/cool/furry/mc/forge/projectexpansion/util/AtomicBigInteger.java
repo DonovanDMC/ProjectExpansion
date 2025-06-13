@@ -3,6 +3,7 @@ package cool.furry.mc.neoforge.projectexpansion.util;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+@SuppressWarnings("unused")
 public class AtomicBigInteger extends Number {
     private final AtomicReference<BigInteger> bigInt;
     private static final BigInteger ONE = new BigInteger("1");
@@ -44,6 +45,7 @@ public class AtomicBigInteger extends Number {
         bigInt.set(newValue);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public final BigInteger addAndGet(BigInteger delta) {
         while(true) {
             BigInteger currentVal = bigInt.get();

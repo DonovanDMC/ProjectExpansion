@@ -26,6 +26,7 @@ public class CommandDumpFuelMap {
                 .executes(CommandDumpFuelMap::handle);
     }
 
+    @SuppressWarnings("SameReturnValue")
     private static int handle(CommandContext<CommandSourceStack> ctx) {
         HolderSet<Item> items = FuelMapper.getFuelMap();
         TableGenerator table = new TableGenerator(TableGenerator.Alignment.CENTER, TableGenerator.Alignment.CENTER, TableGenerator.Alignment.CENTER);
@@ -44,7 +45,7 @@ public class CommandDumpFuelMap {
             previous = emc;
         }
 
-        table.eachRow(receiver, components -> { ctx.getSource().sendSystemMessage(components.get(0).copy().append(" | ").append(components.get(1)).append(" | ").append(components.get(2))); });
+        table.eachRow(receiver, components -> ctx.getSource().sendSystemMessage(components.getFirst().copy().append(" | ").append(components.get(1)).append(" | ").append(components.get(2))));
         return 1;
     }
 }

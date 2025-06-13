@@ -68,7 +68,7 @@ public enum Fuel {
 
     public int getBurnTime() { return getBurnTime(null); }
     public int getBurnTime(@Nullable RecipeType<?> type) {
-        return item == null ? -1 : PEItems.AETERNALIS_FUEL.get().getBurnTime(new ItemStack(item.get()), type);
+        return item == null ? -1 : new ItemStack(PEItems.AETERNALIS_FUEL.get()).getBurnTime(type);
     }
 
     public long getCollectorEMCLimit() {
@@ -106,9 +106,7 @@ public enum Fuel {
     }
 
     public static void setAllCreativeTab(CreativeModeTab.Output output) {
-        Arrays.stream(RegistrationType.values()).forEach(type -> {
-            Arrays.stream(VALUES).forEach(val -> val.setCreativeTab(output, type));
-        });
+        Arrays.stream(RegistrationType.values()).forEach(type -> Arrays.stream(VALUES).forEach(val -> val.setCreativeTab(output, type)));
     }
 
     private void setCreativeTab(CreativeModeTab.Output output, RegistrationType type) {

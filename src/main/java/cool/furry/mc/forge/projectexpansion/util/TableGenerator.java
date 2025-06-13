@@ -18,7 +18,7 @@ public class TableGenerator {
     private static final List<Character> char4 = Arrays.asList('I', 't', ' ', '[', ']', '€');
     private static final List<Character> char3 = Arrays.asList('l', '`', '³', '\'');
     private static final List<Character> char2 = Arrays.asList(',', '.', '!', 'i', '´', ':', ';', '|');
-    private static final char char1 = '\u17f2';
+    private static final char char1 = '៲';
     private final Alignment[] alignments;
     private final ArrayList<Row> table = new ArrayList<>();
     private final int columns;
@@ -169,7 +169,7 @@ public class TableGenerator {
     }
 
     private class Row {
-        public ArrayList<Component> components = new ArrayList<>();
+        public final ArrayList<Component> components = new ArrayList<>();
         public boolean empty = true;
 
         public Row(Component... components) {

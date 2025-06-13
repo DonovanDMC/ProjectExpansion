@@ -10,6 +10,7 @@ import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
@@ -17,9 +18,13 @@ import org.jetbrains.annotations.NotNull;
 public class BlockMatter extends Block implements IHasMatter, IMatterBlock {
     private final Matter matter;
 
-    public BlockMatter(Matter matter) {
-        super(Block.Properties.of().strength(2_000_000, 6_000_000).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(matter.ordinal(), 15)));
+    public BlockMatter(BlockBehaviour.Properties properties, Matter matter) {
+        super(properties);
         this.matter = matter;
+    }
+
+    public static BlockBehaviour.Properties getProperties(Matter matter) {
+        return BlockBehaviour.Properties.of().strength(2_000_000, 6_000_000).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(matter.ordinal(), 15));
     }
 
     @Override

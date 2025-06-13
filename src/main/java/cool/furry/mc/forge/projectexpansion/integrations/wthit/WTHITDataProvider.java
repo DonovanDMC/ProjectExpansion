@@ -24,6 +24,7 @@ public class WTHITDataProvider implements IBlockComponentProvider {
         Common.registerCommonTooltips(tooltip::addLine, new DataProvider(accessor));
     }
 
+    @SuppressWarnings("unused")
     public record DataProvider(IBlockAccessor accessor) implements IDataProvider {
         @Override
         public BlockPos getBlockPos() {

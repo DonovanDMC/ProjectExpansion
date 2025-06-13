@@ -16,11 +16,10 @@ import java.util.Map;
 
 public class AdvancedAlchemicalChest {
 	private static final Map<DyeColor, DeferredHolder<Block, BlockAdvancedAlchemicalChest>> blocks = new HashMap<>();
-	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
 	private static final Map<DyeColor, DeferredHolder<Item, BlockItem>> blockItems = new HashMap<>();
 	public static void register() {
 		for(DyeColor color : DyeColor.values()) {
-			blocks.put(color, Blocks.Registry.register(String.format("%s_advanced_alchemical_chest", color.getName()), () -> new BlockAdvancedAlchemicalChest(color)));
+			blocks.put(color, Blocks.Registry.register(String.format("%s_advanced_alchemical_chest", color.getName()), () -> new BlockAdvancedAlchemicalChest(BlockAdvancedAlchemicalChest.getProperties(), color)));
 			blockItems.put(color, Items.Registry.register(String.format("%s_advanced_alchemical_chest", color.getName()), () -> new BlockItem(getBlock(color), new Item.Properties())));
 		}
 	}

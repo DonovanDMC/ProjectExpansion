@@ -26,6 +26,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -254,7 +255,8 @@ public class Util {
     }
 
     public static @Nullable ServerLevel getDimension(ResourceKey<Level> dimension) {
-        return ServerLifecycleHooks.getCurrentServer().getLevel(dimension);
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        return server == null ? null : server.getLevel(dimension);
     }
 
     public static Style suggestCommand(Style style, String command) {

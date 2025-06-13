@@ -17,6 +17,7 @@ public class CommandWiki {
                 .executes(CommandWiki::handle);
     }
 
+    @SuppressWarnings("SameReturnValue")
     private static int handle(CommandContext<CommandSourceStack> ctx) {
         ctx.getSource().sendSystemMessage(Component.literal(Util.WIKI).withStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Util.WIKI))));
         return 1;

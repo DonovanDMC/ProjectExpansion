@@ -21,6 +21,7 @@ public class Main {
     public static final String MOD_ID = "projectexpansion";
     @SuppressWarnings("unused")
     public static final org.apache.logging.log4j.Logger Logger = LogManager.getLogger();
+    @SuppressWarnings("unused")
     public static ModContainer MOD_CONTAINER;
     private static Main instance;
 
@@ -51,6 +52,7 @@ public class Main {
         this.packetHandler = new PacketHandler(modEventBus, modContainer.getModInfo().getVersion());
     }
 
+    @SuppressWarnings("unused")
     public static PacketHandler packetHandler() {
         return instance.packetHandler;
     }

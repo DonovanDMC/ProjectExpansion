@@ -25,7 +25,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 public class ItemInfiniteSteak extends Item {
-
+    @SuppressWarnings("unused")
     public ItemInfiniteSteak() {
         super(new Properties()
                 .food(Foods.COOKED_BEEF)

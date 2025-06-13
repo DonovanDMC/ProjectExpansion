@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ItemKnowledgeSharingBook extends Item {
+    @SuppressWarnings("unused")
     public ItemKnowledgeSharingBook() {
         super(new Properties().stacksTo(1).rarity(Rarity.RARE));
     }

@@ -1,5 +1,6 @@
 package cool.furry.mc.neoforge.projectexpansion.item;
 
+import cool.furry.mc.neoforge.projectexpansion.util.IHasMatter;
 import cool.furry.mc.neoforge.projectexpansion.util.Lang;
 import cool.furry.mc.neoforge.projectexpansion.util.Matter;
 import net.minecraft.ChatFormatting;
@@ -9,14 +10,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ItemCompressedCollector extends Item {
+public class ItemCompressedCollector extends Item implements IHasMatter {
     public final Matter matter;
     public ItemCompressedCollector(Matter matter) {
         super(new Properties().rarity(matter.getRarity()));
         this.matter = matter;
+    }
+
+    @Override
+    public @NotNull Matter getMatter() {
+        return matter;
     }
 
     @OnlyIn(Dist.CLIENT)

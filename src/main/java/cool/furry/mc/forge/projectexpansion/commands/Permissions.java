@@ -32,23 +32,16 @@ public class Permissions {
     public static final CommandPermissionNode KNOWLEDGE_LEARN = nodeOpCommand("knowledge.learn");
     public static final CommandPermissionNode KNOWLEDGE_TEST = nodeOpCommand("knowledge.test");
     public static final CommandPermissionNode KNOWLEDGE_UNLEARN = nodeOpCommand("knowledge.unlearn");
-    public static final CommandPermissionNode BOOK = nodeOpCommand("book");
-    public static final CommandPermissionNode BOOK_ADD = nodeOpCommand("book.add");
     public static final CommandPermissionNode BOOK_ADD_HAND = nodeOpCommand("book.add.hand");
     public static final CommandPermissionNode BOOK_ADD_PLAYER = nodeOpCommand("book.add.player");
-    public static final CommandPermissionNode BOOK_CLEAR = nodeOpCommand("book.clear");
     public static final CommandPermissionNode BOOK_CLEAR_HAND = nodeOpCommand("book.clear.hand");
     public static final CommandPermissionNode BOOK_CLEAR_PLAYER = nodeOpCommand("book.clear.player");
-    public static final CommandPermissionNode BOOK_DUMP = nodeOpCommand("book.dump");
     public static final CommandPermissionNode BOOK_DUMP_HAND = nodeOpCommand("book.dump.hand");
     public static final CommandPermissionNode BOOK_DUMP_PLAYER = nodeOpCommand("book.dump.player");
-    public static final CommandPermissionNode BOOK_LIST = nodeOpCommand("book.list");
     public static final CommandPermissionNode BOOK_LIST_HAND = nodeOpCommand("book.list.hand");
     public static final CommandPermissionNode BOOK_LIST_PLAYER = nodeOpCommand("book.list.player");
-    public static final CommandPermissionNode BOOK_REINDEX = nodeOpCommand("book.reindex");
     public static final CommandPermissionNode BOOK_REINDEX_HAND = nodeOpCommand("book.reindex.hand");
     public static final CommandPermissionNode BOOK_REINDEX_PLAYER = nodeOpCommand("book.reindex.player");
-    public static final CommandPermissionNode BOOK_REMOVE = nodeOpCommand("book.remove");
     public static final CommandPermissionNode BOOK_REMOVE_HAND = nodeOpCommand("book.remove.hand");
     public static final CommandPermissionNode BOOK_REMOVE_PLAYER = nodeOpCommand("book.remove.player");
     public static final CommandPermissionNode DUMP_FUEL_MAP = nodeAllCommand("dump_fuel_map");
@@ -64,6 +57,7 @@ public class Permissions {
         return new CommandPermissionNode(node, Commands.LEVEL_GAMEMASTERS);
     }
 
+    @SuppressWarnings("SameParameterValue")
     @SafeVarargs
     private static <T> PermissionNode<T> node(String nodeName, PermissionType<T> type, PermissionNode.PermissionResolver<T> defaultResolver, PermissionDynamicContextKey<T>... dynamics) {
         PermissionNode<T> node = new PermissionNode<>(Main.MOD_ID, nodeName, type, defaultResolver, dynamics);

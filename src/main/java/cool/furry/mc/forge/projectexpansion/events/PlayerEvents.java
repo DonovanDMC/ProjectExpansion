@@ -37,40 +37,6 @@ public class PlayerEvents {
         }
     }
 
-    /*public static final ResourceLocation SUN_EXPOSURE_PROTECTION = Main.rl("sun_exposure_protection");
-    @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent.Post event) {
-        Player player = event.getEntity();
-        if (player.level().isClientSide) return;
-
-        AttributeInstance attribute =  player.getAttribute(Attributes.SUN_EXPOSURE_PROTECTION);
-
-        if (attribute == null) return;
-
-        int itemCount = 0;
-        for (ItemStack stack : player.getArmorSlots()) {
-            if (stack.is(SunExposureHelper.PROTECTIVE_ITEMS)) {
-                itemCount++;
-            }
-        }
-
-        if (itemCount > 0) {
-            AttributeModifier modifier = attribute.getModifier(SUN_EXPOSURE_PROTECTION);
-            if (modifier != null && modifier.amount() != itemCount) {
-                attribute.removeModifier(modifier);
-                modifier = null;
-            }
-
-            if (modifier == null) {
-                attribute.addTransientModifier(new AttributeModifier(SUN_EXPOSURE_PROTECTION, itemCount, AttributeModifier.Operation.ADD_VALUE));
-            }
-        } else {
-            if (attribute.hasModifier(SUN_EXPOSURE_PROTECTION)) {
-                attribute.removeModifier(SUN_EXPOSURE_PROTECTION);
-            }
-        }
-    }*/
-
     @EventBusSubscriber(modid = Main.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
     public static class ModEvents {
         @SubscribeEvent

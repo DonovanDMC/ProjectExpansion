@@ -19,7 +19,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import java.util.Objects;
 
 public abstract class ContainerCollector extends ContainerBase {
-    public BlockEntityCollector collector;
+    public final BlockEntityCollector collector;
     public final DataSlot sunLevel = DataSlot.standalone();
     public final BoxedBigInteger emc = new BoxedBigInteger();
     private final DataSlot kleinChargeProgress = DataSlot.standalone();

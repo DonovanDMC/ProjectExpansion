@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
@@ -38,9 +39,13 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockTransmutationInterface extends Block implements EntityBlock, IMatterBlock {
-    public BlockTransmutationInterface() {
-        super(Block.Properties.of().strength(1_000_000, 2_000_000).requiresCorrectToolForDrops().lightLevel((state) -> 15));
+    public BlockTransmutationInterface(BlockBehaviour.Properties properties) {
+        super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockEntityNBTFilterable.FILTER, true));
+    }
+
+    public static BlockBehaviour.Properties getProperties() {
+        return Block.Properties.of().strength(1_000_000, 2_000_000).requiresCorrectToolForDrops().lightLevel((state) -> 15);
     }
 
     @Override

@@ -95,6 +95,7 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
         return true;
     }
 
+    @SuppressWarnings("SameReturnValue")
     protected boolean canProvideEmc() {
         return true;
     }
@@ -158,6 +159,7 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
         sendToAllAcceptors(level, pos, emc, null);
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected void sendToAllAcceptors(@NotNull Level level, BlockPos pos, BigInteger emc, @Nullable BigInteger transferLimit) {
         if (emc.equals(BigInteger.ZERO) || !canProvideEmc()) {
             return;
@@ -165,7 +167,6 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
         emc = getEmcExtractLimitBigInteger().min(emc);
 
         List<IEmcStorage> targets = new ArrayList<>();
-        List<BigInteger> initialEMC = new ArrayList<>();
 
         for (Direction dir : Direction.values()) {
             Either<IEmcStorage, IEmcStorageBigInteger> anyStorage = null;
@@ -185,14 +186,12 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
                 anyStorage.ifLeft(storage -> {
                     if ((!isRelay() || !storage.isRelay()) && storage.insertEmc(1, EmcAction.SIMULATE) > 0) {
                         targets.add(storage);
-                        initialEMC.add(targets.indexOf(storage), BigInteger.valueOf(storage.getStoredEmc()));
                     }
                 });
 
                 anyStorage.ifRight(storage -> {
                     if ((!isRelay() || !storage.isRelay()) && storage.insertEmcBigInteger(BigInteger.ONE, EmcAction.SIMULATE).compareTo(BigInteger.ZERO) > 0) {
                         targets.add(storage);
-                        initialEMC.add(targets.indexOf(storage), storage.getStoredEmcBigInteger());
                     }
                 });
             }
@@ -200,15 +199,6 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
 
 
         BigInteger remaining = Util.spreadEMC(emc, targets, transferLimit);
-        if (!emc.equals(remaining)) {
-            for (int i = 0; i < targets.size(); i++) {
-                IEmcStorage storage = targets.get(i);
-                if (storage instanceof IEmcStorageBigInteger bigStorage) {
-                    if (!initialEMC.get(i).equals(bigStorage.getStoredEmcBigInteger())) {
-                    }
-                }
-            }
-        }
         forceExtractEmcBigInteger(emc.subtract(remaining), EmcAction.EXECUTE);
     }
 

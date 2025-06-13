@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -47,9 +48,13 @@ import java.util.List;
 public class BlockCollector extends BlockDirection implements IHasMatter, EntityBlock, IMatterBlock {
     private final Matter matter;
 
-    public BlockCollector(Matter matter) {
-        super(Block.Properties.of().strength(getDestroyTime(matter), getExplosionResistance(matter)).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(matter.ordinal(), 15)));
+    public BlockCollector(BlockBehaviour.Properties properties, Matter matter) {
+        super(properties);
         this.matter = matter;
+    }
+
+    public static BlockBehaviour.Properties getProperties(Matter matter) {
+        return Block.Properties.of().strength(getDestroyTime(matter), getExplosionResistance(matter)).requiresCorrectToolForDrops().lightLevel((state) -> Math.min(matter.ordinal(), 15));
     }
 
     private static float getDestroyTime(Matter matter) {

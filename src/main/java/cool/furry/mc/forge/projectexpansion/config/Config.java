@@ -11,11 +11,12 @@ import org.apache.logging.log4j.LogManager;
 import java.util.Arrays;
 
 public final class Config {
-    public static Client client = new Client();
-    public static Server server = new Server();
+    public static final Client client = new Client();
+    public static final Server server = new Server();
     public static final class Client {
         public final ModConfigSpec.Builder Builder = new ModConfigSpec.Builder();
         public final ModConfigSpec Spec;
+        @SuppressWarnings("SuspiciousMethodCalls")
         public final ModConfigSpec.ConfigValue<String> emcDisplayPosition = Builder.comment("The Position of the emc display. Allowed values: TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT").define("emcDisplayPosition", "TOPLEFT", (val) -> val != null && EMCDisplay.POSITIONS.contains(val));
         public final ModConfigSpec.ConfigValue<Boolean> formatEMC = Builder.comment("If EMC should be formatted as M/B/T/etc").define("formatEMC", true);
         public final ModConfigSpec.ConfigValue<Boolean> fullNumberNames = Builder.comment("If full number names (Million/Billion/Trillion) should be used instead of abbreviations").define("fullNumberNames", true);
@@ -44,6 +45,7 @@ public final class Config {
         public final ModConfigSpec.ConfigValue<Integer> infiniteFuelBurnTime = Builder.comment("The ticks each usage of the infinite fuel item will give.").defineInRange("infiniteFuelBurnTime", 1600, 1, Integer.MAX_VALUE);
         public final ModConfigSpec.ConfigValue<Integer> infiniteSteakCost = Builder.comment("The cost of using the infinite steak item.").defineInRange("infiniteSteakCost", 64, 1, Integer.MAX_VALUE);
         public final ModConfigSpec.ConfigValue<Boolean> persistEnchantedBooksOnly = Builder.comment("If ProjectE's processors.EnchantmentProcessor.persistent option should only include enchanted books.").define("persistEnchantedBooksOnly", false);
+        @SuppressWarnings("SuspiciousMethodCalls")
         private final ModConfigSpec.ConfigValue<String> editOthersAlchemicalBooks = Builder.comment("If players should be allowed to edit books bound to other players. A player is considered to be \"OP\" when they have an op level of 2 or greater. Allowed values: DISABLED, OP_ONLY, ENABLED").define("editOthersAlchemicalBooks", AlchemicalBookEditLevel.DISABLED.name(), (val) -> val != null && Arrays.stream(AlchemicalBookEditLevel.values()).toList().contains(val));
         public final ModConfigSpec.ConfigValue<Boolean> zeroEmcFluidsAreFree = Builder.comment("If fluids which end their calculations at zero emc should be returned as free.").define("zeroEmcFluidsAreFree", true);
         public final ModConfigSpec.ConfigValue<Boolean> enableCollectorOptimizations = Builder.comment("If optimizations (ticking only once per second) should be enabled for collectors. This will make them process at most one item each second.").define("enableCollectorOptimizations", false);

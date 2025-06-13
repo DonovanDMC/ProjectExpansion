@@ -15,6 +15,7 @@ public interface IDataProvider {
     BlockState getBlockState();
     @Nullable BlockEntity getBlockEntity();
     Level getLevel();
+    @SuppressWarnings("unused")
     Player getPlayer();
     Direction getSide();
 }

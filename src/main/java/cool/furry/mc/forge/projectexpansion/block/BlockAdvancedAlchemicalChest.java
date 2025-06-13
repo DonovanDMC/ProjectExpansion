@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -68,10 +69,14 @@ public class BlockAdvancedAlchemicalChest extends HorizontalDirectionalBlock imp
 	private static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 	private final DyeColor color;
 
-	public BlockAdvancedAlchemicalChest(DyeColor color) {
-		super(Block.Properties.of().requiresCorrectToolForDrops().strength(10, 3_600_000).lightLevel((state) -> 10));
+	public BlockAdvancedAlchemicalChest(BlockBehaviour.Properties properties, DyeColor color) {
+		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
 		this.color = color;
+	}
+
+	public static BlockBehaviour.Properties getProperties() {
+		return BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(10, 3_600_000).lightLevel((state) -> 10);
 	}
 
 	@NotNull

@@ -15,13 +15,13 @@ public interface IAlchemicalBookLocationsProvider {
     void ensureEditable(ServerPlayer editor) throws CapabilityAlchemicalBookLocations.BookError.EditNotAllowedError;
     @Nullable CapabilityAlchemicalBookLocations.TeleportLocation getBackLocation();
     CapabilityAlchemicalBookLocations.TeleportLocation getBackLocationOrThrow() throws CapabilityAlchemicalBookLocations.BookError.NoBackLocationError;
-    @Nullable ItemStack getItemStack();
+    @Nullable ItemStack itemStack();
     ItemStack getItemStackOrException();
     @Nullable CapabilityAlchemicalBookLocations.TeleportLocation getLocation(String name);
     CapabilityAlchemicalBookLocations.TeleportLocation getLocationOrThrow(String name) throws CapabilityAlchemicalBookLocations.BookError.NameNotFoundError;
     ImmutableList<CapabilityAlchemicalBookLocations.TeleportLocation> getLocations();
-    ItemAlchemicalBook.Mode getMode();
-    @Nullable ServerPlayer getPlayer();
+    ItemAlchemicalBook.Mode mode();
+    @Nullable ServerPlayer player();
     ServerPlayer getPlayerOrException();
     void reindex();
     void removeLocation(String name) throws CapabilityAlchemicalBookLocations.BookError.NameNotFoundError;

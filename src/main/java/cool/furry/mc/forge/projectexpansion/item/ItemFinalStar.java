@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import java.util.List;
 
 public class ItemFinalStar extends Item {
+    @SuppressWarnings("unused")
     public ItemFinalStar() {
         super(new Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant());
     }

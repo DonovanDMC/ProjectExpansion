@@ -465,7 +465,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
             Fluid fluid = getFluid();
-            if(fluid == null || !isValid() || !resource.getFluid().equals(fluid)) return FluidStack.EMPTY;
+            if (!isValid() || !resource.getFluid().equals(fluid)) return FluidStack.EMPTY;
             return drain(resource.getAmount(), action);
         }
 

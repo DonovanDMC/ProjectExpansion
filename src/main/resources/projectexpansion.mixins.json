@@ -6,7 +6,8 @@
 	"refmap": "projectexpansion.refmap.json",
 	"client": [
 		"DeleteWeebShitMixin",
-		"EMCFormatterMixin"
+		"EMCFormatterMixin",
+		"ShutTheFuckUpMixin"
 	],
 	"mixins": [
 		"AlchemicalBagMixin",

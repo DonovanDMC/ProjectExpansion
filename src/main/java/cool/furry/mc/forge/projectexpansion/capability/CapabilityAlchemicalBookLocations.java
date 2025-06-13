@@ -38,19 +38,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocationsProvider {
+public record CapabilityAlchemicalBookLocations(ItemAlchemicalBook.Mode mode, @Nullable ServerPlayer player, @Nullable ItemStack itemStack) implements IAlchemicalBookLocationsProvider {
     public static final int BASIC_DISTANCE_RATIO = 1000;
     public static final int ADVANCED_DISTANCE_RATIO = 500;
     public static final int MASTER_DISTANCE_RATIO = 100;
     public static final int ARCANE_DISTANCE_RATIO = 0;
-    private final ItemAlchemicalBook.Mode mode;
-    private final @Nullable ServerPlayer player;
-    private final @Nullable ItemStack itemStack;
-    public CapabilityAlchemicalBookLocations(ItemAlchemicalBook.Mode mode, @Nullable ServerPlayer player, @Nullable ItemStack itemStack) {
-        this.mode = mode;
-        this.player = player;
-        this.itemStack = itemStack;
-    }
 
     public static IAlchemicalBookLocationsProvider fromPlayer(Player player) {
         IAlchemicalBookLocationsProvider provider = player.getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS_ENTITY);
@@ -59,6 +51,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
         }
         return provider;
     }
+
     public static IAlchemicalBookLocationsProvider fromItemStack(ItemStack stack) {
         IAlchemicalBookLocationsProvider provider = stack.getCapability(Capabilities.ALCHEMICAL_BOOK_LOCATIONS_ITEM);
         if (provider == null) {
@@ -68,13 +61,13 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
     }
 
     public static IAlchemicalBookLocationsProvider from(ItemStack stack) throws BookError.OwnerOfflineError {
-        if(!(stack.getItem() instanceof ItemAlchemicalBook book)) {
+        if (!(stack.getItem() instanceof ItemAlchemicalBook book)) {
             throw new IllegalArgumentException("ItemStack is not an alchemical book");
         }
 
-        if(book.getMode(stack) == ItemAlchemicalBook.Mode.PLAYER) {
+        if (book.getMode(stack) == ItemAlchemicalBook.Mode.PLAYER) {
             ServerPlayer owner = book.getPlayer(stack);
-            if(owner == null) {
+            if (owner == null) {
                 DataComponentTypes.OwnerData ownerData = stack.get(DataComponentTypes.OWNER);
                 throw new BookError.OwnerOfflineError(ownerData == null ? "None" : ownerData.name());
             }
@@ -106,15 +99,16 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
                 ByteBufCodecs.INT, TeleportLocation::index,
                 TeleportLocation::new
         );
+
         public void teleportTo(ServerPlayer player, boolean acrossDimensions) throws BookError.DimensionNotFoundError, BookError.WrongDimensionError {
             ResourceKey<Level> dim = player.level().dimension();
 
             ServerLevel level = Util.getDimension(dimension);
-            if(level == null) {
+            if (level == null) {
                 throw new BookError.DimensionNotFoundError(dimension);
             }
 
-            if(!dim.equals(dimension) && !acrossDimensions) {
+            if (!dim.equals(dimension) && !acrossDimensions) {
                 throw new BookError.WrongDimensionError();
             }
 
@@ -134,7 +128,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
         }
 
         public int getCost(ItemStack stack, BlockPos pos) {
-            if(!(stack.getItem() instanceof ItemAlchemicalBook book)) {
+            if (!(stack.getItem() instanceof ItemAlchemicalBook book)) {
                 return (int) Math.ceil(distanceFrom(pos) * BASIC_DISTANCE_RATIO);
             }
             return (int) Math.ceil(distanceFrom(pos) * book.getTier().distanceRatio());
@@ -196,15 +190,19 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
                 super(Type.WRONG_DIMENSION);
             }
         }
+
         public static class DimensionNotFoundError extends BookError {
             private final Component name;
+
             public DimensionNotFoundError(Component name) {
                 super(Type.DIMENSION_NOT_FOUND);
                 this.name = name;
             }
+
             public DimensionNotFoundError(ResourceKey<Level> level) {
                 this(Component.translatable(level.location().toLanguageKey()));
             }
+
             public DimensionNotFoundError(String name) {
                 this(Component.literal(name));
             }
@@ -214,17 +212,21 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
                 return Lang.Items.ALCHEMICAL_BOOK_ERROR.extendColored(getKey(), ChatFormatting.RED, name);
             }
         }
+
         public static class NoBackLocationError extends BookError {
             public NoBackLocationError() {
                 super(Type.NO_BACK_LOCATION);
             }
         }
+
         public static class DuplicateNameError extends BookError {
             private final Component name;
+
             public DuplicateNameError(Component name) {
                 super(Type.DUPLICATE_NAME);
                 this.name = name;
             }
+
             public DuplicateNameError(String name) {
                 this(Component.literal(name));
             }
@@ -234,12 +236,15 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
                 return Lang.Items.ALCHEMICAL_BOOK_ERROR.extendColored(getKey(), ChatFormatting.RED, name);
             }
         }
+
         public static class NameNotFoundError extends BookError {
             private final Component name;
+
             public NameNotFoundError(Component name) {
                 super(Type.NAME_NOT_FOUND);
                 this.name = name;
             }
+
             public NameNotFoundError(String name) {
                 this(Component.literal(name));
             }
@@ -249,12 +254,15 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
                 return Lang.Items.ALCHEMICAL_BOOK_ERROR.extendColored(getKey(), ChatFormatting.RED, name);
             }
         }
+
         public static class OwnerOfflineError extends BookError {
             private final Component player;
+
             public OwnerOfflineError(Component name) {
                 super(Type.OWNER_OFFLINE);
                 this.player = name;
             }
+
             public OwnerOfflineError(String name) {
                 this(Component.literal(name));
             }
@@ -264,8 +272,10 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
                 return Lang.Items.ALCHEMICAL_BOOK_ERROR.extendColored(getKey(), ChatFormatting.RED, player);
             }
         }
+
         public static class NotEnoughEMCError extends BookError {
             private final String emc;
+
             public NotEnoughEMCError(String emc) {
                 super(Type.NOT_ENOUGH_EMC);
                 this.emc = emc;
@@ -276,11 +286,13 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
                 return Lang.Items.ALCHEMICAL_BOOK_ERROR.extendColored(getKey(), ChatFormatting.RED, emc);
             }
         }
+
         public static class EditNotAllowedError extends BookError {
             public EditNotAllowedError() {
                 super(Type.EDIT_NOT_ALLOWED);
             }
         }
+
         public enum Type {
             // Teleportation
             WRONG_DIMENSION,
@@ -294,7 +306,9 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
             OWNER_OFFLINE,
             EDIT_NOT_ALLOWED,
         }
+
         private final Type type;
+
         public BookError(Type type) {
             super("Book error: " + type.name());
             this.type = type;
@@ -303,6 +317,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
         protected String getKey() {
             return type.name().toLowerCase();
         }
+
         public Type getType() {
             return type;
         }
@@ -312,7 +327,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
         }
     }
 
-    protected AlchemicalBookLocationData getData() {
+    private AlchemicalBookLocationData getData() {
         if (player != null) {
             return player.getData(AttachmentTypes.ALCHEMICAL_BOOK_LOCATIONS);
         } else if (itemStack != null) {
@@ -330,13 +345,14 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
     @Override
     public void addLocation(String name, GlobalPos pos) throws BookError.DuplicateNameError {
         AlchemicalBookLocationData data = getData();
-        if(data.hasLocation(name) && !name.equals(BACK_KEY)) {
+        if (data.hasLocation(name) && !name.equals(BACK_KEY)) {
             throw new BookError.DuplicateNameError(name);
         }
         int lastIndex = -1;
         try {
             lastIndex = data.getLocations().getLast().index();
-        } catch (NoSuchElementException ignore) {}
+        } catch (NoSuchElementException ignore) {
+        }
         TeleportLocation location = TeleportLocation.from(name, pos, lastIndex + 1);
         data = data.addLocation(name, location);
         markDirty(data);
@@ -357,7 +373,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
     @Override
     public void removeLocation(String name) throws BookError.NameNotFoundError {
         AlchemicalBookLocationData data = getData();
-        if(!data.hasLocation(name)) {
+        if (!data.hasLocation(name)) {
             throw new BookError.NameNotFoundError(name);
         }
 
@@ -392,10 +408,11 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
 
     private static final String BACK_KEY = "@back";
     private static final int BACK_INDEX = 0;
+
     @Override
     public @Nullable TeleportLocation getBackLocation() {
         AlchemicalBookLocationData data = getData();
-        if(!data.hasLocation(BACK_KEY)) {
+        if (!data.hasLocation(BACK_KEY)) {
             return null;
         }
 
@@ -405,7 +422,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
     @Override
     public TeleportLocation getBackLocationOrThrow() throws BookError.NoBackLocationError {
         TeleportLocation location = getBackLocation();
-        if(location == null) {
+        if (location == null) {
             throw new BookError.NoBackLocationError();
         }
 
@@ -415,24 +432,24 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
     @Override
     public void teleportBack(ServerPlayer player, boolean acrossDimensions) throws BookError.NoBackLocationError, BookError.WrongDimensionError, BookError.DimensionNotFoundError {
         @Nullable TeleportLocation backLocation = getBackLocation();
-        if(backLocation == null) {
+        if (backLocation == null) {
             throw new BookError.NoBackLocationError();
         }
 
         ResourceKey<Level> dim = player.level().dimension();
 
         ServerLevel level = Util.getDimension(backLocation.dimension());
-        if(level == null) {
+        if (level == null) {
             throw new BookError.DimensionNotFoundError(backLocation.dimension());
         }
 
-        if(!dim.equals(backLocation.dimension()) && !acrossDimensions) {
+        if (!dim.equals(backLocation.dimension()) && !acrossDimensions) {
             throw new BookError.WrongDimensionError();
         }
 
         try {
             removeLocation(BACK_KEY);
-        } catch(BookError.NameNotFoundError e) {
+        } catch (BookError.NameNotFoundError e) {
             throw new RuntimeException(e);
         }
         sync(player);
@@ -454,7 +471,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
     @Override
     public TeleportLocation getLocationOrThrow(String name) throws BookError.NameNotFoundError {
         @Nullable TeleportLocation location = getLocation(name);
-        if(location == null) {
+        if (location == null) {
             throw new BookError.NameNotFoundError(name);
         }
 
@@ -471,22 +488,12 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
     @Override
     public void sync(ServerPlayer player) {
         boolean canEdit = false;
-        if(this.player != null) {
+        if (this.player != null) {
             canEdit = ItemAlchemicalBook.canEdit(player, this.player);
-        } else if(itemStack != null) {
+        } else if (itemStack != null) {
             canEdit = ItemAlchemicalBook.canEdit(itemStack, player);
         }
         PacketDistributor.sendToPlayer(player, new PacketSyncAlchemicalBookLocations(getLocations(), canEdit));
-    }
-
-    @Override
-    public ItemAlchemicalBook.Mode getMode() {
-        return mode;
-    }
-
-    @Override
-    public @Nullable ServerPlayer getPlayer() {
-        return player;
     }
 
     @Override
@@ -495,11 +502,6 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
             throw new NullPointerException("Player is null");
         }
         return player;
-    }
-
-    @Override
-    public @Nullable ItemStack getItemStack() {
-        return itemStack;
     }
 
     @Override
@@ -513,9 +515,9 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
     @Override
     public void syncToOtherPlayers() {
         if (player == null) return;
-        for (String playerName : ServerLifecycleHooks.getCurrentServer().getPlayerNames()) {
+        for (String playerName : Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).getPlayerNames()) {
             ServerPlayer target = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(playerName);
-            if(target == null) continue;
+            if (target == null) continue;
             syncToPlayer(target);
         }
     }
@@ -526,7 +528,7 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
         ItemStack stack = target.getMainHandItem();
         if (stack.getItem() instanceof ItemAlchemicalBook book && book.getMode(stack) == ItemAlchemicalBook.Mode.PLAYER) {
             @Nullable ServerPlayer stackOwner = book.getPlayer(stack);
-            if(player.equals(stackOwner)) {
+            if (player.equals(stackOwner)) {
                 fromPlayer(player).sync(target);
             }
         }
@@ -534,12 +536,12 @@ public class CapabilityAlchemicalBookLocations implements IAlchemicalBookLocatio
 
     @Override
     public void ensureEditable(ServerPlayer editor) throws BookError.EditNotAllowedError {
-        if(player != null && !ItemAlchemicalBook.canEdit(editor, player)) {
+        if (player != null && !ItemAlchemicalBook.canEdit(editor, player)) {
             throw new BookError.EditNotAllowedError();
         }
     }
 
-    protected void markDirty(AlchemicalBookLocationData provider) {
+    private void markDirty(AlchemicalBookLocationData provider) {
         if (itemStack != null) {
             itemStack.set(DataComponentTypes.ALCHEMICAL_BOOK_LOCATIONS, provider);
         } else if (player != null) {
