@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "projectexpansion:star",
+  "pattern": [
+    "SSS",
+    "SES",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "projectexpansion:final_power_flower"
+    },
+    "E": {
+      "item": "minecraft:dragon_egg"
+    }
+  },
+  "result": {
+    "id": "projectexpansion:final_star"
+  }
+}

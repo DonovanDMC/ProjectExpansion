@@ -1,0 +1,92 @@
+package cool.furry.mc.neoforge.projectexpansion.events;
+
+import cool.furry.mc.neoforge.projectexpansion.Main;
+import cool.furry.mc.neoforge.projectexpansion.config.Config;
+import cool.furry.mc.neoforge.projectexpansion.registries.Enchantments;
+import cool.furry.mc.neoforge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.neoforge.projectexpansion.util.Lang;
+import cool.furry.mc.neoforge.projectexpansion.util.Util;
+import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.text.PELang;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@EventBusSubscriber(modid = Main.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+public class ItemTooltipEvents {
+    // we need to be lower priority than ProjectE's listener so the EMC component is present when we get the event
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void itemTooltipEvent(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        if (stack.isEmpty()|| event.getEntity() == null || event.getEntity().isDeadOrDying()) {
+            return;
+        }
+
+        learnedTooltip: if(Config.client.enabledLearnedTooltip.get() && (!ProjectEConfig.client.shiftEmcToolTips.get() || Screen.hasShiftDown())) {
+            boolean hasValue = IEMCProxy.INSTANCE.hasValue(stack);
+            if (!hasValue) {
+                break learnedTooltip;
+            }
+
+            IKnowledgeProvider provider = Util.getKnowledgeProvider(event.getEntity());
+            if (provider == null) {
+                break learnedTooltip;
+            }
+
+            boolean hasKnowledge = provider.hasKnowledge(ItemInfo.fromStack(stack));
+            long value = IEMCProxy.INSTANCE.getValue(stack);
+            AtomicInteger index = new AtomicInteger(-1);
+            AtomicInteger peTransmutableIndex = new AtomicInteger(-1);
+            for (Component c : event.getToolTip()) {
+                if (c.getString().equals(EMCHelper.getEmcTextComponent(value, 1).getString())) {
+                    index.set(event.getToolTip().indexOf(c));
+                    continue;
+                }
+
+                if (c.getString().equals(I18n.get(PELang.EMC_HAS_KNOWLEDGE.getTranslationKey()))) {
+                    peTransmutableIndex.set(event.getToolTip().indexOf(c));
+                }
+            }
+
+            // attempt to add a minimal notice
+            if (index.get() != -1) {
+                event.getToolTip().set(index.get(), event.getToolTip().get(index.get()).copy().append(Component.literal(" (").setStyle(ColorStyle.WHITE)).append(hasKnowledge ?
+                        Component.literal("✓").setStyle(ColorStyle.GREEN) : Component.literal("✗").setStyle(ColorStyle.RED)
+                ).append(Component.literal(")").setStyle(ColorStyle.WHITE)));
+            } else {
+                // if we can't find an existing EMC element, add a new more detailed element
+                event.getToolTip().add(hasKnowledge ?
+                    Lang.LEARNED.translateColored(ChatFormatting.GREEN) : Lang.NOT_LEARNED.translateColored(ChatFormatting.RED)
+                );
+            }
+
+
+            if (peTransmutableIndex.get() != -1) {
+                event.getToolTip().remove(peTransmutableIndex.get());
+            }
+        }
+
+        boolean hasEnch = EnchantmentHelper.getTagEnchantmentLevel(event.getEntity().registryAccess().holderOrThrow(Enchantments.ALCHEMICAL_COLLECTION), stack) > 0;
+        if(hasEnch) {
+            boolean enabled = Objects.requireNonNull(stack.get(PEDataComponentTypes.ACTIVE));
+            event.getToolTip().add(Lang.ALCHEMICAL_COLLECTION.translate(enabled ? Lang.ENABLED.translateColored(ChatFormatting.GREEN) : Lang.DISABLED.translateColored(ChatFormatting.RED)));
+        }
+
+    }
+}

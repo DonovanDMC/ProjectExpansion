@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:white_matter",
+  "criteria": {
+    "white_matter_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:white_matter_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.white_matter_block.description"
+    },
+    "icon": {
+      "id": "projectexpansion:white_matter_block"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.white_matter_block"
+    }
+  },
+  "requirements": [
+    [
+      "white_matter_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

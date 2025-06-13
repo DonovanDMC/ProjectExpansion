@@ -1,0 +1,34 @@
+{
+  "parent": "projecte:alchemical_coal",
+  "criteria": {
+    "alchemical_coal_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:alchemical_coal_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projecte.alchemical_coal_block.description"
+    },
+    "icon": {
+      "id": "projecte:alchemical_coal_block"
+    },
+    "title": {
+      "translate": "advancements.projecte.alchemical_coal_block"
+    }
+  },
+  "requirements": [
+    [
+      "alchemical_coal_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

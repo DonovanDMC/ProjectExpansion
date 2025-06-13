@@ -1,83 +1,19 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        maven { url = "https://libraries.minecraft.net" }
+import cool.furry.mc.neoforge.projectexpansion.Data
+import cool.furry.mc.neoforge.projectexpansion.Publish
+import cool.furry.mc.neoforge.projectexpansion.SignJar
+import cool.furry.mc.neoforge.projectexpansion.UpdateJson
 
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0,6.2)', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'net.neoforged.moddev' version '2.0.80'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-
-group = 'furry.cool.mc.forge'
-version = getProperty("mcVersion") + "-" + getProperty("localVersion")
-
-java {
-    archivesBaseName = 'ProjectExpansion'
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
-}
-
-minecraft {
-    mappings channel: getProperty("mappingsChannel"), version: getProperty("mappingsVersion")
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                projectexpansion {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                projectexpansion {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'projectexpansion', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                projectexpansion {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-
-mixin {
-    add sourceSets.main, "projectexpansion.refmap.json"
-    config "projectexpansion.mixins.json"
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+version = minecraft_version + "-" + mod_version
+group = mod_group_id
 
 repositories {
+    mavenLocal()
     maven { url = "https://modmaven.dev/" }
     maven {
         url "https://www.cursemaven.com"
@@ -98,51 +34,205 @@ repositories {
     }
 }
 
+base {
+    archivesName = mod_id
+}
+
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    // Specify the version of NeoForge to use.
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    // This line is optional. Access Transformers are automatically detected
+    accessTransformers.from(
+        file('src/main/resources/META-INF/accesstransformer.cfg')
+    )
+
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+    runs {
+        client {
+            client()
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+
+            // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
+            // gameDirectory = project.file('run-data')
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        // applies to all the run configs above
+        configureEach {
+            // Recommended logging data for a userdev environment
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+            // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        projectexpansion {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+// Include resources generated by data generators.
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+
 dependencies {
-    minecraft "net.minecraftforge:forge:${getProperty("mcVersion")}-${getProperty("forgeVersion")}"
-    implementation fg.deobf("curse.maven:projecte-226410:${getProperty("projecteVersion")}")
-    implementation "com.mojang:brigadier:1.0.18"
-    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${getProperty("curiosVersion")}")
-    runtimeOnly fg.deobf("curse.maven:no-chat-reports-634062:${getProperty("ncrVersion")}")
-    compileOnly fg.deobf("mezz.jei:jei-${getProperty("mcVersion")}-common-api:${getProperty("jeiVersion")}")
-    compileOnly fg.deobf("mezz.jei:jei-${getProperty("mcVersion")}-forge-api:${getProperty("jeiVersion")}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${getProperty("mcVersion")}-forge:${getProperty("jeiVersion")}")
-    runtimeOnly fg.deobf("curse.maven:pipez-443900:${getProperty("pipezVersion")}")
-    runtimeOnly fg.deobf("curse.maven:ae2-223794:${getProperty("ae2Version")}")
-    runtimeOnly fg.deobf("curse.maven:itank-256991:${getProperty("itankVersion")}")
-    runtimeOnly fg.deobf("curse.maven:cloth-config-348521:${getProperty("clothVersion")}")
-    runtimeOnly fg.deobf("curse.maven:better-advancements-272515:${getProperty("baVersion")}")
+    // Example mod dependency using a mod jar from ./libs with a flat dir repository
+    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
+    // The group id is ignored when searching -- in this case, it is "blank"
+    // implementation "blank:coolmod-${mc_version}:${coolmod_version}"
 
-    compileOnly fg.deobf("curse.maven:jade-api-324717:${getProperty("jadeApiVersion")}")
-    runtimeOnly fg.deobf("curse.maven:jade-324717:${getProperty("jadeVersion")}")
+    // Example mod dependency using a file as dependency
+    // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
 
-    compileOnly fg.deobf("curse.maven:wthit-455982:${getProperty("wthitVersion")}")
-    // runtimeOnly fg.deobf("curse.maven:wthit-455982:${getProperty("wthitVersion")}")
-    // runtimeOnly fg.deobf("curse.maven:bad-packets-615134:${getProperty("badPacketsVersion")}")
+    // Example project dependency using a sister or child project:
+    // implementation project(":myproject")
+
+    // For more info:
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    implementation("curse.maven:projecte-226410:${projecte_version}")
+    implementation("com.mojang:brigadier:1.0.18")
+    annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
+    runtimeOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
+    runtimeOnly("curse.maven:no-chat-reports-634062:${ncr_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    runtimeOnly("curse.maven:pipez-443900:${pipez_version}")
+    runtimeOnly("curse.maven:ae2-223794:${ae2_version}")
+    runtimeOnly("curse.maven:guideme-1173950:${guideme_version}")
+    // runtimeOnly("curse.maven:itank-256991:${itank_version}")
+    runtimeOnly("curse.maven:cloth-config-348521:${cloth_version}")
+    runtimeOnly("curse.maven:better-advancements-272515:${ba_version}")
+    runtimeOnly("curse.maven:tagtooltips-899941:${tagtooltips_version}")
+
+    compileOnly("curse.maven:jade-api-324717:${jade_api_version}")
+    runtimeOnly("curse.maven:jade-324717:${jade_version}")
+
+    compileOnly("curse.maven:wthit-455982:${wthit_version}")
+    runtimeOnly("curse.maven:wthit-455982:${wthit_version}")
+    runtimeOnly("curse.maven:bad-packets-615134:${bad_packets_version}")
 
     // https://github.com/McJtyMods/TheOneProbe/issues/548
-    compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${getProperty("topVersion")}:api") {
+    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    // runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${getProperty("topVersion")}") {
+    // runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
     //     transitive = false
     // }
 }
 
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "Project Expansion",
-                "Specification-Vendor"    : "Donovan_DMC",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "Donovan_DMC",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
+// This block of code expands all declared replace properties in the specified resource targets.
+// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [minecraft_version      : minecraft_version,
+                             minecraft_version_range: minecraft_version_range,
+                             neo_version            : neo_version,
+                             neo_version_range      : neo_version_range,
+                             loader_version_range   : loader_version_range,
+                             projecte_version_range : projecte_version_range,
+                             mod_id                 : mod_id,
+                             mod_name               : mod_name,
+                             mod_license            : mod_license,
+                             mod_version            : mod_version,
+                             mod_authors            : mod_authors,
+                             mod_description        : mod_description]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+
+// Include the output of "generateModMetadata" as an input directory for the build
+// this works with both building through Gradle and the IDE.
+sourceSets.main.resources.srcDir generateModMetadata
+// To avoid having to run "generateModMetadata" manually, make it run on every project reload
+neoForge.ideSyncTask generateModMetadata
+
+// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
     }
 }
 
-jar.finalizedBy('reobfJar')
+tasks.named("jar", Jar) {
+    doFirst {
+        def jarDir = archiveFile.get().asFile.parentFile
+        jarDir.listFiles(new FilenameFilter() {
+            boolean accept(File dir, String name) {
+                return name.endsWith(".jar")
+            }
+        })?.each { file ->
+            getLogger().log(LogLevel.WARN, "Deleting old jar: ${file.name}")
+            file.delete()
+        }
+    }
+
+    finalizedBy(signJar)
+}
+
+tasks.register("releaseJar") {
+    dependsOn(jar)
+    setGroup("publishing")
+}
+
+tasks.register("signJar", SignJar)
+signJar.setGroup("build")
+
+tasks.register("updateJSON", UpdateJson)
+updateJSON.setGroup("publishing")
+releaseJar.finalizedBy(updateJSON)
+
+tasks.register("data", Data)
+data.setGroup("build")
+processResources.dependsOn(data)
+
+tasks.register("publish", Publish) {
+    setGroup("publishing")
+    dependsOn(releaseJar)
+}

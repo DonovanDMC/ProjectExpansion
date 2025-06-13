@@ -1,0 +1,35 @@
+{
+  "parent": "projectexpansion:master_alchemical_book",
+  "criteria": {
+    "arcane_alchemical_book": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:arcane_alchemical_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.arcane_alchemical_book.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "projectexpansion:arcane_alchemical_book"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.arcane_alchemical_book"
+    }
+  },
+  "requirements": [
+    [
+      "arcane_alchemical_book"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

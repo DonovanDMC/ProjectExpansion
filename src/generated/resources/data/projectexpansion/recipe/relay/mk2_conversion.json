@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:matter/dark",
+  "ingredients": [
+    {
+      "item": "projecte:relay_mk2"
+    }
+  ],
+  "result": {
+    "id": "projectexpansion:dark_relay"
+  }
+}

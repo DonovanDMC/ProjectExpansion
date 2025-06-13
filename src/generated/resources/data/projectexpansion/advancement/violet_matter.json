@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:purple_matter",
+  "criteria": {
+    "violet_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:violet_matter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.violet_matter.description"
+    },
+    "icon": {
+      "id": "projectexpansion:violet_matter"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.violet_matter"
+    }
+  },
+  "requirements": [
+    [
+      "violet_matter"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

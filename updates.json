@@ -1,13 +1,9 @@
 {
-  "homepage": "https://www.curseforge.com/minecraft/mc-mods/project-expansion",
-  "1.20.1": {
-    "1.20.1-1.0.0": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.20.1-1.0.0",
-    "1.20.1-1.1.0": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.20.1-1.1.0",
-    "1.20.1-1.1.1": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.20.1-1.1.1",
-    "1.20.1-1.1.2": "https://github.com/DonovanDMC/ProjectExpansion/releases/tag/1.20.1-1.1.2"
-  },
-  "promos": {
-    "1.20.1-latest": "1.20.1-1.1.2",
-    "1.20.1-recommended": "1.20.1-1.1.2"
-  }
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/project-expansion",
+    "1.21.1": {
+    },
+    "promos": {
+        "1.21.1-latest": "NONE",
+        "1.21.1-recommended": "NONE"
+    }
 }

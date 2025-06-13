@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"C": {
+			"item": "projecte:condenser_mk2"
+		},
+		"M": {
+			"item": "projectexpansion:magenta_matter_block"
+		}
+	},
+	"pattern": [
+		"MCM",
+		"CCC",
+		"MCM"
+	],
+	"result": {
+		"id": "projectexpansion:condenser_mk3"
+	},
+	"show_notification": true
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:yellow_matter",
+  "criteria": {
+    "orange_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:orange_matter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.orange_matter.description"
+    },
+    "icon": {
+      "id": "projectexpansion:orange_matter"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.orange_matter"
+    }
+  },
+  "requirements": [
+    [
+      "orange_matter"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

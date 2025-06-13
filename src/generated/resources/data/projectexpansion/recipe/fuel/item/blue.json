@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/blue",
+  "ingredients": [
+    {
+      "item": "projecte:philosophers_stone"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    },
+    {
+      "item": "projectexpansion:violet_fuel"
+    }
+  ],
+  "result": {
+    "id": "projectexpansion:blue_fuel"
+  }
+}

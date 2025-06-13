@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:colossal_star_omega",
+  "criteria": {
+    "final_star_shard": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:final_star_shard"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.final_star_shard.description"
+    },
+    "icon": {
+      "id": "projectexpansion:final_star_shard"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.final_star_shard"
+    }
+  },
+  "requirements": [
+    [
+      "final_star_shard"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/pink",
+  "ingredients": [
+    {
+      "item": "projecte:philosophers_stone"
+    },
+    {
+      "item": "projectexpansion:magenta_fuel"
+    },
+    {
+      "item": "projectexpansion:magenta_fuel"
+    },
+    {
+      "item": "projectexpansion:magenta_fuel"
+    },
+    {
+      "item": "projectexpansion:magenta_fuel"
+    }
+  ],
+  "result": {
+    "id": "projectexpansion:pink_fuel"
+  }
+}

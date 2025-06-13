@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:purple_fuel",
+  "criteria": {
+    "purple_fuel_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:purple_fuel_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.purple_fuel_block.description"
+    },
+    "icon": {
+      "id": "projectexpansion:purple_fuel_block"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.purple_fuel_block"
+    }
+  },
+  "requirements": [
+    [
+      "purple_fuel_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

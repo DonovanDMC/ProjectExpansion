@@ -1,0 +1,32 @@
+{
+	"parent": "projecte:condenser_mk2",
+	"criteria": {
+		"condenser_mk3": {
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:condenser_mk3"
+					}
+				]
+			},
+			"trigger": "minecraft:inventory_changed"
+		}
+	},
+	"display": {
+		"description": {
+			"translate": "advancements.projectexpansion.condenser_mk3.description"
+		},
+		"icon": {
+			"id": "projectexpansion:condenser_mk3"
+		},
+		"title": {
+			"translate": "advancements.projectexpansion.condenser_mk3"
+		}
+	},
+	"requirements": [
+		[
+			"condenser_mk3"
+		]
+	],
+	"sends_telemetry_event": true
+}

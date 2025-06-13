@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/orange",
+  "ingredients": [
+    {
+      "item": "projecte:philosophers_stone"
+    },
+    {
+      "item": "projectexpansion:yellow_fuel"
+    },
+    {
+      "item": "projectexpansion:yellow_fuel"
+    },
+    {
+      "item": "projectexpansion:yellow_fuel"
+    },
+    {
+      "item": "projectexpansion:yellow_fuel"
+    }
+  ],
+  "result": {
+    "id": "projectexpansion:orange_fuel"
+  }
+}

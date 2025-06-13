@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:yellow_fuel",
+  "criteria": {
+    "yellow_fuel_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:yellow_fuel_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.yellow_fuel_block.description"
+    },
+    "icon": {
+      "id": "projectexpansion:yellow_fuel_block"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.yellow_fuel_block"
+    }
+  },
+  "requirements": [
+    [
+      "yellow_fuel_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

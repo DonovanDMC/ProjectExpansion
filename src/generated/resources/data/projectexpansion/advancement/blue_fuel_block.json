@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:blue_fuel",
+  "criteria": {
+    "blue_fuel_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:blue_fuel_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.blue_fuel_block.description"
+    },
+    "icon": {
+      "id": "projectexpansion:blue_fuel_block"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.blue_fuel_block"
+    }
+  },
+  "requirements": [
+    [
+      "blue_fuel_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

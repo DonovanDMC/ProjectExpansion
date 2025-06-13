@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/cyan",
+  "ingredients": [
+    {
+      "item": "projecte:philosophers_stone"
+    },
+    {
+      "item": "projectexpansion:blue_fuel"
+    },
+    {
+      "item": "projectexpansion:blue_fuel"
+    },
+    {
+      "item": "projectexpansion:blue_fuel"
+    },
+    {
+      "item": "projectexpansion:blue_fuel"
+    }
+  ],
+  "result": {
+    "id": "projectexpansion:cyan_fuel"
+  }
+}

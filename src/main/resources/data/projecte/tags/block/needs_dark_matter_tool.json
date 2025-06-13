@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values": [
+		"projectexpansion:dark_collector",
+		"projectexpansion:dark_power_flower",
+		"projectexpansion:dark_relay",
+		"projectexpansion:dark_emc_link"
+	]
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "projecte:mobius_fuel",
+  "criteria": {
+    "mobius_fuel_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projecte:mobius_fuel_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projecte.mobius_fuel_block.description"
+    },
+    "icon": {
+      "id": "projecte:mobius_fuel_block"
+    },
+    "title": {
+      "translate": "advancements.projecte.mobius_fuel_block"
+    }
+  },
+  "requirements": [
+    [
+      "mobius_fuel_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "projecte:philosophers_stone",
+  "criteria": {
+    "alchemical_coal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "projecte:alchemical_coal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projecte.alchemical_coal.description"
+    },
+    "icon": {
+      "id": "projecte:alchemical_coal"
+    },
+    "title": {
+      "translate": "advancements.projecte.alchemical_coal"
+    }
+  },
+  "requirements": [
+    [
+      "alchemical_coal"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

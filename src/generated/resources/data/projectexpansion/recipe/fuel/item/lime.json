@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectexpansion:fuel/lime",
+  "ingredients": [
+    {
+      "item": "projecte:philosophers_stone"
+    },
+    {
+      "item": "projectexpansion:green_fuel"
+    },
+    {
+      "item": "projectexpansion:green_fuel"
+    },
+    {
+      "item": "projectexpansion:green_fuel"
+    },
+    {
+      "item": "projectexpansion:green_fuel"
+    }
+  ],
+  "result": {
+    "id": "projectexpansion:lime_fuel"
+  }
+}

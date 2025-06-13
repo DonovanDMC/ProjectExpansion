@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:basic_alchemical_book",
+  "criteria": {
+    "advanced_alchemical_book": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:advanced_alchemical_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.advanced_alchemical_book.description"
+    },
+    "icon": {
+      "id": "projectexpansion:advanced_alchemical_book"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.advanced_alchemical_book"
+    }
+  },
+  "requirements": [
+    [
+      "advanced_alchemical_book"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

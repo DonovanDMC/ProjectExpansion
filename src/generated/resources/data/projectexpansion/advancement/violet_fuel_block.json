@@ -1,0 +1,34 @@
+{
+  "parent": "projectexpansion:violet_fuel",
+  "criteria": {
+    "violet_fuel_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "projectexpansion:violet_fuel_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.projectexpansion.violet_fuel_block.description"
+    },
+    "icon": {
+      "id": "projectexpansion:violet_fuel_block"
+    },
+    "title": {
+      "translate": "advancements.projectexpansion.violet_fuel_block"
+    }
+  },
+  "requirements": [
+    [
+      "violet_fuel_block"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

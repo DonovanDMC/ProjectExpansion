@@ -1,0 +1,19 @@
+{
+	"description": {
+		"translate": "enchantment.projectexpansion.alchemical_collection"
+	},
+	"supported_items": "#minecraft:enchantable/mining",
+	"primary_items": "minecraft:book",
+	"weight": 6,
+	"max_level": 1,
+	"min_cost": {
+		"base": 15,
+		"per_level_above_first": 0
+	},
+	"max_cost": {
+		"base": 50,
+		"per_level_above_first": 0
+	},
+	"anvil_cost": 2,
+	"slots": ["hand"]
+}
