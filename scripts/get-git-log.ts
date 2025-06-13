@@ -1,7 +1,7 @@
-import type { SimpleGit, LogResult } from "simple-git";
+import type {LogResult, SimpleGit} from "simple-git";
 import simpleGit from "simple-git";
-import { writeFile } from "fs/promises";
-import { tmpdir } from "os";
+import {writeFile} from "fs/promises";
+import {tmpdir} from "os";
 
 const gitDir = process.argv[2];
 const id = process.argv[3];
@@ -10,7 +10,7 @@ if (!id) throw new Error("edit id is required");
 
 const git = simpleGit(gitDir);
 await git.pull(["--tags", "--force"]);
-const latestTag = (await git.raw(["describe", "--tags", "--abbrev=0"])).toString().trim();
+const latestTag = (await git.raw(["describe", "--tags", "--abbrev=0", "--always"])).toString().trim();
 const commits = await git.log([`${latestTag}..HEAD`]) as SimpleGit & LogResult;
 const gitLog = [
 	"# Log For Github"

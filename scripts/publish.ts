@@ -1,12 +1,12 @@
 // I use a self signed cert locally
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-import config from "../config.json" assert { type: "json" };
-import type { ErrorResponse, SuccessResponse } from "../types";
+import config from "../config.json" assert {type: "json"};
+import type {ErrorResponse, SuccessResponse} from "../types";
 import simpleGit from "simple-git";
 import readProperties from "properties-reader";
-import { assert } from "tsafe";
-import { fetch, File, FormData } from "undici";
-import { access, readdir, readFile } from "fs/promises";
+import {assert} from "tsafe";
+import {fetch, File, FormData} from "undici";
+import {access, readdir, readFile} from "fs/promises";
 
 const exists = (input: string) => access(input).then(() => true, () => false);
 const baseDir = process.argv[2];
@@ -25,7 +25,7 @@ function getProperty(name: string) {
 const git = simpleGit(baseDir);
 await git.pull(["--tags"]);
 const currentCommit = await git.revparse("HEAD");
-const latestTag = (await git.raw(["describe", "--tags", "--abbrev=0"])).toString().trim();
+const latestTag = (await git.raw(["describe", "--tags", "--abbrev=0", "--always"])).toString().trim();
 const mcVersion = getProperty("minecraft_version") as string | null;
 const version = getProperty("mod_version") as string | null;
 assert(mcVersion, "minecraft_version isn't present");
