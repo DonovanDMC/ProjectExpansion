@@ -26,27 +26,30 @@ const git = simpleGit(baseDir);
 await git.pull(["--tags"]);
 const currentCommit = await git.revparse("HEAD");
 const latestTag = (await git.raw(["describe", "--tags", "--abbrev=0", "--always"])).toString().trim();
+const modName = getProperty("mod_name") as string | null;
 const mcVersion = getProperty("minecraft_version") as string | null;
-const version = getProperty("mod_version") as string | null;
+const modVersion = getProperty("mod_version") as string | null;
+assert(modName, "mod_name isn't present");
 assert(mcVersion, "minecraft_version isn't present");
-assert(version, "mod_version isn't present");
+assert(modVersion, "mod_version isn't present");
 
-if (latestTag.split("-")[1] === version) throw new Error("Local Version Matches Latest");
+if (latestTag.split("-")[1] === modVersion) throw new Error("Local Version Matches Latest");
 if (!await exists(`${baseDir}/build/libs/signed`)) throw new Error("Signed Jar Is Not Present");
 const files = await readdir(`${baseDir}/build/libs/signed`);
-const file = files.find(f => f.includes(version));
+const fileName = `${modName}-${mcVersion}-${modVersion}.jar`;
+const file = files.find(f => f == fileName);
 if (files.length === 0 || !file) throw new Error("Signed Jar Is Not Present");
 const gitlog = (await readFile(gitlogFile)).toString();
 const otherlog = (await readFile(otherlogFile)).toString();
 const fileContent = await readFile(`${baseDir}/build/libs/signed/${file}`);
 
 await git.push();
-await git.tag([`${mcVersion}-${version}`]);
+await git.tag([`${mcVersion}-${modVersion}`]);
 await git.push(["--tags"]);
 const data = new FormData();
 data.append("gitlog", gitlog);
 data.append("changelog", otherlog);
-data.append("version", version);
+data.append("version", modVersion);
 data.append("expectedLatestCommit", currentCommit);
 data.append("file", new File([fileContent], file));
 const req = await fetch(`${config.endpoint}/publish/${config.gitName}`, {
