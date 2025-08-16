@@ -43,7 +43,7 @@ public class EMCDisplay {
 
     @SubscribeEvent
     public static void onTick(ClientTickEvent.Post event) {
-        if (!Config.client.emcDisplay.get()) return;
+        if (Config.client.Spec.isLoaded() && !Config.client.emcDisplay.get()) return;
         LocalPlayer player = getPlayer();
         tick++;
         if (player != null && tick >= 20) {
@@ -93,7 +93,7 @@ public class EMCDisplay {
 
         @Override
         public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-            if (!Config.client.emcDisplay.get()) return;
+            if (Config.client.Spec.isLoaded() && !Config.client.emcDisplay.get()) return;
             Minecraft mc = Minecraft.getInstance();
             BigInteger avg = history[0].add(history[1]);
             String str = EMCFormat.format(emc);
