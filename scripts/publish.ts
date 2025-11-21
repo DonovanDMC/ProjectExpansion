@@ -5,8 +5,9 @@ import type {ErrorResponse, SuccessResponse} from "../types";
 import simpleGit from "simple-git";
 import readProperties from "properties-reader";
 import {assert} from "tsafe";
-import {fetch, File, FormData} from "undici";
 import {access, readdir, readFile} from "fs/promises";
+import { exec, execSync } from "child_process";
+import { chdir } from "process";
 
 const exists = (input: string) => access(input).then(() => true, () => false);
 const baseDir = process.argv[2];
@@ -22,10 +23,22 @@ function getProperty(name: string) {
 	return props.get(name);
 }
 
+async function execAsync(command: string, cwd?: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        exec(command, { cwd }, (err, stdout, stderr) => {
+            if (err) return reject(err);
+            if(stderr) console.error(stderr);
+            if (/(?:\r?\n)+$/g.test(stdout)) stdout = stdout.replaceAll(/(?:\r?\n)+$/g, "");
+            resolve(stdout);
+        })
+    });
+}
+
+chdir(baseDir);
+await execAsync("git pull --tags");
+const currentCommit = await execAsync("git rev-parse HEAD");
+const latestTag = await execAsync("git describe --tags --abbrev=0 --always");
 const git = simpleGit(baseDir);
-await git.pull(["--tags"]);
-const currentCommit = await git.revparse("HEAD");
-const latestTag = (await git.raw(["describe", "--tags", "--abbrev=0", "--always"])).toString().trim();
 const modId = getProperty("mod_id") as string | null;
 const mcVersion = getProperty("minecraft_version") as string | null;
 const modVersion = getProperty("mod_version") as string | null;
@@ -39,13 +52,13 @@ const files = await readdir(`${baseDir}/build/libs/signed`);
 const fileName = `${modId}-${mcVersion}-${modVersion}.jar`;
 const file = files.find(f => f == fileName);
 if (files.length === 0 || !file) throw new Error(`Signed Jar (${fileName}) Is Not Present`);
-const gitlog = (await readFile(gitlogFile)).toString();
-const otherlog = (await readFile(otherlogFile)).toString();
-const fileContent = await readFile(`${baseDir}/build/libs/signed/${file}`);
+const gitlog = await Bun.file(gitlogFile).text();
+const otherlog = await Bun.file(otherlogFile).text();
+const fileContent = Bun.file(`${baseDir}/build/libs/signed/${file}`);
 
-await git.push();
-await git.tag([`${mcVersion}-${modVersion}`]);
-await git.push(["--tags"]);
+await execAsync("git push");
+await execAsync(`git tag ${mcVersion}-${modVersion} -m ""`);
+await execAsync(`git push --tags`);
 const data = new FormData();
 data.append("gitlog", gitlog);
 data.append("changelog", otherlog);
