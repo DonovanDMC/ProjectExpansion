@@ -1,0 +1,22 @@
+{
+  "block.projectexpansion.advanced_alchemical_chest.color_set": "颜色已设置为%s。",
+  "block.projectexpansion.advanced_alchemical_chest.invalid_item": "你必须手持%s才能设置颜色。",
+  "block.projectexpansion.advanced_alchemical_chest.color": "当前颜色：%s",
+  "block.projectexpansion.advanced_alchemical_chest.tooltip": "就像炼金袋，但是是箱子形式。Shift点击炼金袋来设置颜色。",
+  "block.projectexpansion.white_advanced_alchemical_chest": "白色高级炼金箱",
+  "block.projectexpansion.orange_advanced_alchemical_chest": "橙色高级炼金箱",
+  "block.projectexpansion.magenta_advanced_alchemical_chest": "品红色高级炼金箱",
+  "block.projectexpansion.light_blue_advanced_alchemical_chest": "淡蓝色高级炼金箱",
+  "block.projectexpansion.yellow_advanced_alchemical_chest": "黄色高级炼金箱",
+  "block.projectexpansion.lime_advanced_alchemical_chest": "黄绿色高级炼金箱",
+  "block.projectexpansion.pink_advanced_alchemical_chest": "粉红色高级炼金箱",
+  "block.projectexpansion.gray_advanced_alchemical_chest": "灰色高级炼金箱",
+  "block.projectexpansion.light_gray_advanced_alchemical_chest": "淡灰色高级炼金箱",
+  "block.projectexpansion.cyan_advanced_alchemical_chest": "青色高级炼金箱",
+  "block.projectexpansion.purple_advanced_alchemical_chest": "紫色高级炼金箱",
+  "block.projectexpansion.blue_advanced_alchemical_chest": "蓝色高级炼金箱",
+  "block.projectexpansion.brown_advanced_alchemical_chest": "棕色高级炼金箱",
+  "block.projectexpansion.green_advanced_alchemical_chest": "绿色高级炼金箱",
+  "block.projectexpansion.red_advanced_alchemical_chest": "红色高级炼金箱",
+  "block.projectexpansion.black_advanced_alchemical_chest": "黑色高级炼金箱"
+}

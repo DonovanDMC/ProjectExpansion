@@ -1,0 +1,21 @@
+{
+  "block.projectexpansion.relay.tooltip": "每秒传输一次EMC。",
+  "block.projectexpansion.relay.bonus": "中继器加成：%s/s",
+  "block.projectexpansion.relay.transfer": "最大EMC传输：%s/s",
+  "block.projectexpansion.basic_relay": "基础中继器 [MK 1]",
+  "block.projectexpansion.dark_relay": "暗色中继器 [MK 2]",
+  "block.projectexpansion.red_relay": "红色中继器 [MK 3]",
+  "block.projectexpansion.magenta_relay": "品红色中继器 [MK 4]",
+  "block.projectexpansion.pink_relay": "粉红色中继器 [MK 5]",
+  "block.projectexpansion.purple_relay": "紫色中继器 [MK 6]",
+  "block.projectexpansion.violet_relay": "紫罗兰色中继器 [MK 7]",
+  "block.projectexpansion.blue_relay": "蓝色中继器 [MK 8]",
+  "block.projectexpansion.cyan_relay": "青色中继器 [MK 9]",
+  "block.projectexpansion.green_relay": "绿色中继器 [MK 10]",
+  "block.projectexpansion.lime_relay": "黄绿色中继器 [MK 11]",
+  "block.projectexpansion.yellow_relay": "黄色中继器 [MK 12]",
+  "block.projectexpansion.orange_relay": "橙色中继器 [MK 13]",
+  "block.projectexpansion.white_relay": "白色中继器 [MK 14]",
+  "block.projectexpansion.fading_relay": "褪色中继器 [MK 15]",
+  "block.projectexpansion.final_relay": "终极中继器 [MK 16]"
+}

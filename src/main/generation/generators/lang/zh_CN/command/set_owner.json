@@ -1,0 +1,4 @@
+{
+  "command.projectexpansion.set_owner.success": "成功将方块的所有者设置为%s。",
+  "command.projectexpansion.set_owner.failure": "无效的方块。"
+}
