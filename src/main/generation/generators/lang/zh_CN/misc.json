@@ -1,5 +1,5 @@
 {
-  "itemGroup.projectexpansion": "项目扩张",
+  "itemGroup.projectexpansion": "Project Expansion",
   "enchantment.projectexpansion.alchemical_collection": "炼金收集",
   "enchantment.projectexpansion.alchemical_collection.desc": "将任何开采的具有EMC价值的物品直接转化为EMC。",
   "text.projectexpansion.wip": "开发中！",
@@ -37,7 +37,7 @@
   "death.attack.walk_on_sun.player": "%s在与%s战斗时试图在太阳上行走",
   "death.attack.stare_at_sun": "%s认为盯着太阳看是个好主意",
   "death.attack.stare_at_sun.player": "%s在与%s战斗时决定盯着太阳看",
-  "config.jade.plugin_projectexpansion.provider": "项目扩张提供者",
+  "config.jade.plugin_projectexpansion.provider": "Project Expansion提供者",
   "attribute.projectexpansion.sun_exposure_protection": "太阳暴露保护",
   "curios.identifier.transmutation_tablet": "转化石板",
   "key.projecte.curios.open_transmutation_tablet": "打开转化石板"
