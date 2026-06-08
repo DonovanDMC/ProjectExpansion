@@ -1,6 +1,7 @@
 package cool.furry.mc.neoforge.projectexpansion.integrations.jei;
 
 import cool.furry.mc.neoforge.projectexpansion.Main;
+import cool.furry.mc.neoforge.projectexpansion.util.SearchSync;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
@@ -14,6 +15,7 @@ public class JeiPlugin implements IModPlugin {
     public ResourceLocation getPluginUid() {
         return Main.rl("jei_plugin");
     }
+
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         registration.addRecipeTransferHandler(new ArcaneCraftingTransferHandler(), RecipeTypes.CRAFTING);
@@ -22,6 +24,9 @@ public class JeiPlugin implements IModPlugin {
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
         RUNTIME = jeiRuntime;
+        SearchSync.register(new SearchSync("jei", text -> {
+            if (RUNTIME != null) RUNTIME.getIngredientFilter().setFilterText(text);
+        }));
     }
 
     @Override
@@ -29,4 +34,3 @@ public class JeiPlugin implements IModPlugin {
         RUNTIME = null;
     }
 }
-

@@ -3,14 +3,17 @@ package cool.furry.mc.neoforge.projectexpansion.gui;
 import cool.furry.mc.neoforge.projectexpansion.Main;
 import cool.furry.mc.neoforge.projectexpansion.config.Config;
 import cool.furry.mc.neoforge.projectexpansion.util.EMCFormat;
+import cool.furry.mc.neoforge.projectexpansion.util.Lang;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.utils.text.ILangEntry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,6 +21,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import javax.annotation.Nullable;
@@ -112,18 +116,30 @@ public class EMCDisplay {
         }
     }
 
-    public enum EmcDisplayPosition {
-        TOP_LEFT(true, true),
-        TOP_RIGHT(true, false),
-        BOTTOM_LEFT(false, true),
-        BOTTOM_RIGHT(false, false);
+    public enum EmcDisplayPosition implements TranslatableEnum, ILangEntry {
+        TOP_LEFT(Lang.Configuration.EMC_DISPLAY_POSITION_TOP_LEFT, true, true),
+        TOP_RIGHT(Lang.Configuration.EMC_DISPLAY_POSITION_TOP_RIGHT, true, false),
+        BOTTOM_LEFT(Lang.Configuration.EMC_DISPLAY_POSITION_BOTTOM_LEFT, false, true),
+        BOTTOM_RIGHT(Lang.Configuration.EMC_DISPLAY_POSITION_BOTTOM_RIGHT, false, false);
 
+        private final ILangEntry translation;
         private final boolean top;
         private final boolean left;
 
-        EmcDisplayPosition(boolean top, boolean left) {
+        EmcDisplayPosition(ILangEntry translation, boolean top, boolean left) {
+            this.translation = translation;
             this.top = top;
             this.left = left;
+        }
+
+        @Override
+        public Component getTranslatedName() {
+            return this.translation.translate();
+        }
+
+        @Override
+        public String getTranslationKey() {
+            return this.translation.getTranslationKey();
         }
 
         public boolean isTop() {

@@ -25,8 +25,8 @@
   "gui.projectexpansion.arcane_transmutation_tablet.search_type": "Search Type",
   "gui.projectexpansion.arcane_transmutation_tablet.search_type.normal": "Normal",
   "gui.projectexpansion.arcane_transmutation_tablet.search_type.autoselected": "Autoselected",
-  "gui.projectexpansion.arcane_transmutation_tablet.search_type.normal_jei": "Normal (JEI Sync)",
-  "gui.projectexpansion.arcane_transmutation_tablet.search_type.autoselected_jei": "Autoselected (JEI Sync)",
+  "gui.projectexpansion.arcane_transmutation_tablet.search_type.sync": "Sync",
+  "gui.projectexpansion.arcane_transmutation_tablet.search_type.autoselected_sync": "Autoselected Sync",
   "gui.projectexpansion.arcane_transmutation_tablet.clear": "Clear",
   "gui.projectexpansion.arcane_transmutation_tablet.clear.force": "Force!"
 }

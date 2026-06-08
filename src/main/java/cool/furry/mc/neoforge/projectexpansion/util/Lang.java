@@ -391,8 +391,8 @@ public enum Lang implements ILangEntry {
         ARCANE_TRANSMUTATION_TABLET_SEARCH_TYPE("arcane_transmutation_tablet", "search_type"),
         ARCANE_TRANSMUTATION_TABLET_SEARCH_TYPE_NORMAL("arcane_transmutation_tablet", "search_type", "normal"),
         ARCANE_TRANSMUTATION_TABLET_SEARCH_TYPE_AUTOSELECTED("arcane_transmutation_tablet", "search_type", "autoselected"),
-        ARCANE_TRANSMUTATION_TABLET_SEARCH_TYPE_NORMAL_JEI("arcane_transmutation_tablet", "search_type", "normal_jei"),
-        ARCANE_TRANSMUTATION_TABLET_SEARCH_TYPE_AUTOSELECTED_JEI("arcane_transmutation_tablet", "search_type", "autoselected_jei"),
+        ARCANE_TRANSMUTATION_TABLET_SEARCH_TYPE_SYNC("arcane_transmutation_tablet", "search_type", "sync"),
+        ARCANE_TRANSMUTATION_TABLET_SEARCH_TYPE_AUTOSELECTED_SYNC("arcane_transmutation_tablet", "search_type", "autoselected_sync"),
         ARCANE_TRANSMUTATION_TABLET_CLEAR("arcane_transmutation_tablet", "clear"),
         ARCANE_TRANSMUTATION_TABLET_CLEAR_FORCE("arcane_transmutation_tablet", "clear", "force"),
         ;
@@ -401,6 +401,48 @@ public enum Lang implements ILangEntry {
 
         GUI(String... path) {
             this.key = net.minecraft.Util.makeDescriptionId("gui", Main.rl(String.join(".", path)));
+        }
+
+        @Override
+        public String getTranslationKey() {
+            return key;
+        }
+
+        public MutableComponent extend(String extension, Object... args) {
+            String originalKey = this.key;
+            this.key += "." + extension;
+            MutableComponent component = translate(args);
+            this.key = originalKey;
+            return component;
+        }
+
+        public MutableComponent extendColored(String extension, ChatFormatting color, Object... args) {
+            String originalKey = this.key;
+            this.key += "." + extension;
+            MutableComponent component = translateColored(color, args);
+            this.key = originalKey;
+            return component;
+        }
+    }
+
+    public enum Configuration implements ILangEntry {
+        SEARCH_TYPE_NORMAL("search_type", "normal"),
+        SEARCH_TYPE_NORMAL_AUTOFOCUS("search_type", "normal_autofocus"),
+        SEARCH_TYPE_SYNC("search_type", "sync"),
+        SEARCH_TYPE_SYNC_AUTOFOCUS("search_type", "sync_autofocus"),
+        EMC_DISPLAY_POSITION_TOP_LEFT("emc_display_position", "top_left"),
+        EMC_DISPLAY_POSITION_TOP_RIGHT("emc_display_position", "top_right"),
+        EMC_DISPLAY_POSITION_BOTTOM_LEFT("emc_display_position", "bottom_left"),
+        EMC_DISPLAY_POSITION_BOTTOM_RIGHT("emc_display_position", "bottom_right"),
+        EDIT_OTHERS_ALCHEMICAL_BOOKS_DISABLED("edit_others_alchemical_books", "disabled"),
+        EDIT_OTHERS_ALCHEMICAL_BOOKS_OP_ONLY("edit_others_alchemical_books", "op_only"),
+        EDIT_OTHERS_ALCHEMICAL_BOOKS_ENABLED("edit_others_alchemical_books", "enabled"),
+        ;
+
+        private String key;
+
+        Configuration(String... path) {
+            this.key = net.minecraft.Util.makeDescriptionId("configuration", Main.rl(String.join(".", path)));
         }
 
         @Override

@@ -4,6 +4,10 @@
   "projectexpansion.configuration.fullNumberNames": "Full Number Names",
   "projectexpansion.configuration.emcDisplay": "EMC Display",
   "projectexpansion.configuration.emcDisplayPosition": "EMC Display Position",
+  "configuration.projectexpansion.emc_display_position.top_left": "Top Left",
+  "configuration.projectexpansion.emc_display_position.top_right": "Top Right",
+  "configuration.projectexpansion.emc_display_position.bottom_left": "Bottom Left",
+  "configuration.projectexpansion.emc_display_position.bottom_right": "Bottom Right",
   "projectexpansion.configuration.notifyCommandChanges": "Notify Command Changes",
   "projectexpansion.configuration.notifyKnowledgeBookGains": "Notify Knowledge Book Gains",
   "projectexpansion.configuration.limitEmcLinkVendor": "Limit EMC Link Vendor Output",
@@ -25,6 +29,14 @@
   "projectexpansion.configuration.zeroEmcFluidsAreFree": "Zero EMC Fluids are Free",
   "projectexpansion.configuration.enableCollectorOptimizations": "Enable Collector Optimizations",
   "projectexpansion.configuration.editOthersAlchemicalBooks": "Edit Others Alchemical Books",
+  "configuration.projectexpansion.edit_others_alchemical_books.disabled": "Disabled",
+  "configuration.projectexpansion.edit_others_alchemical_books.op_only": "OP Only",
+  "configuration.projectexpansion.edit_others_alchemical_books.enabled": "Enabled",
   "projectexpansion.configuration.compactSunBonus": "Compact Sun Bonus",
-  "projectexpansion.configuration.sunMultiplierPriceCompensation": "Sun Multiplier Price Compensation"
+  "projectexpansion.configuration.sunMultiplierPriceCompensation": "Sun Multiplier Price Compensation",
+  "projectexpansion.configuration.searchType": "Search Type",
+  "configuration.projectexpansion.search_type.normal": "Normal",
+  "configuration.projectexpansion.search_type.normal_autofocus": "Normal (Auto Focus)",
+  "configuration.projectexpansion.search_type.sync": "Sync",
+  "configuration.projectexpansion.search_type.sync_autofocus": "Sync (Auto Focus)"
 }

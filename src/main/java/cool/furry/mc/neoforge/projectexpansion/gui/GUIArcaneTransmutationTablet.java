@@ -5,7 +5,6 @@ import cool.furry.mc.neoforge.projectexpansion.Main;
 import cool.furry.mc.neoforge.projectexpansion.config.Config;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.ContainerArcaneTransmutationTablet;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.slots.PXOutputSlot;
-import cool.furry.mc.neoforge.projectexpansion.integrations.jei.JeiPlugin;
 import cool.furry.mc.neoforge.projectexpansion.net.packets.to_server.PacketArcaneTransmutationTabletSmallButton;
 import cool.furry.mc.neoforge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.neoforge.projectexpansion.util.Lang;
@@ -23,7 +22,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.lwjgl.glfw.GLFW;
 
@@ -45,13 +43,7 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
 
     private void updateFilter(String text) {
         inv.updateFilter(text);
-        if (Config.client.searchType.get().jeiSync && ModList.get().isLoaded("jei")) {
-            syncJEIText();
-        }
-    }
-
-    private void syncJEIText() {
-        JeiPlugin.RUNTIME.getIngredientFilter().setFilterText(textBoxFilter.getValue());
+        Config.client.searchType.get().sync(text);
     }
 
     private Button previous, next, rotate, balance, search, clear;
@@ -62,7 +54,7 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
         this.textBoxFilter = addWidget(new EditBox(this.font, leftPos + 7, topPos + 6, 162, 12, Component.empty()));
         textBoxFilter.setResponder(this::updateFilter);
 
-        if (Config.client.searchType.get().autoSelected) {
+        if (Config.client.searchType.get().autoFocus) {
             setFocused(textBoxFilter);
         }
 

@@ -2,10 +2,14 @@ package cool.furry.mc.neoforge.projectexpansion.config;
 
 import cool.furry.mc.neoforge.projectexpansion.Main;
 import cool.furry.mc.neoforge.projectexpansion.gui.EMCDisplay.EmcDisplayPosition;
+import cool.furry.mc.neoforge.projectexpansion.util.Lang;
 import cool.furry.mc.neoforge.projectexpansion.util.SearchType;
+import moze_intel.projecte.utils.text.ILangEntry;
+import net.minecraft.network.chat.Component;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.TranslatableEnum;
 
 public final class Config {
     public static final Client client = new Client();
@@ -55,9 +59,25 @@ public final class Config {
         modContainer.registerConfig(ModConfig.Type.SERVER, server.Spec, String.format("%s/server.toml", Main.MOD_ID));
     }
 
-    public enum AlchemicalBookEditLevel {
-        DISABLED,
-        OP_ONLY,
-        ENABLED
+    public enum AlchemicalBookEditLevel implements TranslatableEnum, ILangEntry {
+        DISABLED(Lang.Configuration.EDIT_OTHERS_ALCHEMICAL_BOOKS_DISABLED),
+        OP_ONLY(Lang.Configuration.EDIT_OTHERS_ALCHEMICAL_BOOKS_OP_ONLY),
+        ENABLED(Lang.Configuration.EDIT_OTHERS_ALCHEMICAL_BOOKS_ENABLED);
+
+        private final ILangEntry translation;
+
+        AlchemicalBookEditLevel(ILangEntry translation) {
+            this.translation = translation;
+        }
+
+        @Override
+        public Component getTranslatedName() {
+            return translation.translate();
+        }
+
+        @Override
+        public String getTranslationKey() {
+            return translation.getTranslationKey();
+        }
     }
 }
