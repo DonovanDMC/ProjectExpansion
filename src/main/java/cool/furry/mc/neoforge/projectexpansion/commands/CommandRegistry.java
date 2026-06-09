@@ -25,6 +25,7 @@ public class CommandRegistry {
                 .then(CommandDevTest.getArguments())
                 .then(CommandWiki.getArguments())
                 .then(CommandSetOwner.getArguments())
+                .then(CommandReloadEMC.getArguments())
         );
         dispatcher.register(Commands.literal("projectexpansion").redirect(baseNode));
         dispatcher.register(Commands.literal("pex").redirect(baseNode));

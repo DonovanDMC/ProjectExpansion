@@ -251,6 +251,12 @@ public enum Lang implements ILangEntry {
         SET_OWNER_SUCCESS("set_owner", "success"),
         SET_OWNER_FAILURE("set_owner", "failure"),
 
+        // reloademc
+        RELOADING_EMC("reloading_emc"),
+        RELOAD_NOTICE("reload", "notice"),
+        RELOAD_EMC_WARNING("reload_emc", "warning"),
+        RELOAD_EMC_SUCCESS("reload_emc", "success"),
+
         // Misc
         CONSOLE("console"),
         PLAYER_ONLY("player_only"),
