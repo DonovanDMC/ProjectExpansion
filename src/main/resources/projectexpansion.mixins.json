@@ -20,7 +20,10 @@
     "EnchantmentProcessorMixin",
     "PacketHandlerMixin",
     "PhilosophersStoneMixin",
+    "RemoveEMCCMDMixin",
+    "ResetEMCCMDMixin",
     "SearchUpdatePKTMixin",
+    "SetEmcCMDMixin",
     "ShutTheFuckUpMixin",
     "TomeMixin"
   ],

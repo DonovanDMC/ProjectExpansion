@@ -11,8 +11,16 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
+import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.config.CustomEMCParser;
+import moze_intel.projecte.emc.EMCMappingHandler;
+import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.network.packets.to_client.SyncEmcPKT;
+import moze_intel.projecte.network.packets.to_client.SyncFuelMapperPKT;
+import moze_intel.projecte.network.packets.to_client.SyncWorldTransmutations;
+import moze_intel.projecte.world_transmutation.WorldTransmutationManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
@@ -44,6 +52,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
@@ -445,5 +454,32 @@ public class Util {
 
     public static DataComponentTypes.OwnerData getOwner(ItemStack stack) {
         return stack.getOrDefault(DataComponentTypes.OWNER, new DataComponentTypes.OwnerData(Util.DUMMY_UUID, "None"));
+    }
+
+    public static long reloadEMC(MinecraftServer server) {
+        long start = System.currentTimeMillis();
+
+        AbstractNSSTag.clearCreatedTags();
+        CustomEMCParser.init(server.registryAccess());
+        EMCMappingHandler.map(
+                server.getServerResources().managers(),
+                server.registryAccess(),
+                server.getServerResources().resourceManager()
+        );
+
+        List<ServerPlayer> players = server.getPlayerList().getPlayers();
+        if (!players.isEmpty()) {
+            SyncEmcPKT emcPacket = SyncEmcPKT.serializeEmcData(players.getFirst().registryAccess());
+            SyncFuelMapperPKT fuelPacket = FuelMapper.getSyncPacket();
+            SyncWorldTransmutations transmutationPacket = WorldTransmutationManager.getSyncPacket();
+            for (ServerPlayer player : players) {
+                if (!player.connection.getConnection().isMemoryConnection()) {
+                    PacketDistributor.sendToPlayer(player, emcPacket, fuelPacket);
+                    PacketDistributor.sendToPlayer(player, transmutationPacket);
+                }
+            }
+        }
+
+        return System.currentTimeMillis() - start;
     }
 }
