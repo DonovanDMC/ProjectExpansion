@@ -190,10 +190,10 @@ public class BlockEntityCollector extends BlockEntityEMC implements IHasMatter, 
             if (hasChargeableItem) {
                 IItemEmcHolder emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
                 if (emcHolder != null) {
-                    BigInteger toAdd = getStoredEmcBigInteger().min(generated.toBigInteger());
+                    BigInteger toAdd = getStoredEmcBigInteger();
                     if (toAdd.compareTo(BigInteger.ZERO) < 1) return;
-                    BigInteger remaining = Util.stepBigInteger(toAdd, (val) -> emcHolder.insertEmc(upgrading, val, EmcAction.EXECUTE));
-                    BigInteger v = getStoredEmcBigInteger().subtract(remaining);
+                    BigInteger remaining = Util.stepBigInteger(toAdd, (val) -> val - emcHolder.insertEmc(upgrading, val, EmcAction.EXECUTE));
+                    BigInteger v = toAdd.subtract(remaining);
                     forceExtractEmcBigInteger(v, EmcAction.EXECUTE);
                 }
             } else if (hasFuel) {
@@ -222,8 +222,7 @@ public class BlockEntityCollector extends BlockEntityEMC implements IHasMatter, 
             } else {
                 BigInteger before = getStoredEmcBigInteger();
                 // Only send EMC when we are not upgrading fuel or charging an item
-                BigInteger toSend = getStoredEmcBigInteger().compareTo(generated.toBigInteger()) < 0 ? getStoredEmcBigInteger() : generated.toBigInteger();
-                sendToAllAcceptors(level, pos, toSend);
+                sendToAllAcceptors(level, pos, getStoredEmcBigInteger());
                 BigInteger after = getStoredEmcBigInteger();
                 sendRelayBonus(level, pos);
                 if (!before.equals(after)) markDirty(level, pos, true);
