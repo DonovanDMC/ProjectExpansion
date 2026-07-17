@@ -1,0 +1,23 @@
+{
+  "block.projectexpansion.collector": "收集器。",
+  "block.projectexpansion.collector.tooltip": "暴露在光照下时产生EMC。",
+  "block.projectexpansion.collector.emc": "最大产出EMC：%s/s",
+  "block.projectexpansion.collector.stack_emc": "堆叠产出EMC：%s/s",
+  "block.projectexpansion.collector.max_storage": "最大存储EMC：%s",
+  "block.projectexpansion.basic_collector": "基础收集器 [MK 1]",
+  "block.projectexpansion.dark_collector": "暗色收集器 [MK 2]",
+  "block.projectexpansion.red_collector": "红色收集器 [MK 3]",
+  "block.projectexpansion.magenta_collector": "品红色收集器 [MK 4]",
+  "block.projectexpansion.pink_collector": "粉红色收集器 [MK 5]",
+  "block.projectexpansion.purple_collector": "紫色收集器 [MK 6]",
+  "block.projectexpansion.violet_collector": "紫罗兰色收集器 [MK 7]",
+  "block.projectexpansion.blue_collector": "蓝色收集器 [MK 8]",
+  "block.projectexpansion.cyan_collector": "青色收集器 [MK 9]",
+  "block.projectexpansion.green_collector": "绿色收集器 [MK 10]",
+  "block.projectexpansion.lime_collector": "黄绿色收集器 [MK 11]",
+  "block.projectexpansion.yellow_collector": "黄色收集器 [MK 12]",
+  "block.projectexpansion.orange_collector": "橙色收集器 [MK 13]",
+  "block.projectexpansion.white_collector": "白色收集器 [MK 14]",
+  "block.projectexpansion.fading_collector": "褪色收集器 [MK 15]",
+  "block.projectexpansion.final_collector": "终极收集器 [MK 16]"
+}

@@ -1,0 +1,10 @@
+{
+  "block.projectexpansion.arcane_table": "奥秘之桌",
+  "block.projectexpansion.transmutation_interface": "转化接口",
+  "block.projectexpansion.transmutation_interface.tooltip": "可与兼容的模组（如应用能源）一起使用，访问你的转化物品栏。",
+  "block.projectexpansion.compact_sun": "压缩太阳",
+  "block.projectexpansion.compact_sun.tooltip": "将太阳的力量压缩在一个方块中。",
+  "block.projectexpansion.compact_sun.tooltip2": "当放置在某些方块的上方或下方时，将其产出乘以%s。",
+  "block.projectexpansion.condenser_mk3": "能量凝聚器MK3",
+  "block.projectexpansion.condenser_mk3.tooltip": "五合一凝聚器，每个面（除底面外）都是独立的凝聚器，拥有各自的输入、处理和锁定槽位。底面是所有其他面的输出口。"
+}
