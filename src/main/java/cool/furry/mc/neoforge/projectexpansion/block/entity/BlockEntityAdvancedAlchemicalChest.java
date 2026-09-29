@@ -29,7 +29,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable implements IChestLike, IHasColor, IItemHandler {
+public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable implements IChestLike, IHasColor {
 	public static final ICapabilityProvider<BlockEntityAdvancedAlchemicalChest, @Nullable Direction, IItemHandler> ITEM_HANDLER_CAPABILITY = (be, side) -> be.getBagItemHandler();
 	private final ChestLidController lidController = new ChestLidController();
 
@@ -214,41 +214,5 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 	@Override
 	public float getOpenNess(float partialTicks) {
 		return lidController.getOpenness(partialTicks);
-	}
-
-	@Override
-	public int getSlots() {
-		@Nullable IItemHandler bag = getBag();
-		return bag == null ? 0 : bag.getSlots();
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		@Nullable IItemHandler bag = getBag();
-		return bag == null ? ItemStack.EMPTY : bag.getStackInSlot(slot);
-	}
-
-	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		@Nullable IItemHandler bag = getBag();
-		return bag == null ? stack : bag.insertItem(slot, stack, simulate);
-	}
-
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		@Nullable IItemHandler bag = getBag();
-		return bag == null ? ItemStack.EMPTY : bag.extractItem(slot, amount, simulate);
-	}
-
-	@Override
-	public int getSlotLimit(int slot) {
-		@Nullable IItemHandler bag = getBag();
-		return bag == null ? 0 : bag.getSlotLimit(slot);
-	}
-
-	@Override
-	public boolean isItemValid(int slot, ItemStack stack) {
-		@Nullable IItemHandler bag = getBag();
-		return bag != null && bag.isItemValid(slot, stack);
 	}
 }
