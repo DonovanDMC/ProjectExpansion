@@ -52,6 +52,10 @@ abstract class SignJar extends Exec {
         }
 
         setCommandLine(scriptFile.get(), inputFile.get().asFile.name)
+        // jarsigner isn't always on PATH, fall back to the jdk gradle is running on
+        if (!environment.containsKey("JAVA_HOME")) {
+            environment("JAVA_HOME", System.getProperty("java.home"))
+        }
 
         super.exec()
     }

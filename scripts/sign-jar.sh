@@ -14,7 +14,7 @@ signJar() {
   fi
 
   echo "Signing $file"
-  jarsigner -keystore "$JAVA_SIGNING_STORE" -signedjar "signed/$file" -storepass "$JAVA_SIGNING_PASS" "$file" "$JAVA_SIGNING_ALIAS" > /dev/null 2>&1
+  "${JAVA_HOME:+$JAVA_HOME/bin/}jarsigner" -keystore "$JAVA_SIGNING_STORE" -signedjar "signed/$file" -storepass "$JAVA_SIGNING_PASS" "$file" "$JAVA_SIGNING_ALIAS" > /dev/null 2>&1
 }
 
 if [[ -n "$1" ]]; then
