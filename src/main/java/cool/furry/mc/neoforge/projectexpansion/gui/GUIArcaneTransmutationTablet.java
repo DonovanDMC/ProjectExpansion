@@ -19,6 +19,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -122,6 +123,11 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
         if (next != null) {
             next.active = inv.hasNextPage();
         }
+    }
+
+    // the crafting panel sits outside of the main gui bounds, so recipe viewers need to be told about it
+    public Rect2i getCraftingPanelArea() {
+        return new Rect2i(leftPos - 75, topPos + 10, 76, 89);
     }
 
     @Override
