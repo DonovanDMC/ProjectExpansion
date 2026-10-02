@@ -27,4 +27,5 @@ public class Items {
     public static final DeferredHolder<Item, ItemAlchemicalBook> ARCANE_ALCHEMICAL_BOOK = Registry.register("arcane_alchemical_book", () -> new ItemAlchemicalBook(ItemAlchemicalBook.Tier.ARCANE));
     public static final DeferredHolder<Item, BlockItem> CONDENSER_MK3 = Registry.register("condenser_mk3", () -> new BlockItem(Blocks.CONDENSER_MK3.get(), new Item.Properties().fireResistant()));
     public static final DeferredHolder<Item, ItemArcaneTransmutationTablet> ARCANE_TRANSMUTATION_TABLET = Registry.register("arcane_transmutation_tablet", ItemArcaneTransmutationTablet::new);
+    public static final DeferredHolder<Item, BlockItem> ARCANE_TRANSMUTATION_TABLE = Registry.register("arcane_transmutation_table", () -> new BlockItem(Blocks.ARCANE_TRANSMUTATION_TABLE.get(), new Item.Properties().rarity(Rarity.RARE).fireResistant()));
 }

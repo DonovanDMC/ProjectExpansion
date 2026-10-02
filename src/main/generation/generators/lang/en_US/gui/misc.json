@@ -11,6 +11,7 @@
   "gui.projectexpansion.alchemical_book.dimension": "Dimension: %s",
   "gui.projectexpansion.alchemical_book.cost": "Cost: %s",
   "gui.projectexpansion.alchemical_book.no_back_location": "No Back Location",
+  "gui.projectexpansion.arcane_transmutation_table": "Arcane Transmutation Table",
   "gui.projectexpansion.arcane_transmutation_tablet": "Arcane Transmutation Tablet",
   "gui.projectexpansion.arcane_transmutation_tablet.lock": "Lock",
   "gui.projectexpansion.arcane_transmutation_tablet.consume": "Consume",

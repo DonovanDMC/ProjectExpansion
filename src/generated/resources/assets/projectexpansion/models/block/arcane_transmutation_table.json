@@ -1,10 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "bottom": "projectexpansion:block/arcane_table/bottom",
-    "top": "projectexpansion:block/arcane_table/top",
-    "side": "projectexpansion:block/arcane_table/side",
-    "particle": "projectexpansion:block/arcane_table/top"
+    "bottom": "projectexpansion:block/arcane_transmutation_table/bottom",
+    "top": "projectexpansion:block/arcane_transmutation_table/top",
+    "side": "projectexpansion:block/arcane_transmutation_table/side",
+    "particle": "projectexpansion:block/arcane_transmutation_table/top"
   },
   "elements": [
     {

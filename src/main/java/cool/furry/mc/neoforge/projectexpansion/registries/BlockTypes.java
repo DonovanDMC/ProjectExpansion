@@ -26,6 +26,7 @@ public class BlockTypes {
     public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockRelay>> RELAY = registerMatter("relay", BlockRelay::new);
     public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockMatter>> MATTER_BLOCK = registerMatter("matter_block", BlockMatter::new);
     public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockCondenserMK3>> CONDENSER_MK3 = Registry.register("condenser_mk3", () -> BlockBehaviour.simpleCodec(BlockCondenserMK3::new));
+    public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockArcaneTransmutationTable>> ARCANE_TRANSMUTATION_TABLE = Registry.register("arcane_transmutation_table", () -> BlockBehaviour.simpleCodec(BlockArcaneTransmutationTable::new));
 
     public static <T extends Block & IHasMatter> DeferredHolder<MapCodec<? extends Block>, MapCodec<T>> registerMatter(String name, BiFunction<BlockBehaviour.Properties, Matter, T> block) {
         return Registry.register(name, () -> RecordCodecBuilder.mapCodec(instance -> instance.group(

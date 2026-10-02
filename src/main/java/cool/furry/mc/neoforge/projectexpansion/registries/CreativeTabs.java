@@ -37,6 +37,7 @@ public class CreativeTabs {
                         output.accept(Items.COMPACT_SUN.get());
                         output.accept(Items.CONDENSER_MK3.get());
                         output.accept(Items.ARCANE_TRANSMUTATION_TABLET.get());
+                        output.accept(Items.ARCANE_TRANSMUTATION_TABLE.get());
                     })
                     .build()
     );

@@ -164,5 +164,7 @@
   "advancements.projectexpansion.condenser_mk3": "Condensed Condensers?",
   "advancements.projectexpansion.condenser_mk3.description": "Obtain a Mark 3 Energy Condenser.",
   "advancements.projectexpansion.arcane_transmutation_tablet": "Arcane Transmutation Tablet",
-  "advancements.projectexpansion.arcane_transmutation_tablet.description": "Crafting included!"
+  "advancements.projectexpansion.arcane_transmutation_tablet.description": "Crafting included!",
+  "advancements.projectexpansion.arcane_transmutation_table": "Arcane Transmutation Table",
+  "advancements.projectexpansion.arcane_transmutation_table.description": "Crafting included, now in table form!"
 }

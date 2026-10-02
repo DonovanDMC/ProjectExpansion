@@ -1,5 +1,6 @@
 {
-  "block.projectexpansion.arcane_table": "Arcane Table",
+  "block.projectexpansion.arcane_transmutation_table": "Arcane Transmutation Table",
+  "block.projectexpansion.arcane_transmutation_table.tooltip": "An upgraded transmutation table with a built in crafting table.",
   "block.projectexpansion.transmutation_interface": "Transmutation Interface",
   "block.projectexpansion.transmutation_interface.tooltip": "This can be used with compatible mods like Applied Energistics to access your transmutation inventory.",
   "block.projectexpansion.compact_sun": "Compact Sun",

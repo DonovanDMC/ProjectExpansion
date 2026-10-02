@@ -124,6 +124,7 @@ public enum Lang implements ILangEntry {
         COMPACT_SUN_TOOLTIP("compact_sun", "tooltip"),
         COMPACT_SUN_TOOLTIP2("compact_sun", "tooltip2"),
         CONDENSER_MK3_TOOLTIP2("condenser_mk3", "tooltip"),
+        ARCANE_TRANSMUTATION_TABLE_TOOLTIP("arcane_transmutation_table", "tooltip"),
 
         BASIC_COLLECTOR("basic_collector"),
         DARK_COLLECTOR("dark_collector"),
@@ -383,6 +384,7 @@ public enum Lang implements ILangEntry {
         ALCHEMICAL_BOOK_NO_BACK_LOCATION("alchemical_book", "no_back_location"),
 
         // Arcane Transmutation Tablet
+        ARCANE_TRANSMUTATION_TABLE("arcane_transmutation_table"),
         ARCANE_TRANSMUTATION_TABLET("arcane_transmutation_tablet"),
         ARCANE_TRANSMUTATION_TABLET_LOCK("arcane_transmutation_tablet", "lock"),
         ARCANE_TRANSMUTATION_TABLET_CONSUME("arcane_transmutation_tablet", "consume"),
