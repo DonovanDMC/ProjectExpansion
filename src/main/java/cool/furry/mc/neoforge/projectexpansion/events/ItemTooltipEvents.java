@@ -4,6 +4,7 @@ import cool.furry.mc.neoforge.projectexpansion.Main;
 import cool.furry.mc.neoforge.projectexpansion.config.Config;
 import cool.furry.mc.neoforge.projectexpansion.registries.Enchantments;
 import cool.furry.mc.neoforge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.neoforge.projectexpansion.util.EmcLock;
 import cool.furry.mc.neoforge.projectexpansion.util.Lang;
 import cool.furry.mc.neoforge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -85,6 +86,10 @@ public class ItemTooltipEvents {
         if(hasEnch) {
             boolean enabled = stack.getOrDefault(PEDataComponentTypes.ACTIVE, true);
             event.getToolTip().add(Lang.ALCHEMICAL_COLLECTION.translate(enabled ? Lang.ENABLED.translateColored(ChatFormatting.GREEN) : Lang.DISABLED.translateColored(ChatFormatting.RED)));
+        }
+
+        if (EmcLock.isLocked(stack)) {
+            event.getToolTip().add(Lang.EMC_LOCKED.translateColored(ChatFormatting.RED));
         }
 
     }

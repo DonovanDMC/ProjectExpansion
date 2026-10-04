@@ -4,6 +4,7 @@ import com.mojang.serialization.DataResult;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.ContainerCondenserMK3Input;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.ContainerCondenserMK3Output;
 import cool.furry.mc.neoforge.projectexpansion.registries.BlockEntityTypes;
+import cool.furry.mc.neoforge.projectexpansion.util.EmcLock;
 import cool.furry.mc.neoforge.projectexpansion.util.IChestLike;
 import cool.furry.mc.neoforge.projectexpansion.util.TagNames;
 import cool.furry.mc.neoforge.projectexpansion.util.Util;
@@ -321,7 +322,7 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
             return new WrappedItemHandler(inventory, WrappedItemHandler.WriteMode.IN) {
                 @Override
                 public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                    return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insertItem(slot, stack, simulate) : stack;
+                    return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) && !EmcLock.isLocked(stack) ? super.insertItem(slot, stack, simulate) : stack;
                 }
             };
         }

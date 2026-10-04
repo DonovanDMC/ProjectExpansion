@@ -112,6 +112,9 @@ neoForge {
             // "REGISTRYDUMP": For getting the contents of all registries.
             systemProperty 'forge.logging.markers', 'REGISTRIES'
 
+            // makes optional (require = 0) injections still fail in dev if they don't apply
+            systemProperty 'mixin.debug.countInjections', 'true'
+
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels

@@ -33,6 +33,7 @@
   "text.projectexpansion.fluid_export_limit": "Fluid Export Limit: %s/%s",
   "text.projectexpansion.fluid_export_efficiency": "Fluid Export Efficiency: %s",
   "text.projectexpansion.owner": "Owner: %s",
+  "text.projectexpansion.emc_locked": "EMC Locked",
   "death.attack.walk_on_sun": "%s tried to walk on the sun",
   "death.attack.walk_on_sun.player": "%s tried to walk on the sun whilst fighting %s",
   "death.attack.stare_at_sun": "%s decided staring at the sun was a good idea",
@@ -40,5 +41,6 @@
   "config.jade.plugin_projectexpansion.provider": "Project Expansion Provider",
   "attribute.projectexpansion.sun_exposure_protection": "Sun Exposure Protection",
   "curios.identifier.transmutation_tablet": "Transmutation Tablet",
-  "key.projecte.curios.open_transmutation_tablet": "Open Transmutation Tablet"
+  "key.projecte.curios.open_transmutation_tablet": "Open Transmutation Tablet",
+  "key.projectexpansion.toggle_emc_lock": "Toggle EMC Lock (Hold + Click)"
 }

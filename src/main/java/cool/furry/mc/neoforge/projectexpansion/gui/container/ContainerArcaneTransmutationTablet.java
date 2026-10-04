@@ -11,6 +11,7 @@ import cool.furry.mc.neoforge.projectexpansion.gui.container.slots.PXResultSlot;
 import cool.furry.mc.neoforge.projectexpansion.net.packets.to_server.PacketArcaneTransmutationTabletSmallButton;
 import cool.furry.mc.neoforge.projectexpansion.registries.MenuTypes;
 import cool.furry.mc.neoforge.projectexpansion.util.ContainerData;
+import cool.furry.mc.neoforge.projectexpansion.util.EmcLock;
 import cool.furry.mc.neoforge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -262,6 +263,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             }
         } else if (slotIndex >= (OUTPUT + OUTPUT_COUNT) && slotIndex < CRAFTING) {
             ItemStack slotStack = currentSlot.getItem();
+            if (EmcLock.isLocked(slotStack)) return ItemStack.EMPTY;
             ItemStack stackToInsert = slotStack;
             if (stackToInsert.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY) != null) {
                 //We are in the main inventory or the hot bar and are handling an item that can store EMC

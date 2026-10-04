@@ -4,6 +4,7 @@ import cool.furry.mc.neoforge.projectexpansion.block.BlockEMCLink;
 import cool.furry.mc.neoforge.projectexpansion.config.Config;
 import cool.furry.mc.neoforge.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.neoforge.projectexpansion.util.*;
+import cool.furry.mc.neoforge.projectexpansion.util.EmcLock;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -378,7 +379,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return IEMCProxy.INSTANCE.hasValue(stack);
+            return IEMCProxy.INSTANCE.hasValue(stack) && !EmcLock.isLocked(stack);
         }
     }
 

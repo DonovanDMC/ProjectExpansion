@@ -38,6 +38,7 @@ public enum Lang implements ILangEntry {
     FLUID_EXPORT_EFFICIENCY("text", "fluid_export_efficiency"),
     EMC_LIMIT("text", "emc_limit"),
     OWNER("text", "owner"),
+    EMC_LOCKED("text", "emc_locked"),
 
     // Enchantments
     ENCHANTMENT_ALCHEMICAL_COLLECTION("enchantment", "alchemical_collection"),

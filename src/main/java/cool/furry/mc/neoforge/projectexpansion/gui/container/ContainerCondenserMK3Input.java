@@ -3,6 +3,7 @@ package cool.furry.mc.neoforge.projectexpansion.gui.container;
 import cool.furry.mc.neoforge.projectexpansion.block.entity.BlockEntityCondenserMK3;
 import cool.furry.mc.neoforge.projectexpansion.net.packets.to_client.PacketUpdateCondenserLock;
 import cool.furry.mc.neoforge.projectexpansion.registries.MenuTypes;
+import cool.furry.mc.neoforge.projectexpansion.util.EmcLock;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.gameObjs.container.PEContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
@@ -61,7 +62,7 @@ public class ContainerCondenserMK3Input extends ContainerBase {
 
     protected void initSlots() {
         this.addSlot(new SlotCondenserLock(handler::getLockInfo, 0, 12, 6));
-        Predicate<ItemStack> validator = s -> SlotPredicates.HAS_EMC.test(s) && !handler.isStackEqualToLock(s);
+        Predicate<ItemStack> validator = s -> SlotPredicates.HAS_EMC.test(s) && !handler.isStackEqualToLock(s) && !EmcLock.isLocked(s);
         IItemHandler inventory = handler.getInventory();
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 13; j++) {

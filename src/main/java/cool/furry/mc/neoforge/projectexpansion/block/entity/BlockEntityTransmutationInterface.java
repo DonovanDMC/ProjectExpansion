@@ -2,6 +2,7 @@ package cool.furry.mc.neoforge.projectexpansion.block.entity;
 
 import cool.furry.mc.neoforge.projectexpansion.config.Config;
 import cool.furry.mc.neoforge.projectexpansion.registries.BlockEntityTypes;
+import cool.furry.mc.neoforge.projectexpansion.util.EmcLock;
 import cool.furry.mc.neoforge.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -152,7 +153,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return slot == 0 && IEMCProxy.INSTANCE.hasValue(stack);
+            return slot == 0 && IEMCProxy.INSTANCE.hasValue(stack) && !EmcLock.isLocked(stack);
         }
     }
 
