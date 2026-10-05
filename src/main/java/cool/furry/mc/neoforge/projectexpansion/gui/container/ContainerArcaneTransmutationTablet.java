@@ -16,7 +16,6 @@ import cool.furry.mc.neoforge.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.proxy.IEMCProxy;
-import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.container.PEHandContainer;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.*;
@@ -153,18 +152,13 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             for (ItemStack stack : this.craftSlots.getItems()) {
                 player.drop(stack, false);
             }
-            for (int i = 0; i < this.resultSlots.getContainerSize(); i++) {
-                player.drop(this.resultSlots.getItem(i), false);
-            }
         } else {
             Util.returnToInventoryOrTransmutation(playerInv, player, provider, unlearn.getItem(), false, true);
             for (ItemStack stack : this.craftSlots.getItems()) {
                 Util.returnToInventoryOrTransmutation(playerInv, player, provider, stack, false, true);
             }
-            for (int i = 0; i < this.resultSlots.getContainerSize(); i++) {
-                Util.returnToInventoryOrTransmutation(playerInv, player, provider, this.resultSlots.getItem(i), false, true);
-            }
         }
+        // the result slot is only a preview of the recipe output, so it isn't returned
     }
 
     @Override
@@ -332,8 +326,8 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             }
 
             result.setItem(0, stack);
-            menu.setRemoteSlot(0, stack);
-            serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(menu.containerId, menu.incrementStateId(), 0, stack));
+            menu.setRemoteSlot(RESULT, stack);
+            serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(menu.containerId, menu.incrementStateId(), RESULT, stack));
         }
     }
 
@@ -398,6 +392,9 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             ItemStack fixedp = Util.cleanStack(possibility);
             for (int j = 0; j < playerInv.getContainerSize(); ++j) {
                 ItemStack stack = playerInv.getItem(j);
+                if (EmcLock.isLocked(stack)) continue;
+                // items with extra data (enchantments, damage, names, etc.) are only pulled if the recipe asks for exactly that
+                if (!stack.isComponentsPatchEmpty() && !ItemStack.isSameItemSameComponents(possibility, stack)) continue;
                 if (Util.areStacksEqual(player.registryAccess(), fixedp, Util.cleanStack(stack))) {
                     ItemStack slotItem = craftSlots.getItem(i);
 
@@ -445,7 +442,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             ItemStack stack = craftSlots.getItem(i);
             if (stack.isEmpty()) continue;
 
-            if (ProjectEConfig.server.difficulty.covalenceLoss.get() >= 1D && IEMCProxy.INSTANCE.hasValue(stack)) {
+            if (Util.canConvertWithoutLoss(stack)) {
                 Util.AddKnowledgeResult result = Util.addKnowledge(player, provider, stack);
 
                 if (!result.fail()) {

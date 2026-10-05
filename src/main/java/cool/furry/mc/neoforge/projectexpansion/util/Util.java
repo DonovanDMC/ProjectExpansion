@@ -14,6 +14,7 @@ import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.config.CustomEMCParser;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -400,11 +401,16 @@ public class Util {
         return returnToInventoryOrTransmutation(playerInv, player, provider, stack, ignoreNBT, false);
     }
 
+    // converting items back at full value is only fair when there's no covalence loss, otherwise it beats burning them normally
+    public static boolean canConvertWithoutLoss(ItemStack stack) {
+        return ProjectEConfig.server.difficulty.covalenceLoss.get() >= 1D && IEMCProxy.INSTANCE.hasValue(stack) && !EmcLock.isLocked(stack);
+    }
+
     public static ItemStack returnToInventoryOrTransmutation(Inventory playerInv, Player player, IKnowledgeProvider provider, ItemStack stack, boolean ignoreNBT, boolean force) {
-        if (!IEMCProxy.INSTANCE.hasValue(stack) || (!ignoreNBT && !areStacksEqual(player.registryAccess(), stack, cleanStack(stack)))) return returnToInventory(playerInv, player, stack, force);
+        if (!canConvertWithoutLoss(stack) || (!ignoreNBT && !areStacksEqual(player.registryAccess(), stack, cleanStack(stack)))) return returnToInventory(playerInv, player, stack, force);
         addKnowledge(player, provider, stack);
         long value = IEMCProxy.INSTANCE.getValue(stack);
-        BigInteger emc = provider.getEmc().add(BigInteger.valueOf(value));
+        BigInteger emc = provider.getEmc().add(BigInteger.valueOf(value).multiply(BigInteger.valueOf(stack.getCount())));
         provider.setEmc(emc);
         if (player instanceof ServerPlayer serverPlayer) provider.syncEmc(serverPlayer);
         return ItemStack.EMPTY;

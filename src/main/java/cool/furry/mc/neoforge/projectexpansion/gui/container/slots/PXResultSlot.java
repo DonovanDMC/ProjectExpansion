@@ -53,12 +53,12 @@ public class PXResultSlot extends ResultSlot {
         for (int i = 0; i < currentItems.size(); i++) {
             ItemStack stack = currentItems.get(i);
             // if empty or same as was originally present, skip
-            if (stack.isEmpty() || items.get(i).equals(stack)) continue;
+            if (stack.isEmpty() || ItemStack.isSameItemSameComponents(items.get(i), stack)) continue;
             // if it has a value, move to tablet
-            if (IEMCProxy.INSTANCE.hasValue(stack)) {
+            if (Util.canConvertWithoutLoss(stack)) {
                 tablet.transmutationInventory.handleKnowledge(stack);
                 long value = IEMCProxy.INSTANCE.getValue(stack);
-                tablet.transmutationInventory.addEmc(BigInteger.valueOf(value));
+                tablet.transmutationInventory.addEmc(BigInteger.valueOf(value).multiply(BigInteger.valueOf(stack.getCount())));
                 currentItems.set(i, ItemStack.EMPTY);
                 craftSlots.setItem(i, ItemStack.EMPTY);
                 continue;
