@@ -11,13 +11,16 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.Widget;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ArcaneCraftingTransferHandler implements StandardRecipeHandler<ContainerArcaneTransmutationTablet> {
     private static final int PLAYER = 27;
@@ -84,7 +87,8 @@ public class ArcaneCraftingTransferHandler implements StandardRecipeHandler<Cont
         }
 
         boolean transferAll = context.getDestination() == EmiCraftContext.Destination.INVENTORY;
-        PacketDistributor.sendToServer(new PacketArcaneTransmutationTabletRecipeTransfer(itemStacks, transferAll));
+        Optional<ResourceLocation> recipeId = Optional.ofNullable(recipe.getBackingRecipe()).map(RecipeHolder::id);
+        PacketDistributor.sendToServer(new PacketArcaneTransmutationTabletRecipeTransfer(itemStacks, transferAll, recipeId));
         return true;
     }
 }

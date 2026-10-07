@@ -5,6 +5,7 @@ import cool.furry.mc.neoforge.projectexpansion.Main;
 import cool.furry.mc.neoforge.projectexpansion.config.Config;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.ContainerArcaneTransmutationTablet;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.slots.PXOutputSlot;
+import cool.furry.mc.neoforge.projectexpansion.net.packets.to_server.PacketArcaneTransmutationTabletSelectRecipe;
 import cool.furry.mc.neoforge.projectexpansion.net.packets.to_server.PacketArcaneTransmutationTabletSmallButton;
 import cool.furry.mc.neoforge.projectexpansion.util.EMCFormat;
 import cool.furry.mc.neoforge.projectexpansion.util.Lang;
@@ -18,22 +19,44 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArcaneTransmutationTablet> {
     public static final ResourceLocation texture = Main.rl("textures/gui/arcane_transmutation_tablet.png");
     // public static final ResourceLocation texture = Main.rl("textures/gui/arcane_transmutation_tablet_layout.png");
 
+    private static final int PICKER_COLUMNS = 4;
+    private static final int PICKER_ROWS = 3;
+
     private final TransmutationInventory inv;
     private EditBox textBoxFilter;
+    // shown under the crafting panel when the grid matches recipes with different outputs
+    private List<RecipeOption> recipeOptions = List.of();
+    private List<ItemStack> lastCraftingItems = List.of();
+    private int lastCraftingWidth = 0;
+    private int recipeScroll = 0;
+
+    private record RecipeOption(ResourceLocation id, ItemStack result) {}
 
     public GUIArcaneTransmutationTablet(ContainerArcaneTransmutationTablet container, Inventory invPlayer, Component title) {
         super(container, invPlayer, title);
@@ -98,6 +121,11 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!recipeOptions.isEmpty() && getPickerArea().contains((int) mouseX, (int) mouseY)) {
+            int maxScroll = Math.max(0, (recipeOptions.size() + PICKER_COLUMNS - 1) / PICKER_COLUMNS - PICKER_ROWS);
+            recipeScroll = Mth.clamp(recipeScroll - (int) Math.signum(scrollY), 0, maxScroll);
+            return true;
+        }
         if (scrollY < 0 && inv.hasNextPage()) inv.nextPage();
         if (scrollY > 0 && inv.hasPreviousPage()) inv.previousPage();
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
@@ -114,6 +142,72 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
     protected void containerTick() {
         super.containerTick();
         updateButtons();
+        updateRecipeOptions();
+    }
+
+    private void updateRecipeOptions() {
+        CraftingInput input = menu.getCraftingInput();
+        if (input.width() == lastCraftingWidth && ItemStack.listMatches(input.items(), lastCraftingItems)) return;
+        lastCraftingItems = input.items().stream().map(ItemStack::copy).toList();
+        lastCraftingWidth = input.width();
+
+        RegistryAccess registryAccess = menu.getPlayer().registryAccess();
+        List<RecipeOption> options = new ArrayList<>();
+        for (RecipeHolder<CraftingRecipe> recipe : menu.getMatchingRecipes()) {
+            ItemStack result = recipe.value().assemble(input, registryAccess);
+            // recipes with the same output aren't worth choosing between
+            if (result.isEmpty() || options.stream().anyMatch(option -> ItemStack.matches(option.result(), result))) continue;
+            options.add(new RecipeOption(recipe.id(), result));
+        }
+        recipeOptions = options.size() > 1 ? options : List.of();
+        recipeScroll = 0;
+    }
+
+    private int getPickerRows() {
+        return Math.min(PICKER_ROWS, (recipeOptions.size() + PICKER_COLUMNS - 1) / PICKER_COLUMNS);
+    }
+
+    private Rect2i getPickerArea() {
+        return new Rect2i(leftPos - 75, topPos + 100, 76, getPickerRows() * 18 + 4);
+    }
+
+    @Nullable
+    private RecipeOption getHoveredOption(double mouseX, double mouseY) {
+        if (recipeOptions.isEmpty()) return null;
+        Rect2i area = getPickerArea();
+        int column = Mth.floor((mouseX - area.getX() - 2) / 18);
+        int row = Mth.floor((mouseY - area.getY() - 2) / 18);
+        if (column < 0 || column >= PICKER_COLUMNS || row < 0 || row >= getPickerRows()) return null;
+        int index = (row + recipeScroll) * PICKER_COLUMNS + column;
+        return index < recipeOptions.size() ? recipeOptions.get(index) : null;
+    }
+
+    private void renderRecipePicker(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (recipeOptions.isEmpty()) return;
+        Rect2i area = getPickerArea();
+        int x = area.getX(), y = area.getY(), width = area.getWidth(), height = area.getHeight();
+        // colors are taken from the crafting panel's texture so they match
+        graphics.fill(x, y, x + width, y + height, 0xFF0B0B0B);
+        graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, 0xFF313131);
+        graphics.fill(x + 1, y + 1, x + width - 2, y + height - 2, 0xFF7C7C7C);
+        graphics.fill(x + 2, y + 2, x + width - 2, y + height - 2, 0xFF5A5A5A);
+
+        ItemStack current = menu.getResultItem();
+        RecipeOption hovered = getHoveredOption(mouseX, mouseY);
+        for (int i = 0; i < getPickerRows() * PICKER_COLUMNS; i++) {
+            int index = i + recipeScroll * PICKER_COLUMNS;
+            if (index >= recipeOptions.size()) break;
+            RecipeOption option = recipeOptions.get(index);
+            int slotX = x + 2 + (i % PICKER_COLUMNS) * 18;
+            int slotY = y + 2 + (i / PICKER_COLUMNS) * 18;
+            graphics.fill(slotX, slotY, slotX + 18, slotY + 18, 0xFF212121);
+            graphics.fill(slotX + 1, slotY + 1, slotX + 18, slotY + 18, 0xFF7C7C7C);
+            graphics.fill(slotX + 1, slotY + 1, slotX + 17, slotY + 17, 0xFF4E4E4E);
+            graphics.renderItem(option.result(), slotX + 1, slotY + 1);
+            graphics.renderItemDecorations(font, option.result(), slotX + 1, slotY + 1);
+            if (ItemStack.matches(option.result(), current)) graphics.renderOutline(slotX, slotY, 18, 18, 0xFFFFFFFF);
+            if (option == hovered) renderSlotHighlight(graphics, slotX + 1, slotY + 1, 0);
+        }
     }
 
     private void updateButtons() {
@@ -125,9 +219,21 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
         }
     }
 
-    // the crafting panel sits outside of the main gui bounds, so recipe viewers need to be told about it
-    public Rect2i getCraftingPanelArea() {
-        return new Rect2i(leftPos - 75, topPos + 10, 76, 89);
+    // the crafting panel and recipe picker sit outside of the main gui bounds, so recipe viewers need to be told about them
+    public List<Rect2i> getExtraAreas() {
+        List<Rect2i> areas = new ArrayList<>();
+        areas.add(new Rect2i(leftPos - 75, topPos + 10, 76, 89));
+        if (!recipeOptions.isEmpty()) areas.add(getPickerArea());
+        return areas;
+    }
+
+    @Override
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop, int mouseButton) {
+        // clicking the crafting panel or recipe picker shouldn't drop the held item
+        for (Rect2i area : getExtraAreas()) {
+            if (area.contains((int) mouseX, (int) mouseY)) return false;
+        }
+        return super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton);
     }
 
     @Override
@@ -150,6 +256,8 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
         if (Screen.hasShiftDown()) { // make the clear box red when hovering and holding shift
             renderIfHovered(graphics, mouseX, mouseY, clear, 234, 10);
         }
+
+        renderRecipePicker(graphics, mouseX, mouseY);
     }
 
     private void renderIfHovered(GuiGraphics graphics, int mouseX, int mouseY, Button button, int uOffset, int vOffset) {
@@ -206,6 +314,12 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
 
     @Override
     public boolean mouseClicked(double x, double y, int mouseButton) {
+        RecipeOption option = getHoveredOption(x, y);
+        if (option != null && mouseButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            PacketDistributor.sendToServer(new PacketArcaneTransmutationTabletSelectRecipe(option.id()));
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            return true;
+        }
         if (textBoxFilter.isMouseOver(x, y)) {
             if (mouseButton == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
                 //Note: Clearing filter will be handled by the text box's responder
@@ -230,6 +344,12 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
     protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
         if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
             super.renderTooltip(graphics, mouseX, mouseY);
+            return;
+        }
+
+        RecipeOption option = getHoveredOption(mouseX, mouseY);
+        if (option != null) {
+            graphics.renderTooltip(font, option.result(), mouseX, mouseY);
             return;
         }
 

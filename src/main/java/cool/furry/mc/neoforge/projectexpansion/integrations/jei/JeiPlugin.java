@@ -32,7 +32,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addGuiContainerHandler(GUIArcaneTransmutationTablet.class, new IGuiContainerHandler<>() {
             @Override
             public List<Rect2i> getGuiExtraAreas(GUIArcaneTransmutationTablet screen) {
-                return List.of(screen.getCraftingPanelArea());
+                return screen.getExtraAreas();
             }
         });
     }

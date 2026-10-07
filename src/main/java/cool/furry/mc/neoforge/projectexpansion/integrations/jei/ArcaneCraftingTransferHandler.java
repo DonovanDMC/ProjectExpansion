@@ -86,7 +86,7 @@ public class ArcaneCraftingTransferHandler implements IRecipeTransferHandler<Con
                 }
             }
 
-            PacketDistributor.sendToServer(new PacketArcaneTransmutationTabletRecipeTransfer(itemStack, transferAll));
+            PacketDistributor.sendToServer(new PacketArcaneTransmutationTabletRecipeTransfer(itemStack, transferAll, Optional.of(recipe.id())));
             return null;
         } else {
             List<Integer> missing = this.findMissingSlots(iRecipeSlotsView, container, player);

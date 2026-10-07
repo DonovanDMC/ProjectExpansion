@@ -3,12 +3,15 @@ package cool.furry.mc.neoforge.projectexpansion.gui.container.slots;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.ContainerArcaneTransmutationTablet;
 import cool.furry.mc.neoforge.projectexpansion.util.Util;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.neoforged.neoforge.common.CommonHooks;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -30,8 +33,43 @@ public class PXResultSlot extends ResultSlot {
     public void onTake(Player player, ItemStack stack) {
         learnResult(stack);
         List<ItemStack> previousItems = craftSlots.getItems().stream().map(ItemStack::copy).collect(Collectors.toCollection(ArrayList::new));
-        super.onTake(player, stack);
+        takeIngredients(player, stack);
         refillAfterTake(previousItems);
+    }
+
+    // same as ResultSlot#onTake, but the leftovers come from the recipe that was used instead of the first one that matches
+    private void takeIngredients(Player player, ItemStack stack) {
+        checkTakeAchievements(stack);
+        CraftingInput.Positioned positioned = craftSlots.asPositionedCraftInput();
+        CraftingInput input = positioned.input();
+        int left = positioned.left();
+        int top = positioned.top();
+        CommonHooks.setCraftingPlayer(player);
+        NonNullList<ItemStack> remaining = tablet.getRemainingItems(input);
+        CommonHooks.setCraftingPlayer(null);
+
+        for (int y = 0; y < input.height(); y++) {
+            for (int x = 0; x < input.width(); x++) {
+                int slot = x + left + (y + top) * craftSlots.getWidth();
+                ItemStack current = craftSlots.getItem(slot);
+                ItemStack leftover = remaining.get(x + y * input.width());
+                if (!current.isEmpty()) {
+                    craftSlots.removeItem(slot, 1);
+                    current = craftSlots.getItem(slot);
+                }
+
+                if (!leftover.isEmpty()) {
+                    if (current.isEmpty()) {
+                        craftSlots.setItem(slot, leftover);
+                    } else if (ItemStack.isSameItemSameComponents(current, leftover)) {
+                        leftover.grow(current.getCount());
+                        craftSlots.setItem(slot, leftover);
+                    } else if (!this.player.getInventory().add(leftover)) {
+                        this.player.drop(leftover, false);
+                    }
+                }
+            }
+        }
     }
 
     @Override

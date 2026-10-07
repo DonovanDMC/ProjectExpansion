@@ -23,10 +23,12 @@ import moze_intel.projecte.gameObjs.items.Tome;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeRegistryObject;
 import moze_intel.projecte.network.packets.to_server.SearchUpdatePKT;
 import moze_intel.projecte.utils.ItemHelper;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -37,6 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -72,6 +75,9 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
     private final IKnowledgeProvider provider;
     public boolean isCrafting = false;
     public boolean skipRefill = false;
+    // the recipe the player picked when more than one matches, only used on the server
+    @Nullable private ResourceLocation selectedRecipe;
+    @Nullable private RecipeHolder<CraftingRecipe> currentRecipe;
 
     public static ContainerArcaneTransmutationTablet fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf buf) {
         @Nullable IKnowledgeProvider provider = playerInv.player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
@@ -317,11 +323,18 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             RegistryAccess registryAccess = level.registryAccess();
             ServerPlayer serverPlayer = (ServerPlayer) player;
             ItemStack stack = ItemStack.EMPTY;
-            Optional<RecipeHolder<CraftingRecipe>> optional = (Objects.requireNonNull(level.getServer())).getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
+            RecipeManager recipeManager = Objects.requireNonNull(level.getServer()).getRecipeManager();
+            // use the selected recipe if it still matches, otherwise whatever vanilla would pick
+            Optional<RecipeHolder<CraftingRecipe>> optional = recipeManager.getRecipesFor(RecipeType.CRAFTING, input, level).stream()
+                    .filter(recipe -> recipe.id().equals(menu.selectedRecipe))
+                    .findFirst()
+                    .or(() -> recipeManager.getRecipeFor(RecipeType.CRAFTING, input, level));
+            menu.currentRecipe = null;
             if (optional.isPresent()) {
                 RecipeHolder<CraftingRecipe> recipe = optional.get();
                 if (result.setRecipeUsed(level, serverPlayer, recipe)) {
                     stack = recipe.value().assemble(input, registryAccess);
+                    menu.currentRecipe = recipe;
                 }
             }
 
@@ -336,9 +349,38 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
         return slot.container != this.resultSlots && super.canTakeItemForPickAll(stack, slot);
     }
 
-    public void onRecipeTransfer(List<List<ItemStack>> recipe, boolean transferAll) {
+    public void onRecipeTransfer(List<List<ItemStack>> recipe, boolean transferAll, Optional<ResourceLocation> recipeId) {
+        recipeId.ifPresent(id -> selectedRecipe = id);
         clearCrafting(false);
         fillCraftingSlots(recipe, transferAll);
+    }
+
+    /** @apiNote only call on server */
+    public void selectRecipe(ResourceLocation id) {
+        selectedRecipe = id;
+        slotChangedCraftingGrid(this, this.player.level(), this.player, this.craftSlots, this.resultSlots);
+    }
+
+    public CraftingInput getCraftingInput() {
+        return CraftingInput.of(3, 3, craftSlots.getItems());
+    }
+
+    public List<RecipeHolder<CraftingRecipe>> getMatchingRecipes() {
+        Level level = player.level();
+        return level.getRecipeManager().getRecipesFor(RecipeType.CRAFTING, getCraftingInput(), level);
+    }
+
+    public ItemStack getResultItem() {
+        return resultSlots.getItem(0);
+    }
+
+    // leftovers need to come from the recipe that was actually used, not just the first one that matches
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput input) {
+        Level level = player.level();
+        if (currentRecipe != null && currentRecipe.value().matches(input, level)) {
+            return currentRecipe.value().getRemainingItems(input);
+        }
+        return level.getRecipeManager().getRemainingItemsFor(RecipeType.CRAFTING, input, level);
     }
 
     public void fillCraftingSlots(List<List<ItemStack>> recipe, boolean transferAll) {

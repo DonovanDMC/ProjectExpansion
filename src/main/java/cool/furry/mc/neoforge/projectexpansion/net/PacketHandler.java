@@ -22,6 +22,7 @@ public final class PacketHandler {
 
     public void register(PayloadRegistrar registrar) {
         registrar.playToServer(PacketArcaneTransmutationTabletRecipeTransfer.TYPE, PacketArcaneTransmutationTabletRecipeTransfer.STREAM_CODEC, IPacket::handle);
+        registrar.playToServer(PacketArcaneTransmutationTabletSelectRecipe.TYPE, PacketArcaneTransmutationTabletSelectRecipe.STREAM_CODEC, IPacket::handle);
         registrar.playToServer(PacketArcaneTransmutationTabletSmallButton.TYPE, PacketArcaneTransmutationTabletSmallButton.STREAM_CODEC, IPacket::handle);
         registrar.playToServer(PacketCreateTeleportLocation.TYPE, PacketCreateTeleportLocation.STREAM_CODEC, IPacket::handle);
         registrar.playToServer(PacketDeleteTeleportLocation.TYPE, PacketDeleteTeleportLocation.STREAM_CODEC, IPacket::handle);

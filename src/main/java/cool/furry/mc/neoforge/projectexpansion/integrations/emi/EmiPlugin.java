@@ -16,8 +16,9 @@ public class EmiPlugin implements dev.emi.emi.api.EmiPlugin {
         SearchSync.register(new SearchSync("emi", EmiApi::setSearchText));
         registry.addRecipeHandler(MenuTypes.ARCANE_TRANSMUTATION_TABLET.get(), new ArcaneCraftingTransferHandler());
         registry.addExclusionArea(GUIArcaneTransmutationTablet.class, (screen, consumer) -> {
-            Rect2i area = screen.getCraftingPanelArea();
-            consumer.accept(new Bounds(area.getX(), area.getY(), area.getWidth(), area.getHeight()));
+            for (Rect2i area : screen.getExtraAreas()) {
+                consumer.accept(new Bounds(area.getX(), area.getY(), area.getWidth(), area.getHeight()));
+            }
         });
     }
 }
