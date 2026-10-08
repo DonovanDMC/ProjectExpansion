@@ -35,7 +35,7 @@ public class EMCDisplay {
     public static final int PADDING_Y = 2;
     private static BigInteger emc = BigInteger.ZERO;
     private static final BigInteger[] history = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
-    private static BigInteger lastEMC = BigInteger.ZERO;
+    private static @Nullable BigInteger lastEMC = null;
     private static int tick = 0;
     private static int repeatedFailures = 0;
 
@@ -63,14 +63,18 @@ public class EMCDisplay {
 
             repeatedFailures = 0;
             emc = provider.getEmc();
-            history[1] = history[0];
-            history[0] = emc.subtract(lastEMC);
+            if (lastEMC != null) {
+                history[1] = history[0];
+                history[0] = emc.subtract(lastEMC);
+            }
             lastEMC = emc;
         }
     }
 
     private static void reset() {
-        emc = lastEMC = BigInteger.ZERO;
+        emc = BigInteger.ZERO;
+        lastEMC = null;
+        history[0] = history[1] = BigInteger.ZERO;
         tick = 0;
     }
 
@@ -97,7 +101,7 @@ public class EMCDisplay {
         public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
             if (Config.client.Spec.isLoaded() && !Config.client.emcDisplay.get()) return;
             Minecraft mc = Minecraft.getInstance();
-            BigInteger avg = history[0].add(history[1]);
+            BigInteger avg = history[0].add(history[1]).divide(BigInteger.valueOf(history.length));
             String str = EMCFormat.format(emc);
             if (!avg.equals(BigInteger.ZERO)) str += " " + (avg.compareTo(BigInteger.ZERO) > 0 ? (ChatFormatting.GREEN + "+") : (ChatFormatting.RED + "-")) + EMCFormat.format(avg.abs()) + "/s";
             String text = String.format("EMC: %s", str);
