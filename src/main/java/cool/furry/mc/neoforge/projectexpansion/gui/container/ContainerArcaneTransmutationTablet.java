@@ -30,6 +30,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -78,6 +79,9 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
     // the recipe the player picked when more than one matches, only used on the server
     @Nullable private ResourceLocation selectedRecipe;
     @Nullable private RecipeHolder<CraftingRecipe> currentRecipe;
+    // how many items in each crafting slot came from transmutation and haven't been paid for yet
+    // they're only paid for when used in a craft or taken out, so a full grid left sitting doesn't hold onto emc
+    private final int[] ghostCounts = new int[CRAFTING_COUNT];
 
     public static ContainerArcaneTransmutationTablet fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf buf) {
         @Nullable IKnowledgeProvider provider = playerInv.player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
@@ -134,8 +138,12 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                addSlot(new PXCraftingSlot(this.craftSlots, j + i * 3, -59 + j * 18, 17 + i * 18));
+                addSlot(new PXCraftingSlot(this, this.craftSlots, j + i * 3, -59 + j * 18, 17 + i * 18));
             }
+        }
+
+        for (int i = 0; i < CRAFTING_COUNT; i++) {
+            addDataSlot(DataSlot.shared(ghostCounts, i));
         }
 
     }
@@ -153,6 +161,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
     @Override
     public void removed(Player player) {
         super.removed(player);
+        discardGhosts();
         if (!player.isAlive() || player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected()) {
             player.drop(unlearn.getItem(), false);
             for (ItemStack stack : this.craftSlots.getItems()) {
@@ -170,15 +179,20 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
         if (this.tryGetSlot(slotIndex) instanceof PXCraftingSlot slot && slot.hasItem()) {
+            if (!slot.mayPickup(player)) return ItemStack.EMPTY;
             ItemStack itemStack = slot.getItem().copy();
+            int count = itemStack.getCount();
             this.moveItemStackTo(itemStack, PLAYER, (PLAYER + PLAYER_COUNT - 1), true);
-            slot.set(ItemStack.EMPTY);
+            // only remove what actually fit, remove also pays for any ghost items that left
+            int moved = count - itemStack.getCount();
+            if (moved > 0) slot.remove(moved);
             return ItemStack.EMPTY;
         }
 
         if (this.tryGetSlot(slotIndex) instanceof PXResultSlot || slotIndex == RESULT) {
             Slot slot = this.tryGetSlot(slotIndex);
-            if (slot != null && slot.hasItem()) {
+            // shift clicking crafts repeatedly, so check every time that the ghost items can still be paid for
+            if (slot != null && slot.hasItem() && slot.mayPickup(player)) {
                 ItemStack itemStack1 = slot.getItem();
                 ItemStack itemStack = itemStack1.copy();
                 itemStack1.getItem().onCraftedBy(itemStack, player.level(), player);
@@ -313,6 +327,9 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
 
     @Override
     public void slotsChanged(Container container) {
+        for (int i = 0; i < CRAFTING_COUNT; i++) {
+            ghostCounts[i] = Math.min(ghostCounts[i], craftSlots.getItem(i).getCount());
+        }
         slotChangedCraftingGrid(this, this.player.level(), this.player, this.craftSlots, this.resultSlots);
         super.slotsChanged(container);
     }
@@ -346,6 +363,8 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
+        // don't let double clicking quietly buy ghost items out of the grid
+        if (slot instanceof PXCraftingSlot && ghostCounts[slot.getContainerSlot()] > 0) return false;
         return slot.container != this.resultSlots && super.canTakeItemForPickAll(stack, slot);
     }
 
@@ -374,6 +393,94 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
         return resultSlots.getItem(0);
     }
 
+    public int getGhostCount(int slot) {
+        return ghostCounts[slot];
+    }
+
+    private static BigInteger getValue(ItemStack stack, int count) {
+        return BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(stack)).multiply(BigInteger.valueOf(count));
+    }
+
+    public BigInteger getGhostCost(int slot) {
+        return getValue(craftSlots.getItem(slot), ghostCounts[slot]);
+    }
+
+    // the emc that the ghost items in the grid will need
+    private BigInteger getReservedEmc() {
+        BigInteger total = BigInteger.ZERO;
+        for (int i = 0; i < CRAFTING_COUNT; i++) total = total.add(getGhostCost(i));
+        return total;
+    }
+
+    // real items are always used first, so ghost items only leave once the real ones run out
+    private int getGhostsTaken(int slot, int amount) {
+        int real = craftSlots.getItem(slot).getCount() - ghostCounts[slot];
+        return Mth.clamp(amount - real, 0, ghostCounts[slot]);
+    }
+
+    public boolean canAffordGhosts(int slot) {
+        return provider.getEmc().compareTo(getGhostCost(slot)) >= 0;
+    }
+
+    // a craft takes one item from every filled slot
+    public boolean canAffordCraft() {
+        BigInteger cost = BigInteger.ZERO;
+        for (int i = 0; i < CRAFTING_COUNT; i++) {
+            if (!craftSlots.getItem(i).isEmpty()) cost = cost.add(getValue(craftSlots.getItem(i), getGhostsTaken(i, 1)));
+        }
+        return provider.getEmc().compareTo(cost) >= 0;
+    }
+
+    /** pays for any ghost items in the amount about to leave the slot, call before they're removed */
+    public void payForTaken(int slot, int amount) {
+        int ghosts = getGhostsTaken(slot, amount);
+        if (ghosts <= 0 || !(player instanceof ServerPlayer serverPlayer)) return;
+        provider.setEmc(provider.getEmc().subtract(getValue(craftSlots.getItem(slot), ghosts)).max(BigInteger.ZERO));
+        provider.syncEmc(serverPlayer);
+        ghostCounts[slot] -= ghosts;
+    }
+
+    private void discardGhosts() {
+        for (int i = 0; i < CRAFTING_COUNT; i++) {
+            if (ghostCounts[i] <= 0) continue;
+            craftSlots.getItem(i).shrink(ghostCounts[i]);
+            ghostCounts[i] = 0;
+        }
+    }
+
+    // balancing and spreading move items between slots, so share the ghost items back out per item afterwards
+    private void keepGhosts(Runnable action) {
+        List<ItemStack> items = new ArrayList<>();
+        List<Integer> totals = new ArrayList<>();
+        for (int i = 0; i < CRAFTING_COUNT; i++) {
+            if (ghostCounts[i] <= 0) continue;
+            ItemStack stack = craftSlots.getItem(i);
+            int index = indexOfItem(items, stack);
+            if (index == -1) {
+                items.add(stack.copyWithCount(1));
+                totals.add(ghostCounts[i]);
+            } else {
+                totals.set(index, totals.get(index) + ghostCounts[i]);
+            }
+        }
+
+        action.run();
+
+        for (int i = 0; i < CRAFTING_COUNT; i++) {
+            ItemStack stack = craftSlots.getItem(i);
+            int index = stack.isEmpty() ? -1 : indexOfItem(items, stack);
+            ghostCounts[i] = index == -1 ? 0 : Math.min(stack.getCount(), totals.get(index));
+            if (index != -1) totals.set(index, totals.get(index) - ghostCounts[i]);
+        }
+    }
+
+    private static int indexOfItem(List<ItemStack> items, ItemStack stack) {
+        for (int i = 0; i < items.size(); i++) {
+            if (ItemStack.isSameItemSameComponents(items.get(i), stack)) return i;
+        }
+        return -1;
+    }
+
     // leftovers need to come from the recipe that was actually used, not just the first one that matches
     public NonNullList<ItemStack> getRemainingItems(CraftingInput input) {
         Level level = player.level();
@@ -393,7 +500,6 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             }
         }
 
-        if (player instanceof ServerPlayer serverPlayer) provider.syncEmc(serverPlayer);
         slotChangedCraftingGrid(this, this.player.level(), this.player, this.craftSlots, this.resultSlots);
     }
 
@@ -408,7 +514,8 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             if (provider.hasKnowledge(stack1)) {
                 long value = IEMCProxy.INSTANCE.getValue(stack1);
 
-                if (value > 0L && provider.getEmc().compareTo(BigInteger.valueOf(value)) >= 0) {
+                // nothing is paid yet, but only put in what could be paid for alongside the ghost items already there
+                if (value > 0L && provider.getEmc().subtract(getReservedEmc()).compareTo(BigInteger.valueOf(value)) >= 0) {
                     ItemStack slotItem = craftSlots.getItem(i);
 
                     if (slotItem.isEmpty()) {
@@ -419,7 +526,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
                         continue;
                     }
 
-                    provider.setEmc(provider.getEmc().subtract(BigInteger.valueOf(value)));
+                    ghostCounts[i]++;
                     return true;
                 }
             }
@@ -475,7 +582,9 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
         List<ItemStack> inventory = new ArrayList<>();
         for (int i = 0; i < playerInv.getContainerSize(); i++) inventory.add(playerInv.getItem(i).copy());
         // clearing the grid either turns items into emc or puts them back in the inventory
-        for (ItemStack stack : craftSlots.getItems()) {
+        for (int i = 0; i < CRAFTING_COUNT; i++) {
+            // ghost items are thrown away by the clear
+            ItemStack stack = craftSlots.getItem(i).copyWithCount(craftSlots.getItem(i).getCount() - ghostCounts[i]);
             if (stack.isEmpty()) continue;
             if (Util.canConvertWithoutLoss(stack)) {
                 available = available.add(BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
@@ -566,6 +675,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
     /** @apiNote only call on server */
     public void clearCrafting(boolean force) {
         boolean emcUpdate = false;
+        discardGhosts();
         for (int i = 0; i < craftSlots.getContainerSize(); i++) {
             ItemStack stack = craftSlots.getItem(i);
             if (stack.isEmpty()) continue;
@@ -594,22 +704,17 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
     /** @apiNote only call on server */
     public void rotateCrafting(boolean clockwise) {
         ItemStack[] stacks = new ItemStack[ROTATION_SLOTS.length];
+        int[] ghosts = new int[ROTATION_SLOTS.length];
 
-        if (clockwise) {
-            for (int i = 0; i < ROTATION_SLOTS.length; i++) {
-                int j = i - 1;
-
-                if (j < 0) j = ROTATION_SLOTS.length - 1;
-                stacks[i] = craftSlots.getItem(ROTATION_SLOTS[j % ROTATION_SLOTS.length]);
-            }
-        } else {
-            for (int i = 0; i < ROTATION_SLOTS.length; i++) {
-                stacks[i] = craftSlots.getItem(ROTATION_SLOTS[(i + 1) % ROTATION_SLOTS.length]);
-            }
+        for (int i = 0; i < ROTATION_SLOTS.length; i++) {
+            int from = clockwise ? ROTATION_SLOTS[(i - 1 + ROTATION_SLOTS.length) % ROTATION_SLOTS.length] : ROTATION_SLOTS[(i + 1) % ROTATION_SLOTS.length];
+            stacks[i] = craftSlots.getItem(from);
+            ghosts[i] = ghostCounts[from];
         }
 
         for (int i = 0; i < ROTATION_SLOTS.length; i++) {
             craftSlots.setItem(ROTATION_SLOTS[i], stacks[i]);
+            ghostCounts[ROTATION_SLOTS[i]] = ghosts[i];
         }
 
         slotsChanged(craftSlots);
@@ -618,6 +723,10 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
 
     /** @apiNote only call on server */
     public void balanceCrafting() {
+        keepGhosts(this::doBalanceCrafting);
+    }
+
+    private void doBalanceCrafting() {
         ArrayListMultimap<CompoundTag, ItemStack> map = ArrayListMultimap.create();
         Multiset<CompoundTag> itemCount = HashMultiset.create();
 
@@ -664,6 +773,10 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
 
     /** @apiNote only call on server */
     public void spreadCrafting() {
+        keepGhosts(this::doSpreadCrafting);
+    }
+
+    private void doSpreadCrafting() {
         while (true) {
             ItemStack biggestStack = null;
             int biggestSize = 1;
@@ -700,7 +813,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             }
         }
 
-        balanceCrafting();
+        doBalanceCrafting();
     }
 
     /** @apiNote only call on client */

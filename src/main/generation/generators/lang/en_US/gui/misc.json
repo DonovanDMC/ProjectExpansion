@@ -30,6 +30,8 @@
   "gui.projectexpansion.arcane_transmutation_tablet.search_type.autoselected_sync": "Autoselected Sync",
   "gui.projectexpansion.arcane_transmutation_tablet.clear": "Clear",
   "gui.projectexpansion.arcane_transmutation_tablet.clear.force": "Force!",
+  "gui.projectexpansion.arcane_transmutation_tablet.ghost": "%s not paid for yet, costs %s EMC when used or taken out",
+  "gui.projectexpansion.arcane_transmutation_tablet.cannot_afford": "Not enough EMC to pay for the ghost ingredients",
   "gui.projectexpansion.arcane_transmutation_tablet.transfer.emc_required": "EMC Required: %s",
   "gui.projectexpansion.arcane_transmutation_tablet.transfer.emc_missing": "Missing EMC: %s",
   "gui.projectexpansion.arcane_transmutation_tablet.transfer.excluded": "Won't be filled:",

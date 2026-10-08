@@ -404,6 +404,8 @@ public enum Lang implements ILangEntry {
         ARCANE_TRANSMUTATION_TABLET_SEARCH_TYPE_AUTOSELECTED_SYNC("arcane_transmutation_tablet", "search_type", "autoselected_sync"),
         ARCANE_TRANSMUTATION_TABLET_CLEAR("arcane_transmutation_tablet", "clear"),
         ARCANE_TRANSMUTATION_TABLET_CLEAR_FORCE("arcane_transmutation_tablet", "clear", "force"),
+        ARCANE_TRANSMUTATION_TABLET_GHOST("arcane_transmutation_tablet", "ghost"),
+        ARCANE_TRANSMUTATION_TABLET_CANNOT_AFFORD("arcane_transmutation_tablet", "cannot_afford"),
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_EMC_REQUIRED("arcane_transmutation_tablet", "transfer", "emc_required"),
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_EMC_MISSING("arcane_transmutation_tablet", "transfer", "emc_missing"),
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_EXCLUDED("arcane_transmutation_tablet", "transfer", "excluded"),

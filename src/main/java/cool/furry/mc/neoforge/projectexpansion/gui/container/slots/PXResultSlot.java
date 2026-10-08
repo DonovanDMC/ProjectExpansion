@@ -54,6 +54,7 @@ public class PXResultSlot extends ResultSlot {
                 ItemStack current = craftSlots.getItem(slot);
                 ItemStack leftover = remaining.get(x + y * input.width());
                 if (!current.isEmpty()) {
+                    tablet.payForTaken(slot, 1);
                     craftSlots.removeItem(slot, 1);
                     current = craftSlots.getItem(slot);
                 }
@@ -70,6 +71,11 @@ public class PXResultSlot extends ResultSlot {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean mayPickup(Player player) {
+        return super.mayPickup(player) && tablet.canAffordCraft();
     }
 
     @Override

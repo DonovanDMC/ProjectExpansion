@@ -4,7 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import cool.furry.mc.neoforge.projectexpansion.Main;
 import cool.furry.mc.neoforge.projectexpansion.config.Config;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.ContainerArcaneTransmutationTablet;
+import cool.furry.mc.neoforge.projectexpansion.gui.container.slots.PXCraftingSlot;
 import cool.furry.mc.neoforge.projectexpansion.gui.container.slots.PXOutputSlot;
+import cool.furry.mc.neoforge.projectexpansion.gui.container.slots.PXResultSlot;
 import cool.furry.mc.neoforge.projectexpansion.net.packets.to_server.PacketArcaneTransmutationTabletSelectRecipe;
 import cool.furry.mc.neoforge.projectexpansion.net.packets.to_server.PacketArcaneTransmutationTabletSmallButton;
 import cool.furry.mc.neoforge.projectexpansion.util.EMCFormat;
@@ -28,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -264,6 +267,46 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
         if (button.isMouseOver(mouseX, mouseY)) {
             graphics.blit(texture, button.getX(), button.getY(), uOffset, vOffset, button.getWidth(), button.getHeight());
         }
+    }
+
+    @Override
+    protected void renderSlot(GuiGraphics graphics, Slot slot) {
+        super.renderSlot(graphics, slot);
+        PoseStack pose = graphics.pose();
+        if (slot instanceof PXCraftingSlot && slot.hasItem()) {
+            int ghosts = menu.getGhostCount(slot.getContainerSlot());
+            if (ghosts <= 0) return;
+            pose.pushPose();
+            // above the item but below the count
+            pose.translate(0, 0, 190);
+            if (ghosts >= slot.getItem().getCount()) {
+                // nothing in the slot has been paid for, so fade the whole item
+                graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0xA04E4E4E);
+            } else {
+                // otherwise show how many of them are ghost items
+                pose.translate(slot.x, slot.y, 100);
+                pose.scale(0.5F, 0.5F, 1F);
+                graphics.drawString(font, String.valueOf(ghosts), 1, 1, 0xFF55FFFF, true);
+            }
+            pose.popPose();
+        } else if (slot instanceof PXResultSlot && slot.hasItem() && !menu.canAffordCraft()) {
+            pose.pushPose();
+            pose.translate(0, 0, 190);
+            graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x80FF0000);
+            pose.popPose();
+        }
+    }
+
+    @Override
+    protected List<Component> getTooltipFromContainerItem(ItemStack stack) {
+        List<Component> tooltip = new ArrayList<>(super.getTooltipFromContainerItem(stack));
+        if (hoveredSlot instanceof PXCraftingSlot slot && menu.getGhostCount(slot.getContainerSlot()) > 0) {
+            int index = slot.getContainerSlot();
+            tooltip.add(Lang.GUI.ARCANE_TRANSMUTATION_TABLET_GHOST.translateColored(ChatFormatting.AQUA, menu.getGhostCount(index), EMCFormat.format(menu.getGhostCost(index))));
+        } else if (hoveredSlot instanceof PXResultSlot && !menu.canAffordCraft()) {
+            tooltip.add(Lang.GUI.ARCANE_TRANSMUTATION_TABLET_CANNOT_AFFORD.translateColored(ChatFormatting.RED));
+        }
+        return tooltip;
     }
 
     @Override
