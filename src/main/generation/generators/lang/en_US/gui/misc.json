@@ -29,5 +29,9 @@
   "gui.projectexpansion.arcane_transmutation_tablet.search_type.sync": "Sync",
   "gui.projectexpansion.arcane_transmutation_tablet.search_type.autoselected_sync": "Autoselected Sync",
   "gui.projectexpansion.arcane_transmutation_tablet.clear": "Clear",
-  "gui.projectexpansion.arcane_transmutation_tablet.clear.force": "Force!"
+  "gui.projectexpansion.arcane_transmutation_tablet.clear.force": "Force!",
+  "gui.projectexpansion.arcane_transmutation_tablet.transfer.emc_required": "EMC Required: %s",
+  "gui.projectexpansion.arcane_transmutation_tablet.transfer.emc_missing": "Missing EMC: %s",
+  "gui.projectexpansion.arcane_transmutation_tablet.transfer.excluded": "Won't be filled:",
+  "gui.projectexpansion.arcane_transmutation_tablet.transfer.not_learned": "%s (not learned)"
 }

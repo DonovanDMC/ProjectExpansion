@@ -434,10 +434,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             ItemStack fixedp = Util.cleanStack(possibility);
             for (int j = 0; j < playerInv.getContainerSize(); ++j) {
                 ItemStack stack = playerInv.getItem(j);
-                if (EmcLock.isLocked(stack)) continue;
-                // items with extra data (enchantments, damage, names, etc.) are only pulled if the recipe asks for exactly that
-                if (!stack.isComponentsPatchEmpty() && !ItemStack.isSameItemSameComponents(possibility, stack)) continue;
-                if (Util.areStacksEqual(player.registryAccess(), fixedp, Util.cleanStack(stack))) {
+                if (canPullFromInventory(stack, Util.cleanStack(stack), possibility, fixedp)) {
                     ItemStack slotItem = craftSlots.getItem(i);
 
                     if (slotItem.isEmpty()) {
@@ -460,6 +457,95 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
         }
 
         return false;
+    }
+
+    private boolean canPullFromInventory(ItemStack stack, ItemStack cleanStack, ItemStack possibility, ItemStack cleanPossibility) {
+        if (stack.isEmpty() || EmcLock.isLocked(stack)) return false;
+        // items with extra data (enchantments, damage, names, etc.) are only pulled if the recipe asks for exactly that
+        if (!stack.isComponentsPatchEmpty() && !ItemStack.isSameItemSameComponents(possibility, stack)) return false;
+        return Util.areStacksEqual(player.registryAccess(), cleanPossibility, cleanStack);
+    }
+
+    /**
+     * Works out what {@link #onRecipeTransfer} would do for a single craft, without changing anything.
+     * Follows the same order: the grid is cleared, then slots are filled from the inventory, then from transmutation.
+     */
+    public RecipeTransferPlan planRecipeTransfer(List<List<ItemStack>> recipe) {
+        BigInteger available = provider.getEmc();
+        List<ItemStack> inventory = new ArrayList<>();
+        for (int i = 0; i < playerInv.getContainerSize(); i++) inventory.add(playerInv.getItem(i).copy());
+        // clearing the grid either turns items into emc or puts them back in the inventory
+        for (ItemStack stack : craftSlots.getItems()) {
+            if (stack.isEmpty()) continue;
+            if (Util.canConvertWithoutLoss(stack)) {
+                available = available.add(BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
+            } else {
+                inventory.add(stack.copy());
+            }
+        }
+
+        // this runs every frame while a recipe viewer is open, so only clean each stack once
+        List<ItemStack> cleanInventory = inventory.stream().map(Util::cleanStack).toList();
+
+        int max = Math.min(recipe.size(), craftSlots.getContainerSize());
+        boolean[] filled = new boolean[max];
+        for (int i = 0; i < max; i++) {
+            List<ItemStack> possibilities = recipe.get(i);
+            if (possibilities == null || possibilities.stream().allMatch(ItemStack::isEmpty)) {
+                filled[i] = true;
+                continue;
+            }
+            search:
+            for (ItemStack possibility : possibilities) {
+                ItemStack cleanPossibility = Util.cleanStack(possibility);
+                for (int j = 0; j < inventory.size(); j++) {
+                    ItemStack stack = inventory.get(j);
+                    if (canPullFromInventory(stack, cleanInventory.get(j), possibility, cleanPossibility)) {
+                        stack.shrink(1);
+                        filled[i] = true;
+                        break search;
+                    }
+                }
+            }
+        }
+
+        BigInteger required = BigInteger.ZERO;
+        Set<Integer> excludedSlots = new LinkedHashSet<>();
+        List<RecipeTransferPlan.Excluded> excluded = new ArrayList<>();
+        BigInteger remaining = available;
+        for (int i = 0; i < max; i++) {
+            if (filled[i]) continue;
+            List<ItemStack> learned = recipe.get(i).stream()
+                    .filter(stack -> !stack.isEmpty())
+                    .map(Util::cleanStack)
+                    .filter(stack -> provider.hasKnowledge(stack) && IEMCProxy.INSTANCE.getValue(stack) > 0)
+                    .sorted(Comparator.comparingLong(IEMCProxy.INSTANCE::getValue))
+                    .toList();
+            if (learned.isEmpty()) {
+                excludedSlots.add(i);
+                excluded.add(new RecipeTransferPlan.Excluded(recipe.get(i).stream().filter(stack -> !stack.isEmpty()).findFirst().orElse(ItemStack.EMPTY), false));
+                continue;
+            }
+            BigInteger cheapest = BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(learned.getFirst()));
+            required = required.add(cheapest);
+            // same as transferFromTablet, the cheapest option we can still afford is used
+            Optional<ItemStack> affordable = Optional.empty();
+            for (ItemStack stack : learned) {
+                if (remaining.compareTo(BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(stack))) >= 0) {
+                    affordable = Optional.of(stack);
+                    break;
+                }
+            }
+            if (affordable.isPresent()) {
+                remaining = remaining.subtract(BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(affordable.get())));
+            } else {
+                excludedSlots.add(i);
+                excluded.add(new RecipeTransferPlan.Excluded(learned.getFirst(), true));
+            }
+        }
+
+        BigInteger missing = required.subtract(available).max(BigInteger.ZERO);
+        return new RecipeTransferPlan(required, missing, excludedSlots, excluded);
     }
 
     public void transferItems(List<List<ItemStack>> recipe, int max) {

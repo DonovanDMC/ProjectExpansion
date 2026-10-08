@@ -1,16 +1,18 @@
 package cool.furry.mc.neoforge.projectexpansion.integrations.emi;
 
 import cool.furry.mc.neoforge.projectexpansion.gui.container.ContainerArcaneTransmutationTablet;
+import cool.furry.mc.neoforge.projectexpansion.gui.container.RecipeTransferPlan;
 import cool.furry.mc.neoforge.projectexpansion.net.packets.to_server.PacketArcaneTransmutationTabletRecipeTransfer;
-import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.Bounds;
+import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
-import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -19,8 +21,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class ArcaneCraftingTransferHandler implements StandardRecipeHandler<ContainerArcaneTransmutationTablet> {
     private static final int PLAYER = 27;
@@ -43,38 +48,7 @@ public class ArcaneCraftingTransferHandler implements StandardRecipeHandler<Cont
         return recipe.getBackingRecipe() != null && recipe.getBackingRecipe().value() instanceof CraftingRecipe;
     }
 
-    private EmiPlayerInventory buildEmcAwareInventory(EmiRecipe recipe, ContainerArcaneTransmutationTablet container) {
-        List<EmiStack> stacks = new ArrayList<>();
-        for (Slot slot : getInputSources(container)) {
-            ItemStack item = slot.getItem();
-            if (!item.isEmpty()) stacks.add(EmiStack.of(item));
-        }
-        long availableEmc = container.transmutationInventory.getAvailableEmcAsLong();
-        for (EmiIngredient ingredient : recipe.getInputs()) {
-            for (EmiStack emiStack : ingredient.getEmiStacks()) {
-                ItemStack item = emiStack.getItemStack();
-                if (item.isEmpty()) continue;
-                long value = IEMCProxy.INSTANCE.getValue(item);
-                if (value > 0 && value <= availableEmc && container.getProvider().hasKnowledge(item)) {
-                    stacks.add(EmiStack.of(item.copyWithCount((int) Math.min(64, availableEmc / value))));
-                }
-            }
-        }
-        return new EmiPlayerInventory(stacks);
-    }
-
-    @Override
-    public boolean canCraft(EmiRecipe recipe, EmiCraftContext<ContainerArcaneTransmutationTablet> context) {
-        return buildEmcAwareInventory(recipe, context.getScreenHandler()).canCraft(recipe);
-    }
-
-    @Override
-    public void render(EmiRecipe recipe, EmiCraftContext<ContainerArcaneTransmutationTablet> context, List<Widget> widgets, GuiGraphics graphics) {
-        StandardRecipeHandler.renderMissing(recipe, buildEmcAwareInventory(recipe, context.getScreenHandler()), widgets, graphics);
-    }
-
-    @Override
-    public boolean craft(EmiRecipe recipe, EmiCraftContext<ContainerArcaneTransmutationTablet> context) {
+    private List<List<ItemStack>> getRecipeStacks(EmiRecipe recipe) {
         List<List<ItemStack>> itemStacks = new ArrayList<>();
         List<ItemStack> emptyStack = List.of(ItemStack.EMPTY);
 
@@ -85,7 +59,44 @@ public class ArcaneCraftingTransferHandler implements StandardRecipeHandler<Cont
                     .toList();
             itemStacks.add(stacks.isEmpty() ? emptyStack : stacks);
         }
+        return itemStacks;
+    }
 
+    private RecipeTransferPlan plan(EmiRecipe recipe, EmiCraftContext<ContainerArcaneTransmutationTablet> context) {
+        return context.getScreenHandler().planRecipeTransfer(getRecipeStacks(recipe));
+    }
+
+    @Override
+    public boolean canCraft(EmiRecipe recipe, EmiCraftContext<ContainerArcaneTransmutationTablet> context) {
+        return plan(recipe, context).isComplete();
+    }
+
+    @Override
+    public List<ClientTooltipComponent> getTooltip(EmiRecipe recipe, EmiCraftContext<ContainerArcaneTransmutationTablet> context) {
+        return plan(recipe, context).getTooltip().stream()
+                .map(line -> ClientTooltipComponent.create(line.getVisualOrderText()))
+                .toList();
+    }
+
+    @Override
+    public void render(EmiRecipe recipe, EmiCraftContext<ContainerArcaneTransmutationTablet> context, List<Widget> widgets, GuiGraphics graphics) {
+        RecipeTransferPlan plan = plan(recipe, context);
+        // match widgets to recipe inputs by identity, the same way emi does
+        Set<EmiIngredient> excluded = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (int i : plan.excludedSlots()) {
+            if (i < recipe.getInputs().size()) excluded.add(recipe.getInputs().get(i));
+        }
+        for (Widget widget : widgets) {
+            if (widget instanceof SlotWidget slot && slot.getRecipe() == null && excluded.contains(slot.getStack())) {
+                Bounds bounds = slot.getBounds();
+                graphics.fill(bounds.x(), bounds.y(), bounds.x() + bounds.width(), bounds.y() + bounds.height(), 0x44FF0000);
+            }
+        }
+    }
+
+    @Override
+    public boolean craft(EmiRecipe recipe, EmiCraftContext<ContainerArcaneTransmutationTablet> context) {
+        List<List<ItemStack>> itemStacks = getRecipeStacks(recipe);
         boolean transferAll = context.getDestination() == EmiCraftContext.Destination.INVENTORY;
         Optional<ResourceLocation> recipeId = Optional.ofNullable(recipe.getBackingRecipe()).map(RecipeHolder::id);
         PacketDistributor.sendToServer(new PacketArcaneTransmutationTabletRecipeTransfer(itemStacks, transferAll, recipeId));
