@@ -1,0 +1,13 @@
+{
+	"$for": {
+		"type": "STAR_TYPES",
+		"tier": "STAR_TIERS"
+	},
+	"$output": "{{type}}_star_{{tier}}",
+	"$content": {
+		"parent": "minecraft:item/generated",
+		"textures": {
+			"layer0": "{{id(`item/star/${type}/${tier}`)}}"
+		}
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "advanced_alchemical_chest",
+		"parent": "projecte:alchemical_bag",
+		"item": "#projectexpansion:advanced_alchemical_chest",
+		"iconItem": "projectexpansion:white_advanced_alchemical_chest"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"$for": { "tier": "MATTER_BLOCKS" },
+	"$output": "{{tier}}_matter_block",
+	"$content": {
+		"$template": "_partials/loot_table/drop_self",
+		"$with": { "block": "{{tier}}_matter_block" }
+	}
+}

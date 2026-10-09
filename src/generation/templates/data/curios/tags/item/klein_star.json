@@ -1,0 +1,4 @@
+{
+	"replace": false,
+	"values": [{ "$each": "STAR_TYPES", "$as": "type", "$do": { "$each": "STAR_TIERS", "$do": "{{id(`${type}_star_${it}`)}}" } }]
+}

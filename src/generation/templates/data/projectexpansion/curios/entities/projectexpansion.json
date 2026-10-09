@@ -1,0 +1,7 @@
+{
+	"$if": "since('1.20')",
+	"$content": {
+		"entities": ["player"],
+		"slots": ["transmutation_tablet"]
+	}
+}

@@ -1,0 +1,3 @@
+{
+	"values": [{ "$each": "DYES", "$do": "{{id(`${it}_advanced_alchemical_chest`)}}" }]
+}

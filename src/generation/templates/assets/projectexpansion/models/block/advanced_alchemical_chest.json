@@ -1,0 +1,9 @@
+{
+	"$for": { "color": "DYES" },
+	"$output": "advanced_alchemical_chest/{{color}}",
+	"$content": {
+		"textures": {
+			"particle": "{{id(`block/advanced_alchemical_chest/${color}`)}}"
+		}
+	}
+}

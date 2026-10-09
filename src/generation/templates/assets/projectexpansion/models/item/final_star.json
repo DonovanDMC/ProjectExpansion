@@ -1,0 +1,10 @@
+{
+	"$for": { "item": ["final_star", "final_star_shard"] },
+	"$output": "{{item}}",
+	"$content": {
+		"parent": "minecraft:item/generated",
+		"textures": {
+			"layer0": "{{id(item === 'final_star' ? 'item/star/final' : 'item/star/final_shard')}}"
+		}
+	}
+}

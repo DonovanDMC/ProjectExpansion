@@ -1,0 +1,8 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "infinite_steak",
+		"parent": "projecte:philosophers_stone",
+		"item": "projectexpansion:infinite_steak"
+	}
+}

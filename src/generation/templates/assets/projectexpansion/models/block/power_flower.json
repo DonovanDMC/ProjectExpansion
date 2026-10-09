@@ -1,0 +1,11 @@
+{
+	"$for": { "tier": "MATTER" },
+	"$output": "power_flower/{{tier}}",
+	"$content": {
+		"parent": "projectexpansion:block/power_flower/base",
+		"textures": {
+			"collector": "{{id(`block/collector/${tier}`)}}",
+			"relay": "{{id(`block/relay/${tier}`)}}"
+		}
+	}
+}

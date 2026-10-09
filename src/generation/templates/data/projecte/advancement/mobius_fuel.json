@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"namespace": "projecte",
+		"name": "mobius_fuel",
+		"parent": "projecte:alchemical_coal",
+		"item": "projecte:mobius_fuel"
+	}
+}

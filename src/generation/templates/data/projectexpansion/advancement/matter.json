@@ -1,0 +1,17 @@
+{
+	"$for": {
+		"tier": "MATTER_ITEMS",
+		"block": [false, true]
+	},
+	"$let": {
+		"name": "`${tier}_matter${block ? '_block' : ''}`",
+		"parent": "block ? id(`${tier}_matter`) : matterItem(previous(MATTER, tier))"
+	},
+	"$output": "{{name}}",
+	"$content": {
+		"$template": "_partials/advancement/obtain",
+		"$with": {
+			"item": "{{id(name)}}"
+		}
+	}
+}

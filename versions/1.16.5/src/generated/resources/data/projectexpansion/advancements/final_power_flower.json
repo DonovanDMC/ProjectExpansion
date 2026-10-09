@@ -1,0 +1,32 @@
+{
+	"parent": "projectexpansion:power_flower",
+	"criteria": {
+		"final_power_flower": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "projectexpansion:final_power_flower"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.final_power_flower"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.final_power_flower.description"
+		},
+		"icon": {
+			"item": "projectexpansion:final_power_flower"
+		},
+		"frame": "goal"
+	},
+	"requirements": [
+		[
+			"final_power_flower"
+		]
+	]
+}

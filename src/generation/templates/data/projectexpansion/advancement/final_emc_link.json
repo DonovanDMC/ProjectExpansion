@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "final_emc_link",
+		"parent": "projectexpansion:emc_link",
+		"item": "projectexpansion:final_emc_link",
+		"frame": "goal"
+	}
+}

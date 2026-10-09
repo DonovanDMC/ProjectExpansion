@@ -1,0 +1,8 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "basic_alchemical_book",
+		"parent": "projecte:philosophers_stone",
+		"item": "projectexpansion:basic_alchemical_book"
+	}
+}

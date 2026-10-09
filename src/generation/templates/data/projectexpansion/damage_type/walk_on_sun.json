@@ -1,0 +1,9 @@
+{
+	"$if": "since('1.19.4')",
+	"$content": {
+		"message_id": "walk_on_sun",
+		"exhaustion": 0.0,
+		"scaling": "never",
+		"effects": "burning"
+	}
+}

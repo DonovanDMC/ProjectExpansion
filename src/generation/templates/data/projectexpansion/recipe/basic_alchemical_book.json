@@ -1,0 +1,14 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["HRH", "EBP", "HRH"],
+		"key": {
+			"H": "projecte:high_covalence_dust",
+			"R": "projecte:red_matter",
+			"E": "minecraft:ender_pearl",
+			"P": "projecte:philosophers_stone",
+			"B": "minecraft:book"
+		},
+		"output": "projectexpansion:basic_alchemical_book"
+	}
+}

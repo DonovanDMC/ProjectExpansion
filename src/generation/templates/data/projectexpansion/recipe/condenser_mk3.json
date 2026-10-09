@@ -1,0 +1,15 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["MCM", "CCC", "MCM"],
+		"key": {
+			"C": "projecte:condenser_mk2",
+			"M": "projectexpansion:magenta_matter_block"
+		},
+		"output": "projectexpansion:condenser_mk3"
+	},
+	"show_notification": {
+		"$if": "since('1.20')",
+		"$then": true
+	}
+}

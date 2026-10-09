@@ -1,0 +1,32 @@
+{
+	"parent": "projectexpansion:violet_matter",
+	"criteria": {
+		"blue_matter": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:blue_matter"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.blue_matter"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.blue_matter.description"
+		},
+		"icon": {
+			"id": "projectexpansion:blue_matter"
+		}
+	},
+	"requirements": [
+		[
+			"blue_matter"
+		]
+	],
+	"sends_telemetry_event": true
+}

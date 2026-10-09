@@ -1,0 +1,67 @@
+package cool.furry.mc.forge.projectexpansion.item;
+
+import cool.furry.mc.forge.projectexpansion.config.Config;
+import cool.furry.mc.forge.projectexpansion.util.ColorStyle;
+import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
+import cool.furry.mc.forge.projectexpansion.util.OwnerData;
+import cool.furry.mc.forge.projectexpansion.util.Util;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.UUID;
+
+public class ItemInfiniteFuel extends Item {
+
+    public ItemInfiniteFuel() {
+        super(new Properties().stacksTo(1).rarity(Rarity.RARE));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, level, list, tooltipFlag);
+        list.add(Lang.Items.INFINITE_FUEL_TOOLTIP.translateColored(ChatFormatting.GRAY));
+        list.add(Lang.COST.translateColored(ChatFormatting.RED, EMCFormat.getComponent(Config.server.infiniteFuelCost.get()).setStyle(ColorStyle.GRAY)));
+    }
+
+    @Override
+    public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {
+        @Nullable OwnerData owner = OwnerData.get(stack);
+        @Nullable IKnowledgeProvider provider = owner == null ? null : Util.getKnowledgeProvider(owner.uuid());
+        if (owner == null || provider == null) return 0;
+        return (Config.server.infiniteFuelCost.get() == 0 || Config.server.infiniteFuelBurnTime.get() == 0) ? 0 : provider.getEmc().compareTo(BigInteger.valueOf(Config.server.infiniteFuelCost.get())) < 0 ? 0 : Config.server.infiniteFuelBurnTime.get();
+    }
+
+    @Override
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public ItemStack getCraftingRemainingItem(ItemStack stack) {
+        OwnerData ownerData = OwnerData.get(stack);
+        @Nullable UUID owner = ownerData == null ? null : ownerData.uuid();
+        if (owner == null)
+            return stack;
+        ServerPlayer player = Util.getPlayer(owner);
+        @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
+        if (provider == null) return stack;
+        provider.setEmc(provider.getEmc().subtract(BigInteger.valueOf(Config.server.infiniteFuelCost.get())));
+        if (player != null) provider.syncEmc(player);
+        return stack;
+    }
+}

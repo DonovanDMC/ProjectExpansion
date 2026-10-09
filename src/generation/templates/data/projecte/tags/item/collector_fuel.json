@@ -1,0 +1,7 @@
+{
+	"replace": false,
+	"values": [
+		{ "$each": "FUEL", "$do": "{{id(`${it}_fuel`)}}" },
+		{ "$each": "FUEL", "$do": "{{id(`${it}_fuel_block`)}}" }
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"$for": {
+		"kind": ["collector", "relay", "power_flower"],
+		"tier": "MATTER"
+	},
+	"$output": "{{tier}}_{{kind}}",
+	"$content": {
+		"variants": {
+			"": { "model": "{{id(`block/${kind}/${tier}`)}}" }
+		}
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"$for": { "tier": "MATTER_BLOCKS" },
+	"$output": "{{tier}}_matter_block",
+	"$content": {
+		"variants": {
+			"": { "model": "{{id(`block/matter/${tier}`)}}" }
+		}
+	}
+}

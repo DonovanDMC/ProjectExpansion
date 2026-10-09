@@ -1,0 +1,14 @@
+{
+	"$for": {
+		"tier": "MATTER",
+		"filter": [true, false]
+	},
+	"$let": { "suffix": "filter ? '' : '_nofilter'" },
+	"$output": "emc_link/{{tier}}{{suffix}}",
+	"$content": {
+		"parent": "minecraft:block/cube_all",
+		"textures": {
+			"all": "{{id(`block/emc_link/${tier}${suffix}`)}}"
+		}
+	}
+}

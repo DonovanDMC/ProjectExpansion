@@ -1,0 +1,19 @@
+{
+	"$for": { "color": "DYES" },
+	"$output": "advanced_alchemical_chest/{{color}}",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"group": "{{id(`advanced_alchemical_chest/${color}`)}}",
+			"pattern": ["DLD", "MBM", "HLH"],
+			"key": {
+				"D": "projecte:dark_matter",
+				"L": "projecte:low_covalence_dust",
+				"M": "projecte:medium_covalence_dust",
+				"H": "projecte:high_covalence_dust",
+				"B": "projecte:{{color}}_alchemical_bag"
+			},
+			"output": "{{id(`${color}_advanced_alchemical_chest`)}}"
+		}
+	}
+}

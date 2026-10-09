@@ -1,0 +1,15 @@
+{
+	"block.projectexpansion.collector": "Collector.",
+	"block.projectexpansion.collector.tooltip": "Generates EMC when exposed to light.",
+	"block.projectexpansion.collector.emc": "Maximum Produced EMC: %s/s",
+	"block.projectexpansion.collector.stack_emc": "Stack Produced EMC: %s/s",
+	"block.projectexpansion.collector.max_storage": "Maximum Stored EMC: %s",
+	"...tiers": {
+		"$each": "MATTER",
+		"$as": "tier",
+		"$index": "i",
+		"$do": {
+			"block.projectexpansion.{{tier}}_collector": "{{title(tier)}} Collector [MK {{i + 1}}]"
+		}
+	}
+}

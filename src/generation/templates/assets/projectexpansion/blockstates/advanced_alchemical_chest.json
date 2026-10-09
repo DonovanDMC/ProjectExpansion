@@ -1,0 +1,9 @@
+{
+	"$for": { "color": "DYES" },
+	"$output": "{{color}}_advanced_alchemical_chest",
+	"$content": {
+		"variants": {
+			"": { "model": "{{id(`block/advanced_alchemical_chest/${color}`)}}" }
+		}
+	}
+}

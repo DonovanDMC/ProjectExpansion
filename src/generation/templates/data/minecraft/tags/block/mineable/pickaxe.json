@@ -1,0 +1,13 @@
+{
+	"replace": false,
+	"values": [
+		"projectexpansion:transmutation_interface",
+		{ "$each": "FUEL", "$do": "{{id(`${it}_fuel_block`)}}" },
+		{ "$each": "['collector', 'power_flower', 'relay', 'emc_link']", "$as": "kind", "$do": { "$each": "MATTER", "$do": "{{id(`${it}_${kind}`)}}" } },
+		{ "$each": "DYES", "$do": "{{id(`${it}_advanced_alchemical_chest`)}}" },
+		{ "$each": "MATTER_BLOCKS", "$do": "{{id(`${it}_matter_block`)}}" },
+		"projectexpansion:compact_sun",
+		"projectexpansion:condenser_mk3",
+		"projectexpansion:arcane_transmutation_table"
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"$for": {
+		"tier": "MATTER",
+		"upgrade": [false, true]
+	},
+	"$if": "!upgrade || tier !== MATTER[0]",
+	"$output": "power_flower/{{tier}}{{upgrade ? '_upgrade' : ''}}",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"group": "{{id(`matter/${tier}`)}}",
+			"pattern": ["CLC", "{{upgrade ? 'RPR' : 'RRR'}}", "RRR"],
+			"key": {
+				"L": "{{id(`${tier}_emc_link`)}}",
+				"C": "{{id(`${tier}_compressed_collector`)}}",
+				"R": "{{id(`${tier}_relay`)}}",
+				"...": { "$if": "upgrade", "P": "{{id(`${previous(MATTER, tier)}_power_flower`)}}" }
+			},
+			"output": "{{id(`${tier}_power_flower`)}}"
+		}
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "relay",
+		"parent": "projecte:relay",
+		"item": "#projectexpansion:relay",
+		"iconItem": "projectexpansion:basic_relay"
+	}
+}

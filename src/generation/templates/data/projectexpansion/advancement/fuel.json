@@ -1,0 +1,17 @@
+{
+	"$for": {
+		"tier": "FUEL",
+		"block": [false, true]
+	},
+	"$let": {
+		"name": "`${tier}_fuel${block ? '_block' : ''}`",
+		"parent": "block ? id(`${tier}_fuel`) : tier === FUEL[0] ? 'projecte:aeternalis_fuel' : id(`${previous(FUEL, tier)}_fuel`)"
+	},
+	"$output": "{{name}}",
+	"$content": {
+		"$template": "_partials/advancement/obtain",
+		"$with": {
+			"item": "{{id(name)}}"
+		}
+	}
+}

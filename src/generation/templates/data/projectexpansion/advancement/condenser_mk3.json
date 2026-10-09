@@ -1,0 +1,8 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "condenser_mk3",
+		"parent": "projecte:condenser_mk2",
+		"item": "projectexpansion:condenser_mk3"
+	}
+}

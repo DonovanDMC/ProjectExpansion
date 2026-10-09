@@ -1,0 +1,34 @@
+{
+	"parent": "projectexpansion:blue_matter",
+	"criteria": {
+		"blue_matter_block": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:blue_matter_block"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.blue_matter_block"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.blue_matter_block.description"
+		},
+		"icon": {
+			"item": "projectexpansion:blue_matter_block"
+		}
+	},
+	"requirements": [
+		[
+			"blue_matter_block"
+		]
+	],
+	"sends_telemetry_event": true
+}

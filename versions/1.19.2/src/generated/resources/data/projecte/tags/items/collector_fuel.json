@@ -1,0 +1,27 @@
+{
+	"replace": false,
+	"values": [
+		"projectexpansion:magenta_fuel",
+		"projectexpansion:pink_fuel",
+		"projectexpansion:purple_fuel",
+		"projectexpansion:violet_fuel",
+		"projectexpansion:blue_fuel",
+		"projectexpansion:cyan_fuel",
+		"projectexpansion:green_fuel",
+		"projectexpansion:lime_fuel",
+		"projectexpansion:yellow_fuel",
+		"projectexpansion:orange_fuel",
+		"projectexpansion:white_fuel",
+		"projectexpansion:magenta_fuel_block",
+		"projectexpansion:pink_fuel_block",
+		"projectexpansion:purple_fuel_block",
+		"projectexpansion:violet_fuel_block",
+		"projectexpansion:blue_fuel_block",
+		"projectexpansion:cyan_fuel_block",
+		"projectexpansion:green_fuel_block",
+		"projectexpansion:lime_fuel_block",
+		"projectexpansion:yellow_fuel_block",
+		"projectexpansion:orange_fuel_block",
+		"projectexpansion:white_fuel_block"
+	]
+}

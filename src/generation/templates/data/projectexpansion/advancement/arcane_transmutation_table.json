@@ -1,0 +1,10 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "arcane_transmutation_table",
+		"parent": "projecte:transmutation_table",
+		"item": "projectexpansion:arcane_transmutation_table",
+		"frame": "goal",
+		"hidden": true
+	}
+}

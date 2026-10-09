@@ -1,0 +1,34 @@
+{
+	"parent": "projecte:transmutation_table",
+	"criteria": {
+		"arcane_transmutation_table": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:arcane_transmutation_table"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.arcane_transmutation_table"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.arcane_transmutation_table.description"
+		},
+		"icon": {
+			"id": "projectexpansion:arcane_transmutation_table"
+		},
+		"frame": "goal",
+		"hidden": true
+	},
+	"requirements": [
+		[
+			"arcane_transmutation_table"
+		]
+	],
+	"sends_telemetry_event": true
+}

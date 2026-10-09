@@ -1,0 +1,34 @@
+{
+	"parent": "projectexpansion:yellow_matter",
+	"criteria": {
+		"yellow_matter_block": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:yellow_matter_block"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.yellow_matter_block"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.yellow_matter_block.description"
+		},
+		"icon": {
+			"item": "projectexpansion:yellow_matter_block"
+		}
+	},
+	"requirements": [
+		[
+			"yellow_matter_block"
+		]
+	],
+	"sends_telemetry_event": true
+}

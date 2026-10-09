@@ -1,0 +1,33 @@
+{
+	"$defaults": {
+		"namespace": "projectexpansion",
+		"iconItem": null,
+		"iconData": null,
+		"frame": null,
+		"hidden": null,
+		"announce": null,
+		"toast": null
+	},
+	"$content": {
+		"parent": "{{parent}}",
+		"criteria": {
+			"{{name}}": {
+				"trigger": "minecraft:inventory_changed",
+				"conditions": {
+					"items": ["{{itemPredicate(item)}}"]
+				}
+			}
+		},
+		"display": {
+			"title": { "translate": "advancements.{{namespace}}.{{name}}" },
+			"description": { "translate": "advancements.{{namespace}}.{{name}}.description" },
+			"icon": "{{icon(iconItem ?? item, iconData)}}",
+			"frame": "{{frame}}",
+			"hidden": "{{hidden}}",
+			"announce_to_chat": "{{announce}}",
+			"show_toast": "{{toast}}"
+		},
+		"requirements": [["{{name}}"]],
+		"sends_telemetry_event": { "$if": "since('1.20')", "$then": true }
+	}
+}

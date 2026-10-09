@@ -1,0 +1,13 @@
+{
+	"block.projectexpansion.advanced_alchemical_chest.color_set": "The color has been set to %s.",
+	"block.projectexpansion.advanced_alchemical_chest.invalid_item": "You must be holding a %s to set the color.",
+	"block.projectexpansion.advanced_alchemical_chest.color": "Current Color: %s",
+	"block.projectexpansion.advanced_alchemical_chest.tooltip": "Just like the alchemical bag, but in a chest form. Shift click with a bag to set the color.",
+	"...colors": {
+		"$each": "DYES",
+		"$as": "color",
+		"$do": {
+			"block.projectexpansion.{{color}}_advanced_alchemical_chest": "{{title(color)}} Advanced Alchemical Chest"
+		}
+	}
+}

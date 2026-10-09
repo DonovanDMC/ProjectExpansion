@@ -1,0 +1,11 @@
+{
+	"$for": { "filter": [true, false] },
+	"$let": { "name": "filter ? 'transmutation_interface' : 'transmutation_interface_nofilter'" },
+	"$output": "{{name}}",
+	"$content": {
+		"parent": "minecraft:block/cube_all",
+		"textures": {
+			"all": "{{id(`block/${name}`)}}"
+		}
+	}
+}

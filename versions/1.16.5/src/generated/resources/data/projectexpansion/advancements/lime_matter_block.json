@@ -1,0 +1,31 @@
+{
+	"parent": "projectexpansion:lime_matter",
+	"criteria": {
+		"lime_matter_block": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "projectexpansion:lime_matter_block"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.lime_matter_block"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.lime_matter_block.description"
+		},
+		"icon": {
+			"item": "projectexpansion:lime_matter_block"
+		}
+	},
+	"requirements": [
+		[
+			"lime_matter_block"
+		]
+	]
+}

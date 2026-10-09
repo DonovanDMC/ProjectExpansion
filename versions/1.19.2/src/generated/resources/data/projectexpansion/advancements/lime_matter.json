@@ -1,0 +1,33 @@
+{
+	"parent": "projectexpansion:green_matter",
+	"criteria": {
+		"lime_matter": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:lime_matter"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.lime_matter"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.lime_matter.description"
+		},
+		"icon": {
+			"item": "projectexpansion:lime_matter"
+		}
+	},
+	"requirements": [
+		[
+			"lime_matter"
+		]
+	]
+}

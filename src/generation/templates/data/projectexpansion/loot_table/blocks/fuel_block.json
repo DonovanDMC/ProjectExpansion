@@ -1,0 +1,8 @@
+{
+	"$for": { "tier": "FUEL" },
+	"$output": "{{tier}}_fuel_block",
+	"$content": {
+		"$template": "_partials/loot_table/drop_self",
+		"$with": { "block": "{{tier}}_fuel_block" }
+	}
+}

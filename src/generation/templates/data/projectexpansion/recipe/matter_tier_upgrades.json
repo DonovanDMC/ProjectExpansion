@@ -1,0 +1,15 @@
+{
+	"$for": {
+		"kind": ["collector", "relay"],
+		"tier": "MATTER.slice(1)"
+	},
+	"$output": "{{kind}}/{{tier}}",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"group": "{{id(`matter/${tier}`)}}",
+			"ingredients": ["{{id(`${previous(MATTER, tier)}_${kind}`)}}", "{{matterItem(tier)}}"],
+			"output": "{{id(`${tier}_${kind}`)}}"
+		}
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"$defaults": {
+		"group": null,
+		"count": 1
+	},
+	"$content": {
+		"type": "minecraft:crafting_shapeless",
+		"group": "{{group}}",
+		"ingredients": [{ "$each": "ingredients", "$do": "{{ingredient(it)}}" }],
+		"result": "{{result(output, count)}}"
+	}
+}

@@ -1,0 +1,35 @@
+{
+	"parent": "projecte:transmutation_tablet",
+	"criteria": {
+		"arcane_transmutation_tablet": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:arcane_transmutation_tablet"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.arcane_transmutation_tablet"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.arcane_transmutation_tablet.description"
+		},
+		"icon": {
+			"item": "projectexpansion:arcane_transmutation_tablet"
+		},
+		"frame": "goal",
+		"hidden": true
+	},
+	"requirements": [
+		[
+			"arcane_transmutation_tablet"
+		]
+	]
+}

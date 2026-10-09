@@ -1,0 +1,12 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "compact_sun",
+		"parent": "projecte:philosophers_stone",
+		"item": "projectexpansion:compact_sun",
+		"frame": "goal",
+		"hidden": true,
+		"announce": true,
+		"toast": true
+	}
+}

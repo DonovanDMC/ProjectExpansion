@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "final_collector",
+		"parent": "projectexpansion:collector",
+		"item": "projectexpansion:final_collector",
+		"frame": "goal"
+	}
+}

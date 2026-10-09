@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "projecte:transmutation_table"
+		},
+		{
+			"item": "minecraft:crafting_table"
+		}
+	],
+	"result": {
+		"item": "projectexpansion:arcane_transmutation_table"
+	}
+}

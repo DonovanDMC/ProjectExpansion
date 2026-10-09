@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "final_power_flower",
+		"parent": "projectexpansion:power_flower",
+		"item": "projectexpansion:final_power_flower",
+		"frame": "goal"
+	}
+}

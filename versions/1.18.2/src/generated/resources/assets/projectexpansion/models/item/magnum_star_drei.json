@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "projectexpansion:item/star/magnum/drei"
+	}
+}

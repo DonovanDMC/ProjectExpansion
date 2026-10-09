@@ -1,0 +1,11 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["CCC", "CTC", "CCC"],
+		"key": {
+			"C": "minecraft:coal",
+			"T": "projecte:transmutation_tablet"
+		},
+		"output": "projectexpansion:infinite_fuel"
+	}
+}

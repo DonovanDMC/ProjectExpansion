@@ -1,0 +1,8 @@
+{
+	"$for": { "color": "DYES" },
+	"$output": "{{color}}_advanced_alchemical_chest",
+	"$content": {
+		"$template": "_partials/loot_table/drop_self",
+		"$with": { "block": "{{color}}_advanced_alchemical_chest" }
+	}
+}

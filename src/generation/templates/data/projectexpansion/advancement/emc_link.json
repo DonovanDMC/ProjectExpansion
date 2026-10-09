@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "emc_link",
+		"parent": "projecte:condenser",
+		"item": "#projectexpansion:emc_link",
+		"iconItem": "projectexpansion:basic_emc_link"
+	}
+}

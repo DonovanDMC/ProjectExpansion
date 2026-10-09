@@ -1,0 +1,20 @@
+{
+	"values": [
+		"projectexpansion:basic_collector",
+		"projectexpansion:dark_collector",
+		"projectexpansion:red_collector",
+		"projectexpansion:magenta_collector",
+		"projectexpansion:pink_collector",
+		"projectexpansion:purple_collector",
+		"projectexpansion:violet_collector",
+		"projectexpansion:blue_collector",
+		"projectexpansion:cyan_collector",
+		"projectexpansion:green_collector",
+		"projectexpansion:lime_collector",
+		"projectexpansion:yellow_collector",
+		"projectexpansion:orange_collector",
+		"projectexpansion:white_collector",
+		"projectexpansion:fading_collector",
+		"projectexpansion:final_collector"
+	]
+}

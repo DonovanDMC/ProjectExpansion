@@ -1,0 +1,32 @@
+{
+	"parent": "projecte:alchemical_coal",
+	"criteria": {
+		"mobius_fuel": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projecte:mobius_fuel"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projecte.mobius_fuel"
+		},
+		"description": {
+			"translate": "advancements.projecte.mobius_fuel.description"
+		},
+		"icon": {
+			"id": "projecte:mobius_fuel"
+		}
+	},
+	"requirements": [
+		[
+			"mobius_fuel"
+		]
+	],
+	"sends_telemetry_event": true
+}

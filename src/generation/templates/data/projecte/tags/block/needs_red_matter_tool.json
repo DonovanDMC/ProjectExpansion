@@ -1,0 +1,11 @@
+{
+	"$if": "since('1.21')",
+	"$content": {
+		"replace": false,
+		"values": [
+			{ "$each": "MATTER_BLOCKS", "$do": "{{id(`${it}_matter_block`)}}" },
+			"projectexpansion:compact_sun",
+			{ "$each": "['collector', 'power_flower', 'relay', 'emc_link']", "$as": "kind", "$do": { "$each": "MATTER.slice(MATTER.indexOf('red'))", "$do": "{{id(`${it}_${kind}`)}}" } }
+		]
+	}
+}

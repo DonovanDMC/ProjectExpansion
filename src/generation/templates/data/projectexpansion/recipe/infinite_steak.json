@@ -1,0 +1,11 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["SSS", "STS", "SSS"],
+		"key": {
+			"S": "minecraft:cooked_beef",
+			"T": "projecte:transmutation_tablet"
+		},
+		"output": "projectexpansion:infinite_steak"
+	}
+}

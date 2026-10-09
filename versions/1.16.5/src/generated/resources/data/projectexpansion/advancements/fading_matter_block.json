@@ -1,0 +1,31 @@
+{
+	"parent": "projectexpansion:fading_matter",
+	"criteria": {
+		"fading_matter_block": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "projectexpansion:fading_matter_block"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.fading_matter_block"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.fading_matter_block.description"
+		},
+		"icon": {
+			"item": "projectexpansion:fading_matter_block"
+		}
+	},
+	"requirements": [
+		[
+			"fading_matter_block"
+		]
+	]
+}

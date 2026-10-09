@@ -1,0 +1,13 @@
+{
+	"$for": {
+		"kind": ["collector", "relay"],
+		"tier": "MATTER"
+	},
+	"$output": "{{kind}}/{{tier}}",
+	"$content": {
+		"parent": "minecraft:block/cube_all",
+		"textures": {
+			"all": "{{id(`block/${kind}/${tier}`)}}"
+		}
+	}
+}

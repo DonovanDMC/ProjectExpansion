@@ -1,0 +1,12 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["LCL", "CSC", "LCL"],
+		"key": {
+			"L": "projectexpansion:final_emc_link",
+			"C": "projecte:condenser_mk2",
+			"S": "projectexpansion:final_star_shard"
+		},
+		"output": "projectexpansion:transmutation_interface"
+	}
+}

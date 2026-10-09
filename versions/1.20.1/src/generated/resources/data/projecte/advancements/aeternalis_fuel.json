@@ -1,0 +1,35 @@
+{
+	"parent": "projecte:mobius_fuel",
+	"criteria": {
+		"aeternalis_fuel": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projecte:aeternalis_fuel"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projecte.aeternalis_fuel"
+		},
+		"description": {
+			"translate": "advancements.projecte.aeternalis_fuel.description"
+		},
+		"icon": {
+			"item": "projecte:aeternalis_fuel"
+		},
+		"announce_to_chat": true
+	},
+	"requirements": [
+		[
+			"aeternalis_fuel"
+		]
+	],
+	"sends_telemetry_event": true
+}

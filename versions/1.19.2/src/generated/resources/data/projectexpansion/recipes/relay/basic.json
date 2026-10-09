@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/basic",
+	"pattern": [
+		"OSO",
+		"OAO",
+		"OOO"
+	],
+	"key": {
+		"O": {
+			"tag": "forge:obsidian"
+		},
+		"A": {
+			"item": "projecte:aeternalis_fuel_block"
+		},
+		"S": {
+			"tag": "forge:glass"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:basic_relay"
+	}
+}

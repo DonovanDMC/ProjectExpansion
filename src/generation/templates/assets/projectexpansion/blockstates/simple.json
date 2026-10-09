@@ -1,0 +1,9 @@
+{
+	"$for": { "block": ["compact_sun", "condenser_mk3"] },
+	"$output": "{{block}}",
+	"$content": {
+		"variants": {
+			"": { "model": "{{id(`block/${block}`)}}" }
+		}
+	}
+}

@@ -1,0 +1,6 @@
+{
+	"$if": "since('1.20')",
+	"$content": {
+		"icon": "projectexpansion:curios/transmutation_tablet"
+	}
+}

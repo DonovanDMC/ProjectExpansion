@@ -1,0 +1,33 @@
+{
+	"parent": "projecte:klein_star_omega",
+	"criteria": {
+		"magnum_star_omega": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:magnum_star_omega"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.magnum_star_omega"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.magnum_star_omega.description"
+		},
+		"icon": {
+			"item": "projectexpansion:magnum_star_omega"
+		}
+	},
+	"requirements": [
+		[
+			"magnum_star_omega"
+		]
+	]
+}

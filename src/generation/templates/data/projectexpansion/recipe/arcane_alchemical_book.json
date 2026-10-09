@@ -1,0 +1,12 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["SFS", "FBF", "SFS"],
+		"key": {
+			"B": "projectexpansion:master_alchemical_book",
+			"S": "projectexpansion:final_star_shard",
+			"F": "projectexpansion:final_star"
+		},
+		"output": "projectexpansion:arcane_alchemical_book"
+	}
+}

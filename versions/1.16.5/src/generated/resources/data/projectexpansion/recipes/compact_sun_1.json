@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"HSH",
+		"SYS",
+		"HSH"
+	],
+	"key": {
+		"Y": {
+			"item": "projectexpansion:yellow_matter"
+		},
+		"S": {
+			"item": "projectexpansion:final_star"
+		},
+		"H": {
+			"item": "projectexpansion:final_star_shard"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:compact_sun"
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"parent": "projectexpansion:compact_sun",
+	"criteria": {
+		"blinded_by_the_light": {
+			"trigger": "minecraft:impossible"
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.blinded_by_the_light"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.blinded_by_the_light.description"
+		},
+		"icon": {
+			"item": "minecraft:sunflower"
+		},
+		"frame": "goal",
+		"hidden": true,
+		"announce_to_chat": true,
+		"show_toast": true
+	},
+	"requirements": [
+		[
+			"blinded_by_the_light"
+		]
+	]
+}

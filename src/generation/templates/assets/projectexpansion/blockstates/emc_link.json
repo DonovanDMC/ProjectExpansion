@@ -1,0 +1,10 @@
+{
+	"$for": { "tier": "MATTER" },
+	"$output": "{{tier}}_emc_link",
+	"$content": {
+		"variants": {
+			"filter=true": { "model": "{{id(`block/emc_link/${tier}`)}}" },
+			"filter=false": { "model": "{{id(`block/emc_link/${tier}_nofilter`)}}" }
+		}
+	}
+}

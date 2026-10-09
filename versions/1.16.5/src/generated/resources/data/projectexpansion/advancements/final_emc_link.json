@@ -1,0 +1,32 @@
+{
+	"parent": "projectexpansion:emc_link",
+	"criteria": {
+		"final_emc_link": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "projectexpansion:final_emc_link"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.final_emc_link"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.final_emc_link.description"
+		},
+		"icon": {
+			"item": "projectexpansion:final_emc_link"
+		},
+		"frame": "goal"
+	},
+	"requirements": [
+		[
+			"final_emc_link"
+		]
+	]
+}

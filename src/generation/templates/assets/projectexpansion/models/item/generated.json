@@ -1,0 +1,15 @@
+{
+	"$for": {
+		"item": [
+			"basic_alchemical_book", "advanced_alchemical_book", "master_alchemical_book", "arcane_alchemical_book",
+			"arcane_transmutation_tablet", "infinite_fuel", "infinite_steak", "knowledge_sharing_book", "matter_upgrader"
+		]
+	},
+	"$output": "{{item}}",
+	"$content": {
+		"parent": "minecraft:item/generated",
+		"textures": {
+			"layer0": "{{id(`item/${item}`)}}"
+		}
+	}
+}

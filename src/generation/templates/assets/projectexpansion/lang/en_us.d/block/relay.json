@@ -1,0 +1,13 @@
+{
+	"block.projectexpansion.relay.tooltip": "Transfers EMC once per second.",
+	"block.projectexpansion.relay.bonus": "Relay Bonus: %s/s",
+	"block.projectexpansion.relay.transfer": "Max EMC Transfer: %s/s",
+	"...tiers": {
+		"$each": "MATTER",
+		"$as": "tier",
+		"$index": "i",
+		"$do": {
+			"block.projectexpansion.{{tier}}_relay": "{{title(tier)}} Relay [MK {{i + 1}}]"
+		}
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"$for": { "tier": "FUEL" },
+	"$output": "{{tier}}_fuel",
+	"$content": {
+		"parent": "minecraft:item/generated",
+		"textures": {
+			"layer0": "{{id(`item/fuel/${tier}`)}}"
+		}
+	}
+}

@@ -1,0 +1,5 @@
+{
+	"$for": { "block": ["arcane_transmutation_table", "compact_sun", "condenser_mk3", "transmutation_interface"] },
+	"$output": "{{block}}",
+	"$content": { "$template": "_partials/loot_table/drop_self" }
+}

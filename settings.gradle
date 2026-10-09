@@ -3,9 +3,34 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
+        maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        maven {
+            name = 'Sponge'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+    }
+
+    // Versions live here so each version subproject loads only the loader plugin it needs
+    plugins {
+        id 'net.neoforged.moddev' version '2.0.80'
+        id 'net.neoforged.moddev.legacyforge' version '2.0.80'
+        id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+        id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
     }
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
+}
+
+rootProject.name = 'projectexpansion'
+
+// Each Minecraft version is its own subproject in versions/<version>
+// Build one with ./gradlew :1.20.1:build, or all of them with ./gradlew build
+['1.16.5', '1.18.2', '1.19.2', '1.20.1', '1.21.1'].each { version ->
+    include version
+    project(":${version}").projectDir = file("versions/${version}")
 }

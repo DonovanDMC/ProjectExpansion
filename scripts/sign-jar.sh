@@ -1,42 +1,18 @@
 #!/usr/bin/env bash
+# usage: sign-jar.sh <secrets file> <input jar> <output jar>
+set -e
 
-. ./scripts/secrets.sh
-cd build/libs
+. "$1"
+input="$2"
+output="$3"
 
-mkdir -p signed
-
-signJar() {
-  local file="$1"
-
-  if [[ ! -f "$file" ]]; then
-    echo "File '$file' not found"
-    return 1
-  fi
-
-  echo "Signing $file"
-  "${JAVA_HOME:+$JAVA_HOME/bin/}jarsigner" -keystore "$JAVA_SIGNING_STORE" -signedjar "signed/$file" -storepass "$JAVA_SIGNING_PASS" "$file" "$JAVA_SIGNING_ALIAS" > /dev/null 2>&1
-}
-
-if [[ -n "$1" ]]; then
-  if [ -f "signed/$1" ]; then
-    echo "Removing signed/$1"
-    rm "signed/$1"
-  fi
-
-  for file in signed/*.jar; do
-    if [ $file == "signed/*.jar" ]; then break; fi
-    echo "Removing $1"
-    rm -f $file
-  done
-  signJar "$1"
-else
-  rm -f signed/*.jar
-  for file in *.jar; do
-    if [ $file == "*.jar" ]; then
-      echo "no file"
-      exit 1
-    fi
-
-    signJar "$file"
-  done
+if [[ ! -f "$input" ]]; then
+  echo "File '$input' not found"
+  exit 1
 fi
+
+mkdir -p "$(dirname "$output")"
+rm -f "$output"
+
+echo "Signing $(basename "$input")"
+"${JAVA_HOME:+$JAVA_HOME/bin/}jarsigner" -keystore "$JAVA_SIGNING_STORE" -signedjar "$output" -storepass "$JAVA_SIGNING_PASS" "$input" "$JAVA_SIGNING_ALIAS" > /dev/null 2>&1

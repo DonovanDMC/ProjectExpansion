@@ -1,0 +1,15 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["LCL", "PMR", "LDL"],
+		"key": {
+			"L": "projectexpansion:basic_emc_link",
+			"C": "projectexpansion:basic_collector",
+			"P": "projectexpansion:basic_power_flower",
+			"M": "minecraft:lime_dye",
+			"R": "projecte:relay_mk1",
+			"D": "projecte:dark_matter"
+		},
+		"output": "projectexpansion:matter_upgrader"
+	}
+}

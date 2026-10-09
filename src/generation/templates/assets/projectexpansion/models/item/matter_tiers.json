@@ -1,0 +1,11 @@
+{
+	"$for": {
+		"kind": ["collector", "compressed_collector", "relay", "power_flower", "emc_link"],
+		"tier": "MATTER"
+	},
+	"$let": { "model": "kind === 'compressed_collector' ? 'collector' : kind" },
+	"$output": "{{tier}}_{{kind}}",
+	"$content": {
+		"parent": "{{id(`block/${model}/${tier}`)}}"
+	}
+}

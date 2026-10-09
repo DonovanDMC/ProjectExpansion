@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "collector",
+		"parent": "projecte:collector",
+		"item": "#projectexpansion:collector",
+		"iconItem": "projectexpansion:basic_collector"
+	}
+}

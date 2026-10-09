@@ -1,0 +1,36 @@
+{
+	"parent": "projecte:root",
+	"criteria": {
+		"tome": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projecte:tome"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projecte.tome"
+		},
+		"description": {
+			"translate": "advancements.projecte.tome.description"
+		},
+		"icon": {
+			"item": "projecte:tome"
+		},
+		"frame": "goal",
+		"hidden": true
+	},
+	"requirements": [
+		[
+			"tome"
+		]
+	],
+	"sends_telemetry_event": true
+}

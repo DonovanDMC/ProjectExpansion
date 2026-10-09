@@ -1,0 +1,37 @@
+{
+	"parent": "projecte:philosophers_stone",
+	"criteria": {
+		"compact_sun": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:compact_sun"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.compact_sun"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.compact_sun.description"
+		},
+		"icon": {
+			"item": "projectexpansion:compact_sun"
+		},
+		"frame": "goal",
+		"hidden": true,
+		"announce_to_chat": true,
+		"show_toast": true
+	},
+	"requirements": [
+		[
+			"compact_sun"
+		]
+	]
+}

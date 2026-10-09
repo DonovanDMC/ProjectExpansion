@@ -1,0 +1,12 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"group": "projectexpansion:star",
+		"pattern": ["SSS", "SES", "SSS"],
+		"key": {
+			"S": "projectexpansion:final_power_flower",
+			"E": "minecraft:dragon_egg"
+		},
+		"output": "projectexpansion:final_star"
+	}
+}

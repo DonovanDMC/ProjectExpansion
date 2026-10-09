@@ -1,0 +1,23 @@
+{
+	"$for": { "tier": "MATTER" },
+	"$let": {
+		"target": "tier === 'basic' ? 'projecte:transmutation_tablet' : matterItem(tier)",
+		"core": "tier === 'basic' ? 'projecte:condenser_mk1' : id(`${previous(MATTER, tier)}_emc_link`)"
+	},
+	"$output": "emc_link/{{tier}}",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"group": "{{id(`matter/${tier}`)}}",
+			"pattern": ["LMH", "TCT", "HML"],
+			"key": {
+				"L": "projecte:low_covalence_dust",
+				"M": "projecte:medium_covalence_dust",
+				"H": "projecte:high_covalence_dust",
+				"T": "{{target}}",
+				"C": "{{core}}"
+			},
+			"output": "{{id(`${tier}_emc_link`)}}"
+		}
+	}
+}

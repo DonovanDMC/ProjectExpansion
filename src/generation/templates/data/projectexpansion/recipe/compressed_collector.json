@@ -1,0 +1,13 @@
+{
+	"$for": { "tier": "MATTER" },
+	"$output": "collector/compressed/{{tier}}",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"group": "{{id(`matter/${tier}`)}}",
+			"pattern": ["CCC", "CCC", "CCC"],
+			"key": { "C": "{{id(`${tier}_collector`)}}" },
+			"output": "{{id(`${tier}_compressed_collector`)}}"
+		}
+	}
+}

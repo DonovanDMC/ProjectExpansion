@@ -1,0 +1,11 @@
+{
+	"$for": {
+		"kind": ["collector", "relay", "power_flower", "emc_link"],
+		"tier": "MATTER"
+	},
+	"$output": "{{tier}}_{{kind}}",
+	"$content": {
+		"$template": "_partials/loot_table/drop_self",
+		"$with": { "block": "{{tier}}_{{kind}}" }
+	}
+}

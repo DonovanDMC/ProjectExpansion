@@ -1,0 +1,3 @@
+{
+	"values": [{ "$each": "MATTER_ITEMS", "$do": "{{id(`${it}_matter`)}}" }]
+}

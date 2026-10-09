@@ -1,0 +1,8 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "magnum_star_omega",
+		"parent": "projecte:klein_star_omega",
+		"item": "projectexpansion:magnum_star_omega"
+	}
+}

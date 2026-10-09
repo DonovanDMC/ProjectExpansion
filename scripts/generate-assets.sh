@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
+# usage: generate-assets.sh <minecraft version> <loader> <output dir>
+set -e
 DIR=$(realpath "$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )")
-cd "$DIR/../src/main/generation" || exit 1
-bun install
-bun run.ts
+OUT=$(realpath -m "$3")
+cd "$DIR/../src/generation"
+bun install --frozen-lockfile
+bun src/index.ts "$1" "$OUT" --loader "$2"

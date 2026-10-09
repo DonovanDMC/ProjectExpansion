@@ -1,0 +1,20 @@
+{
+	"values": [
+		"projectexpansion:basic_emc_link",
+		"projectexpansion:dark_emc_link",
+		"projectexpansion:red_emc_link",
+		"projectexpansion:magenta_emc_link",
+		"projectexpansion:pink_emc_link",
+		"projectexpansion:purple_emc_link",
+		"projectexpansion:violet_emc_link",
+		"projectexpansion:blue_emc_link",
+		"projectexpansion:cyan_emc_link",
+		"projectexpansion:green_emc_link",
+		"projectexpansion:lime_emc_link",
+		"projectexpansion:yellow_emc_link",
+		"projectexpansion:orange_emc_link",
+		"projectexpansion:white_emc_link",
+		"projectexpansion:fading_emc_link",
+		"projectexpansion:final_emc_link"
+	]
+}

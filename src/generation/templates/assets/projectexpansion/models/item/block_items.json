@@ -1,0 +1,7 @@
+{
+	"$for": { "block": ["arcane_transmutation_table", "compact_sun", "transmutation_interface"] },
+	"$output": "{{block}}",
+	"$content": {
+		"parent": "{{id(`block/${block}`)}}"
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["VNV", "VBV", "VNV"],
+		"key": {
+			"V": "projectexpansion:violet_matter",
+			"N": "minecraft:nether_star",
+			"B": "minecraft:book"
+		},
+		"output": "projectexpansion:knowledge_sharing_book"
+	}
+}

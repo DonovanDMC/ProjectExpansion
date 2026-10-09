@@ -1,0 +1,23 @@
+{
+	"$for": {
+		"tier": "MATTER_ITEMS",
+		"alt": [false, true]
+	},
+	"$let": {
+		"fuel": "tier === MATTER_ITEMS[0] ? 'projecte:aeternalis_fuel' : id(`${previous(MATTER, tier)}_fuel`)",
+		"matter": "matterItem(previous(MATTER, tier))"
+	},
+	"$output": "matter/{{tier}}{{alt ? '_alt' : ''}}",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"group": "{{id(`matter/${tier}`)}}",
+			"pattern": "{{alt ? ['FFF', 'MMM', 'FFF'] : ['FMF', 'FMF', 'FMF']}}",
+			"key": {
+				"F": "{{fuel}}",
+				"M": "{{matter}}"
+			},
+			"output": "{{id(`${tier}_matter`)}}"
+		}
+	}
+}

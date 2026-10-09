@@ -1,0 +1,7 @@
+{
+	"$if": "since('1.21')",
+	"$content": {
+		"replace": false,
+		"values": [{ "$each": "['collector', 'power_flower', 'relay', 'emc_link']", "$do": "{{id(`dark_${it}`)}}" }]
+	}
+}

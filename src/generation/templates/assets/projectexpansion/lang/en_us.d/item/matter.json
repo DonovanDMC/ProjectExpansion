@@ -1,0 +1,10 @@
+{
+	"...tiers": {
+		"$each": "MATTER_ITEMS",
+		"$as": "tier",
+		"$index": "i",
+		"$do": {
+			"item.projectexpansion.{{tier}}_matter": "{{title(tier)}} Matter"
+		}
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["TWT", "MSM", "TCT"],
+		"key": {
+			"T": "projecte:transmutation_tablet",
+			"M": "projectexpansion:magenta_matter",
+			"W": "#c:player_workstations/crafting_tables",
+			"C": "#c:chests",
+			"S": "projectexpansion:magnum_star_ein"
+		},
+		"output": "projectexpansion:arcane_transmutation_tablet"
+	}
+}

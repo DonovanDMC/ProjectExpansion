@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "final_relay",
+		"parent": "projectexpansion:relay",
+		"item": "projectexpansion:final_relay",
+		"frame": "goal"
+	}
+}

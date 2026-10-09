@@ -1,0 +1,32 @@
+{
+	"parent": "projecte:red_matter",
+	"criteria": {
+		"magenta_matter": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:magenta_matter"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.magenta_matter"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.magenta_matter.description"
+		},
+		"icon": {
+			"id": "projectexpansion:magenta_matter"
+		}
+	},
+	"requirements": [
+		[
+			"magenta_matter"
+		]
+	],
+	"sends_telemetry_event": true
+}

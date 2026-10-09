@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"namespace": "projecte",
+		"name": "aeternalis_fuel_block",
+		"parent": "projecte:aeternalis_fuel",
+		"item": "projecte:aeternalis_fuel_block"
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"namespace": "projecte",
+		"name": "alchemical_coal",
+		"parent": "projecte:philosophers_stone",
+		"item": "projecte:alchemical_coal"
+	}
+}

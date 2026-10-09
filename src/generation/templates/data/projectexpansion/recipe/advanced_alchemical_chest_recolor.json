@@ -1,0 +1,12 @@
+{
+	"$for": { "color": "DYES" },
+	"$output": "advanced_alchemical_chest/recolor/{{color}}",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"group": "{{id(`advanced_alchemical_chest/${color}`)}}",
+			"ingredients": ["#projectexpansion:advanced_alchemical_chest", "minecraft:{{color}}_dye"],
+			"output": "{{id(`${color}_advanced_alchemical_chest`)}}"
+		}
+	}
+}

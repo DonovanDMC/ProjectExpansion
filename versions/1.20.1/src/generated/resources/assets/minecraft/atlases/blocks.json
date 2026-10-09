@@ -1,0 +1,8 @@
+{
+	"sources": [
+		{
+			"type": "minecraft:single",
+			"resource": "projectexpansion:curios/transmutation_tablet"
+		}
+	]
+}

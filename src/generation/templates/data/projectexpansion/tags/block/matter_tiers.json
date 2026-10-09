@@ -1,0 +1,7 @@
+{
+	"$for": { "kind": ["collector", "emc_link", "power_flower", "relay"] },
+	"$output": "{{kind}}",
+	"$content": {
+		"values": [{ "$each": "MATTER", "$do": "{{id(`${it}_${kind}`)}}" }]
+	}
+}

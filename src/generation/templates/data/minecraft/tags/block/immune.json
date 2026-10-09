@@ -1,0 +1,13 @@
+{
+	"$for": { "name": ["dragon_immune", "wither_immune"] },
+	"$output": "{{name}}",
+	"$content": {
+		"replace": false,
+		"values": [
+			{ "$each": "MATTER_BLOCKS", "$do": "{{id(`${it}_matter_block`)}}" },
+			"projectexpansion:transmutation_interface",
+			"projectexpansion:compact_sun",
+			"projectexpansion:condenser_mk3"
+		]
+	}
+}

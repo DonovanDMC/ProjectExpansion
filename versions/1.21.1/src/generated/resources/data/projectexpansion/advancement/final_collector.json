@@ -1,0 +1,33 @@
+{
+	"parent": "projectexpansion:collector",
+	"criteria": {
+		"final_collector": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:final_collector"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.final_collector"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.final_collector.description"
+		},
+		"icon": {
+			"id": "projectexpansion:final_collector"
+		},
+		"frame": "goal"
+	},
+	"requirements": [
+		[
+			"final_collector"
+		]
+	],
+	"sends_telemetry_event": true
+}

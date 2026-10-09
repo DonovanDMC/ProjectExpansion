@@ -1,0 +1,8 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "infinite_fuel",
+		"parent": "projectexpansion:infinite_steak",
+		"item": "projectexpansion:infinite_fuel"
+	}
+}

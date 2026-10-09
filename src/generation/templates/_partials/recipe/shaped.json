@@ -1,0 +1,15 @@
+{
+	"$defaults": {
+		"group": null,
+		"count": 1
+	},
+	"$content": {
+		"type": "minecraft:crafting_shaped",
+		"group": "{{group}}",
+		"pattern": "{{pattern}}",
+		"key": {
+			"...": { "$each": "key", "$do": { "{{it.key}}": "{{ingredient(it.value)}}" } }
+		},
+		"result": "{{result(output, count)}}"
+	}
+}

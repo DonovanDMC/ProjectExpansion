@@ -1,0 +1,12 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["HSH", "SYS", "HSH"],
+		"key": {
+			"Y": "projectexpansion:yellow_matter",
+			"S": "projectexpansion:final_star",
+			"H": "projectexpansion:final_star_shard"
+		},
+		"output": "projectexpansion:compact_sun"
+	}
+}

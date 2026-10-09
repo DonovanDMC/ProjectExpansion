@@ -1,0 +1,14 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"group": "projectexpansion:matter/basic",
+		"pattern": ["GSG", "GAG", "GFG"],
+		"key": {
+			"G": "minecraft:glowstone",
+			"A": "projecte:aeternalis_fuel_block",
+			"S": "#c:glass_blocks",
+			"F": "minecraft:furnace"
+		},
+		"output": "projectexpansion:basic_collector"
+	}
+}

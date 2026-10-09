@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "arcane_alchemical_book",
+		"parent": "projectexpansion:master_alchemical_book",
+		"item": "projectexpansion:arcane_alchemical_book",
+		"frame": "goal"
+	}
+}

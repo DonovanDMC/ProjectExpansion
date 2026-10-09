@@ -1,0 +1,16 @@
+{
+	"$for": {
+		"tier": "MATTER_BLOCKS",
+		"reverse": [false, true]
+	},
+	"$output": "matter/block/{{tier}}{{reverse ? '_reverse' : ''}}",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"group": "{{id(`matter/${tier}`)}}",
+			"ingredients": "{{reverse ? [id(`${tier}_matter_block`)] : repeat(4, id(`${tier}_matter`))}}",
+			"output": "{{id(reverse ? `${tier}_matter` : `${tier}_matter_block`)}}",
+			"count": "{{reverse ? 4 : 1}}"
+		}
+	}
+}

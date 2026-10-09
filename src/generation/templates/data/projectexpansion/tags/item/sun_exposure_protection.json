@@ -1,0 +1,6 @@
+{
+	"values": [
+		{ "$each": "['dm', 'rm', 'gem']", "$as": "set", "$do": { "$each": "['boots', 'leggings', 'chestplate', 'helmet']", "$do": "projecte:{{set}}_{{it}}" } },
+		{ "$each": "['allthemodium', 'vibranium', 'unobtainium']", "$as": "set", "$do": { "$each": "['boots', 'leggings', 'chestplate', 'helmet']", "$do": "{{tagEntry(`allthemodium:${set}_${it}`, false)}}" } }
+	]
+}

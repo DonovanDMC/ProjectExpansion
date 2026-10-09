@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "power_flower",
+		"parent": "projecte:condenser",
+		"item": "#projectexpansion:power_flower",
+		"iconItem": "projectexpansion:basic_power_flower"
+	}
+}

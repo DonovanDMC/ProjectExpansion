@@ -1,0 +1,11 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"namespace": "projecte",
+		"name": "tome",
+		"parent": "projecte:root",
+		"item": "projecte:tome",
+		"frame": "goal",
+		"hidden": true
+	}
+}

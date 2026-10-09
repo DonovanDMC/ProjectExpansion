@@ -1,0 +1,13 @@
+{
+	"...stars": {
+		"$each": "STAR_TYPES",
+		"$as": "type",
+		"$do": {
+			"$each": "STAR_TIERS",
+			"$as": "tier",
+			"$do": {
+				"item.projectexpansion.{{type}}_star_{{tier}}": "{{title(type)}} Star {{title(tier)}}"
+			}
+		}
+	}
+}

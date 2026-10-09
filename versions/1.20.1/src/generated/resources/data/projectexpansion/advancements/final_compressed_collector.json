@@ -1,0 +1,35 @@
+{
+	"parent": "projectexpansion:compressed_collector",
+	"criteria": {
+		"final_compressed_collector": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:final_compressed_collector"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.final_compressed_collector"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.final_compressed_collector.description"
+		},
+		"icon": {
+			"item": "projectexpansion:final_compressed_collector"
+		},
+		"frame": "goal"
+	},
+	"requirements": [
+		[
+			"final_compressed_collector"
+		]
+	],
+	"sends_telemetry_event": true
+}

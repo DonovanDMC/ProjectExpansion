@@ -1,0 +1,32 @@
+{
+	"parent": "projectexpansion:pink_matter",
+	"criteria": {
+		"pink_matter_block": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:pink_matter_block"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.pink_matter_block"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.pink_matter_block.description"
+		},
+		"icon": {
+			"id": "projectexpansion:pink_matter_block"
+		}
+	},
+	"requirements": [
+		[
+			"pink_matter_block"
+		]
+	],
+	"sends_telemetry_event": true
+}

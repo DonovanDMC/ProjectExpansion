@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "transmutation_interface",
+		"parent": "projecte:transmutation_tablet",
+		"item": "projectexpansion:transmutation_interface",
+		"frame": "goal"
+	}
+}

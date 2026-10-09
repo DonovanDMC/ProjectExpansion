@@ -1,0 +1,13 @@
+{
+	"block.projectexpansion.power_flower.tooltip": "Generates EMC once per %s tick%s. (20/second)",
+	"block.projectexpansion.power_flower.emc": "Produced EMC: %s/s",
+	"block.projectexpansion.power_flower.stack_emc": "Stack Produced EMC: %s/s",
+	"...tiers": {
+		"$each": "MATTER",
+		"$as": "tier",
+		"$index": "i",
+		"$do": {
+			"block.projectexpansion.{{tier}}_power_flower": "{{title(tier)}} Power Flower [MK {{i + 1}}]"
+		}
+	}
+}

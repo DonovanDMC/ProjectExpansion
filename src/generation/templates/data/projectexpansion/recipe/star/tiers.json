@@ -1,0 +1,18 @@
+{
+	"$for": {
+		"type": "STAR_TYPES",
+		"tier": "STAR_TIERS"
+	},
+	"$let": {
+		"input": "tier !== STAR_TIERS[0] ? id(`${type}_star_${previous(STAR_TIERS, tier)}`) : type === STAR_TYPES[0] ? 'projecte:klein_star_omega' : id(`${previous(STAR_TYPES, type)}_star_omega`)"
+	},
+	"$output": "{{type}}/{{tier}}",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"group": "projectexpansion:star",
+			"ingredients": "{{repeat(4, input)}}",
+			"output": "{{id(`${type}_star_${tier}`)}}"
+		}
+	}
+}

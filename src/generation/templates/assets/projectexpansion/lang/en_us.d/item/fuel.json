@@ -1,0 +1,10 @@
+{
+	"...tiers": {
+		"$each": "FUEL",
+		"$as": "tier",
+		"$index": "i",
+		"$do": {
+			"item.projectexpansion.{{tier}}_fuel": "{{title(tier)}} Fuel"
+		}
+	}
+}

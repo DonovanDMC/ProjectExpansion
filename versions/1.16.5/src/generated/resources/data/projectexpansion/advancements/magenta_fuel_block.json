@@ -1,0 +1,31 @@
+{
+	"parent": "projectexpansion:magenta_fuel",
+	"criteria": {
+		"magenta_fuel_block": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "projectexpansion:magenta_fuel_block"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.magenta_fuel_block"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.magenta_fuel_block.description"
+		},
+		"icon": {
+			"item": "projectexpansion:magenta_fuel_block"
+		}
+	},
+	"requirements": [
+		[
+			"magenta_fuel_block"
+		]
+	]
+}

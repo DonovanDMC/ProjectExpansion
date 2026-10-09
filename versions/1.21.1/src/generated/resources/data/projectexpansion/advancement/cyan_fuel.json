@@ -1,0 +1,32 @@
+{
+	"parent": "projectexpansion:blue_fuel",
+	"criteria": {
+		"cyan_fuel": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:cyan_fuel"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.cyan_fuel"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.cyan_fuel.description"
+		},
+		"icon": {
+			"id": "projectexpansion:cyan_fuel"
+		}
+	},
+	"requirements": [
+		[
+			"cyan_fuel"
+		]
+	],
+	"sends_telemetry_event": true
+}

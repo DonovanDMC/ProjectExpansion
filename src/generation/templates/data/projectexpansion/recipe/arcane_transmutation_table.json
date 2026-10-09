@@ -1,0 +1,7 @@
+{
+	"$template": "_partials/recipe/shapeless",
+	"$with": {
+		"ingredients": ["projecte:transmutation_table", "#c:player_workstations/crafting_tables"],
+		"output": "projectexpansion:arcane_transmutation_table"
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"item.projectexpansion.compressed_collector.tooltip": "Crafting Ingredient",
+	"...tiers": {
+		"$each": "MATTER",
+		"$as": "tier",
+		"$index": "i",
+		"$do": {
+			"item.projectexpansion.{{tier}}_compressed_collector": "{{title(tier)}} Compressed Collector [MK {{i + 1}}]"
+		}
+	}
+}

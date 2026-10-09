@@ -1,0 +1,8 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "master_alchemical_book",
+		"parent": "projectexpansion:advanced_alchemical_book",
+		"item": "projectexpansion:master_alchemical_book"
+	}
+}

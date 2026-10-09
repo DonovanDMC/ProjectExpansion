@@ -1,0 +1,86 @@
+plugins {
+    id 'net.neoforged.moddev.legacyforge'
+}
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    runs {
+        client {
+            client()
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        gameTestServer {
+            type = "gameTestServer"
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            // makes optional (require = 0) injections still fail in dev if they don't apply
+            systemProperty 'mixin.debug.countInjections', 'true'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+
+    ideSyncTask generateModMetadata
+}
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
+}
+
+dependencies {
+    modImplementation("curse.maven:projecte-226410:${projecte_version}")
+    annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    compileOnly("org.jetbrains:annotations:24.1.0")
+    modCompileOnly("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    modRuntimeOnly("top.theillusivec4.curios:curios-forge:${curios_version}")
+    modRuntimeOnly("curse.maven:no-chat-reports-634062:${ncr_version}")
+    modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    modRuntimeOnly("curse.maven:better-advancements-272515:${ba_version}")
+
+    modCompileOnly("curse.maven:jade-api-324717:${jade_api_version}")
+    modRuntimeOnly("curse.maven:jade-324717:${jade_version}")
+
+    modCompileOnly("curse.maven:wthit-455982:${wthit_version}")
+
+    // https://github.com/McJtyMods/TheOneProbe/issues/548
+    modCompileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
+        transitive = false
+    }
+}
+
+tasks.named("jar", Jar) {
+    manifest.attributes("MixinConfigs": "${mod_id}.mixins.json")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-Xmaxerrs' << '2000'
+}
+
+// advertising to lan loads a client only class, which is stripped from the dev server
+var forgeServerConfig = file("run/defaultconfigs/forge-server.toml")
+tasks.matching { it.name == "runServer" }.configureEach {
+    doFirst {
+        if (!forgeServerConfig.exists()) {
+            forgeServerConfig.parentFile.mkdirs()
+            forgeServerConfig.text = "[server]\n\tadvertiseDedicatedServerToLan = false\n"
+        }
+    }
+}

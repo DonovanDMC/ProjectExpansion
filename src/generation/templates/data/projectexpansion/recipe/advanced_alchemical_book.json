@@ -1,0 +1,12 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"pattern": ["EOE", "OBO", "EOE"],
+		"key": {
+			"B": "projectexpansion:basic_alchemical_book",
+			"O": "projectexpansion:magnum_star_omega",
+			"E": "projectexpansion:magnum_star_ein"
+		},
+		"output": "projectexpansion:advanced_alchemical_book"
+	}
+}

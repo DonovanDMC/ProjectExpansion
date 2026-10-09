@@ -1,0 +1,32 @@
+{
+	"parent": "projecte:condenser",
+	"criteria": {
+		"emc_link": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "#projectexpansion:emc_link"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.emc_link"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.emc_link.description"
+		},
+		"icon": {
+			"id": "projectexpansion:basic_emc_link"
+		}
+	},
+	"requirements": [
+		[
+			"emc_link"
+		]
+	],
+	"sends_telemetry_event": true
+}

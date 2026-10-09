@@ -1,0 +1,163 @@
+package cool.furry.mc.forge.projectexpansion.gui;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+import cool.furry.mc.forge.projectexpansion.Main;
+import cool.furry.mc.forge.projectexpansion.config.Config;
+import cool.furry.mc.forge.projectexpansion.util.EMCFormat;
+import cool.furry.mc.forge.projectexpansion.util.Lang;
+import moze_intel.projecte.api.ProjectEAPI;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import moze_intel.projecte.utils.text.ILangEntry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+
+import javax.annotation.Nullable;
+import java.math.BigInteger;
+
+@OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+public class EMCDisplay {
+    public static final Overlay INSTANCE = new Overlay();
+    public static final int PADDING_X = 2;
+    public static final int PADDING_Y = 2;
+    private static BigInteger emc = BigInteger.ZERO;
+    private static final BigInteger[] history = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
+    private static @Nullable BigInteger lastEMC = null;
+    private static int tick = 0;
+    private static int repeatedFailures = 0;
+
+    private static @Nullable ClientPlayerEntity getPlayer() {
+        return Minecraft.getInstance().player;
+    }
+
+    @SubscribeEvent
+    public static void onTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        if (Config.client.Spec.isLoaded() && !Config.client.emcDisplay.get()) return;
+        ClientPlayerEntity player = getPlayer();
+        tick++;
+        if (player != null && tick >= 20) {
+            tick = 0;
+            IKnowledgeProvider provider = player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY).resolve().orElse(null);
+            if (provider == null) {
+                ++repeatedFailures;
+                if (repeatedFailures < 10) {
+                    Main.Logger.warn("Failed to get provider in EMCDisplay");
+                } else if (repeatedFailures == 10) {
+                    Main.Logger.error("Failed to get provider in EMCDisplay 10 times in a row, assuming error and no longer logging.");
+                }
+                return;
+            }
+
+            repeatedFailures = 0;
+            emc = provider.getEmc();
+            if (lastEMC != null) {
+                history[1] = history[0];
+                history[0] = emc.subtract(lastEMC);
+            }
+            lastEMC = emc;
+        }
+    }
+
+    private static void reset() {
+        emc = BigInteger.ZERO;
+        lastEMC = null;
+        history[0] = history[1] = BigInteger.ZERO;
+        tick = 0;
+    }
+
+    @SubscribeEvent
+    public static void clientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+        if (!Config.client.emcDisplay.get()) return;
+        reset();
+    }
+
+    @SubscribeEvent
+    public static void onWorldUnload(WorldEvent.Unload event) {
+        if (!Config.client.emcDisplay.get()) return;
+        reset();
+    }
+
+    // there's no overlay registry before 1.18, so this draws after the vanilla overlays
+    @SubscribeEvent
+    public static void onRenderOverlay(RenderGameOverlayEvent.Post event) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) INSTANCE.render(event.getMatrixStack());
+    }
+
+    public static class Overlay {
+
+        public void render(MatrixStack poseStack) {
+            GuiGraphics guiGraphics = new GuiGraphics(poseStack);
+            if (Config.client.Spec.isLoaded() && !Config.client.emcDisplay.get()) return;
+            Minecraft mc = Minecraft.getInstance();
+            BigInteger avg = history[0].add(history[1]).divide(BigInteger.valueOf(history.length));
+            String str = EMCFormat.format(emc);
+            if (!avg.equals(BigInteger.ZERO)) str += " " + (avg.compareTo(BigInteger.ZERO) > 0 ? (TextFormatting.GREEN + "+") : (TextFormatting.RED + "-")) + EMCFormat.format(avg.abs()) + "/s";
+            String text = String.format("EMC: %s", str);
+            int x = PADDING_X, y = PADDING_Y, width = mc.getWindow().getGuiScaledWidth(), height = mc.getWindow().getGuiScaledHeight(), fontWidth = mc.font.width(text), fontHeight = mc.font.lineHeight;
+
+            EmcDisplayPosition position = Config.client.emcDisplayPosition.get();
+
+            if (position.isRight()) {
+                x = width - fontWidth - PADDING_X;
+            }
+            if (position.isBottom()) {
+                y = height - fontHeight - PADDING_Y;
+            }
+
+            guiGraphics.drawString(mc.font, text, x, y, 0xffffff);
+        }
+    }
+
+    public enum EmcDisplayPosition implements ILangEntry {
+        TOP_LEFT(Lang.Configuration.EMC_DISPLAY_POSITION_TOP_LEFT, true, true),
+        TOP_RIGHT(Lang.Configuration.EMC_DISPLAY_POSITION_TOP_RIGHT, true, false),
+        BOTTOM_LEFT(Lang.Configuration.EMC_DISPLAY_POSITION_BOTTOM_LEFT, false, true),
+        BOTTOM_RIGHT(Lang.Configuration.EMC_DISPLAY_POSITION_BOTTOM_RIGHT, false, false);
+
+        private final ILangEntry translation;
+        private final boolean top;
+        private final boolean left;
+
+        EmcDisplayPosition(ILangEntry translation, boolean top, boolean left) {
+            this.translation = translation;
+            this.top = top;
+            this.left = left;
+        }
+        public ITextComponent getTranslatedName() {
+            return this.translation.translate();
+        }
+
+        @Override
+        public String getTranslationKey() {
+            return this.translation.getTranslationKey();
+        }
+
+        public boolean isTop() {
+            return top;
+        }
+
+        public boolean isBottom() {
+            return !top;
+        }
+
+        public boolean isLeft() {
+            return left;
+        }
+
+        public boolean isRight() {
+            return !left;
+        }
+    }
+}
+

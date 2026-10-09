@@ -1,0 +1,16 @@
+{
+	"$for": {
+		"tier": "FUEL",
+		"reverse": [false, true]
+	},
+	"$output": "fuel/block/{{tier}}{{reverse ? '_reverse' : ''}}",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"group": "{{id(`fuel/${tier}`)}}",
+			"ingredients": "{{reverse ? [id(`${tier}_fuel_block`)] : repeat(9, id(`${tier}_fuel`))}}",
+			"output": "{{id(reverse ? `${tier}_fuel` : `${tier}_fuel_block`)}}",
+			"count": "{{reverse ? 9 : 1}}"
+		}
+	}
+}

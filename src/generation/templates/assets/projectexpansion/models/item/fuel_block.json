@@ -1,0 +1,7 @@
+{
+	"$for": { "tier": "FUEL" },
+	"$output": "{{tier}}_fuel_block",
+	"$content": {
+		"parent": "{{id(`block/fuel/${tier}`)}}"
+	}
+}

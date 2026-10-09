@@ -1,0 +1,4 @@
+{
+	"replace": false,
+	"values": [{ "$each": "MATTER_BLOCKS", "$do": "{{id(`${it}_matter_block`)}}" }]
+}

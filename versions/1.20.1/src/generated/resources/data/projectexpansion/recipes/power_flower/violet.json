@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"group": "projectexpansion:matter/violet",
+	"pattern": [
+		"CLC",
+		"RRR",
+		"RRR"
+	],
+	"key": {
+		"L": {
+			"item": "projectexpansion:violet_emc_link"
+		},
+		"C": {
+			"item": "projectexpansion:violet_compressed_collector"
+		},
+		"R": {
+			"item": "projectexpansion:violet_relay"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:violet_power_flower"
+	}
+}

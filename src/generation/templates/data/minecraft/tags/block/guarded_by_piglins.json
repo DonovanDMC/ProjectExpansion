@@ -1,0 +1,7 @@
+{
+	"replace": false,
+	"values": [
+		{ "$each": "DYES", "$do": "{{id(`${it}_advanced_alchemical_chest`)}}" },
+		"projectexpansion:condenser_mk3"
+	]
+}

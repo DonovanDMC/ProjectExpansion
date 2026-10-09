@@ -1,0 +1,31 @@
+{
+	"parent": "projectexpansion:pink_fuel",
+	"criteria": {
+		"purple_fuel": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "projectexpansion:purple_fuel"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.purple_fuel"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.purple_fuel.description"
+		},
+		"icon": {
+			"item": "projectexpansion:purple_fuel"
+		}
+	},
+	"requirements": [
+		[
+			"purple_fuel"
+		]
+	]
+}

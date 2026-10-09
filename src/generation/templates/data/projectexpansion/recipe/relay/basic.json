@@ -1,0 +1,13 @@
+{
+	"$template": "_partials/recipe/shaped",
+	"$with": {
+		"group": "projectexpansion:matter/basic",
+		"pattern": ["OSO", "OAO", "OOO"],
+		"key": {
+			"O": "#c:obsidians",
+			"A": "projecte:aeternalis_fuel_block",
+			"S": "#c:glass_blocks"
+		},
+		"output": "projectexpansion:basic_relay"
+	}
+}

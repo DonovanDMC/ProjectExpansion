@@ -1,0 +1,16 @@
+{
+	"$for": {
+		"kind": ["collector", "relay"],
+		"mk": [1, 2, 3]
+	},
+	"$let": { "tier": "MATTER[mk - 1]" },
+	"$output": "{{kind}}/mk{{mk}}_conversion",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"group": "{{id(`matter/${tier}`)}}",
+			"ingredients": ["projecte:{{kind}}_mk{{mk}}"],
+			"output": "{{id(`${tier}_${kind}`)}}"
+		}
+	}
+}

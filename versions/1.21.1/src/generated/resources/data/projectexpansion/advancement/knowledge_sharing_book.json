@@ -1,0 +1,44 @@
+{
+	"parent": "projecte:root",
+	"criteria": {
+		"knowledge_sharing_book": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:knowledge_sharing_book"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.knowledge_sharing_book"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.knowledge_sharing_book.description"
+		},
+		"icon": {
+			"id": "projectexpansion:knowledge_sharing_book",
+			"components": {
+				"projectexpansion:uuid": {
+					"Owner": [
+						1344727436,
+						-1123072188,
+						-1331191999,
+						-490155793
+					],
+					"OwnerName": "Donovan_DMC"
+				}
+			}
+		},
+		"frame": "goal"
+	},
+	"requirements": [
+		[
+			"knowledge_sharing_book"
+		]
+	],
+	"sends_telemetry_event": true
+}

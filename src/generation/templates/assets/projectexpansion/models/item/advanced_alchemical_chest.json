@@ -1,0 +1,10 @@
+{
+	"$for": { "color": "DYES" },
+	"$output": "{{color}}_advanced_alchemical_chest",
+	"$content": {
+		"parent": "projecte:block/base_chest",
+		"textures": {
+			"chest": "{{id(`block/advanced_alchemical_chest/${color}`)}}"
+		}
+	}
+}

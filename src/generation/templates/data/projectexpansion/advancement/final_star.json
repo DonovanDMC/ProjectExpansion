@@ -1,0 +1,9 @@
+{
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "final_star",
+		"parent": "projectexpansion:final_star_shard",
+		"item": "projectexpansion:final_star",
+		"frame": "goal"
+	}
+}

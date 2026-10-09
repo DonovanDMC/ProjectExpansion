@@ -1,0 +1,106 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    // Specify the version of NeoForge to use.
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    // This line is optional. Access Transformers are automatically detected
+    accessTransformers.from(
+        file('src/main/resources/META-INF/accesstransformer.cfg')
+    )
+
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+    runs {
+        client {
+            client()
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // applies to all the run configs above
+        configureEach {
+            // Recommended logging data for a userdev environment
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+            // makes optional (require = 0) injections still fail in dev if they don't apply
+            systemProperty 'mixin.debug.countInjections', 'true'
+
+            // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+
+    // To avoid having to run "generateModMetadata" manually, make it run on every project reload
+    ideSyncTask generateModMetadata
+}
+
+dependencies {
+    implementation("curse.maven:projecte-226410:${projecte_version}")
+    implementation("com.mojang:brigadier:1.0.18")
+    annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
+    runtimeOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
+    runtimeOnly("curse.maven:no-chat-reports-634062:${ncr_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    runtimeOnly("dev.emi:emi-neoforge:${emi_version}")
+    // runtimeOnly("curse.maven:pipez-443900:${pipez_version}")
+    // runtimeOnly("curse.maven:ae2-223794:${ae2_version}")
+    // runtimeOnly("curse.maven:guideme-1173950:${guideme_version}")
+    // runtimeOnly("curse.maven:itank-256991:${itank_version}")
+    // runtimeOnly("curse.maven:cloth-config-348521:${cloth_version}")
+    runtimeOnly("curse.maven:better-advancements-272515:${ba_version}")
+    runtimeOnly("curse.maven:tagtooltips-899941:${tagtooltips_version}")
+
+    compileOnly("curse.maven:jade-api-324717:${jade_api_version}")
+    runtimeOnly("curse.maven:jade-324717:${jade_version}")
+
+    compileOnly("curse.maven:wthit-455982:${wthit_version}")
+    // runtimeOnly("curse.maven:wthit-455982:${wthit_version}")
+    // runtimeOnly("curse.maven:bad-packets-615134:${bad_packets_version}")
+
+    // https://github.com/McJtyMods/TheOneProbe/issues/548
+    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
+        transitive = false
+    }
+    // runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    //     transitive = false
+    // }
+}

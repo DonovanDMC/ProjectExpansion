@@ -1,0 +1,13 @@
+{
+	"$for": { "tier": "FUEL" },
+	"$let": { "input": "tier === FUEL[0] ? 'projecte:aeternalis_fuel' : id(`${previous(FUEL, tier)}_fuel`)" },
+	"$output": "fuel/item/{{tier}}",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"group": "{{id(`fuel/${tier}`)}}",
+			"ingredients": ["projecte:philosophers_stone", { "$each": "repeat(4, input)" }],
+			"output": "{{id(`${tier}_fuel`)}}"
+		}
+	}
+}
