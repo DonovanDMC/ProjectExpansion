@@ -3,6 +3,7 @@ package cool.furry.mc.projectexpansion.gametest;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityPowerFlower;
+import cool.furry.mc.projectexpansion.config.Config;
 import cool.furry.mc.projectexpansion.util.Matter;
 import cool.furry.mc.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -10,8 +11,10 @@ import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -148,6 +151,28 @@ public class CommandGameTests {
         } finally {
             removePlayer(player);
         }
+        helper.succeed();
+    }
+
+    // reloading mid-batch would remap values other tests are reading, so this gets a batch of its own
+    @BeforeBatch(batch = "emc_command")
+    public static void prepareEmc(ServerLevel level) {
+        Platform.prepareEmc(level.getServer());
+    }
+
+    @GameTest(template = EMPTY, batch = "emc_command")
+    public static void emcCommandsReloadImmediately(GameTestHelper helper) {
+        long original = Platform.emcValue(Items.DEAD_BUSH);
+        CommandSourceStack console = console(helper);
+        Config.server.reloadEMCAfterCommands.set(true);
+        try {
+            check(runOrFail(console, "projecte setemc 12345 minecraft:dead_bush") == 1, "/projecte setemc didn't succeed");
+            check(Platform.emcValue(Items.DEAD_BUSH) == 12345, "A dead bush is worth " + Platform.emcValue(Items.DEAD_BUSH) + " right after /projecte setemc, not 12345");
+        } finally {
+            runOrFail(console, "projecte resetemc minecraft:dead_bush");
+            Config.server.reloadEMCAfterCommands.set(false);
+        }
+        check(Platform.emcValue(Items.DEAD_BUSH) == original, "A dead bush is worth " + Platform.emcValue(Items.DEAD_BUSH) + " after /projecte resetemc, not " + original);
         helper.succeed();
     }
 }

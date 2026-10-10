@@ -10,7 +10,6 @@ import moze_intel.projecte.emc.EMCMappingHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.server.MinecraftServer;
 
 public class CommandReloadEMC {
     public static LiteralArgumentBuilder<CommandSourceStack> getArguments() {
@@ -20,12 +19,20 @@ public class CommandReloadEMC {
     }
 
     private static int execute(CommandContext<CommandSourceStack> ctx) {
-        MinecraftServer server = ctx.getSource().getServer();
         Platform.sendMessage(ctx.getSource(), Lang.Commands.RELOAD_EMC_WARNING.translateColored(ChatFormatting.RED));
         Platform.sendMessage(ctx.getSource(), Lang.Commands.RELOADING_EMC.translate());
 
-        long elapsed = Util.reloadEMC(server);
-        Platform.sendSuccess(ctx.getSource(), () -> Lang.Commands.RELOAD_EMC_SUCCESS.translate(Platform.literal(String.valueOf(EMCMappingHandler.getEmcMapSize())).withStyle(ChatFormatting.GREEN), Platform.literal(elapsed + "ms").withStyle(ChatFormatting.GRAY)), true);
+        reload(ctx.getSource());
         return 1;
+    }
+
+    // after projecte's setemc, removeemc and resetemc, when reloadEMCAfterCommands is on
+    public static void reloadAfterCommand(CommandSourceStack source, int result) {
+        if (result > 0 && Config.server.reloadEMCAfterCommands.get()) reload(source);
+    }
+
+    private static void reload(CommandSourceStack source) {
+        long elapsed = Util.reloadEMC(source.getServer());
+        Platform.sendSuccess(source, () -> Lang.Commands.RELOAD_EMC_SUCCESS.translate(Platform.literal(String.valueOf(EMCMappingHandler.getEmcMapSize())).withStyle(ChatFormatting.GREEN), Platform.literal(elapsed + "ms").withStyle(ChatFormatting.GRAY)), true);
     }
 }

@@ -57,6 +57,7 @@ public final class Config {
         public final ForgeConfigSpec.ConfigValue<Boolean> refiningMapperIncludesEmcCost = Builder.comment("Whether ProjectE adds the EMC a refining recipe costs to the value of what it makes.").define("refiningMapperIncludesEmcCost", true);
         public final ForgeConfigSpec.ConfigValue<Boolean> sunMultiplierPriceCompensation = Builder.comment("Enable determining the sun bonus multiplier via the difference in emc price between the final power flower and the compact sun block, rounded up to the next 10. In normal gameplay this is ~33x, so a 40x multiplier. If either block has no emc value or the multiplier is lower than compactSunBonus, that value will be used instead.").define("sunMultiplierPriceCompensation", true);
         public final ForgeConfigSpec.ConfigValue<Boolean> enableReloadEMCCommand = Builder.comment("Enable the /projectexpansion reloademc command. This is experimental.").define("enableReloadEMCCommand", true);
+        public final ForgeConfigSpec.ConfigValue<Boolean> reloadEMCAfterCommands = Builder.comment("Reload EMC right after /projecte setemc, removeemc and resetemc instead of asking for /projectexpansion reloademc. This is experimental, like that command.").define("reloadEMCAfterCommands", false);
         private Server() { Spec = Builder.build(); }
     }
 
