@@ -1,0 +1,9 @@
+{
+	"$if": "since('1.19') && loader === 'forge'",
+	"$content": {
+		"type": "forge:add_features",
+		"biomes": "#minecraft:is_overworld",
+		"features": "projectexpansion:ore_ianthium",
+		"step": "underground_ores"
+	}
+}

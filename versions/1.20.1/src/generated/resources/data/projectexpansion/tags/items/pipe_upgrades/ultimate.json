@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	"values": [
+		"projectexpansion:ultimate_pipe_upgrade",
+		{
+			"id": "pipez:ultimate_upgrade",
+			"required": false
+		}
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"AMA",
+		"MPM",
+		"AMA"
+	],
+	"key": {
+		"A": {
+			"tag": "c:ingots/ianthium"
+		},
+		"M": {
+			"item": "projecte:red_matter"
+		},
+		"P": {
+			"item": "projectexpansion:basic_pipe_upgrade"
+		}
+	},
+	"result": {
+		"id": "projectexpansion:improved_pipe_upgrade"
+	}
+}

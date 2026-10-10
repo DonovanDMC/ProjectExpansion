@@ -1,0 +1,20 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"gui.projectexpansion.emc_pipe": "EMC Pipe",
+		"gui.projectexpansion.emc_pipe.rate": "Rate: %s emc/t",
+		"gui.projectexpansion.emc_pipe.redstone": "Redstone: %s",
+		"gui.projectexpansion.emc_pipe.redstone.ignored": "Ignored",
+		"gui.projectexpansion.emc_pipe.redstone.off_when_powered": "Off When Powered",
+		"gui.projectexpansion.emc_pipe.redstone.on_when_powered": "On When Powered",
+		"gui.projectexpansion.emc_pipe.redstone.always_off": "Always Off",
+		"gui.projectexpansion.emc_pipe.distribution": "Distribution: %s",
+		"gui.projectexpansion.emc_pipe.distribution.nearest": "Nearest",
+		"gui.projectexpansion.emc_pipe.distribution.furthest": "Furthest",
+		"gui.projectexpansion.emc_pipe.distribution.round_robin": "Round Robin",
+		"gui.projectexpansion.emc_pipe.distribution.random": "Random",
+		"gui.projectexpansion.emc_pipe.locked": "Needs at least a %s upgrade",
+		"gui.projectexpansion.emc_pipe.locked.basic": "Basic",
+		"gui.projectexpansion.emc_pipe.locked.improved": "Improved"
+	}
+}

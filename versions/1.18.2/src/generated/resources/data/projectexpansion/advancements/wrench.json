@@ -1,0 +1,33 @@
+{
+	"parent": "projectexpansion:emc_pipe",
+	"criteria": {
+		"wrench": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:wrench"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.wrench"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.wrench.description"
+		},
+		"icon": {
+			"item": "projectexpansion:wrench"
+		}
+	},
+	"requirements": [
+		[
+			"wrench"
+		]
+	]
+}

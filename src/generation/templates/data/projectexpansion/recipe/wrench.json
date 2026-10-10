@@ -1,0 +1,11 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"pattern": ["A A", " A ", " A "],
+			"key": { "A": "#c:ingots/ianthium" },
+			"output": "projectexpansion:wrench"
+		}
+	}
+}

@@ -8,6 +8,12 @@
 		{ "$each": "MATTER_BLOCKS", "$do": "{{id(`${it}_matter_block`)}}" },
 		"projectexpansion:compact_sun",
 		"projectexpansion:condenser_mk3",
-		"projectexpansion:arcane_transmutation_table"
+		"projectexpansion:arcane_transmutation_table",
+		{ "$if": "since('1.18')", "$then": "projectexpansion:emc_pipe" },
+		{ "$if": "since('1.18')", "$then": "projectexpansion:ianthium_ore" },
+		{ "$if": "since('1.18')", "$then": "projectexpansion:deepslate_ianthium_ore" },
+		{ "$if": "since('1.18')", "$then": "projectexpansion:raw_ianthium_block" },
+		{ "$if": "since('1.18')", "$then": "projectexpansion:ianthium_block" },
+		{ "$if": "since('1.18')", "$then": "projectexpansion:emc_refinery" }
 	]
 }

@@ -1,0 +1,7 @@
+{
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "pex_mod_that_does_not_exist" }],
+	"type": "projectexpansion:refining",
+	"ingredient": { "item": "minecraft:dirt" },
+	"result": { "item": "minecraft:diamond" },
+	"emc": 1
+}

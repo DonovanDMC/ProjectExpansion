@@ -1,0 +1,14 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"block.projectexpansion.emc_pipe": "EMC Pipe",
+		"block.projectexpansion.emc_pipe.tooltip": "Moves emc between anything that stores it. Use a wrench on a side to extract from it.",
+		"block.projectexpansion.emc_pipe.tooltip2": "Sneak with a wrench to disconnect a side, use an extracting side to configure it.",
+		"tag.item.c.wrenches": "Wrenches",
+		"tag.item.projectexpansion.pipe_upgrades.basic": "Basic Pipe Upgrades",
+		"tag.item.projectexpansion.pipe_upgrades.improved": "Improved Pipe Upgrades",
+		"tag.item.projectexpansion.pipe_upgrades.advanced": "Advanced Pipe Upgrades",
+		"tag.item.projectexpansion.pipe_upgrades.ultimate": "Ultimate Pipe Upgrades",
+		"tag.item.projectexpansion.pipe_upgrades.infinity": "Infinity Pipe Upgrades"
+	}
+}

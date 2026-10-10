@@ -8,15 +8,20 @@ import cool.furry.mc.projectexpansion.gui.GUIArcaneTransmutationTablet;
 import cool.furry.mc.projectexpansion.gui.GUICollector;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Input;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Output;
+import cool.furry.mc.projectexpansion.gui.GUIEMCRefinery;
+import cool.furry.mc.projectexpansion.gui.GUIEmcPipe;
 import cool.furry.mc.projectexpansion.net.PacketHandler;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketOpenTransmutationTablet;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketToggleEmcLock;
+import cool.furry.mc.projectexpansion.registries.Blocks;
 import cool.furry.mc.projectexpansion.registries.MenuTypes;
 import cool.furry.mc.projectexpansion.util.EmcLock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -33,6 +38,11 @@ public class ClientEvents {
         public static void clientSetup(FMLClientSetupEvent event) {
             event.enqueueWork(() -> {
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_1.get(), GUICollector.Tier1::new);
+                MenuScreens.register(MenuTypes.EMC_PIPE.get(), GUIEmcPipe::new);
+                // the ores are an overlay on stone, 1.18 doesn't read render types from models
+                ItemBlockRenderTypes.setRenderLayer(Blocks.IANTHIUM_ORE.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.DEEPSLATE_IANTHIUM_ORE.get(), RenderType.cutout());
+                MenuScreens.register(MenuTypes.EMC_REFINERY.get(), GUIEMCRefinery::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_2.get(), GUICollector.Tier2::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_3.get(), GUICollector.Tier3::new);
                 MenuScreens.register(MenuTypes.CONDENSER_MK3_INPUT.get(), GUICondenserMK3Input::new);

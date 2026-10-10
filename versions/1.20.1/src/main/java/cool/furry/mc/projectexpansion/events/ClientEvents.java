@@ -7,6 +7,8 @@ import cool.furry.mc.projectexpansion.gui.GUIArcaneTransmutationTablet;
 import cool.furry.mc.projectexpansion.gui.GUICollector;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Input;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Output;
+import cool.furry.mc.projectexpansion.gui.GUIEMCRefinery;
+import cool.furry.mc.projectexpansion.gui.GUIEmcPipe;
 import cool.furry.mc.projectexpansion.net.PacketHandler;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketOpenTransmutationTablet;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketToggleEmcLock;
@@ -33,6 +35,8 @@ public class ClientEvents {
         public static void clientSetup(FMLClientSetupEvent event) {
             event.enqueueWork(() -> {
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_1.get(), GUICollector.Tier1::new);
+                MenuScreens.register(MenuTypes.EMC_PIPE.get(), GUIEmcPipe::new);
+                MenuScreens.register(MenuTypes.EMC_REFINERY.get(), GUIEMCRefinery::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_2.get(), GUICollector.Tier2::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_3.get(), GUICollector.Tier3::new);
                 MenuScreens.register(MenuTypes.CONDENSER_MK3_INPUT.get(), GUICondenserMK3Input::new);

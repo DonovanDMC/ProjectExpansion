@@ -1,0 +1,172 @@
+{
+	"$if": "since('1.18')",
+	"$for": {
+		"block": [
+			"ianthium_ore",
+			"deepslate_ianthium_ore"
+		]
+	},
+	"$let": {
+		"base": "block === 'ianthium_ore' ? 'minecraft:block/stone' : 'minecraft:block/deepslate'"
+	},
+	"$output": "{{block}}",
+	"$content": {
+		"parent": "minecraft:block/block",
+		"render_type": "minecraft:cutout",
+		"textures": {
+			"particle": "{{base}}",
+			"base": "{{base}}",
+			"overlay": "projectexpansion:block/ianthium_ore_overlay"
+		},
+		"elements": [
+			{
+				"from": [
+					0,
+					0,
+					0
+				],
+				"to": [
+					16,
+					16,
+					16
+				],
+				"faces": {
+					"north": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#base",
+						"cullface": "north"
+					},
+					"east": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#base",
+						"cullface": "east"
+					},
+					"south": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#base",
+						"cullface": "south"
+					},
+					"west": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#base",
+						"cullface": "west"
+					},
+					"up": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#base",
+						"cullface": "up"
+					},
+					"down": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#base",
+						"cullface": "down"
+					}
+				}
+			},
+			{
+				"from": [
+					0,
+					0,
+					0
+				],
+				"to": [
+					16,
+					16,
+					16
+				],
+				"faces": {
+					"north": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#overlay",
+						"cullface": "north"
+					},
+					"east": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#overlay",
+						"cullface": "east"
+					},
+					"south": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#overlay",
+						"cullface": "south"
+					},
+					"west": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#overlay",
+						"cullface": "west"
+					},
+					"up": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#overlay",
+						"cullface": "up"
+					},
+					"down": {
+						"uv": [
+							0,
+							0,
+							16,
+							16
+						],
+						"texture": "#overlay",
+						"cullface": "down"
+					}
+				}
+			}
+		]
+	}
+}

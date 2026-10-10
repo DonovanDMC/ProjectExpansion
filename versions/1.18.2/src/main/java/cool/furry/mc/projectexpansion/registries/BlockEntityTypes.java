@@ -2,6 +2,8 @@ package cool.furry.mc.projectexpansion.registries;
 
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.block.entity.*;
+import cool.furry.mc.projectexpansion.block.entity.BlockEntityEMCRefinery;
+import cool.furry.mc.projectexpansion.block.entity.BlockEntityEmcPipe;
 import cool.furry.mc.projectexpansion.util.AdvancedAlchemicalChest;
 import cool.furry.mc.projectexpansion.util.Matter;
 import net.minecraft.world.level.block.Block;
@@ -23,4 +25,6 @@ public class BlockEntityTypes {
     public static final RegistryObject<BlockEntityType<BlockEntityTransmutationInterface>> TRANSMUTATION_INTERFACE = Registry.register("transmutation_interface", () -> BlockEntityType.Builder.of(BlockEntityTransmutationInterface::new, Blocks.TRANSMUTATION_INTERFACE.get()).build(null));
     public static final RegistryObject<BlockEntityType<BlockEntityAdvancedAlchemicalChest>> ADVANCED_ALCHEMICAL_CHEST = Registry.register("advanced_alchemical_chest", () -> BlockEntityType.Builder.of(BlockEntityAdvancedAlchemicalChest::new, Arrays.stream(AdvancedAlchemicalChest.getBlocks()).toArray(Block[]::new)).build(null));
     public static final RegistryObject<BlockEntityType<BlockEntityCondenserMK3>> CONDENSER_MK3 = Registry.register("condenser_mk3", () -> BlockEntityType.Builder.of(BlockEntityCondenserMK3::new, Blocks.CONDENSER_MK3.get()).build(null));
+    public static final RegistryObject<BlockEntityType<BlockEntityEMCRefinery>> EMC_REFINERY = Registry.register("emc_refinery", () -> BlockEntityType.Builder.of(BlockEntityEMCRefinery::new, Blocks.EMC_REFINERY.get()).build(null));
+    public static final RegistryObject<BlockEntityType<BlockEntityEmcPipe>> EMC_PIPE = Registry.register("emc_pipe", () -> BlockEntityType.Builder.of(BlockEntityEmcPipe::new, Blocks.EMC_PIPE.get()).build(null));
 }

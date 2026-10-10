@@ -1,0 +1,17 @@
+{
+	"$if": "since('1.18')",
+	"$for": {
+		"item": [
+			"raw_ianthium",
+			"ianthium_ingot",
+			"ianthium_nugget"
+		]
+	},
+	"$output": "{{item}}",
+	"$content": {
+		"parent": "minecraft:item/generated",
+		"textures": {
+			"layer0": "{{id(`item/${item}`)}}"
+		}
+	}
+}

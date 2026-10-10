@@ -28,6 +28,9 @@ public class BlockTypes {
     public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockCondenserMK3>> CONDENSER_MK3 = Registry.register("condenser_mk3", () -> BlockBehaviour.simpleCodec(BlockCondenserMK3::new));
     public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockArcaneTransmutationTable>> ARCANE_TRANSMUTATION_TABLE = Registry.register("arcane_transmutation_table", () -> BlockBehaviour.simpleCodec(BlockArcaneTransmutationTable::new));
 
+    public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockEMCRefinery>> EMC_REFINERY = Registry.register("emc_refinery", () -> BlockBehaviour.simpleCodec(BlockEMCRefinery::new));
+    public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockEmcPipe>> EMC_PIPE = Registry.register("emc_pipe", () -> BlockBehaviour.simpleCodec(BlockEmcPipe::new));
+
     public static <T extends Block & IHasMatter> DeferredHolder<MapCodec<? extends Block>, MapCodec<T>> registerMatter(String name, BiFunction<BlockBehaviour.Properties, Matter, T> block) {
         return Registry.register(name, () -> RecordCodecBuilder.mapCodec(instance -> instance.group(
                 BlockBehaviour.propertiesCodec(),

@@ -1,0 +1,8 @@
+{
+	"type": "projectexpansion:refining",
+	"ingredient": { "tag": "c:ingots/iron" },
+	"count": 2,
+	"result": { "id": "minecraft:structure_void" },
+	"emc": 100,
+	"time": 20
+}

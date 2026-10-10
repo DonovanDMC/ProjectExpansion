@@ -1,0 +1,10 @@
+{
+	"$if": "since('1.18')",
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "infinity_pipe_upgrade",
+		"parent": "projectexpansion:pipe_upgrade",
+		"item": "projectexpansion:infinity_pipe_upgrade",
+		"frame": "challenge"
+	}
+}

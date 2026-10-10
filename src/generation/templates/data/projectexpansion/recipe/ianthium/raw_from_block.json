@@ -1,0 +1,14 @@
+{
+	"$if": "since('1.18')",
+	"$output": "raw_ianthium_from_block",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"ingredients": [
+				"projectexpansion:raw_ianthium_block"
+			],
+			"output": "projectexpansion:raw_ianthium",
+			"count": 9
+		}
+	}
+}

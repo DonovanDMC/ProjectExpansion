@@ -2,9 +2,11 @@ package cool.furry.mc.projectexpansion.integrations.jade;
 
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.integrations.Common;
+import cool.furry.mc.projectexpansion.integrations.EmcServerData;
 import cool.furry.mc.projectexpansion.integrations.IDataProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -14,15 +16,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class JadeDataProvider implements IBlockComponentProvider {
+public class JadeDataProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
     static final JadeDataProvider INSTANCE = new JadeDataProvider();
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         Common.registerCommonTooltips(tooltip::add, new DataProvider(accessor));
+    }
+
+    @Override
+    public void appendServerData(CompoundTag data, BlockAccessor accessor) {
+        EmcServerData.append(data, accessor.getLevel(), accessor.getPosition(), accessor.getBlockEntity(), accessor.getSide());
     }
 
     @Override
@@ -64,6 +72,11 @@ public class JadeDataProvider implements IBlockComponentProvider {
         @Override
         public Direction getSide() {
             return accessor.getSide();
+        }
+
+        @Override
+        public CompoundTag getServerData() {
+            return accessor.getServerData();
         }
     }
 }

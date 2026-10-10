@@ -1,0 +1,9 @@
+{
+	"$if": "since('1.18')",
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "pipe_upgrade",
+		"parent": "projectexpansion:emc_pipe",
+		"item": "projectexpansion:basic_pipe_upgrade"
+	}
+}

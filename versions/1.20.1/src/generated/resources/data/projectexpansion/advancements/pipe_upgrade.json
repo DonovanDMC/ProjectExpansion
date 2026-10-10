@@ -1,0 +1,34 @@
+{
+	"parent": "projectexpansion:emc_pipe",
+	"criteria": {
+		"pipe_upgrade": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:basic_pipe_upgrade"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.pipe_upgrade"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.pipe_upgrade.description"
+		},
+		"icon": {
+			"item": "projectexpansion:basic_pipe_upgrade"
+		}
+	},
+	"requirements": [
+		[
+			"pipe_upgrade"
+		]
+	],
+	"sends_telemetry_event": true
+}

@@ -1,0 +1,12 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"pattern": ["GGG", "DRD", "GGG"],
+			"key": { "G": "minecraft:glass", "D": "#c:ingots/ianthium", "R": "projecte:relay_mk1" },
+			"output": "projectexpansion:emc_pipe",
+			"count": 8
+		}
+	}
+}

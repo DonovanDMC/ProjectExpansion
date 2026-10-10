@@ -143,6 +143,14 @@ public enum Lang implements ILangEntry {
         WHITE_COLLECTOR("white_collector"),
         FADING_COLLECTOR("fading_collector"),
         FINAL_COLLECTOR("final_collector"),
+
+        // EMC Pipe
+        EMC_PIPE_TOOLTIP("emc_pipe", "tooltip"),
+        EMC_PIPE_TOOLTIP2("emc_pipe", "tooltip2"),
+
+        // EMC Refinery
+        EMC_REFINERY("emc_refinery"),
+        EMC_REFINERY_TOOLTIP("emc_refinery", "tooltip"),
         ;
 
         private String key;
@@ -342,6 +350,12 @@ public enum Lang implements ILangEntry {
         ALCHEMICAL_BOOK_NOT_ENOUGH_EMC("alchemical_book", "not_enough_emc"),
 
         ARCANE_TRANSMUTATION_TABLET_TOOLTIP("arcane_transmutation_tablet", "tooltip"),
+
+        // Pipes
+        WRENCH_TOOLTIP("wrench", "tooltip"),
+        PIPE_UPGRADE_RATE("pipe_upgrade", "rate"),
+        PIPE_UPGRADE_UNLOCKS("pipe_upgrade", "unlocks"),
+        PIPE_UPGRADE_CONFIGURED("pipe_upgrade", "configured"),
         ;
 
         private String key;
@@ -410,6 +424,19 @@ public enum Lang implements ILangEntry {
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_EMC_MISSING("arcane_transmutation_tablet", "transfer", "emc_missing"),
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_EXCLUDED("arcane_transmutation_tablet", "transfer", "excluded"),
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_NOT_LEARNED("arcane_transmutation_tablet", "transfer", "not_learned"),
+
+        // EMC Pipe
+        EMC_PIPE("emc_pipe"),
+        EMC_PIPE_RATE("emc_pipe", "rate"),
+        EMC_PIPE_REDSTONE("emc_pipe", "redstone"),
+        EMC_PIPE_DISTRIBUTION("emc_pipe", "distribution"),
+        EMC_PIPE_LOCKED("emc_pipe", "locked"),
+
+        // EMC Refinery
+        EMC_REFINERY_STORED("emc_refinery", "stored"),
+        EMC_REFINERY_COST("emc_refinery", "cost"),
+        EMC_REFINERY_TIME("emc_refinery", "time"),
+        REFINING("refining"),
         ;
 
         private String key;

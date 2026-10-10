@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "projectexpansion:raw_ianthium_block"
+		}
+	],
+	"result": {
+		"id": "projectexpansion:raw_ianthium",
+		"count": 9
+	}
+}

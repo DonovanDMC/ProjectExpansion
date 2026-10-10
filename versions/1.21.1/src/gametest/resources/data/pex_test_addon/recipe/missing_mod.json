@@ -1,0 +1,7 @@
+{
+	"neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "pex_mod_that_does_not_exist" }],
+	"type": "projectexpansion:refining",
+	"ingredient": { "item": "minecraft:dirt" },
+	"result": { "id": "minecraft:diamond" },
+	"emc": 1
+}

@@ -1,0 +1,35 @@
+package cool.furry.mc.projectexpansion.recipe;
+
+import cool.furry.mc.projectexpansion.registries.RecipeTypes;
+import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
+import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
+import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
+import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+
+// lets projecte work out values through the refinery, picked up by projecte's annotation scan
+@RecipeTypeMapper
+public class RefiningRecipeMapper implements IRecipeTypeMapper {
+    @Override
+    public String getName() {
+        return RefiningMapping.NAME;
+    }
+
+    @Override
+    public String getDescription() {
+        return RefiningMapping.DESCRIPTION;
+    }
+
+    @Override
+    public boolean canHandle(RecipeType<?> type) {
+        return type == RecipeTypes.REFINING.get();
+    }
+
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> recipe, RegistryAccess registries, INSSFakeGroupManager fakeGroupManager) {
+        return RefiningMapping.handle(mapper, recipe, fakeGroupManager);
+    }
+}

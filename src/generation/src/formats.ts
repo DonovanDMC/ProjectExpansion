@@ -14,7 +14,7 @@ interface TagAlias {
     tag?: string;
 }
 
-// common (c:) tags are Forge's before 1.21, some of which didn't have an equivalent
+// common (c:) tags that Forge named differently before 1.21, or didn't have at all
 const TAG_ALIASES: Record<string, TagAlias> = {
     "c:chests": { since: "1.21", tag: "forge:chests" },
     "c:glass_blocks": { since: "1.21", tag: "forge:glass" },
@@ -127,7 +127,11 @@ export class Formats {
     /** a tag's id for this version, or null if it doesn't have one */
     tag(id: string): string | null {
         const alias = TAG_ALIASES[id];
-        if (alias === undefined || this.since(alias.since)) {
+        if (alias === undefined) {
+            // anything else common lived under forge's namespace before 1.21
+            return id.startsWith("c:") && !this.since("1.21") ? `forge:${id.slice(2)}` : id;
+        }
+        if (this.since(alias.since)) {
             return id;
         }
         return alias.tag ?? null;

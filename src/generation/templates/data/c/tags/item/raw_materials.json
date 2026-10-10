@@ -1,0 +1,9 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"replace": false,
+		"values": [
+			"{{tagEntry('#c:raw_materials/ianthium')}}"
+		]
+	}
+}

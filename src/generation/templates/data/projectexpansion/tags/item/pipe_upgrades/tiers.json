@@ -1,0 +1,12 @@
+{
+	"$if": "since('1.18')",
+	"$for": { "tier": "['basic', 'improved', 'advanced', 'ultimate', 'infinity']" },
+	"$output": "{{tier}}",
+	"$content": {
+		"replace": false,
+		"values": [
+			"{{id(`${tier}_pipe_upgrade`)}}",
+			"{{tagEntry(`pipez:${tier}_upgrade`, false)}}"
+		]
+	}
+}

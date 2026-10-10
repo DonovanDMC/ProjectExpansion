@@ -1,0 +1,10 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"projectexpansion.configuration.emcPipeRate": "EMC Pipe Rate",
+		"projectexpansion.configuration.emcPipeRateBasic": "EMC Pipe Rate (Basic)",
+		"projectexpansion.configuration.emcPipeRateImproved": "EMC Pipe Rate (Improved)",
+		"projectexpansion.configuration.emcPipeRateAdvanced": "EMC Pipe Rate (Advanced)",
+		"projectexpansion.configuration.emcPipeRateUltimate": "EMC Pipe Rate (Ultimate)"
+	}
+}

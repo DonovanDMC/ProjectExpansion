@@ -1,0 +1,19 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"advancements.projectexpansion.ianthium": "Shades of Violet",
+		"advancements.projectexpansion.ianthium.description": "Mine ianthium ore with a matter pickaxe.",
+		"advancements.projectexpansion.emc_refinery": "Refined Tastes",
+		"advancements.projectexpansion.emc_refinery.description": "Build an EMC Refinery.",
+		"advancements.projectexpansion.ianthium_ingot": "Purple Reign",
+		"advancements.projectexpansion.ianthium_ingot.description": "Refine raw ianthium into an ingot.",
+		"advancements.projectexpansion.emc_pipe": "A Series of Tubes",
+		"advancements.projectexpansion.emc_pipe.description": "Craft EMC pipes to move EMC around.",
+		"advancements.projectexpansion.wrench": "Right Tool for the Job",
+		"advancements.projectexpansion.wrench.description": "Craft a wrench to choose which sides of a pipe pull EMC.",
+		"advancements.projectexpansion.pipe_upgrade": "Picking Up the Pace",
+		"advancements.projectexpansion.pipe_upgrade.description": "Craft a pipe upgrade.",
+		"advancements.projectexpansion.infinity_pipe_upgrade": "To Infinity",
+		"advancements.projectexpansion.infinity_pipe_upgrade.description": "Craft an infinity pipe upgrade. EMC can't move any faster."
+	}
+}

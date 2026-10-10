@@ -1,0 +1,7 @@
+{
+	"replace": false,
+	"values": [
+		"#forge:storage_blocks/ianthium",
+		"#forge:storage_blocks/raw_ianthium"
+	]
+}

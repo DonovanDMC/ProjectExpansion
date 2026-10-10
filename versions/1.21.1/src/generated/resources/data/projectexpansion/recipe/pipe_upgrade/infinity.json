@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"AMA",
+		"MPM",
+		"AMA"
+	],
+	"key": {
+		"A": {
+			"tag": "c:ingots/ianthium"
+		},
+		"M": {
+			"item": "projectexpansion:final_star_shard"
+		},
+		"P": {
+			"item": "projectexpansion:ultimate_pipe_upgrade"
+		}
+	},
+	"result": {
+		"id": "projectexpansion:infinity_pipe_upgrade"
+	}
+}

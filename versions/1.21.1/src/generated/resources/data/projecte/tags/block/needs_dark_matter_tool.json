@@ -4,6 +4,9 @@
 		"projectexpansion:dark_collector",
 		"projectexpansion:dark_power_flower",
 		"projectexpansion:dark_relay",
-		"projectexpansion:dark_emc_link"
+		"projectexpansion:dark_emc_link",
+		"projectexpansion:ianthium_ore",
+		"projectexpansion:deepslate_ianthium_ore",
+		"projectexpansion:emc_refinery"
 	]
 }

@@ -1,0 +1,33 @@
+{
+	"parent": "projectexpansion:ianthium",
+	"criteria": {
+		"emc_refinery": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:emc_refinery"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.emc_refinery"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.emc_refinery.description"
+		},
+		"icon": {
+			"item": "projectexpansion:emc_refinery"
+		}
+	},
+	"requirements": [
+		[
+			"emc_refinery"
+		]
+	]
+}

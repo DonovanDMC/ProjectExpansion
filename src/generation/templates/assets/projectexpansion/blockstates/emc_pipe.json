@@ -1,0 +1,17 @@
+{
+	"$if": "since('1.18')",
+	"$let": { "rotations": "({ north: {}, east: { y: 90 }, south: { y: 180 }, west: { y: 270 }, up: { x: 270 }, down: { x: 90 } })" },
+	"$content": {
+		"multipart": [
+			{ "apply": { "model": "{{id('block/emc_pipe/core')}}" } },
+			{
+				"$each": "Object.entries(rotations)", "$as": "side",
+				"$do": { "when": { "{{side[0]}}": "connected" }, "apply": { "model": "{{id('block/emc_pipe/arm')}}", "...": "{{side[1]}}" } }
+			},
+			{
+				"$each": "Object.entries(rotations)", "$as": "side",
+				"$do": { "when": { "{{side[0]}}": "extracting" }, "apply": { "model": "{{id('block/emc_pipe/extract')}}", "...": "{{side[1]}}" } }
+			}
+		]
+	}
+}

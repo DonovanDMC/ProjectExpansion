@@ -1,0 +1,19 @@
+{
+	"$if": "since('1.18')",
+	"$output": "ianthium_block",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"pattern": [
+				"###",
+				"###",
+				"###"
+			],
+			"key": {
+				"#": "projectexpansion:ianthium_ingot"
+			},
+			"output": "projectexpansion:ianthium_block",
+			"count": 1
+		}
+	}
+}

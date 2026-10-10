@@ -1,0 +1,19 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"pattern": [
+				"DRD",
+				"RFR",
+				"DRD"
+			],
+			"key": {
+				"D": "projecte:dark_matter",
+				"R": "minecraft:redstone_block",
+				"F": "projecte:dm_furnace"
+			},
+			"output": "projectexpansion:emc_refinery"
+		}
+	}
+}

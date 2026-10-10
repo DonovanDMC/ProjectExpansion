@@ -39,7 +39,9 @@ public class DataGameTests {
         List<String> problems = new ArrayList<>();
         for (DeferredHolder<Block, ? extends Block> entry : Blocks.Registry.getEntries()) {
             Block block = entry.get();
-            Item item = block.asItem();
+            // ores drop their raw material instead, see IanthiumGameTests
+            boolean ore = block == Blocks.IANTHIUM_ORE.get() || block == Blocks.DEEPSLATE_IANTHIUM_ORE.get();
+            Item item = ore ? cool.furry.mc.projectexpansion.registries.Items.RAW_IANTHIUM.get() : block.asItem();
             if (item == Items.AIR) {
                 problems.add(entry.getId() + " has no item");
                 continue;
@@ -90,7 +92,7 @@ public class DataGameTests {
 
     @GameTest(template = EMPTY)
     public static void advancementsLoad(GameTestHelper helper) {
-        for (String id : List.of("compact_sun", "collector", "magenta_matter", "pink_fuel", "knowledge_sharing_book", "blinded_by_the_light")) {
+        for (String id : List.of("compact_sun", "collector", "magenta_matter", "pink_fuel", "knowledge_sharing_book", "blinded_by_the_light", "ianthium", "emc_refinery", "ianthium_ingot", "emc_pipe", "wrench", "pipe_upgrade", "infinity_pipe_upgrade")) {
             ResourceLocation location = Main.rl(id);
             check(Platform.hasAdvancement(helper.getLevel().getServer(), location), "Missing advancement " + location);
         }

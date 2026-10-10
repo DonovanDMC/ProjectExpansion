@@ -1,0 +1,14 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"block.projectexpansion.emc_refinery": "EMC Refinery",
+		"block.projectexpansion.emc_refinery.tooltip": "Refines materials with emc, from a Klein Star, an EMC Pipe or anything next to it that gives emc.",
+		"gui.projectexpansion.emc_refinery.stored": "%s / %s EMC",
+		"gui.projectexpansion.emc_refinery.cost": "Cost: %s EMC",
+		"gui.projectexpansion.emc_refinery.time": "%s EMC, %ss",
+		"gui.projectexpansion.refining": "Refining",
+		"emi.category.projectexpansion.refining": "Refining",
+		"config.projectexpansion.mapper.refining": "Refining Mapper",
+		"config.projectexpansion.mapper.refining.include_emc_cost": "Include EMC Cost"
+	}
+}

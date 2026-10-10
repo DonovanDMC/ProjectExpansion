@@ -3,6 +3,7 @@ package cool.furry.mc.projectexpansion.registries;
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCondenserMK3;
+import cool.furry.mc.projectexpansion.block.entity.BlockEntityEMCRefinery;
 import cool.furry.mc.projectexpansion.gui.container.*;
 import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeDeferredRegister;
 import moze_intel.projecte.utils.WorldHelper;
@@ -31,6 +32,9 @@ public class MenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerCondenserMK3Input>> CONDENSER_MK3_INPUT = registerBlockEntity("condenser_mk3_input", BlockEntityCondenserMK3.class, ContainerCondenserMK3Input::new);
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerCondenserMK3Output>> CONDENSER_MK3_OUTPUT = registerBlockEntity("condenser_mk3_output", BlockEntityCondenserMK3.class, ContainerCondenserMK3Output::new);
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerArcaneTransmutationTablet>> ARCANE_TRANSMUTATION_TABLET = register("arcane_transmutation_tablet", ContainerArcaneTransmutationTablet::fromNetwork);
+
+    public static final DeferredHolder<MenuType<?>, MenuType<ContainerEMCRefinery>> EMC_REFINERY = registerBlockEntity("emc_refinery", BlockEntityEMCRefinery.class, ContainerEMCRefinery::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<ContainerEmcPipe>> EMC_PIPE = Registry.register("emc_pipe", () -> IMenuTypeExtension.create(ContainerEmcPipe::fromNetwork));
 
     public static <CONTAINER extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<CONTAINER>> register(String name, IContainerFactory<CONTAINER> factory) {
         return Registry.register(name, () -> new MenuType<>(factory, FeatureFlags.VANILLA_SET));

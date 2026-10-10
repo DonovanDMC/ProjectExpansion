@@ -21,6 +21,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
@@ -44,6 +45,7 @@ import java.util.function.Supplier;
 public class Platform {
     public static final ResourceKey<Registry<Level>> DIMENSION = Registry.DIMENSION_REGISTRY;
     public static final ResourceKey<Registry<Block>> BLOCK = Registry.BLOCK_REGISTRY;
+    public static final ResourceKey<Registry<Item>> ITEM = Registry.ITEM_REGISTRY;
     public static final Codec<UUID> UUID_CODEC = UUIDUtil.CODEC;
     public static final Capability<IItemHandler> ITEM_HANDLER = ForgeCapabilities.ITEM_HANDLER;
     public static final Capability<IFluidHandler> FLUID_HANDLER = ForgeCapabilities.FLUID_HANDLER;
@@ -68,6 +70,10 @@ public class Platform {
     }
 
     // Material was removed in 1.20, blocks get their base properties and map colour from here instead
+    public static BlockBehaviour.Properties mapColor(BlockBehaviour.Properties properties, DyeColor color) {
+        return properties.color(color.getMaterialColor());
+    }
+
     public static BlockBehaviour.Properties blockProperties() {
         return BlockBehaviour.Properties.of(Material.STONE);
     }

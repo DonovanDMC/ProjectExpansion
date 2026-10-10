@@ -7,6 +7,7 @@ import cool.furry.mc.projectexpansion.capability.CapabilityAlchemicalBookLocatio
 import cool.furry.mc.projectexpansion.util.BasicDataComponentTypes;
 import cool.furry.mc.projectexpansion.util.TagNames;
 import cool.furry.mc.projectexpansion.util.Util;
+import cool.furry.mc.projectexpansion.util.pipe.PipeSettings;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
@@ -43,4 +44,6 @@ public class DataComponentTypes {
 
 
 
+    // redstone mode and distribution, stored on pipe upgrades
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<PipeSettings>> PIPE_SETTINGS = Registry.registerComponentType("pipe_settings", (builder) -> builder.persistent(PipeSettings.CODEC).networkSynchronized(PipeSettings.STREAM_CODEC));
 }

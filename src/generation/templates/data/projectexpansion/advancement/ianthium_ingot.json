@@ -1,0 +1,9 @@
+{
+	"$if": "since('1.18')",
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "ianthium_ingot",
+		"parent": "projectexpansion:emc_refinery",
+		"item": "projectexpansion:ianthium_ingot"
+	}
+}

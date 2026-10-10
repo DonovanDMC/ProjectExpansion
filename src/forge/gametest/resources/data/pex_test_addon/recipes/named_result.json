@@ -1,0 +1,6 @@
+{
+	"type": "projectexpansion:refining",
+	"ingredient": { "item": "minecraft:cobblestone" },
+	"result": { "item": "minecraft:stone", "count": 3, "nbt": "{display:{Name:'{\"text\":\"Refined Stone\"}'}}" },
+	"emc": 5
+}

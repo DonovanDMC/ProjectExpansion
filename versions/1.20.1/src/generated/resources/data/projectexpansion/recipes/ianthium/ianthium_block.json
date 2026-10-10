@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"###",
+		"###",
+		"###"
+	],
+	"key": {
+		"#": {
+			"item": "projectexpansion:ianthium_ingot"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:ianthium_block"
+	}
+}

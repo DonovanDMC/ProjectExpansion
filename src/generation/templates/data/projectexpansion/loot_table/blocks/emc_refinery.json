@@ -1,0 +1,9 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"$template": "_partials/loot_table/drop_self",
+		"$with": {
+			"block": "emc_refinery"
+		}
+	}
+}

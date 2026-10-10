@@ -1,0 +1,16 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"item.projectexpansion.wrench": "Wrench",
+		"item.projectexpansion.wrench.tooltip": "Sets EMC Pipe sides to extract, sneak to disconnect them.",
+		"item.projectexpansion.basic_pipe_upgrade": "Basic Pipe Upgrade",
+		"item.projectexpansion.improved_pipe_upgrade": "Improved Pipe Upgrade",
+		"item.projectexpansion.advanced_pipe_upgrade": "Advanced Pipe Upgrade",
+		"item.projectexpansion.ultimate_pipe_upgrade": "Ultimate Pipe Upgrade",
+		"item.projectexpansion.infinity_pipe_upgrade": "Infinity Pipe Upgrade",
+		"item.projectexpansion.pipe_upgrade.rate": "Moves %s emc per tick",
+		"item.projectexpansion.pipe_upgrade.unlocks.redstone": "Unlocks the redstone mode",
+		"item.projectexpansion.pipe_upgrade.unlocks.distribution": "Unlocks the redstone mode and distribution",
+		"item.projectexpansion.pipe_upgrade.configured": "Configured"
+	}
+}

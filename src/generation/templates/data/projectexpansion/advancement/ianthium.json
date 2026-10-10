@@ -1,0 +1,9 @@
+{
+	"$if": "since('1.18')",
+	"$template": "_partials/advancement/obtain",
+	"$with": {
+		"name": "ianthium",
+		"parent": "projecte:dark_matter_pickaxe",
+		"item": "projectexpansion:raw_ianthium"
+	}
+}

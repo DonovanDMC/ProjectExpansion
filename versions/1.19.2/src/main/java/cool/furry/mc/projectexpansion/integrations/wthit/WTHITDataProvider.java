@@ -1,27 +1,39 @@
 package cool.furry.mc.projectexpansion.integrations.wthit;
 
 import cool.furry.mc.projectexpansion.integrations.Common;
+import cool.furry.mc.projectexpansion.integrations.EmcServerData;
 import cool.furry.mc.projectexpansion.integrations.IDataProvider;
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerAccessor;
+import mcp.mobius.waila.api.IDataWriter;
 import mcp.mobius.waila.api.ITooltip;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class WTHITDataProvider implements IBlockComponentProvider {
+public class WTHITDataProvider implements IBlockComponentProvider, mcp.mobius.waila.api.IDataProvider<BlockEntity> {
 
     static final WTHITDataProvider INSTANCE = new WTHITDataProvider();
 
     @Override
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         Common.registerCommonTooltips(tooltip::addLine, new DataProvider(accessor));
+    }
+
+    @Override
+    public void appendData(IDataWriter data, IServerAccessor<BlockEntity> accessor, IPluginConfig config) {
+        BlockEntity blockEntity = accessor.getTarget();
+        Direction side = accessor.getHitResult() instanceof BlockHitResult hit ? hit.getDirection() : null;
+        EmcServerData.append(data.raw(), accessor.getWorld(), blockEntity.getBlockPos(), blockEntity, side);
     }
 
     @SuppressWarnings("unused")
@@ -59,6 +71,11 @@ public class WTHITDataProvider implements IBlockComponentProvider {
         @Override
         public Direction getSide() {
             return accessor.getSide();
+        }
+
+        @Override
+        public CompoundTag getServerData() {
+            return accessor.getData().raw();
         }
     }
 }

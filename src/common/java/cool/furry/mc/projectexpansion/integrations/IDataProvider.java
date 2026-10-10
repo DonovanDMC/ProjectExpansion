@@ -2,6 +2,7 @@ package cool.furry.mc.projectexpansion.integrations;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -18,4 +19,8 @@ public interface IDataProvider {
     @SuppressWarnings("unused")
     Player getPlayer();
     Direction getSide();
+    // values the server sent along, for anything the client copy of the block doesn't keep up to date
+    default @Nullable CompoundTag getServerData() {
+        return null;
+    }
 }

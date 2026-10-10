@@ -1,0 +1,8 @@
+{
+	"type": "projectexpansion:refining",
+	"ingredient": { "tag": "forge:ingots/iron" },
+	"count": 2,
+	"result": { "item": "minecraft:structure_void" },
+	"emc": 100,
+	"time": 20
+}

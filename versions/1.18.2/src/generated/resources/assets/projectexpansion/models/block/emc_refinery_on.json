@@ -1,0 +1,8 @@
+{
+	"parent": "minecraft:block/orientable",
+	"textures": {
+		"front": "projectexpansion:block/emc_refinery_front_on",
+		"side": "projectexpansion:block/emc_refinery_side",
+		"top": "projectexpansion:block/emc_refinery_top"
+	}
+}

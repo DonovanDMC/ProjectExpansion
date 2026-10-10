@@ -1,0 +1,9 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"replace": false,
+		"values": [
+			"projectexpansion:ianthium_ore"
+		]
+	}
+}

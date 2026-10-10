@@ -1,7 +1,16 @@
 {
-	"$if": "since('1.21')",
+	"$if": "since('1.18')",
 	"$content": {
 		"replace": false,
-		"values": [{ "$each": "['collector', 'power_flower', 'relay', 'emc_link']", "$do": "{{id(`dark_${it}`)}}" }]
+		"values": [
+			{
+				"$if": "since('1.21')",
+				"$each": "['collector', 'power_flower', 'relay', 'emc_link']",
+				"$do": "{{id(`dark_${it}`)}}"
+			},
+			"projectexpansion:ianthium_ore",
+			"projectexpansion:deepslate_ianthium_ore",
+			"projectexpansion:emc_refinery"
+		]
 	}
 }

@@ -2,10 +2,13 @@ package cool.furry.mc.projectexpansion.integrations.jade;
 
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.integrations.Common;
+import cool.furry.mc.projectexpansion.integrations.EmcServerData;
 import cool.furry.mc.projectexpansion.integrations.IDataProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -14,10 +17,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class JadeDataProvider implements IBlockComponentProvider {
+public class JadeDataProvider implements IBlockComponentProvider, IServerDataProvider<BlockEntity> {
     static final JadeDataProvider INSTANCE = new JadeDataProvider();
 
     @Override
@@ -28,6 +32,12 @@ public class JadeDataProvider implements IBlockComponentProvider {
     @Override
     public ResourceLocation getUid() {
         return Main.rl("provider");
+    }
+
+    // jade doesn't say which side is being looked at here
+    @Override
+    public void appendServerData(CompoundTag data, ServerPlayer player, Level level, BlockEntity blockEntity, boolean showDetails) {
+        EmcServerData.append(data, level, blockEntity.getBlockPos(), blockEntity, null);
     }
 
     public record DataProvider(BlockAccessor accessor) implements IDataProvider {
@@ -64,6 +74,11 @@ public class JadeDataProvider implements IBlockComponentProvider {
         @Override
         public Direction getSide() {
             return accessor.getSide();
+        }
+
+        @Override
+        public CompoundTag getServerData() {
+            return accessor.getServerData();
         }
     }
 }

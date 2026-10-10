@@ -1,0 +1,19 @@
+{
+	"$if": "since('1.18')",
+	"$output": "ianthium_ingot_from_nuggets",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"pattern": [
+				"###",
+				"###",
+				"###"
+			],
+			"key": {
+				"#": "projectexpansion:ianthium_nugget"
+			},
+			"output": "projectexpansion:ianthium_ingot",
+			"count": 1
+		}
+	}
+}

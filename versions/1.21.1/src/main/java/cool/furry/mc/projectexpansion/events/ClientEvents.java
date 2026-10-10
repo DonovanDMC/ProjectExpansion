@@ -7,6 +7,8 @@ import cool.furry.mc.projectexpansion.gui.GUIArcaneTransmutationTablet;
 import cool.furry.mc.projectexpansion.gui.GUICollector;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Input;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Output;
+import cool.furry.mc.projectexpansion.gui.GUIEMCRefinery;
+import cool.furry.mc.projectexpansion.gui.GUIEmcPipe;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketOpenTransmutationTablet;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketToggleEmcLock;
 import cool.furry.mc.projectexpansion.registries.MenuTypes;
@@ -36,6 +38,8 @@ public class ClientEvents {
             event.register(MenuTypes.CONDENSER_MK3_INPUT.get(), GUICondenserMK3Input::new);
             event.register(MenuTypes.CONDENSER_MK3_OUTPUT.get(), GUICondenserMK3Output::new);
             event.register(MenuTypes.ARCANE_TRANSMUTATION_TABLET.get(), GUIArcaneTransmutationTablet::new);
+            event.register(MenuTypes.EMC_PIPE.get(), GUIEmcPipe::new);
+            event.register(MenuTypes.EMC_REFINERY.get(), GUIEMCRefinery::new);
         }
 
         @SubscribeEvent

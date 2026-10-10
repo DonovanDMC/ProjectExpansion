@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"GGG",
+		"DRD",
+		"GGG"
+	],
+	"key": {
+		"G": {
+			"item": "minecraft:glass"
+		},
+		"D": {
+			"tag": "c:ingots/ianthium"
+		},
+		"R": {
+			"item": "projecte:relay_mk1"
+		}
+	},
+	"result": {
+		"id": "projectexpansion:emc_pipe",
+		"count": 8
+	}
+}

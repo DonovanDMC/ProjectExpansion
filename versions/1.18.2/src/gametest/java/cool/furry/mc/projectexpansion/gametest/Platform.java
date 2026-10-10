@@ -50,4 +50,13 @@ public class Platform {
         }
         throw new IllegalStateException("MinecraftServer has no profile cache field");
     }
+
+    // 1.18 has no biome modifiers, Features registers the ore in code and adds it while biomes load
+    public static boolean hasPlacedFeature(ServerLevel level, ResourceLocation id) {
+        return net.minecraft.data.BuiltinRegistries.PLACED_FEATURE.containsKey(id);
+    }
+
+    public static boolean hasOreModifier(ServerLevel level, ResourceLocation id) {
+        return hasPlacedFeature(level, id);
+    }
 }

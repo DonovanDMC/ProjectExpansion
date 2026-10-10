@@ -1,0 +1,6 @@
+{
+	"type": "projectexpansion:refining",
+	"ingredient": { "item": "minecraft:cobblestone" },
+	"result": { "id": "minecraft:stone", "count": 3, "components": { "minecraft:custom_name": "\"Refined Stone\"" } },
+	"emc": 5
+}

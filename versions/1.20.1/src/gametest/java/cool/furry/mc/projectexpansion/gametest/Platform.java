@@ -30,4 +30,12 @@ public class Platform {
             }
         };
     }
+
+    public static boolean hasPlacedFeature(ServerLevel level, ResourceLocation id) {
+        return level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.PLACED_FEATURE).containsKey(id);
+    }
+
+    public static boolean hasOreModifier(ServerLevel level, ResourceLocation id) {
+        return level.registryAccess().registryOrThrow(net.minecraftforge.registries.ForgeRegistries.Keys.BIOME_MODIFIERS).containsKey(id);
+    }
 }

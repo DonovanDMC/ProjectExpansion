@@ -1,0 +1,16 @@
+{
+	"$if": "since('1.18')",
+	"$for": {
+		"block": [
+			"raw_ianthium_block",
+			"ianthium_block"
+		]
+	},
+	"$output": "{{block}}",
+	"$content": {
+		"parent": "minecraft:block/cube_all",
+		"textures": {
+			"all": "{{id(`block/${block}`)}}"
+		}
+	}
+}

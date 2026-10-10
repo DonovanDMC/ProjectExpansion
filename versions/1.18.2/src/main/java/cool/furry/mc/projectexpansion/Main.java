@@ -36,9 +36,12 @@ public class Main {
         Items.Registry.register(modEventBus);
         SoundEvents.Registry.register(modEventBus);
         MenuTypes.Registry.register(modEventBus);
+        RecipeTypes.Registry.register(modEventBus);
+        RecipeTypes.Serializers.register(modEventBus);
         modEventBus.addGenericListener(Item.class, EventPriority.LOWEST, CreativeTabs::assignItems);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);
+        MinecraftForge.EVENT_BUS.addListener(Features::addToBiomes);
         Config.register(ModLoadingContext.get());
 
         Fuel.registerAll();
@@ -50,6 +53,7 @@ public class Main {
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             PacketHandler.register();
+            Features.register();
         });
     }
 

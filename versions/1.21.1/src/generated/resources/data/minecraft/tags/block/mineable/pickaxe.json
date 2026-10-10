@@ -107,6 +107,12 @@
 		"projectexpansion:fading_matter_block",
 		"projectexpansion:compact_sun",
 		"projectexpansion:condenser_mk3",
-		"projectexpansion:arcane_transmutation_table"
+		"projectexpansion:arcane_transmutation_table",
+		"projectexpansion:emc_pipe",
+		"projectexpansion:ianthium_ore",
+		"projectexpansion:deepslate_ianthium_ore",
+		"projectexpansion:raw_ianthium_block",
+		"projectexpansion:ianthium_block",
+		"projectexpansion:emc_refinery"
 	]
 }

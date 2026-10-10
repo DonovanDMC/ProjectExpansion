@@ -45,5 +45,7 @@ public class CapabilityEvents {
         BlockEntityEMCLink.registerCapabilities(event);
         BlockEntityTransmutationInterface.registerCapabilities(event);
         BlockEntityRelay.registerCapabilities(event);
+        BlockEntityEmcPipe.registerCapabilities(event);
+        BlockEntityEMCRefinery.registerCapabilities(event);
     }
 }

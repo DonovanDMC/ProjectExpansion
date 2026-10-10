@@ -1,0 +1,11 @@
+{
+	"type": "projectexpansion:refining",
+	"ingredient": {
+		"item": "projectexpansion:raw_ianthium"
+	},
+	"result": {
+		"item": "projectexpansion:ianthium_ingot"
+	},
+	"emc": 64,
+	"time": 100
+}

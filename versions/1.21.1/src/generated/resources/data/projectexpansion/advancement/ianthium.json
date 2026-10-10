@@ -1,0 +1,32 @@
+{
+	"parent": "projecte:dark_matter_pickaxe",
+	"criteria": {
+		"ianthium": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:raw_ianthium"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.ianthium"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.ianthium.description"
+		},
+		"icon": {
+			"id": "projectexpansion:raw_ianthium"
+		}
+	},
+	"requirements": [
+		[
+			"ianthium"
+		]
+	],
+	"sends_telemetry_event": true
+}

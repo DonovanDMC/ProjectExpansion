@@ -16,6 +16,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -40,7 +41,12 @@ public class Common {
         BlockState state = provider.getBlockState();
         @Nullable IEmcStorage emcStorage = blockEntity == null ? null : blockEntity.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, side).resolve().orElse(null);
         @Nullable IEmcStorageBigInteger bigEmcStorage = blockEntity == null ? null : blockEntity.getCapability(Capabilities.BIG_EMC_STORAGE_CAPABILITY, side).resolve().orElse(null);
-        if (bigEmcStorage != null) {
+        CompoundTag serverData = provider.getServerData();
+        if (EmcServerData.has(serverData)) {
+            BigInteger total = EmcServerData.stored(serverData);
+            BigInteger maximum = EmcServerData.maximum(serverData);
+            addTooltip.accept(Lang.EMC_STORAGE.translateColored(ChatFormatting.GRAY, formatEMC(total), formatEMC(maximum)));
+        } else if (bigEmcStorage != null) {
             BigInteger total = bigEmcStorage.getStoredEmcBigInteger();
             BigInteger maximum = bigEmcStorage.getMaximumEmcBigInteger();
             addTooltip.accept(Lang.EMC_STORAGE.translateColored(ChatFormatting.GRAY, formatEMC(total), formatEMC(maximum)));

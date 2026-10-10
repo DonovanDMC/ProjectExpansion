@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"A A",
+		" A ",
+		" A "
+	],
+	"key": {
+		"A": {
+			"tag": "c:ingots/ianthium"
+		}
+	},
+	"result": {
+		"id": "projectexpansion:wrench"
+	}
+}

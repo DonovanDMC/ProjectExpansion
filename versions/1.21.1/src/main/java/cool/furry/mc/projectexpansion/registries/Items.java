@@ -2,6 +2,7 @@ package cool.furry.mc.projectexpansion.registries;
 
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.item.*;
+import cool.furry.mc.projectexpansion.util.pipe.PipeUpgrade;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -28,4 +29,19 @@ public class Items {
     public static final DeferredHolder<Item, BlockItem> CONDENSER_MK3 = Registry.register("condenser_mk3", () -> new BlockItem(Blocks.CONDENSER_MK3.get(), new Item.Properties().fireResistant()));
     public static final DeferredHolder<Item, ItemArcaneTransmutationTablet> ARCANE_TRANSMUTATION_TABLET = Registry.register("arcane_transmutation_tablet", ItemArcaneTransmutationTablet::new);
     public static final DeferredHolder<Item, BlockItem> ARCANE_TRANSMUTATION_TABLE = Registry.register("arcane_transmutation_table", () -> new BlockItem(Blocks.ARCANE_TRANSMUTATION_TABLE.get(), new Item.Properties().rarity(Rarity.RARE).fireResistant()));
+    public static final DeferredHolder<Item, BlockItem> IANTHIUM_ORE = Registry.register("ianthium_ore", () -> new BlockItem(Blocks.IANTHIUM_ORE.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, BlockItem> DEEPSLATE_IANTHIUM_ORE = Registry.register("deepslate_ianthium_ore", () -> new BlockItem(Blocks.DEEPSLATE_IANTHIUM_ORE.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, BlockItem> RAW_IANTHIUM_BLOCK = Registry.register("raw_ianthium_block", () -> new BlockItem(Blocks.RAW_IANTHIUM_BLOCK.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, BlockItem> IANTHIUM_BLOCK = Registry.register("ianthium_block", () -> new BlockItem(Blocks.IANTHIUM_BLOCK.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> RAW_IANTHIUM = Registry.register("raw_ianthium", () -> new Item(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> IANTHIUM_INGOT = Registry.register("ianthium_ingot", () -> new Item(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> IANTHIUM_NUGGET = Registry.register("ianthium_nugget", () -> new Item(new Item.Properties()));
+    public static final DeferredHolder<Item, BlockItem> EMC_REFINERY = Registry.register("emc_refinery", () -> new BlockItem(Blocks.EMC_REFINERY.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, BlockItem> EMC_PIPE = Registry.register("emc_pipe", () -> new BlockItem(Blocks.EMC_PIPE.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, ItemWrench> WRENCH = Registry.register("wrench", ItemWrench::new);
+    public static final DeferredHolder<Item, ItemPipeUpgrade> BASIC_PIPE_UPGRADE = Registry.register("basic_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.BASIC));
+    public static final DeferredHolder<Item, ItemPipeUpgrade> IMPROVED_PIPE_UPGRADE = Registry.register("improved_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.IMPROVED));
+    public static final DeferredHolder<Item, ItemPipeUpgrade> ADVANCED_PIPE_UPGRADE = Registry.register("advanced_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.ADVANCED));
+    public static final DeferredHolder<Item, ItemPipeUpgrade> ULTIMATE_PIPE_UPGRADE = Registry.register("ultimate_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.ULTIMATE));
+    public static final DeferredHolder<Item, ItemPipeUpgrade> INFINITY_PIPE_UPGRADE = Registry.register("infinity_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.INFINITY));
 }

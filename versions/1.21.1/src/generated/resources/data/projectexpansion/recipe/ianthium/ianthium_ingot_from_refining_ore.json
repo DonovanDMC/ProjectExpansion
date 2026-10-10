@@ -1,0 +1,11 @@
+{
+	"type": "projectexpansion:refining",
+	"ingredient": {
+		"tag": "c:ores/ianthium"
+	},
+	"result": {
+		"id": "projectexpansion:ianthium_ingot"
+	},
+	"emc": 96,
+	"time": 100
+}

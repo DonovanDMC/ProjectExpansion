@@ -1,0 +1,11 @@
+{
+	"$if": "since('1.18')",
+	"$output": "ianthium_ingot_from_refining_ore",
+	"$content": {
+		"type": "projectexpansion:refining",
+		"ingredient": "{{ingredient('#c:ores/ianthium')}}",
+		"result": "{{result('projectexpansion:ianthium_ingot')}}",
+		"emc": 96,
+		"time": 100
+	}
+}

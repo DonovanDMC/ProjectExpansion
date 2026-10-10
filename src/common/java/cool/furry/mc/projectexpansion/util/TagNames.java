@@ -28,4 +28,9 @@ public class TagNames {
     public static final String LOCK = "Lock";
     public static final String LOCATIONS = "Locations";
     public static final String EMC_LOCKED = "EmcLocked";
+    public static final String DISCONNECTED = "Disconnected";
+    public static final String ITEMS = "Items";
+    public static final String PROGRESS = "Progress";
+    public static final String INCOMING = "Incoming";
+    public static final String RECIPE = "Recipe";
 }

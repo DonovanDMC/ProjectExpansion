@@ -1,0 +1,33 @@
+{
+	"parent": "projectexpansion:pipe_upgrade",
+	"criteria": {
+		"infinity_pipe_upgrade": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:infinity_pipe_upgrade"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.infinity_pipe_upgrade"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.infinity_pipe_upgrade.description"
+		},
+		"icon": {
+			"id": "projectexpansion:infinity_pipe_upgrade"
+		},
+		"frame": "challenge"
+	},
+	"requirements": [
+		[
+			"infinity_pipe_upgrade"
+		]
+	],
+	"sends_telemetry_event": true
+}

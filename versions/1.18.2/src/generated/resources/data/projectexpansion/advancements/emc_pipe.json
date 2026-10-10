@@ -1,0 +1,33 @@
+{
+	"parent": "projectexpansion:ianthium_ingot",
+	"criteria": {
+		"emc_pipe": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"projectexpansion:emc_pipe"
+						]
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.emc_pipe"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.emc_pipe.description"
+		},
+		"icon": {
+			"item": "projectexpansion:emc_pipe"
+		}
+	},
+	"requirements": [
+		[
+			"emc_pipe"
+		]
+	]
+}

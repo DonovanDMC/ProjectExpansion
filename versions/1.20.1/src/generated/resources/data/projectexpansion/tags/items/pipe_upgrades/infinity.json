@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	"values": [
+		"projectexpansion:infinity_pipe_upgrade",
+		{
+			"id": "pipez:infinity_upgrade",
+			"required": false
+		}
+	]
+}

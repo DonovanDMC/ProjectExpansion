@@ -1,0 +1,10 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"replace": false,
+		"values": [
+			"{{tagEntry('#c:storage_blocks/ianthium')}}",
+			"{{tagEntry('#c:storage_blocks/raw_ianthium')}}"
+		]
+	}
+}

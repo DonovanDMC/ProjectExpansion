@@ -1,0 +1,14 @@
+{
+	"$if": "since('1.18')",
+	"$output": "ianthium_nugget",
+	"$content": {
+		"$template": "_partials/recipe/shapeless",
+		"$with": {
+			"ingredients": [
+				"projectexpansion:ianthium_ingot"
+			],
+			"output": "projectexpansion:ianthium_nugget",
+			"count": 9
+		}
+	}
+}

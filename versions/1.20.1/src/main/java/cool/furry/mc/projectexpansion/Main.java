@@ -33,6 +33,8 @@ public class Main {
         Items.Registry.register(modEventBus);
         SoundEvents.Registry.register(modEventBus);
         MenuTypes.Registry.register(modEventBus);
+        RecipeTypes.Registry.register(modEventBus);
+        RecipeTypes.Serializers.register(modEventBus);
         CreativeTabs.Registry.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);

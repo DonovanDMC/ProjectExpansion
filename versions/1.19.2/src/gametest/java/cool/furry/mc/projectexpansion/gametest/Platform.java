@@ -52,4 +52,12 @@ public class Platform {
         }
         throw new IllegalStateException("MinecraftServer has no services field");
     }
+
+    public static boolean hasPlacedFeature(ServerLevel level, ResourceLocation id) {
+        return level.registryAccess().registryOrThrow(net.minecraft.core.Registry.PLACED_FEATURE_REGISTRY).containsKey(id);
+    }
+
+    public static boolean hasOreModifier(ServerLevel level, ResourceLocation id) {
+        return level.registryAccess().registryOrThrow(net.minecraftforge.registries.ForgeRegistries.Keys.BIOME_MODIFIERS).containsKey(id);
+    }
 }

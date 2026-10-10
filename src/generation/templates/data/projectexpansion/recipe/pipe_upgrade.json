@@ -1,0 +1,17 @@
+{
+	"$if": "since('1.18')",
+	"$for": { "tier": "['basic', 'improved', 'advanced', 'ultimate', 'infinity']" },
+	"$let": {
+		"matter": "({ basic: 'projecte:dark_matter', improved: 'projecte:red_matter', advanced: 'projectexpansion:magenta_matter', ultimate: 'projectexpansion:blue_matter', infinity: 'projectexpansion:final_star_shard' })[tier]",
+		"previous": "tierIndex === 0 ? 'projectexpansion:emc_pipe' : `projectexpansion:${['basic', 'improved', 'advanced', 'ultimate'][tierIndex - 1]}_pipe_upgrade`"
+	},
+	"$output": "pipe_upgrade/{{tier}}",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"pattern": ["AMA", "MPM", "AMA"],
+			"key": { "A": "#c:ingots/ianthium", "M": "{{matter}}", "P": "{{previous}}" },
+			"output": "{{`projectexpansion:${tier}_pipe_upgrade`}}"
+		}
+	}
+}

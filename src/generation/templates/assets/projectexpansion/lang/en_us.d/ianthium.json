@@ -1,0 +1,18 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"block.projectexpansion.ianthium_ore": "Ianthium Ore",
+		"block.projectexpansion.deepslate_ianthium_ore": "Deepslate Ianthium Ore",
+		"block.projectexpansion.raw_ianthium_block": "Block of Raw Ianthium",
+		"block.projectexpansion.ianthium_block": "Block of Ianthium",
+		"item.projectexpansion.raw_ianthium": "Raw Ianthium",
+		"item.projectexpansion.ianthium_ingot": "Ianthium Ingot",
+		"item.projectexpansion.ianthium_nugget": "Ianthium Nugget",
+		"tag.item.c.ores.ianthium": "Ianthium Ores",
+		"tag.item.c.raw_materials.ianthium": "Raw Ianthium Materials",
+		"tag.item.c.ingots.ianthium": "Ianthium Ingots",
+		"tag.item.c.nuggets.ianthium": "Ianthium Nuggets",
+		"tag.item.c.storage_blocks.ianthium": "Ianthium Storage Blocks",
+		"tag.item.c.storage_blocks.raw_ianthium": "Raw Ianthium Storage Blocks"
+	}
+}
