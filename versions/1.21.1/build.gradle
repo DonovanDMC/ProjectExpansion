@@ -42,6 +42,8 @@ neoForge {
 
         // applies to all the run configs above
         configureEach {
+            // includes main, so the tests can be run with /test in dev too
+            sourceSet = sourceSets.gametest
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -62,8 +64,11 @@ neoForge {
     mods {
         "${mod_id}" {
             sourceSet sourceSets.main
+            sourceSet sourceSets.gametest
         }
     }
+
+    addModdingDependenciesTo sourceSets.gametest
 
     // To avoid having to run "generateModMetadata" manually, make it run on every project reload
     ideSyncTask generateModMetadata

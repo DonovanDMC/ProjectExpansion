@@ -22,6 +22,8 @@ legacyForge {
         }
 
         configureEach {
+            // includes main, so the tests can be run with /test in dev too
+            sourceSet = sourceSets.gametest
             // securejarhandler in Forge 40 crashes on newer java 17 builds without this
             jvmArgument '--add-opens=java.base/java.lang.invoke=cpw.mods.securejarhandler'
             systemProperty 'forge.logging.markers', 'REGISTRIES'
@@ -35,8 +37,11 @@ legacyForge {
     mods {
         "${mod_id}" {
             sourceSet sourceSets.main
+            sourceSet sourceSets.gametest
         }
     }
+
+    addModdingDependenciesTo sourceSets.gametest
 
     ideSyncTask generateModMetadata
 }

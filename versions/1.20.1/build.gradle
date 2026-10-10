@@ -22,6 +22,8 @@ legacyForge {
         }
 
         configureEach {
+            // includes main, so the tests can be run with /test in dev too
+            sourceSet = sourceSets.gametest
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
             // makes optional (require = 0) injections still fail in dev if they don't apply
@@ -33,8 +35,11 @@ legacyForge {
     mods {
         "${mod_id}" {
             sourceSet sourceSets.main
+            sourceSet sourceSets.gametest
         }
     }
+
+    addModdingDependenciesTo sourceSets.gametest
 
     ideSyncTask generateModMetadata
 }

@@ -60,6 +60,24 @@ subprojects {
         resources.srcDirs rootProject.file('src/common/resources'), rootProject.file("src/${loader}/resources"), 'src/generated/resources'
     }
 
+    // GameTests get their own source set so they stay out of release jars. Versions opt in with gametest_layers,
+    // which works like shared_java but for src/<layer>/gametest, followed by versions/<version>/src/gametest.
+    if (project.hasProperty("gametest_layers")) {
+        sourceSets.create("gametest") {
+            gametest_layers.split(',').findAll { !it.isBlank() }.each {
+                java.srcDir rootProject.file("src/${it.trim()}/gametest/java")
+                resources.srcDir rootProject.file("src/${it.trim()}/gametest/resources")
+            }
+            compileClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.main.output
+        }
+        configurations {
+            gametestImplementation.extendsFrom implementation
+            gametestCompileOnly.extendsFrom compileOnly
+            gametestRuntimeOnly.extendsFrom runtimeOnly
+        }
+    }
+
     spotbugs {
         toolVersion = '4.8.3'
         //noinspection UnnecessaryQualifiedReference
@@ -176,4 +194,19 @@ subprojects {
             eulaFile.text = "eula=true\n"
         }
     }
+}
+
+// Runs every version's GameTests, ./gradlew gameTest
+tasks.register("gameTest") {
+    group = "verification"
+    description = "Runs the GameTests for every version that has them"
+    dependsOn subprojects.findAll { it.hasProperty("gametest_layers") }.collect { "${it.path}:runGameTestServer" }
+}
+
+// Runs the resource generator's tests, ./gradlew generatorTest
+tasks.register("generatorTest", Exec) {
+    group = "verification"
+    description = "Runs the resource generator's tests"
+    workingDir file("src/generation")
+    commandLine "bun", "test"
 }

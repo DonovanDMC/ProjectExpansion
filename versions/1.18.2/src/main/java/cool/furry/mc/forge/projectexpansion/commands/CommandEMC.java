@@ -187,7 +187,7 @@ public class CommandEMC {
                 } else {
                     sendSuccess(ctx.getSource(), Lang.Commands.EMC_SET_SUCCESS.translateColored(ChatFormatting.GREEN, player.getDisplayName(), formatEMC(newEMC)), true);
                     if (Config.server.notifyCommandChanges.get()) {
-                        player.displayClientMessage(Lang.Commands.EMC_REMOVE_SUCCESS.translate(formatEMC(newEMC), getSourceName(ctx.getSource())), false);
+                        player.displayClientMessage(Lang.Commands.EMC_SET_NOTIFICATION.translate(formatEMC(newEMC), getSourceName(ctx.getSource())), false);
                     }
                 }
             }
@@ -205,7 +205,7 @@ public class CommandEMC {
                         sendSuccess(ctx.getSource(), Lang.Commands.EMC_TEST_SUCCESS.translateColored(ChatFormatting.GREEN, player.getScoreboardName(), formatEMC(value)), false);
                     else {
                         response = 0;
-                        ctx.getSource().sendFailure(Lang.Commands.KNOWLEDGE_TEST_FAIL_SELF.translateColored(ChatFormatting.RED, player.getScoreboardName(), formatEMC(value)));
+                        ctx.getSource().sendFailure(Lang.Commands.EMC_TEST_FAIL.translateColored(ChatFormatting.RED, player.getScoreboardName(), formatEMC(value)));
                     }
                 }
             }
