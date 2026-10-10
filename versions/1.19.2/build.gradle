@@ -55,7 +55,6 @@ dependencies {
     compileOnly("org.jetbrains:annotations:24.1.0")
     modCompileOnly("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     modRuntimeOnly("top.theillusivec4.curios:curios-forge:${curios_version}")
-    modRuntimeOnly("curse.maven:no-chat-reports-634062:${ncr_version}")
     modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     modRuntimeOnly("curse.maven:better-advancements-272515:${ba_version}")

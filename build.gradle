@@ -164,6 +164,8 @@ subprojects {
 
     var releaseJar = tasks.register("releaseJar") {
         dependsOn(tasks.named("jar"))
+        // only release once every GameTest passes, runGameTestServer fails if any don't
+        if (project.hasProperty("gametest_layers")) dependsOn("runGameTestServer")
         finalizedBy(updateJSON)
         group = "publishing"
     }

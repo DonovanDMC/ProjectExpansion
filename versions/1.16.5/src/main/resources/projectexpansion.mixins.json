@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "cool.furry.mc.forge.projectexpansion.mixin",
+  "package": "cool.furry.mc.projectexpansion.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "projectexpansion.refmap.json",
   "client": [
