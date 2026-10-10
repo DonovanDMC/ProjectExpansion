@@ -1,0 +1,38 @@
+{
+    "enabled": true,
+    "releaseType": "release",
+    "curseforge": {
+        "gameVersions": {
+            "Forge": 7498,
+            "Java 17": 8326,
+            "1.18.2": 9008
+        },
+        "dependencies": [
+            {
+                "slug": "projecte",
+                "type": "requiredDependency"
+            },
+            {
+                "slug": "catalogue",
+                "type": "optionalDependency"
+            },
+            {
+                "slug": "curios",
+                "type": "optionalDependency"
+            },
+            {
+                "slug": "extendedexchange",
+                "type": "incompatible"
+            }
+        ]
+    },
+    "modrinth": {
+        "gameVersions": [
+            "1.18.2"
+        ],
+        "loaders": [
+            "forge"
+        ],
+        "dependencies": []
+    }
+}

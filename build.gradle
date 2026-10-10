@@ -1,8 +1,6 @@
 import cool.furry.mc.projectexpansion.Data
 import cool.furry.mc.projectexpansion.GeneratorLock
-import cool.furry.mc.projectexpansion.Publish
 import cool.furry.mc.projectexpansion.SignJar
-import cool.furry.mc.projectexpansion.UpdateJson
 
 plugins {
     id 'com.github.spotbugs' version '6.0.22' apply false
@@ -155,23 +153,11 @@ subprojects {
     }
     tasks.matching { it.name == "jar" || it.name == "reobfJar" }.configureEach { finalizedBy(signJar) }
 
-    var updateJSON = tasks.register("updateJSON", UpdateJson) {
-        minecraftVersion = minecraft_version
-        modVersion = mod_version
-        outputFile = rootProject.file("updates.json")
-        group = "publishing"
-    }
-
-    var releaseJar = tasks.register("releaseJar") {
-        dependsOn(tasks.named("jar"))
+    // the signed jar scripts/publish.sh uploads, see src/publish
+    tasks.register("releaseJar") {
+        dependsOn(signJar)
         // only release once every GameTest passes, runGameTestServer fails if any don't
         if (project.hasProperty("gametest_layers")) dependsOn("runGameTestServer")
-        finalizedBy(updateJSON)
-        group = "publishing"
-    }
-
-    tasks.register("publish", Publish) {
-        dependsOn(releaseJar)
         group = "publishing"
     }
 

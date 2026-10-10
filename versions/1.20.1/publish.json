@@ -1,0 +1,50 @@
+{
+    "enabled": true,
+    "releaseType": "release",
+    "curseforge": {
+        "gameVersions": {
+            "Forge": 7498,
+            "NeoForge": 10150,
+            "Java 17": 8326,
+            "1.20.1": 9990
+        },
+        "dependencies": [
+            {
+                "slug": "projecte",
+                "type": "requiredDependency"
+            },
+            {
+                "slug": "catalogue",
+                "type": "optionalDependency"
+            },
+            {
+                "slug": "curios",
+                "type": "optionalDependency"
+            },
+            {
+                "slug": "cloth-config",
+                "type": "optionalDependency"
+            }
+        ]
+    },
+    "modrinth": {
+        "gameVersions": [
+            "1.20.1"
+        ],
+        "loaders": [
+            "forge"
+        ],
+        "dependencies": [
+            {
+                "project_id": "vvuO3ImH",
+                "version_id": "nEba8UUT",
+                "dependency_type": "optional"
+            },
+            {
+                "project_id": "9s6osm5g",
+                "version_id": "IbAdAuBo",
+                "dependency_type": "optional"
+            }
+        ]
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "enabled": true,
+    "releaseType": "release",
+    "curseforge": {
+        "gameVersions": {
+            "NeoForge": 10150,
+            "Java 21": 11135,
+            "1.21.1": 11779
+        },
+        "dependencies": [
+            {
+                "slug": "projecte",
+                "type": "requiredDependency"
+            },
+            {
+                "slug": "curios",
+                "type": "optionalDependency"
+            }
+        ]
+    },
+    "modrinth": {
+        "gameVersions": [
+            "1.21.1"
+        ],
+        "loaders": [
+            "neoforge"
+        ],
+        "dependencies": [
+            {
+                "project_id": "vvuO3ImH",
+                "version_id": "yohfFbgD",
+                "dependency_type": "optional"
+            }
+        ]
+    }
+}
