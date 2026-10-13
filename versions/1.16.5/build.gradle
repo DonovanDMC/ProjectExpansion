@@ -4,6 +4,24 @@ plugins {
     id 'org.spongepowered.mixin'
 }
 
+// MCJUnitLib, copied into src/mcjunitlib since it's archived upstream, see the README there
+sourceSets {
+    mcjunitlib {
+        java.srcDirs = ['src/mcjunitlib/java']
+        resources.srcDirs = ['src/mcjunitlib/resources']
+    }
+    test {
+        compileClasspath += mcjunitlib.output
+        runtimeClasspath += mcjunitlib.output
+    }
+}
+
+configurations {
+    // the tests already get minecraft through main
+    mcjunitlibCompileOnly.extendsFrom minecraft
+    testImplementation.extendsFrom mcjunitlibImplementation
+}
+
 minecraft {
     mappings channel: 'official', version: minecraft_version
 
@@ -29,6 +47,23 @@ minecraft {
         server {
             arg '--nogui'
         }
+
+        // runs the tests in src/test with MCJUnitLib, as 1.16.5 has no game test server
+        serverTest {
+            parent runs.server
+            main 'com.alcatrazescapee.mcjunitlib.DedicatedTestServerLauncher'
+            environment 'target', 'fmltestserver'
+            environment 'targetModId', mod_id
+            arg '--crashOnFailedTests'
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                    source sourceSets.test
+                    // loads it through forge's class loader, like the library jar's manifest used to
+                    source sourceSets.mcjunitlib
+                }
+            }
+        }
     }
 }
 
@@ -46,6 +81,11 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+    // the versions mcjunitlib was built with
+    mcjunitlibImplementation "org.junit.platform:junit-platform-launcher:${junit_platform_version}"
+    mcjunitlibImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+    mcjunitlibImplementation "org.junit.jupiter:junit-jupiter-engine:${junit_jupiter_version}"
+    mcjunitlibImplementation "org.junit.jupiter:junit-jupiter-params:${junit_jupiter_version}"
 }
 
 tasks.named("jar", Jar) {

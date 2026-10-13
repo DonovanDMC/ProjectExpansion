@@ -27,7 +27,7 @@ public class SetEmcCMDMixin {
         remap = false
     )
     private static ITextComponent pex$setEmc(ITextComponent original) {
-        if (Config.server.reloadEMCAfterCommands.get()) return Lang.Commands.RELOADING_EMC.translate();
+        if (CommandReloadEMC.reloadsAfterCommands()) return Lang.Commands.RELOADING_EMC.translate();
         if (!Config.server.enableReloadEMCCommand.get()) return original;
         return Lang.Commands.RELOAD_NOTICE.translate(new StringTextComponent("/px reloademc").withStyle(Style.EMPTY.withColor(TextFormatting.RED).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/px reloademc"))));
     }
