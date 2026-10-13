@@ -7,16 +7,20 @@ package com.alcatrazescapee.mcjunitlib;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.minecraftforge.fml.ModList;
 
+import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.TestSource;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.engine.support.descriptor.ClassSource;
@@ -36,6 +40,7 @@ public class JUnitTestRunner implements TestExecutionListener
     // classes with an annotation from here are treated as test classes, such as @Test or @ParameterizedTest
     private static final String JUNIT_PACKAGE = "org.junit.";
 
+    private final Map<String, Long> startTimes = new HashMap<>();
     private int testCounter;
     private boolean failedTests;
 
@@ -141,6 +146,7 @@ public class JUnitTestRunner implements TestExecutionListener
         {
             LOGGER.log(UNIT_TEST, "{}. Skipped {} due to {}", testCounter, getDisplayName(testIdentifier), reason);
             testCounter++;
+            addResult(testIdentifier, "skipped", reason, 0);
         }
     }
 
@@ -151,6 +157,35 @@ public class JUnitTestRunner implements TestExecutionListener
         {
             LOGGER.log(UNIT_TEST, "{}. Running {}", testCounter, getDisplayName(testIdentifier));
             testCounter++;
+            startTimes.put(testIdentifier.getUniqueId(), System.nanoTime());
+        }
+    }
+
+    @Override
+    public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult result)
+    {
+        if (testIdentifier.isTest())
+        {
+            Long started = startTimes.remove(testIdentifier.getUniqueId());
+            long durationMs = started == null ? 0 : (System.nanoTime() - started) / 1_000_000;
+            String status = result.getStatus() == TestExecutionResult.Status.SUCCESSFUL ? "passed" : result.getStatus() == TestExecutionResult.Status.ABORTED ? "aborted" : "failed";
+            String message = result.getThrowable().map(t -> t.getMessage() == null ? t.toString() : t.getMessage()).orElse(null);
+            addResult(testIdentifier, status, message, durationMs);
+        }
+    }
+
+    private void addResult(TestIdentifier testIdentifier, String status, @Nullable String message, long durationMs)
+    {
+        TestSource source = testIdentifier.getSource().orElse(null);
+        if (source instanceof MethodSource)
+        {
+            MethodSource method = (MethodSource) source;
+            String className = method.getClassName();
+            TestResultsFile.add("unit", className.substring(className.lastIndexOf('.') + 1), method.getMethodName(), status, message, durationMs);
+        }
+        else
+        {
+            TestResultsFile.add("unit", "Unit Tests", testIdentifier.getDisplayName(), status, message, durationMs);
         }
     }
 

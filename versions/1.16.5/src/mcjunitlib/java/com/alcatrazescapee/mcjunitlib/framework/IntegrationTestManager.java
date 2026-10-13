@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.alcatrazescapee.mcjunitlib.TestResultsFile;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LecternBlock;
@@ -434,6 +435,10 @@ public enum IntegrationTestManager
                             }
                         }
                     }
+
+                    String testName = helper.getTest().getName();
+                    int split = testName.indexOf('.');
+                    TestResultsFile.add("integration", split == -1 ? "Integration Tests" : testName.substring(0, split), split == -1 ? testName : testName.substring(split + 1), result.isSuccess() ? "passed" : "failed", result.isSuccess() ? null : String.join("\n", result.getErrors()), helper.getRunTimeMillis());
 
                     // Update the beacon state
                     world.setBlockAndUpdate(helper.getOrigin().offset(-1, -1, -1), glass);

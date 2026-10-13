@@ -15,3 +15,5 @@ bin/
 src/generated/resources/.cache
 scripts/secrets.sh
 **/node_modules/
+# test reports, see the testReport task
+reports/

@@ -51,6 +51,7 @@ public class IntegrationTestHelper
 
     private int lastScheduledAction; // The last scheduled action - time out ticks are added onto this value
     private boolean failFast; // If conditions will never be set to true
+    private long startedAt;
 
     public IntegrationTestHelper(ServerWorld world, IntegrationTestRunner test, BlockPos origin, BlockPos size)
     {
@@ -410,8 +411,14 @@ public class IntegrationTestHelper
         return test;
     }
 
+    long getRunTimeMillis()
+    {
+        return startedAt == 0 ? 0 : (System.nanoTime() - startedAt) / 1_000_000;
+    }
+
     void run()
     {
+        startedAt = System.nanoTime();
         try
         {
             test.getTestAction().accept(this);

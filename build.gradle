@@ -1,9 +1,17 @@
 import cool.furry.mc.projectexpansion.Data
 import cool.furry.mc.projectexpansion.GeneratorLock
 import cool.furry.mc.projectexpansion.SignJar
+import cool.furry.mc.projectexpansion.TestReport
 
 plugins {
     id 'com.github.spotbugs' version '6.0.22' apply false
+}
+
+// Each version's test run adds itself to this, see testRuns in subprojects below
+var testReport = tasks.register("testReport", TestReport) {
+    group = "verification"
+    description = "Writes a report of the test runs in this build to reports/"
+    reportsDirectory = layout.projectDirectory.dir("reports")
 }
 
 // Shared setup for every version subproject. Loader specific setup lives in versions/<version>/build.gradle.
@@ -182,13 +190,27 @@ subprojects {
             eulaFile.text = "eula=true\n"
         }
     }
+
+    // Test runs write their results to a file for the report, the property being where each framework looks for it.
+    // A failing run doesn't stop the build, so every version's tests still run, the report fails it afterwards instead.
+    var testRuns = [runGameTestServer: "projectexpansion.testResults", runServerTest: "mcjunitlib.resultsFile"]
+    var testVersion = minecraft_version, testLoader = loader
+    tasks.matching { testRuns.containsKey(it.name) }.configureEach { JavaExec run ->
+        var results = layout.buildDirectory.file("test-results/${run.name}/results.json").get().asFile
+        run.systemProperty(testRuns[run.name], results.absolutePath)
+        run.ignoreExitValue = true
+        run.doFirst { results.delete() }
+        run.finalizedBy(testReport)
+        testReport.get().run(testVersion, testLoader, run, results)
+    }
 }
 
-// Runs every version's GameTests, ./gradlew gameTest
+// Runs every version's tests, ./gradlew gameTest, then writes a report to reports/
 tasks.register("gameTest") {
     group = "verification"
-    description = "Runs the GameTests for every version that has them"
-    dependsOn subprojects.findAll { it.hasProperty("gametest_layers") }.collect { "${it.path}:runGameTestServer" }
+    description = "Runs every version's tests and writes a report to reports/"
+    // game tests from 1.18 on, MCJUnitLib on 1.16.5
+    dependsOn subprojects.collect { it.tasks.matching { task -> task.name in ["runGameTestServer", "runServerTest"] } }
 }
 
 // Runs the resource generator's tests, ./gradlew generatorTest

@@ -167,6 +167,7 @@ public class DedicatedTestServer extends DedicatedServer
                             // Check test completions, and if so, stop server
                             allTestsFinished = true;
                             LOGGER.log(UNIT_TEST, "All tests finished.");
+                            TestResultsFile.complete();
                             boolean failures = unitTestRunner.hasFailedTests() || IntegrationTestManager.INSTANCE.hasFailedTests();
                             if (!failures)
                             {
