@@ -1,0 +1,23 @@
+{
+	"type": "projectexpansion:emc_storage_upgrade",
+	"category": "misc",
+	"pattern": [
+		"AMA",
+		"MSM",
+		"AMA"
+	],
+	"key": {
+		"A": {
+			"tag": "c:ingots/ianthium"
+		},
+		"M": {
+			"item": "projecte:red_matter"
+		},
+		"S": {
+			"item": "projectexpansion:basic_emc_storage"
+		}
+	},
+	"result": {
+		"id": "projectexpansion:improved_emc_storage"
+	}
+}

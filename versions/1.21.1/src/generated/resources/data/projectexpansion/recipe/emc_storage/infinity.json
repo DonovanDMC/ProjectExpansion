@@ -1,0 +1,23 @@
+{
+	"type": "projectexpansion:emc_storage_upgrade",
+	"category": "misc",
+	"pattern": [
+		"AMA",
+		"MSM",
+		"AMA"
+	],
+	"key": {
+		"A": {
+			"tag": "c:ingots/ianthium"
+		},
+		"M": {
+			"item": "projectexpansion:final_star_shard"
+		},
+		"S": {
+			"item": "projectexpansion:ultimate_emc_storage"
+		}
+	},
+	"result": {
+		"id": "projectexpansion:infinity_emc_storage"
+	}
+}

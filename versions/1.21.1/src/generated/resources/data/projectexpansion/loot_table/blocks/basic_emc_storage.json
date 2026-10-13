@@ -1,0 +1,29 @@
+{
+	"type": "minecraft:block",
+	"pools": [
+		{
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"name": "projectexpansion:basic_emc_storage",
+					"functions": [
+						{
+							"function": "minecraft:copy_components",
+							"source": "block_entity",
+							"include": [
+								"projectexpansion:stored_emc"
+							]
+						}
+					]
+				}
+			],
+			"conditions": [
+				{
+					"condition": "minecraft:survives_explosion"
+				}
+			]
+		}
+	],
+	"random_sequence": "projectexpansion:blocks/basic_emc_storage"
+}

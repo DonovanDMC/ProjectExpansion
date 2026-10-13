@@ -1,0 +1,13 @@
+{
+	"$if": "since('1.18')",
+	"$content": {
+		"render_type": "minecraft:cutout",
+		"textures": { "overlay": "projectexpansion:block/emc_storage_off", "particle": "projectexpansion:block/emc_storage_off" },
+		"elements": [
+			{
+				"from": [0, 0, -0.01], "to": [16, 16, 0],
+				"faces": { "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" } }
+			}
+		]
+	}
+}

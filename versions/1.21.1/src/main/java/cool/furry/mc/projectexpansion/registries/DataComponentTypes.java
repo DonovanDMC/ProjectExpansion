@@ -18,6 +18,7 @@ import net.minecraft.util.Unit;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.math.BigInteger;
 import java.util.UUID;
 
 public class DataComponentTypes {
@@ -46,4 +47,6 @@ public class DataComponentTypes {
 
     // redstone mode and distribution, stored on pipe upgrades
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<PipeSettings>> PIPE_SETTINGS = Registry.registerComponentType("pipe_settings", (builder) -> builder.persistent(PipeSettings.CODEC).networkSynchronized(PipeSettings.STREAM_CODEC));
+    // what an emc storage held, so it's kept when broken or crafted into the next tier
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BigInteger>> STORED_EMC = Registry.registerComponentType("stored_emc", (builder) -> builder.persistent(Codec.STRING.xmap(BigInteger::new, BigInteger::toString)).networkSynchronized(ByteBufCodecs.STRING_UTF8.map(BigInteger::new, BigInteger::toString)));
 }

@@ -1,0 +1,30 @@
+{
+	"$if": "since('1.18')",
+	"$for": { "tier": "['basic', 'improved', 'advanced', 'ultimate', 'infinity']" },
+	"$output": "{{tier}}_emc_storage",
+	"$content": {
+		"type": "minecraft:block",
+		"pools": [
+			{
+				"rolls": 1,
+				"entries": [
+					{
+						"type": "minecraft:item",
+						"name": "{{id(`${tier}_emc_storage`)}}",
+						"functions": [
+							{
+								"$if": "since('1.21')",
+								"$then": { "function": "minecraft:copy_components", "source": "block_entity", "include": ["projectexpansion:stored_emc"] },
+								"$else": { "function": "minecraft:copy_nbt", "source": "block_entity", "ops": [{ "source": "StoredEMC", "target": "BlockEntityTag.StoredEMC", "op": "replace" }] }
+							}
+						]
+					}
+				],
+				"conditions": [
+					{ "condition": "minecraft:survives_explosion" }
+				]
+			}
+		],
+		"random_sequence": { "$if": "since('1.20')", "$then": "{{id(`blocks/${tier}_emc_storage`)}}" }
+	}
+}

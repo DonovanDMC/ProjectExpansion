@@ -1,6 +1,7 @@
 package cool.furry.mc.projectexpansion.registries;
 
 import cool.furry.mc.projectexpansion.Main;
+import cool.furry.mc.projectexpansion.recipe.EmcStorageUpgradeRecipe;
 import cool.furry.mc.projectexpansion.recipe.RefiningRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -14,4 +15,5 @@ public class RecipeTypes {
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<RefiningRecipe>> REFINING = Registry.register("refining", () -> RecipeType.simple(Main.rl("refining")));
     public static final DeferredHolder<RecipeSerializer<?>, RefiningRecipe.Serializer> REFINING_SERIALIZER = Serializers.register("refining", RefiningRecipe.Serializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, EmcStorageUpgradeRecipe.Serializer> EMC_STORAGE_UPGRADE_SERIALIZER = Serializers.register("emc_storage_upgrade", EmcStorageUpgradeRecipe.Serializer::new);
 }

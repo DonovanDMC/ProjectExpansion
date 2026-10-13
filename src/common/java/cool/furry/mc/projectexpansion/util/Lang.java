@@ -28,6 +28,7 @@ public enum Lang implements ILangEntry {
     FILTER_STATUS("text", "filter_status"),
     EMC_PER_SECOND("text", "emc_per_second"),
     EMC_STORAGE("text", "emc_storage"),
+    STORAGE_SIDE("text", "storage_side"),
     EMC_TRANSFER_RATE("text", "emc_transfer_rate"),
     CHARGE_RATE("text", "charge_rate"),
     RELAY_BONUS("text", "relay_bonus"),
@@ -151,6 +152,14 @@ public enum Lang implements ILangEntry {
         // EMC Refinery
         EMC_REFINERY("emc_refinery"),
         EMC_REFINERY_TOOLTIP("emc_refinery", "tooltip"),
+
+        // EMC Storage
+        EMC_STORAGE_TOOLTIP("emc_storage", "tooltip"),
+        EMC_STORAGE_TOOLTIP2("emc_storage", "tooltip2"),
+        EMC_STORAGE_CAPACITY("emc_storage", "capacity"),
+        EMC_STORAGE_RATE("emc_storage", "rate"),
+        EMC_STORAGE_STORED("emc_storage", "stored"),
+        EMC_STORAGE_SIDE("emc_storage", "side"),
         ;
 
         private String key;

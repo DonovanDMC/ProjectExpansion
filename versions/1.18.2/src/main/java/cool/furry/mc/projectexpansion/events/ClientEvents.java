@@ -42,6 +42,8 @@ public class ClientEvents {
                 // the ores are an overlay on stone, 1.18 doesn't read render types from models
                 ItemBlockRenderTypes.setRenderLayer(Blocks.IANTHIUM_ORE.get(), RenderType.cutout());
                 ItemBlockRenderTypes.setRenderLayer(Blocks.DEEPSLATE_IANTHIUM_ORE.get(), RenderType.cutout());
+                // same for the overlays on an emc storage's output and off sides
+                Blocks.EMC_STORAGE.values().forEach(block -> ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout()));
                 MenuScreens.register(MenuTypes.EMC_REFINERY.get(), GUIEMCRefinery::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_2.get(), GUICollector.Tier2::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_3.get(), GUICollector.Tier3::new);

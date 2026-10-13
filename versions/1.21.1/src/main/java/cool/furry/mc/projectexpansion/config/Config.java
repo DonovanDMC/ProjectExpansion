@@ -58,6 +58,14 @@ public final class Config {
         public final ModConfigSpec.ConfigValue<Long> emcPipeRateImproved = Builder.comment("The emc an extracting side of an EMC Pipe can move each tick with an improved upgrade.").defineInRange("emcPipeRateImproved", 65_536L, 1L, Long.MAX_VALUE);
         public final ModConfigSpec.ConfigValue<Long> emcPipeRateAdvanced = Builder.comment("The emc an extracting side of an EMC Pipe can move each tick with an advanced upgrade.").defineInRange("emcPipeRateAdvanced", 4_194_304L, 1L, Long.MAX_VALUE);
         public final ModConfigSpec.ConfigValue<Long> emcPipeRateUltimate = Builder.comment("The emc an extracting side of an EMC Pipe can move each tick with an ultimate upgrade. Infinity upgrades are unlimited.").defineInRange("emcPipeRateUltimate", 268_435_456L, 1L, Long.MAX_VALUE);
+        public final ModConfigSpec.ConfigValue<Long> emcStorageCapacityBasic = Builder.comment("The emc a Basic EMC Storage can hold.").defineInRange("emcStorageCapacityBasic", 1_000_000L, 1L, Long.MAX_VALUE);
+        public final ModConfigSpec.ConfigValue<Long> emcStorageCapacityImproved = Builder.comment("The emc an Improved EMC Storage can hold.").defineInRange("emcStorageCapacityImproved", 100_000_000L, 1L, Long.MAX_VALUE);
+        public final ModConfigSpec.ConfigValue<Long> emcStorageCapacityAdvanced = Builder.comment("The emc an Advanced EMC Storage can hold.").defineInRange("emcStorageCapacityAdvanced", 10_000_000_000L, 1L, Long.MAX_VALUE);
+        public final ModConfigSpec.ConfigValue<Long> emcStorageCapacityUltimate = Builder.comment("The emc an Ultimate EMC Storage can hold. Infinity EMC Storage is unlimited.").defineInRange("emcStorageCapacityUltimate", 1_000_000_000_000L, 1L, Long.MAX_VALUE);
+        public final ModConfigSpec.ConfigValue<Long> emcStorageRateBasic = Builder.comment("The emc a Basic EMC Storage can send out each tick, shared between its output sides.").defineInRange("emcStorageRateBasic", 1_024L, 1L, Long.MAX_VALUE);
+        public final ModConfigSpec.ConfigValue<Long> emcStorageRateImproved = Builder.comment("The emc an Improved EMC Storage can send out each tick, shared between its output sides.").defineInRange("emcStorageRateImproved", 65_536L, 1L, Long.MAX_VALUE);
+        public final ModConfigSpec.ConfigValue<Long> emcStorageRateAdvanced = Builder.comment("The emc an Advanced EMC Storage can send out each tick, shared between its output sides.").defineInRange("emcStorageRateAdvanced", 4_194_304L, 1L, Long.MAX_VALUE);
+        public final ModConfigSpec.ConfigValue<Long> emcStorageRateUltimate = Builder.comment("The emc an Ultimate EMC Storage can send out each tick, shared between its output sides. Infinity EMC Storage is unlimited.").defineInRange("emcStorageRateUltimate", 268_435_456L, 1L, Long.MAX_VALUE);
         private Server() { Spec = Builder.build(); }
     }
 

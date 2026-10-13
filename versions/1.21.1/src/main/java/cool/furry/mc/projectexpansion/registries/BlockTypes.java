@@ -7,7 +7,9 @@ import cool.furry.mc.projectexpansion.block.*;
 import cool.furry.mc.projectexpansion.util.IHasColor;
 import cool.furry.mc.projectexpansion.util.IHasMatter;
 import cool.furry.mc.projectexpansion.util.Matter;
+import cool.furry.mc.projectexpansion.util.storage.EmcStorageTier;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -30,6 +32,7 @@ public class BlockTypes {
 
     public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockEMCRefinery>> EMC_REFINERY = Registry.register("emc_refinery", () -> BlockBehaviour.simpleCodec(BlockEMCRefinery::new));
     public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockEmcPipe>> EMC_PIPE = Registry.register("emc_pipe", () -> BlockBehaviour.simpleCodec(BlockEmcPipe::new));
+    public static final DeferredHolder<MapCodec<? extends Block>, MapCodec<BlockEmcStorage>> EMC_STORAGE = Registry.register("emc_storage", () -> RecordCodecBuilder.mapCodec(instance -> instance.group(BlockBehaviour.propertiesCodec(), StringRepresentable.fromEnum(EmcStorageTier::values).fieldOf("tier").forGetter(block -> block.tier)).apply(instance, BlockEmcStorage::new)));
 
     public static <T extends Block & IHasMatter> DeferredHolder<MapCodec<? extends Block>, MapCodec<T>> registerMatter(String name, BiFunction<BlockBehaviour.Properties, Matter, T> block) {
         return Registry.register(name, () -> RecordCodecBuilder.mapCodec(instance -> instance.group(

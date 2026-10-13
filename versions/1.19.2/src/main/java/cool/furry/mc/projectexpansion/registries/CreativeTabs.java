@@ -67,6 +67,7 @@ public class CreativeTabs {
         output.accept(Items.IANTHIUM_BLOCK.get());
         output.accept(Items.EMC_REFINERY.get());
         output.accept(Items.EMC_PIPE.get());
+        Items.EMC_STORAGE.values().forEach(item -> output.accept(item.get()));
         output.accept(Items.WRENCH.get());
         output.accept(Items.BASIC_PIPE_UPGRADE.get());
         output.accept(Items.IMPROVED_PIPE_UPGRADE.get());

@@ -1,0 +1,33 @@
+{
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"overlay": "projectexpansion:block/emc_storage_output",
+		"particle": "projectexpansion:block/emc_storage_output"
+	},
+	"elements": [
+		{
+			"from": [
+				0,
+				0,
+				-0.01
+			],
+			"to": [
+				16,
+				16,
+				0
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": "#overlay",
+					"cullface": "north"
+				}
+			}
+		}
+	]
+}

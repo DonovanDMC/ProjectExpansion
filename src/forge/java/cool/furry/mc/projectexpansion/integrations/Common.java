@@ -1,12 +1,14 @@
 package cool.furry.mc.projectexpansion.integrations;
 
 
+import cool.furry.mc.projectexpansion.block.BlockEmcStorage;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityEMCLink;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityNBTFilterable;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityOwnable;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityRelay;
 import cool.furry.mc.projectexpansion.registries.Capabilities;
 import cool.furry.mc.projectexpansion.util.*;
+import cool.furry.mc.projectexpansion.util.storage.StorageSide;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.gameObjs.blocks.Collector;
@@ -54,6 +56,13 @@ public class Common {
             BigInteger total = BigInteger.valueOf(emcStorage.getStoredEmc());
             BigInteger maximum = BigInteger.valueOf(emcStorage.getMaximumEmc());
             addTooltip.accept(Lang.EMC_STORAGE.translateColored(ChatFormatting.GRAY, formatEMC(total), formatEMC(maximum)));
+        }
+
+        // the mode of the side being looked at, which the block state already has
+        if (block instanceof BlockEmcStorage && side != null) {
+            StorageSide mode = BlockEmcStorage.getSide(state, side);
+            ChatFormatting color = mode == StorageSide.INPUT ? ChatFormatting.AQUA : mode == StorageSide.OUTPUT ? ChatFormatting.GOLD : ChatFormatting.DARK_GRAY;
+            addTooltip.accept(Lang.STORAGE_SIDE.translateColored(ChatFormatting.GRAY, Lang.STORAGE_SIDE.extendColored(mode.getSerializedName(), color)));
         }
 
         if (blockEntity instanceof IGeneratesEMC gen) {

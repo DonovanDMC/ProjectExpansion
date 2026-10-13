@@ -46,6 +46,7 @@ public class CapabilityEvents {
         BlockEntityTransmutationInterface.registerCapabilities(event);
         BlockEntityRelay.registerCapabilities(event);
         BlockEntityEmcPipe.registerCapabilities(event);
+        BlockEntityEmcStorage.registerCapabilities(event);
         BlockEntityEMCRefinery.registerCapabilities(event);
     }
 }

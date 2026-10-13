@@ -2,6 +2,7 @@ package cool.furry.mc.projectexpansion.registries;
 
 import com.google.gson.JsonObject;
 import cool.furry.mc.projectexpansion.Main;
+import cool.furry.mc.projectexpansion.recipe.EmcStorageUpgradeRecipe;
 import cool.furry.mc.projectexpansion.recipe.RefiningRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +24,7 @@ public class RecipeTypes {
         }
     });
     public static final RegistryObject<Serializer> REFINING_SERIALIZER = Serializers.register("refining", Serializer::new);
+    public static final RegistryObject<StorageUpgradeSerializer> EMC_STORAGE_UPGRADE_SERIALIZER = Serializers.register("emc_storage_upgrade", StorageUpgradeSerializer::new);
 
     public static class Serializer implements RecipeSerializer<RefiningRecipe> {
         @Override
@@ -38,6 +40,24 @@ public class RecipeTypes {
         @Override
         public void toNetwork(FriendlyByteBuf buf, RefiningRecipe recipe) {
             RefiningRecipe.toNetwork(buf, recipe);
+        }
+    }
+
+    // the same json and packet as a shaped recipe
+    public static class StorageUpgradeSerializer implements RecipeSerializer<EmcStorageUpgradeRecipe> {
+        @Override
+        public EmcStorageUpgradeRecipe fromJson(ResourceLocation id, JsonObject json) {
+            return new EmcStorageUpgradeRecipe(RecipeSerializer.SHAPED_RECIPE.fromJson(id, json));
+        }
+
+        @Override
+        public @Nullable EmcStorageUpgradeRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+            return new EmcStorageUpgradeRecipe(RecipeSerializer.SHAPED_RECIPE.fromNetwork(id, buf));
+        }
+
+        @Override
+        public void toNetwork(FriendlyByteBuf buf, EmcStorageUpgradeRecipe recipe) {
+            RecipeSerializer.SHAPED_RECIPE.toNetwork(buf, recipe);
         }
     }
 }

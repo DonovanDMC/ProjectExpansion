@@ -5,12 +5,17 @@ import cool.furry.mc.projectexpansion.item.*;
 import cool.furry.mc.projectexpansion.item.ItemPipeUpgrade;
 import cool.furry.mc.projectexpansion.item.ItemWrench;
 import cool.furry.mc.projectexpansion.util.pipe.PipeUpgrade;
+import cool.furry.mc.projectexpansion.util.storage.EmcStorageTier;
+import net.minecraft.Util;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class Items {
@@ -40,6 +45,9 @@ public class Items {
     public static final RegistryObject<Item> IANTHIUM_NUGGET = Registry.register("ianthium_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryObject<BlockItem> EMC_REFINERY = Registry.register("emc_refinery", () -> new BlockItem(Blocks.EMC_REFINERY.get(), new Item.Properties()));
     public static final RegistryObject<BlockItem> EMC_PIPE = Registry.register("emc_pipe", () -> new BlockItem(Blocks.EMC_PIPE.get(), new Item.Properties()));
+    public static final Map<EmcStorageTier, RegistryObject<BlockItem>> EMC_STORAGE = Util.make(new EnumMap<>(EmcStorageTier.class), map -> {
+        for (EmcStorageTier tier : EmcStorageTier.VALUES) map.put(tier, Registry.register(tier.getSerializedName() + "_emc_storage", () -> new BlockItem(Blocks.EMC_STORAGE.get(tier).get(), new Item.Properties().stacksTo(1))));
+    });
     public static final RegistryObject<ItemWrench> WRENCH = Registry.register("wrench", ItemWrench::new);
     public static final RegistryObject<ItemPipeUpgrade> BASIC_PIPE_UPGRADE = Registry.register("basic_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.BASIC));
     public static final RegistryObject<ItemPipeUpgrade> IMPROVED_PIPE_UPGRADE = Registry.register("improved_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.IMPROVED));

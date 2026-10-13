@@ -1,0 +1,12 @@
+{
+	"$if": "since('1.18')",
+	"$output": "emc_storage/basic",
+	"$content": {
+		"$template": "_partials/recipe/shaped",
+		"$with": {
+			"pattern": ["AGA", "GKG", "AGA"],
+			"key": { "A": "#c:ingots/ianthium", "G": "#c:glass_blocks", "K": "projecte:klein_star_ein" },
+			"output": "projectexpansion:basic_emc_storage"
+		}
+	}
+}

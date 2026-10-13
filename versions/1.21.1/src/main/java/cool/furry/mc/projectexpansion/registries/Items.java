@@ -3,12 +3,17 @@ package cool.furry.mc.projectexpansion.registries;
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.item.*;
 import cool.furry.mc.projectexpansion.util.pipe.PipeUpgrade;
+import cool.furry.mc.projectexpansion.util.storage.EmcStorageTier;
+import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class Items {
@@ -38,6 +43,9 @@ public class Items {
     public static final DeferredHolder<Item, Item> IANTHIUM_NUGGET = Registry.register("ianthium_nugget", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, BlockItem> EMC_REFINERY = Registry.register("emc_refinery", () -> new BlockItem(Blocks.EMC_REFINERY.get(), new Item.Properties()));
     public static final DeferredHolder<Item, BlockItem> EMC_PIPE = Registry.register("emc_pipe", () -> new BlockItem(Blocks.EMC_PIPE.get(), new Item.Properties()));
+    public static final Map<EmcStorageTier, DeferredHolder<Item, BlockItem>> EMC_STORAGE = Util.make(new EnumMap<>(EmcStorageTier.class), map -> {
+        for (EmcStorageTier tier : EmcStorageTier.VALUES) map.put(tier, Registry.register(tier.getSerializedName() + "_emc_storage", () -> new BlockItem(Blocks.EMC_STORAGE.get(tier).get(), new Item.Properties().stacksTo(1))));
+    });
     public static final DeferredHolder<Item, ItemWrench> WRENCH = Registry.register("wrench", ItemWrench::new);
     public static final DeferredHolder<Item, ItemPipeUpgrade> BASIC_PIPE_UPGRADE = Registry.register("basic_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.BASIC));
     public static final DeferredHolder<Item, ItemPipeUpgrade> IMPROVED_PIPE_UPGRADE = Registry.register("improved_pipe_upgrade", () -> new ItemPipeUpgrade(PipeUpgrade.IMPROVED));

@@ -113,6 +113,11 @@
 		"projectexpansion:deepslate_ianthium_ore",
 		"projectexpansion:raw_ianthium_block",
 		"projectexpansion:ianthium_block",
-		"projectexpansion:emc_refinery"
+		"projectexpansion:emc_refinery",
+		"projectexpansion:basic_emc_storage",
+		"projectexpansion:improved_emc_storage",
+		"projectexpansion:advanced_emc_storage",
+		"projectexpansion:ultimate_emc_storage",
+		"projectexpansion:infinity_emc_storage"
 	]
 }

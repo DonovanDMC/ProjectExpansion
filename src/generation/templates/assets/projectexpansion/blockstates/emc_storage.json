@@ -1,0 +1,19 @@
+{
+	"$if": "since('1.18')",
+	"$for": { "tier": "['basic', 'improved', 'advanced', 'ultimate', 'infinity']" },
+	"$let": { "rotations": "({ north: {}, east: { y: 90 }, south: { y: 180 }, west: { y: 270 }, up: { x: 270 }, down: { x: 90 } })" },
+	"$output": "{{tier}}_emc_storage",
+	"$content": {
+		"multipart": [
+			{ "apply": { "model": "{{id(`block/emc_storage/${tier}`)}}" } },
+			{
+				"$each": "Object.entries(rotations)", "$as": "side",
+				"$do": { "when": { "{{side[0]}}": "output" }, "apply": { "model": "{{id('block/emc_storage/output')}}", "...": "{{side[1]}}" } }
+			},
+			{
+				"$each": "Object.entries(rotations)", "$as": "side",
+				"$do": { "when": { "{{side[0]}}": "off" }, "apply": { "model": "{{id('block/emc_storage/off')}}", "...": "{{side[1]}}" } }
+			}
+		]
+	}
+}

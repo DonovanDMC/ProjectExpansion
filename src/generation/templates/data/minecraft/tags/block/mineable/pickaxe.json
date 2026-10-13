@@ -14,6 +14,7 @@
 		{ "$if": "since('1.18')", "$then": "projectexpansion:deepslate_ianthium_ore" },
 		{ "$if": "since('1.18')", "$then": "projectexpansion:raw_ianthium_block" },
 		{ "$if": "since('1.18')", "$then": "projectexpansion:ianthium_block" },
-		{ "$if": "since('1.18')", "$then": "projectexpansion:emc_refinery" }
+		{ "$if": "since('1.18')", "$then": "projectexpansion:emc_refinery" },
+		{ "$if": "since('1.18')", "$each": "['basic', 'improved', 'advanced', 'ultimate', 'infinity']", "$do": "{{id(`${it}_emc_storage`)}}" }
 	]
 }

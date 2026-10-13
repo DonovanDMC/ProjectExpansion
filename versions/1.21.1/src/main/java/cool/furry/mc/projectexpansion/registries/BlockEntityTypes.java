@@ -7,6 +7,7 @@ import cool.furry.mc.projectexpansion.util.Matter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -24,5 +25,6 @@ public class BlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockEntityAdvancedAlchemicalChest>> ADVANCED_ALCHEMICAL_CHEST = Registry.register("advanced_alchemical_chest", () -> BlockEntityType.Builder.of(BlockEntityAdvancedAlchemicalChest::new, Arrays.stream(AdvancedAlchemicalChest.getBlocks()).toArray(Block[]::new)).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockEntityCondenserMK3>> CONDENSER_MK3 = Registry.register("condenser_mk3", () -> BlockEntityType.Builder.of(BlockEntityCondenserMK3::new, Blocks.CONDENSER_MK3.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockEntityEMCRefinery>> EMC_REFINERY = Registry.register("emc_refinery", () -> BlockEntityType.Builder.of(BlockEntityEMCRefinery::new, Blocks.EMC_REFINERY.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockEntityEmcStorage>> EMC_STORAGE = Registry.register("emc_storage", () -> BlockEntityType.Builder.of(BlockEntityEmcStorage::new, Blocks.EMC_STORAGE.values().stream().map(DeferredBlock::get).toArray(Block[]::new)).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockEntityEmcPipe>> EMC_PIPE = Registry.register("emc_pipe", () -> BlockEntityType.Builder.of(BlockEntityEmcPipe::new, Blocks.EMC_PIPE.get()).build(null));
 }

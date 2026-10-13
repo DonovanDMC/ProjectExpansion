@@ -44,3 +44,4 @@ the result; that can be turned off with the Refining Mapper's `include_emc_cost`
 ### Credits
 The EMC Refinery's textures are recoloured from [Modern Industrialization](https://github.com/AztechMC/Modern-Industrialization)'s machine hull and furnace (CC0).
 Ianthium's ore, raw, ingot and block textures are recoloured from JoeEnderman's [Assorted Minecraft style textures](https://opengameart.org/content/assorted-minecraft-style-textures-defaultmineraltinpng) (CC0), and its nugget from Modern Industrialization's nugget template (CC0).
+The EMC Storage textures are built around the Ianthium block's border.

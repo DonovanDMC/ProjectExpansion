@@ -26,5 +26,6 @@ public class BlockEntityTypes {
     public static final RegistryObject<BlockEntityType<BlockEntityAdvancedAlchemicalChest>> ADVANCED_ALCHEMICAL_CHEST = Registry.register("advanced_alchemical_chest", () -> BlockEntityType.Builder.of(BlockEntityAdvancedAlchemicalChest::new, Arrays.stream(AdvancedAlchemicalChest.getBlocks()).toArray(Block[]::new)).build(null));
     public static final RegistryObject<BlockEntityType<BlockEntityCondenserMK3>> CONDENSER_MK3 = Registry.register("condenser_mk3", () -> BlockEntityType.Builder.of(BlockEntityCondenserMK3::new, Blocks.CONDENSER_MK3.get()).build(null));
     public static final RegistryObject<BlockEntityType<BlockEntityEMCRefinery>> EMC_REFINERY = Registry.register("emc_refinery", () -> BlockEntityType.Builder.of(BlockEntityEMCRefinery::new, Blocks.EMC_REFINERY.get()).build(null));
+    public static final RegistryObject<BlockEntityType<BlockEntityEmcStorage>> EMC_STORAGE = Registry.register("emc_storage", () -> BlockEntityType.Builder.of(BlockEntityEmcStorage::new, Blocks.EMC_STORAGE.values().stream().map(RegistryObject::get).toArray(Block[]::new)).build(null));
     public static final RegistryObject<BlockEntityType<BlockEntityEmcPipe>> EMC_PIPE = Registry.register("emc_pipe", () -> BlockEntityType.Builder.of(BlockEntityEmcPipe::new, Blocks.EMC_PIPE.get()).build(null));
 }

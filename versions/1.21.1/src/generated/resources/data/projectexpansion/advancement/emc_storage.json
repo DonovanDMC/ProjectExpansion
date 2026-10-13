@@ -1,0 +1,32 @@
+{
+	"parent": "projectexpansion:ianthium_ingot",
+	"criteria": {
+		"emc_storage": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": "projectexpansion:basic_emc_storage"
+					}
+				]
+			}
+		}
+	},
+	"display": {
+		"title": {
+			"translate": "advancements.projectexpansion.emc_storage"
+		},
+		"description": {
+			"translate": "advancements.projectexpansion.emc_storage.description"
+		},
+		"icon": {
+			"id": "projectexpansion:basic_emc_storage"
+		}
+	},
+	"requirements": [
+		[
+			"emc_storage"
+		]
+	],
+	"sends_telemetry_event": true
+}

@@ -1,0 +1,23 @@
+{
+	"type": "projectexpansion:emc_storage_upgrade",
+	"category": "misc",
+	"pattern": [
+		"AMA",
+		"MSM",
+		"AMA"
+	],
+	"key": {
+		"A": {
+			"tag": "forge:ingots/ianthium"
+		},
+		"M": {
+			"item": "projectexpansion:blue_matter"
+		},
+		"S": {
+			"item": "projectexpansion:advanced_emc_storage"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:ultimate_emc_storage"
+	}
+}

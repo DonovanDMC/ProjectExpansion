@@ -60,7 +60,8 @@ public class DataGameTests {
         List<String> expected = new ArrayList<>(List.of(
             "collector/basic", "relay/basic", "collector/mk1_conversion", "relay/mk3_conversion",
             "basic_alchemical_book", "arcane_transmutation_table", "arcane_transmutation_tablet",
-            "compact_sun_1", "condenser_mk3", "transmutation_interface", "star/final_star", "star/magnum/ein"
+            "compact_sun_1", "condenser_mk3", "transmutation_interface", "star/final_star", "star/magnum/ein",
+            "emc_storage/basic", "emc_storage/improved", "emc_storage/advanced", "emc_storage/ultimate", "emc_storage/infinity"
         ));
         for (Matter matter : Matter.VALUES) {
             String tier = matter.getSerializedName();
@@ -92,7 +93,7 @@ public class DataGameTests {
 
     @GameTest(template = EMPTY)
     public static void advancementsLoad(GameTestHelper helper) {
-        for (String id : List.of("compact_sun", "collector", "magenta_matter", "pink_fuel", "knowledge_sharing_book", "blinded_by_the_light", "ianthium", "emc_refinery", "ianthium_ingot", "emc_pipe", "wrench", "pipe_upgrade", "infinity_pipe_upgrade")) {
+        for (String id : List.of("compact_sun", "collector", "magenta_matter", "pink_fuel", "knowledge_sharing_book", "blinded_by_the_light", "ianthium", "emc_refinery", "ianthium_ingot", "emc_pipe", "wrench", "pipe_upgrade", "infinity_pipe_upgrade", "emc_storage")) {
             ResourceLocation location = Main.rl(id);
             check(Platform.hasAdvancement(helper.getLevel().getServer(), location), "Missing advancement " + location);
         }

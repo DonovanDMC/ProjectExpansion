@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"AGA",
+		"GKG",
+		"AGA"
+	],
+	"key": {
+		"A": {
+			"tag": "forge:ingots/ianthium"
+		},
+		"G": {
+			"tag": "forge:glass"
+		},
+		"K": {
+			"item": "projecte:klein_star_ein"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:basic_emc_storage"
+	}
+}

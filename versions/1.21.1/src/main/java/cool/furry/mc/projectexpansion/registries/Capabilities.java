@@ -12,5 +12,5 @@ import org.jetbrains.annotations.Nullable;
 public class Capabilities {
     public static final EntityCapability<IAlchemicalBookLocationsProvider, Void> ALCHEMICAL_BOOK_LOCATIONS_ENTITY = EntityCapability.createVoid(Main.rl("alchemical_book_locations"), IAlchemicalBookLocationsProvider.class);
     public static final ItemCapability<IAlchemicalBookLocationsProvider, Void> ALCHEMICAL_BOOK_LOCATIONS_ITEM = ItemCapability.createVoid(Main.rl("alchemical_book_locations"), IAlchemicalBookLocationsProvider.class);
-    public static final BlockCapability<IEmcStorageBigInteger, @Nullable Direction> BIG_EMC_STORAGE_CAPABILITY = BlockCapability.createSided(Main.rl("alchemical_book_locations"), IEmcStorageBigInteger.class);
+    public static final BlockCapability<IEmcStorageBigInteger, @Nullable Direction> BIG_EMC_STORAGE_CAPABILITY = BlockCapability.createSided(Main.rl("big_emc_storage"), IEmcStorageBigInteger.class);
 }

@@ -20,17 +20,24 @@ public class EmcServerData {
 
     // many blocks (like projecte's condensers) never send their stored emc to the client
     public static void append(CompoundTag data, Level level, BlockPos pos, BlockEntity blockEntity, @Nullable Direction side) {
+        // a side can have nothing on it, like an emc storage's off sides, the block as a whole is used then
+        if (!appendSide(data, blockEntity, side) && side != null) appendSide(data, blockEntity, null);
+    }
+
+    private static boolean appendSide(CompoundTag data, BlockEntity blockEntity, @Nullable Direction side) {
         @Nullable IEmcStorageBigInteger bigEmcStorage = blockEntity.getCapability(Capabilities.BIG_EMC_STORAGE_CAPABILITY, side).orElse(null);
         if (bigEmcStorage != null) {
             data.putString(STORED_KEY, bigEmcStorage.getStoredEmcBigInteger().toString());
             data.putString(MAXIMUM_KEY, bigEmcStorage.getMaximumEmcBigInteger().toString());
-            return;
+            return true;
         }
         @Nullable IEmcStorage emcStorage = blockEntity.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, side).orElse(null);
         if (emcStorage != null) {
             data.putString(STORED_KEY, Long.toString(emcStorage.getStoredEmc()));
             data.putString(MAXIMUM_KEY, Long.toString(emcStorage.getMaximumEmc()));
+            return true;
         }
+        return false;
     }
 
     public static boolean has(@Nullable CompoundTag data) {
