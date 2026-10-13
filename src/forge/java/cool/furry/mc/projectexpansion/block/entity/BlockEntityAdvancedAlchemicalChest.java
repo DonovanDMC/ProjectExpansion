@@ -128,7 +128,7 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 			return null;
 		}
 
-		return player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).map(p -> p.getBag(color)).orElse(null);
+		return player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).map(p -> p.getBag(getColor())).orElse(null);
 	}
 
 	public InteractionResult handleItemActivation(Player player, ItemStack stack) {
@@ -145,11 +145,13 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 			if(level != null) {
 				BlockAdvancedAlchemicalChest block = AdvancedAlchemicalChest.getBlock(bag.color);
 
-				BlockEntityAdvancedAlchemicalChest newBlockEntity = new BlockEntityAdvancedAlchemicalChest(worldPosition, getBlockState());
+				BlockState newState = block.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).setValue(BlockStateProperties.WATERLOGGED, getBlockState().getValue(BlockStateProperties.WATERLOGGED));
+				// the block entity reads its color from the state it's made with
+				BlockEntityAdvancedAlchemicalChest newBlockEntity = new BlockEntityAdvancedAlchemicalChest(worldPosition, newState);
 				newBlockEntity.owner = owner;
 				newBlockEntity.ownerName = ownerName;
 				newBlockEntity.saveAdditional(new CompoundTag());
-				level.setBlockAndUpdate(worldPosition, block.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).setValue(BlockStateProperties.WATERLOGGED, getBlockState().getValue(BlockStateProperties.WATERLOGGED)));
+				level.setBlockAndUpdate(worldPosition, newState);
 				level.removeBlockEntity(worldPosition);
 				level.setBlockEntity(newBlockEntity);
 				Util.markDirty(level, worldPosition);

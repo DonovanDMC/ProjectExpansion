@@ -93,12 +93,13 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
 
             int count = stack.getCount();
             if (count <= 0) return stack;
-            stack = Platform.copyWithCount(stack, 1);
+            // the stack passed in is what's given back, so it's left untouched
+            ItemStack single = Platform.copyWithCount(stack, 1);
 
             if(getFilterStatus() && !Platform.emcProxy().getPersistentInfo(info).equals(info)) return stack;
             if (simulate) return ItemStack.EMPTY;
 
-            long emcValue = Platform.emcProxy().getSellValue(stack);
+            long emcValue = Platform.emcProxy().getSellValue(single);
             @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
             if(provider == null) return stack;
             BigInteger totalEmcValue = BigInteger.valueOf(emcValue).multiply(BigInteger.valueOf(count));
@@ -106,7 +107,7 @@ public class BlockEntityTransmutationInterface extends BlockEntityNBTFilterable 
 
             ServerPlayer player = Util.getPlayer(level, owner);
             if (player != null) {
-                if (provider.addKnowledge(stack)) provider.syncKnowledgeChange(player, Platform.emcProxy().getPersistentInfo(info), true);
+                if (provider.addKnowledge(single)) provider.syncKnowledgeChange(player, Platform.emcProxy().getPersistentInfo(info), true);
                 provider.syncEmc(player);
             }
 

@@ -125,16 +125,23 @@ public class EMCFormat extends DecimalFormat {
         public FormatOptions forceShort() { this.force = this.forceShort = true; return this; }
         public FormatOptions none() { this.none = true; return this; }
 
+        // the client config is never loaded on a dedicated server, which formats like the defaults instead
+        private static boolean clientLoaded() {
+            return Config.client.Spec.isLoaded();
+        }
+
         public boolean shouldFormat() {
-            return !none && (force || (Config.client.formatEMC.get() && (ignoreShift || !Screen.hasShiftDown())));
+            if (none) return false;
+            if (force || !clientLoaded()) return true;
+            return Config.client.formatEMC.get() && (ignoreShift || !Screen.hasShiftDown());
         }
 
         public boolean useShortNames() {
-            return !forceLong && (forceShort || !Config.client.fullNumberNames.get());
+            return !forceLong && (forceShort || (clientLoaded() && !Config.client.fullNumberNames.get()));
         }
 
         public boolean useLongNames() {
-            return !forceShort && (forceLong || Config.client.fullNumberNames.get());
+            return !forceShort && (forceLong || !clientLoaded() || Config.client.fullNumberNames.get());
         }
 
         public static FormatOptions create() { return new FormatOptions(); }

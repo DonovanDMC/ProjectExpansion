@@ -297,7 +297,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             if (slot == 0 || (!isFinal && remainingImport <= 0) || owner == null || stack.isEmpty() || !isItemValid(slot, stack) || Util.getPlayer(owner) == null) return stack;
 
             int count = stack.getCount();
-            stack = Platform.copyWithCount(stack, 1);
+            // the stack passed in is what's given back, so it's left untouched
+            ItemStack single = Platform.copyWithCount(stack, 1);
 
             if (count <= 0) return stack;
 
@@ -306,14 +307,14 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
 
             int insertCount = isFinal ? count : Math.min(count, remainingImport);
             if (!simulate) {
-                long itemValue = Platform.emcProxy().getSellValue(stack);
+                long itemValue = Platform.emcProxy().getSellValue(single);
                 @Nullable IKnowledgeProvider provider = Util.getKnowledgeProvider(owner);
                 if (provider == null) return stack;
                 BigInteger totalValue = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(insertCount));
                 provider.setEmc(provider.getEmc().add(totalValue));
                 ServerPlayer player = Util.getPlayer(owner);
                 if (player != null) {
-                    if (provider.addKnowledge(stack))
+                    if (provider.addKnowledge(single))
                         provider.syncKnowledgeChange(player, Platform.emcProxy().getPersistentInfo(info), true);
                     provider.syncEmc(player);
                 }
@@ -323,8 +324,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
 
             if (insertCount == count) return ItemStack.EMPTY;
 
-            stack.setCount(count - insertCount);
-            return stack;
+            return Platform.copyWithCount(stack, count - insertCount);
         }
 
         @Override

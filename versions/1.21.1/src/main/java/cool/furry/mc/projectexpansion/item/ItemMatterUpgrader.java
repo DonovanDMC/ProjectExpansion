@@ -155,6 +155,7 @@ public class ItemMatterUpgrader extends Item {
             level.setBlockEntity(newBlockEntity);
             Util.markDirty(level, pos);
         }
+        if (blockEntity instanceof BlockEntityEMC previous && level.getBlockEntity(pos) instanceof BlockEntityEMC upgraded) upgraded.takeEmcFrom(previous);
 
         provider.setEmc(newEmc);
         player.displayClientMessage(Lang.Items.MATTER_UPGRADER_DONE.translateColored(ChatFormatting.WHITE, EMCFormat.format(BigInteger.valueOf(diff))), true);

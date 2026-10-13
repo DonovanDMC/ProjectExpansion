@@ -29,7 +29,8 @@ public class AlchemicalCollectionCollector {
             }
             provider.setEmc(provider.getEmc().add(emc));
             provider.syncEmc(serverPlayer);
-            if (Config.client.alchemicalCollectionSound.get()) {
+            // a client option, which a dedicated server never loads
+            if (!Config.client.Spec.isLoaded() || Config.client.alchemicalCollectionSound.get()) {
                 Platform.level(serverPlayer).playSound(null, serverPlayer.blockPosition(), SoundEvents.ALCHEMICAL_COLLECTION_COLLECT.get(), SoundSource.BLOCKS, 1.0F, 0.85F);
             }
             return true;

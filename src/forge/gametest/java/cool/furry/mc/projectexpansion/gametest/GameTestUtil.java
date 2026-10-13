@@ -2,10 +2,12 @@ package cool.furry.mc.projectexpansion.gametest;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import cool.furry.mc.projectexpansion.util.Util;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.util.AttributeKey;
+import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -19,6 +21,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkConstants;
 
+import java.math.BigInteger;
+import java.util.Objects;
 import java.util.UUID;
 
 public class GameTestUtil {
@@ -81,5 +85,13 @@ public class GameTestUtil {
 
     public static void removePlayer(ServerPlayer player) {
         player.server.getPlayerList().remove(player);
+    }
+
+    public static IKnowledgeProvider knowledge(ServerPlayer player) {
+        return Objects.requireNonNull(Util.getKnowledgeProvider(player), "No knowledge provider for " + player.getScoreboardName());
+    }
+
+    public static BigInteger emc(ServerPlayer player) {
+        return knowledge(player).getEmc();
     }
 }

@@ -12,6 +12,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
 public class CommandReloadEMC {
+    // lets game tests turn reloading on without changing the config, as forge can read the saved file back half written
+    public static boolean forceReloadAfterCommands = false;
+
     public static LiteralArgumentBuilder<CommandSourceStack> getArguments() {
         return Commands.literal("reloademc")
             .requires(source -> Config.server.enableReloadEMCCommand.get() && Permissions.RELOAD_EMC.test(source))
@@ -26,9 +29,13 @@ public class CommandReloadEMC {
         return 1;
     }
 
+    public static boolean reloadsAfterCommands() {
+        return forceReloadAfterCommands || Config.server.reloadEMCAfterCommands.get();
+    }
+
     // after projecte's setemc, removeemc and resetemc, when reloadEMCAfterCommands is on
     public static void reloadAfterCommand(CommandSourceStack source, int result) {
-        if (result > 0 && Config.server.reloadEMCAfterCommands.get()) reload(source);
+        if (result > 0 && reloadsAfterCommands()) reload(source);
     }
 
     private static void reload(CommandSourceStack source) {

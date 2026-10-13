@@ -158,6 +158,8 @@ public class ItemMatterUpgrader extends Item {
             level.setBlockEntity(pos, newBlockEntity);
             Util.markDirty(level, pos);
         }
+        TileEntity upgraded = level.getBlockEntity(pos);
+        if (blockEntity instanceof BlockEntityEMC && upgraded instanceof BlockEntityEMC) ((BlockEntityEMC) upgraded).takeEmcFrom((BlockEntityEMC) blockEntity);
 
         provider.setEmc(newEmc);
         player.displayClientMessage(Lang.Items.MATTER_UPGRADER_DONE.translateColored(TextFormatting.WHITE, EMCFormat.format(BigInteger.valueOf(diff))), true);

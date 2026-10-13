@@ -138,6 +138,11 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
         return toRemove;
     }
 
+    // for when the block is swapped for another tier, so what it stored isn't lost
+    public void takeEmcFrom(BlockEntityEMC other) {
+        forceInsertEmcBigInteger(other.getStoredEmcBigInteger(), EmcAction.EXECUTE);
+    }
+
     protected long forceInsertEmc(long toAccept, EmcAction action) {
         return Util.safeLongValue(forceInsertEmcBigInteger(BigInteger.valueOf(toAccept), action));
     }

@@ -26,7 +26,7 @@ public class RemoveEMCCMDMixin {
         remap = false
     )
     private static Component pex$removeEmc(Component original) {
-        if (Config.server.reloadEMCAfterCommands.get()) return Lang.Commands.RELOADING_EMC.translate();
+        if (CommandReloadEMC.reloadsAfterCommands()) return Lang.Commands.RELOADING_EMC.translate();
         if (!Config.server.enableReloadEMCCommand.get()) return original;
         return Lang.Commands.RELOAD_NOTICE.translate(Component.literal("/px reloademc").withStyle(Style.EMPTY.withColor(ChatFormatting.RED).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/px reloademc"))));
     }

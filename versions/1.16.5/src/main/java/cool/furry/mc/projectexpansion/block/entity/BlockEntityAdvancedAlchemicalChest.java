@@ -126,7 +126,7 @@ public class BlockEntityAdvancedAlchemicalChest extends BlockEntityOwnable imple
 			return null;
 		}
 
-		return player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).map(p -> p.getBag(color)).orElse(null);
+		return player.getCapability(ProjectEAPI.ALCH_BAG_CAPABILITY).map(p -> p.getBag(getColor())).orElse(null);
 	}
 
 	public ActionResultType handleItemActivation(PlayerEntity player, ItemStack stack) {

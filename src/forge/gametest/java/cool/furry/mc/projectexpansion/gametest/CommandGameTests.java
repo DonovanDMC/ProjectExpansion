@@ -2,8 +2,8 @@ package cool.furry.mc.projectexpansion.gametest;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cool.furry.mc.projectexpansion.Main;
+import cool.furry.mc.projectexpansion.commands.CommandReloadEMC;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityPowerFlower;
-import cool.furry.mc.projectexpansion.config.Config;
 import cool.furry.mc.projectexpansion.util.Matter;
 import cool.furry.mc.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
@@ -110,6 +110,13 @@ public class CommandGameTests {
         helper.succeed();
     }
 
+    // the table is worked out from each fuel's EMC
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void dumpFuelMapRuns(GameTestHelper helper) {
+        check(runOrFail(console(helper), "px dumpfuelmap") == 1, "/px dumpfuelmap didn't succeed");
+        helper.succeed();
+    }
+
     // in the emc batch, as knowledge can only be learned for items with EMC
     @GameTest(template = EMPTY, batch = "emc")
     public static void knowledgeCommandTargetsPlayer(GameTestHelper helper) {
@@ -164,13 +171,13 @@ public class CommandGameTests {
     public static void emcCommandsReloadImmediately(GameTestHelper helper) {
         long original = Platform.emcValue(Items.DEAD_BUSH);
         CommandSourceStack console = console(helper);
-        Config.server.reloadEMCAfterCommands.set(true);
+        CommandReloadEMC.forceReloadAfterCommands = true;
         try {
             check(runOrFail(console, "projecte setemc 12345 minecraft:dead_bush") == 1, "/projecte setemc didn't succeed");
             check(Platform.emcValue(Items.DEAD_BUSH) == 12345, "A dead bush is worth " + Platform.emcValue(Items.DEAD_BUSH) + " right after /projecte setemc, not 12345");
         } finally {
             runOrFail(console, "projecte resetemc minecraft:dead_bush");
-            Config.server.reloadEMCAfterCommands.set(false);
+            CommandReloadEMC.forceReloadAfterCommands = false;
         }
         check(Platform.emcValue(Items.DEAD_BUSH) == original, "A dead bush is worth " + Platform.emcValue(Items.DEAD_BUSH) + " after /projecte resetemc, not " + original);
         helper.succeed();
