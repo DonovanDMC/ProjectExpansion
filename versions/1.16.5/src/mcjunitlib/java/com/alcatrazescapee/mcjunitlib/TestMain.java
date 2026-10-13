@@ -106,6 +106,13 @@ public class TestMain
             LOGGER.log(UNIT_TEST, "Removing previous test world...");
             FileUtils.deleteDirectory(new File(TEST_WORLD));
 
+            // Datapacks for the tests, each folder in the directory named by the mcjunitlib.datapacks property is one
+            final String datapacks = System.getProperty("mcjunitlib.datapacks");
+            if (datapacks != null && new File(datapacks).isDirectory())
+            {
+                FileUtils.copyDirectory(new File(datapacks), new File(TEST_WORLD, "datapacks"));
+            }
+
             // Edit the server.properties file before force saving it. This requires some minor reflection into the original properties object
             final Path path = Paths.get("server.properties");
             final ServerPropertiesProvider serverPropertiesProvider = new ServerPropertiesProvider(builtinRegistries, path);

@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$for": {
 		"block": [
 			"raw_ianthium_block",

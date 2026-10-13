@@ -1,5 +1,8 @@
 package cool.furry.mc.projectexpansion.registries;
 
+import cool.furry.mc.projectexpansion.block.entity.BlockEntityEMCRefinery;
+import cool.furry.mc.projectexpansion.gui.container.ContainerEMCRefinery;
+import cool.furry.mc.projectexpansion.gui.container.ContainerEmcPipe;
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCondenserMK3;
@@ -30,6 +33,8 @@ public class MenuTypes {
     public static final RegistryObject<ContainerType<ContainerCondenserMK3Input>> CONDENSER_MK3_INPUT = registerBlockEntity("condenser_mk3_input", BlockEntityCondenserMK3.class, ContainerCondenserMK3Input::new);
     public static final RegistryObject<ContainerType<ContainerCondenserMK3Output>> CONDENSER_MK3_OUTPUT = registerBlockEntity("condenser_mk3_output", BlockEntityCondenserMK3.class, ContainerCondenserMK3Output::new);
     public static final RegistryObject<ContainerType<ContainerArcaneTransmutationTablet>> ARCANE_TRANSMUTATION_TABLET = register("arcane_transmutation_tablet", ContainerArcaneTransmutationTablet::fromNetwork);
+    public static final RegistryObject<ContainerType<ContainerEMCRefinery>> EMC_REFINERY = registerBlockEntity("emc_refinery", BlockEntityEMCRefinery.class, ContainerEMCRefinery::new);
+    public static final RegistryObject<ContainerType<ContainerEmcPipe>> EMC_PIPE = register("emc_pipe", ContainerEmcPipe::fromNetwork);
 
     public static <CONTAINER extends Container> RegistryObject<ContainerType<CONTAINER>> register(String name, IContainerFactory<CONTAINER> factory) {
         return Registry.register(name, () -> new ContainerType<>(factory));

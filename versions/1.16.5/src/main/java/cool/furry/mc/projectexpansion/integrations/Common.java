@@ -1,6 +1,7 @@
 package cool.furry.mc.projectexpansion.integrations;
 
 
+import cool.furry.mc.projectexpansion.block.BlockEmcStorage;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityEMCLink;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityNBTFilterable;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityOwnable;
@@ -12,9 +13,10 @@ import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.blocks.Relay;
+import cool.furry.mc.projectexpansion.util.storage.StorageSide;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +44,12 @@ public class Common {
         BlockState state = provider.getBlockState();
         @Nullable IEmcStorage emcStorage = blockEntity == null ? null : blockEntity.getCapability(ProjectEAPI.EMC_STORAGE_CAPABILITY, side).resolve().orElse(null);
         @Nullable IEmcStorageBigInteger bigEmcStorage = blockEntity == null ? null : blockEntity.getCapability(Capabilities.BIG_EMC_STORAGE_CAPABILITY, side).resolve().orElse(null);
-        if (bigEmcStorage != null) {
+        CompoundNBT serverData = provider.getServerData();
+        if (EmcServerData.has(serverData)) {
+            BigInteger total = EmcServerData.stored(serverData);
+            BigInteger maximum = EmcServerData.maximum(serverData);
+            addTooltip.accept(Lang.EMC_STORAGE.translateColored(TextFormatting.GRAY, formatEMC(total), formatEMC(maximum)));
+        } else if (bigEmcStorage != null) {
             BigInteger total = bigEmcStorage.getStoredEmcBigInteger();
             BigInteger maximum = bigEmcStorage.getMaximumEmcBigInteger();
             addTooltip.accept(Lang.EMC_STORAGE.translateColored(TextFormatting.GRAY, formatEMC(total), formatEMC(maximum)));
@@ -50,6 +57,13 @@ public class Common {
             BigInteger total = BigInteger.valueOf(emcStorage.getStoredEmc());
             BigInteger maximum = BigInteger.valueOf(emcStorage.getMaximumEmc());
             addTooltip.accept(Lang.EMC_STORAGE.translateColored(TextFormatting.GRAY, formatEMC(total), formatEMC(maximum)));
+        }
+
+        // the mode of the side being looked at, which the block state already has
+        if (block instanceof BlockEmcStorage && side != null) {
+            StorageSide mode = BlockEmcStorage.getSide(state, side);
+            TextFormatting color = mode == StorageSide.INPUT ? TextFormatting.AQUA : mode == StorageSide.OUTPUT ? TextFormatting.GOLD : TextFormatting.DARK_GRAY;
+            addTooltip.accept(Lang.STORAGE_SIDE.translateColored(TextFormatting.GRAY, Lang.STORAGE_SIDE.extendColored(mode.getSerializedName(), color)));
         }
 
         if (blockEntity instanceof IGeneratesEMC) {
@@ -123,7 +137,8 @@ public class Common {
 
         if (blockEntity instanceof BlockEntityOwnable) {
             BlockEntityOwnable ownable = ((BlockEntityOwnable) blockEntity);
-            boolean isOwner = Objects.requireNonNull(Minecraft.getInstance().player).getUUID().equals(ownable.owner);
+            // the one probe builds its lines on the server, so the player comes from the provider
+            boolean isOwner = provider.getPlayer().getUUID().equals(ownable.owner);
             String ownerName = ownable.ownerName;
             if (ownerName.isEmpty()) {
                 ownerName = ownable.owner.toString();

@@ -37,6 +37,8 @@ public class Main {
         Items.Registry.register(modEventBus);
         SoundEvents.Registry.register(modEventBus);
         MenuTypes.Registry.register(modEventBus);
+        RecipeTypes.Serializers.register(modEventBus);
+        MinecraftForge.EVENT_BUS.addListener(Features::addToBiomes);
         modEventBus.addGenericListener(Item.class, EventPriority.LOWEST, CreativeTabs::assignItems);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);
@@ -53,6 +55,7 @@ public class Main {
             PacketHandler.register();
             Capabilities.register();
             Permissions.registerPermissionNodes();
+            Features.register();
         });
     }
 

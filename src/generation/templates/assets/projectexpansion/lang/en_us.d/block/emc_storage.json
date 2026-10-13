@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$content": {
 		"block.projectexpansion.basic_emc_storage": "Basic EMC Storage",
 		"block.projectexpansion.improved_emc_storage": "Improved EMC Storage",

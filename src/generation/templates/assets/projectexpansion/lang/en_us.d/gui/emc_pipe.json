@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$content": {
 		"gui.projectexpansion.emc_pipe": "EMC Pipe",
 		"gui.projectexpansion.emc_pipe.rate": "Rate: %s emc/t",

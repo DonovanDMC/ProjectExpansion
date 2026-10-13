@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$content": {
 		"item.projectexpansion.wrench": "Wrench",
 		"item.projectexpansion.wrench.tooltip": "Sets EMC Pipe sides to extract, sneak to disconnect them.",

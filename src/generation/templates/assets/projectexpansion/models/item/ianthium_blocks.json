@@ -1,12 +1,6 @@
 {
-	"$if": "since('1.18')",
 	"$for": {
-		"block": [
-			"ianthium_ore",
-			"deepslate_ianthium_ore",
-			"raw_ianthium_block",
-			"ianthium_block"
-		]
+		"block": "['ianthium_ore', ...(since('1.18') ? ['deepslate_ianthium_ore'] : []), 'raw_ianthium_block', 'ianthium_block']"
 	},
 	"$output": "{{block}}",
 	"$content": {

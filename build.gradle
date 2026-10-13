@@ -52,6 +52,12 @@ subprojects {
             }
         }
         maven {
+            url = "https://api.modrinth.com/maven"
+            content {
+                includeGroup "maven.modrinth"
+            }
+        }
+        maven {
             name = "Jared's maven"
             url = "https://maven.blamejared.com/"
         }

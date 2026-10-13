@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$content": {
 		"$template": "_partials/recipe/shaped",
 		"$with": {

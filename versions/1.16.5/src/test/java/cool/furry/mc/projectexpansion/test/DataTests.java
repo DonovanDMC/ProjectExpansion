@@ -42,7 +42,8 @@ public class DataTests {
         List<String> problems = new ArrayList<>();
         for (RegistryObject<Block> entry : Blocks.Registry.getEntries()) {
             Block block = entry.get();
-            Item item = block.asItem();
+            // the ore drops its raw material instead, see IanthiumTests
+            Item item = block == Blocks.IANTHIUM_ORE.get() ? cool.furry.mc.projectexpansion.registries.Items.RAW_IANTHIUM.get() : block.asItem();
             if (item == Items.AIR) {
                 problems.add(entry.getId() + " has no item");
                 continue;
@@ -59,7 +60,8 @@ public class DataTests {
         List<String> expected = new ArrayList<>(Arrays.asList(
             "collector/basic", "relay/basic", "collector/mk1_conversion", "relay/mk3_conversion",
             "basic_alchemical_book", "arcane_transmutation_table", "arcane_transmutation_tablet",
-            "compact_sun_1", "condenser_mk3", "transmutation_interface", "star/final_star", "star/magnum/ein"
+            "compact_sun_1", "condenser_mk3", "transmutation_interface", "star/final_star", "star/magnum/ein",
+            "emc_storage/basic", "emc_storage/improved", "emc_storage/advanced", "emc_storage/ultimate", "emc_storage/infinity"
         ));
         for (Matter matter : Matter.VALUES) {
             String tier = matter.getSerializedName();
@@ -89,7 +91,7 @@ public class DataTests {
 
     @IntegrationTest("empty")
     public void advancementsLoad(IntegrationTestHelper helper) {
-        for (String id : Arrays.asList("compact_sun", "collector", "magenta_matter", "pink_fuel", "knowledge_sharing_book", "blinded_by_the_light")) {
+        for (String id : Arrays.asList("compact_sun", "collector", "magenta_matter", "pink_fuel", "knowledge_sharing_book", "blinded_by_the_light", "ianthium", "emc_refinery", "ianthium_ingot", "emc_pipe", "wrench", "pipe_upgrade", "infinity_pipe_upgrade", "emc_storage")) {
             ResourceLocation location = Main.rl(id);
             check(helper.getWorld().getServer().getAdvancements().getAdvancement(location) != null, "Missing advancement " + location);
         }

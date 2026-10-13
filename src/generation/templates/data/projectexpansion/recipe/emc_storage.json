@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$output": "emc_storage/basic",
 	"$content": {
 		"$template": "_partials/recipe/shaped",

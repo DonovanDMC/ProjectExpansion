@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "projectexpansion:ianthium_ingot"
+		}
+	],
+	"result": {
+		"item": "projectexpansion:ianthium_nugget",
+		"count": 9
+	}
+}

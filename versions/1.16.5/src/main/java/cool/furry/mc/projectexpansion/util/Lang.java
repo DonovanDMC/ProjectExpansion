@@ -2,8 +2,8 @@ package cool.furry.mc.projectexpansion.util;
 
 import cool.furry.mc.projectexpansion.Main;
 import moze_intel.projecte.utils.text.ILangEntry;
-import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.IFormattableTextComponent;
 
 @SuppressWarnings("unused")
 public enum Lang implements ILangEntry {
@@ -28,6 +28,7 @@ public enum Lang implements ILangEntry {
     FILTER_STATUS("text", "filter_status"),
     EMC_PER_SECOND("text", "emc_per_second"),
     EMC_STORAGE("text", "emc_storage"),
+    STORAGE_SIDE("text", "storage_side"),
     EMC_TRANSFER_RATE("text", "emc_transfer_rate"),
     CHARGE_RATE("text", "charge_rate"),
     RELAY_BONUS("text", "relay_bonus"),
@@ -143,6 +144,22 @@ public enum Lang implements ILangEntry {
         WHITE_COLLECTOR("white_collector"),
         FADING_COLLECTOR("fading_collector"),
         FINAL_COLLECTOR("final_collector"),
+
+        // EMC Pipe
+        EMC_PIPE_TOOLTIP("emc_pipe", "tooltip"),
+        EMC_PIPE_TOOLTIP2("emc_pipe", "tooltip2"),
+
+        // EMC Refinery
+        EMC_REFINERY("emc_refinery"),
+        EMC_REFINERY_TOOLTIP("emc_refinery", "tooltip"),
+
+        // EMC Storage
+        EMC_STORAGE_TOOLTIP("emc_storage", "tooltip"),
+        EMC_STORAGE_TOOLTIP2("emc_storage", "tooltip2"),
+        EMC_STORAGE_CAPACITY("emc_storage", "capacity"),
+        EMC_STORAGE_RATE("emc_storage", "rate"),
+        EMC_STORAGE_STORED("emc_storage", "stored"),
+        EMC_STORAGE_SIDE("emc_storage", "side"),
         ;
 
         private String key;
@@ -342,6 +359,12 @@ public enum Lang implements ILangEntry {
         ALCHEMICAL_BOOK_NOT_ENOUGH_EMC("alchemical_book", "not_enough_emc"),
 
         ARCANE_TRANSMUTATION_TABLET_TOOLTIP("arcane_transmutation_tablet", "tooltip"),
+
+        // Pipes
+        WRENCH_TOOLTIP("wrench", "tooltip"),
+        PIPE_UPGRADE_RATE("pipe_upgrade", "rate"),
+        PIPE_UPGRADE_UNLOCKS("pipe_upgrade", "unlocks"),
+        PIPE_UPGRADE_CONFIGURED("pipe_upgrade", "configured"),
         ;
 
         private String key;
@@ -410,6 +433,19 @@ public enum Lang implements ILangEntry {
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_EMC_MISSING("arcane_transmutation_tablet", "transfer", "emc_missing"),
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_EXCLUDED("arcane_transmutation_tablet", "transfer", "excluded"),
         ARCANE_TRANSMUTATION_TABLET_TRANSFER_NOT_LEARNED("arcane_transmutation_tablet", "transfer", "not_learned"),
+
+        // EMC Pipe
+        EMC_PIPE("emc_pipe"),
+        EMC_PIPE_RATE("emc_pipe", "rate"),
+        EMC_PIPE_REDSTONE("emc_pipe", "redstone"),
+        EMC_PIPE_DISTRIBUTION("emc_pipe", "distribution"),
+        EMC_PIPE_LOCKED("emc_pipe", "locked"),
+
+        // EMC Refinery
+        EMC_REFINERY_STORED("emc_refinery", "stored"),
+        EMC_REFINERY_COST("emc_refinery", "cost"),
+        EMC_REFINERY_TIME("emc_refinery", "time"),
+        REFINING("refining"),
         ;
 
         private String key;

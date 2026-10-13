@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$content": {
 		"projectexpansion.configuration.emcPipeRate": "EMC Pipe Rate",
 		"projectexpansion.configuration.emcPipeRateBasic": "EMC Pipe Rate (Basic)",

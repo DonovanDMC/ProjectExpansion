@@ -302,6 +302,15 @@ public enum IntegrationTestManager
                     final BlockPos testBoxOrigin = cursor.immutable();
                     final BlockPos testTemplateOrigin = testBoxOrigin.offset(1, 1, 1);
 
+                    // Keep the test's chunks ticking, rows past the spawn chunks would otherwise never tick their block entities
+                    for (int chunkX = testBoxOrigin.getX() >> 4; chunkX <= (testBoxOrigin.getX() + size.getX() + 1) >> 4; chunkX++)
+                    {
+                        for (int chunkZ = testBoxOrigin.getZ() >> 4; chunkZ <= (testBoxOrigin.getZ() + size.getZ() + 1) >> 4; chunkZ++)
+                        {
+                            world.setChunkForced(chunkX, chunkZ, true);
+                        }
+                    }
+
                     // Clear the test area
                     for (int x = testBoxOrigin.getX(); x <= testBoxOrigin.getX() + size.getX() + 1; x++)
                     {

@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$for": { "tier": "['basic', 'improved', 'advanced', 'ultimate', 'infinity']" },
 	"$let": { "rotations": "({ north: {}, east: { y: 90 }, south: { y: 180 }, west: { y: 270 }, up: { x: 270 }, down: { x: 90 } })" },
 	"$output": "{{tier}}_emc_storage",

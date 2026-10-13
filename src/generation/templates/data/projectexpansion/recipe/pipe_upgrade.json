@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$for": { "tier": "['basic', 'improved', 'advanced', 'ultimate', 'infinity']" },
 	"$let": {
 		"matter": "({ basic: 'projecte:dark_matter', improved: 'projecte:red_matter', advanced: 'projectexpansion:magenta_matter', ultimate: 'projectexpansion:blue_matter', infinity: 'projectexpansion:final_star_shard' })[tier]",

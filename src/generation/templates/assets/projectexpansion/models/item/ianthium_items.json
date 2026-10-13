@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$for": {
 		"item": [
 			"raw_ianthium",

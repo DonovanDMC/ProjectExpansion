@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$content": {
 		"advancements.projectexpansion.ianthium": "Shades of Violet",
 		"advancements.projectexpansion.ianthium.description": "Mine ianthium ore with a matter pickaxe.",

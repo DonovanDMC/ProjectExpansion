@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$output": "ianthium_block",
 	"$content": {
 		"$template": "_partials/recipe/shaped",

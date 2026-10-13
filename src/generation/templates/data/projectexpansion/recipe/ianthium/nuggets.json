@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$output": "ianthium_nugget",
 	"$content": {
 		"$template": "_partials/recipe/shapeless",

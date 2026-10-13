@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$content": {
 		"parent": "minecraft:block/orientable",
 		"textures": {

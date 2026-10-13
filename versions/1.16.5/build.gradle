@@ -67,6 +67,9 @@ minecraft {
     }
 }
 
+// data for the tests that comes from outside the mod, see the mcjunitlib README
+tasks.matching { it.name == "runServerTest" }.configureEach { JavaExec run -> run.systemProperty("mcjunitlib.datapacks", file("src/test/datapacks").absolutePath) }
+
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
     config "${mod_id}.mixins.json"
@@ -81,6 +84,11 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+    // jade is built on hwyla's api here, and its 1.16.5 builds aren't on cursemaven's file ids we use elsewhere
+    compileOnly fg.deobf("maven.modrinth:jade:${jade_version}")
+    runtimeOnly fg.deobf("maven.modrinth:jade:${jade_version}")
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
+    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
     // the versions mcjunitlib was built with
     mcjunitlibImplementation "org.junit.platform:junit-platform-launcher:${junit_platform_version}"
     mcjunitlibImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"

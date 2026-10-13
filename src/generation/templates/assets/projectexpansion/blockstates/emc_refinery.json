@@ -1,5 +1,4 @@
 {
-	"$if": "since('1.18')",
 	"$content": {
 		"variants": {
 			"facing=north,lit=false": {

@@ -1,10 +1,6 @@
 {
-	"$if": "since('1.18')",
 	"$for": {
-		"block": [
-			"ianthium_ore",
-			"deepslate_ianthium_ore"
-		]
+		"block": "['ianthium_ore', ...(since('1.18') ? ['deepslate_ianthium_ore'] : [])]"
 	},
 	"$let": {
 		"base": "block === 'ianthium_ore' ? 'minecraft:block/stone' : 'minecraft:block/deepslate'"

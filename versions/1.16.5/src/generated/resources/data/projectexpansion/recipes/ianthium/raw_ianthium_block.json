@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"###",
+		"###",
+		"###"
+	],
+	"key": {
+		"#": {
+			"item": "projectexpansion:raw_ianthium"
+		}
+	},
+	"result": {
+		"item": "projectexpansion:raw_ianthium_block"
+	}
+}

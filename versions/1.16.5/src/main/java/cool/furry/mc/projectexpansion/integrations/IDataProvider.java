@@ -3,6 +3,7 @@ package cool.furry.mc.projectexpansion.integrations;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +16,10 @@ public interface IDataProvider {
     BlockState getBlockState();
     @Nullable TileEntity getBlockEntity();
     World getLevel();
-    @SuppressWarnings("unused")
     PlayerEntity getPlayer();
     Direction getSide();
+    // values the server sent along, for anything the client copy of the block doesn't keep up to date
+    default @Nullable CompoundNBT getServerData() {
+        return null;
+    }
 }

@@ -1,0 +1,8 @@
+{
+	"comment": "Ianthium ingots are worth the same as iron, raw ianthium has no value like other raw materials.",
+	"values": {
+		"before": {
+			"#forge:ingots/ianthium": 256
+		}
+	}
+}

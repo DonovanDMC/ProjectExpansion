@@ -14,6 +14,11 @@ public class TagNames {
     public static final String REMAINING_FLUID = "RemainingFluid";
     public static final String LAST_USED = "LastUsed";
     public static final String KNOWLEDGE_GAINED = "KnowledgeGained";
+    public static final String DISCONNECTED = "Disconnected";
+    public static final String ITEMS = "Items";
+    public static final String PROGRESS = "Progress";
+    public static final String INCOMING = "Incoming";
+    public static final String RECIPE = "Recipe";
     public static final String ACTIVE = Constants.NBT_KEY_ACTIVE;
     public static final String X = "X";
     public static final String Y = "Y";
