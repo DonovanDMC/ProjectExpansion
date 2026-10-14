@@ -16,7 +16,6 @@ public interface IDataProvider {
     BlockState getBlockState();
     @Nullable BlockEntity getBlockEntity();
     Level getLevel();
-    @SuppressWarnings("unused")
     Player getPlayer();
     Direction getSide();
     // values the server sent along, for anything the client copy of the block doesn't keep up to date

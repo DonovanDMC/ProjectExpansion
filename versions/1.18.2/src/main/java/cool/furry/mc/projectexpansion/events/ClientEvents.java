@@ -10,6 +10,7 @@ import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Input;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Output;
 import cool.furry.mc.projectexpansion.gui.GUIEMCRefinery;
 import cool.furry.mc.projectexpansion.gui.GUIEmcPipe;
+import cool.furry.mc.projectexpansion.gui.GUIPowerFlower;
 import cool.furry.mc.projectexpansion.net.PacketHandler;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketOpenTransmutationTablet;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketToggleEmcLock;
@@ -39,6 +40,7 @@ public class ClientEvents {
             event.enqueueWork(() -> {
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_1.get(), GUICollector.Tier1::new);
                 MenuScreens.register(MenuTypes.EMC_PIPE.get(), GUIEmcPipe::new);
+                MenuScreens.register(MenuTypes.POWER_FLOWER.get(), GUIPowerFlower::new);
                 // the ores are an overlay on stone, 1.18 doesn't read render types from models
                 ItemBlockRenderTypes.setRenderLayer(Blocks.IANTHIUM_ORE.get(), RenderType.cutout());
                 ItemBlockRenderTypes.setRenderLayer(Blocks.DEEPSLATE_IANTHIUM_ORE.get(), RenderType.cutout());

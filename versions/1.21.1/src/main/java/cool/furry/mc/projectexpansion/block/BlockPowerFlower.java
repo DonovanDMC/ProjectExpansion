@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityOwnable;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityPowerFlower;
 import cool.furry.mc.projectexpansion.config.Config;
+import cool.furry.mc.projectexpansion.gui.container.ContainerPowerFlower;
 import cool.furry.mc.projectexpansion.registries.BlockEntityTypes;
 import cool.furry.mc.projectexpansion.registries.BlockTypes;
 import cool.furry.mc.projectexpansion.util.*;
@@ -13,7 +14,9 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -117,6 +120,11 @@ public class BlockPowerFlower extends Block implements IHasMatter, EntityBlock, 
         if (level.isClientSide) return InteractionResult.SUCCESS;
         BlockEntityPowerFlower blockEntity = WorldHelper.getBlockEntity(BlockEntityPowerFlower.class, level, pos);
         if (blockEntity == null) return InteractionResult.FAIL;
+        // only the owner gets the settings, anyone else is told who that is
+        if (blockEntity.owner.equals(player.getUUID()) && player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.openMenu(new SimpleMenuProvider((id, inventory, p) -> new ContainerPowerFlower(id, inventory, blockEntity), getName()), pos);
+            return InteractionResult.CONSUME;
+        }
         blockEntity.handleActivation(player, BlockEntityOwnable.ActivationType.DISPLAY_NAME);
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }

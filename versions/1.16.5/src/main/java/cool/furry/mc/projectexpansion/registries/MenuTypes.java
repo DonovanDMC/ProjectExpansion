@@ -35,6 +35,7 @@ public class MenuTypes {
     public static final RegistryObject<ContainerType<ContainerArcaneTransmutationTablet>> ARCANE_TRANSMUTATION_TABLET = register("arcane_transmutation_tablet", ContainerArcaneTransmutationTablet::fromNetwork);
     public static final RegistryObject<ContainerType<ContainerEMCRefinery>> EMC_REFINERY = registerBlockEntity("emc_refinery", BlockEntityEMCRefinery.class, ContainerEMCRefinery::new);
     public static final RegistryObject<ContainerType<ContainerEmcPipe>> EMC_PIPE = register("emc_pipe", ContainerEmcPipe::fromNetwork);
+    public static final RegistryObject<ContainerType<ContainerPowerFlower>> POWER_FLOWER = register("power_flower", ContainerPowerFlower::fromNetwork);
 
     public static <CONTAINER extends Container> RegistryObject<ContainerType<CONTAINER>> register(String name, IContainerFactory<CONTAINER> factory) {
         return Registry.register(name, () -> new ContainerType<>(factory));

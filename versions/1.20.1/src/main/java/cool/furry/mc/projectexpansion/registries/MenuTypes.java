@@ -36,6 +36,7 @@ public class MenuTypes {
     public static final RegistryObject<MenuType<ContainerArcaneTransmutationTablet>> ARCANE_TRANSMUTATION_TABLET = register("arcane_transmutation_tablet", ContainerArcaneTransmutationTablet::fromNetwork);
     public static final RegistryObject<MenuType<ContainerEMCRefinery>> EMC_REFINERY = registerBlockEntity("emc_refinery", BlockEntityEMCRefinery.class, ContainerEMCRefinery::new);
     public static final RegistryObject<MenuType<ContainerEmcPipe>> EMC_PIPE = Registry.register("emc_pipe", () -> IForgeMenuType.create(ContainerEmcPipe::fromNetwork));
+    public static final RegistryObject<MenuType<ContainerPowerFlower>> POWER_FLOWER = Registry.register("power_flower", () -> IForgeMenuType.create(ContainerPowerFlower::fromNetwork));
 
     public static <CONTAINER extends AbstractContainerMenu> RegistryObject<MenuType<CONTAINER>> register(String name, IContainerFactory<CONTAINER> factory) {
         return Registry.register(name, () -> new MenuType<>(factory, FeatureFlags.VANILLA_SET));

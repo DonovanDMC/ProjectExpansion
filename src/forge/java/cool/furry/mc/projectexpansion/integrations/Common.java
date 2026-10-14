@@ -15,7 +15,6 @@ import moze_intel.projecte.gameObjs.blocks.Collector;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
 import moze_intel.projecte.gameObjs.blocks.Relay;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -124,7 +123,8 @@ public class Common {
         }
 
         if (blockEntity instanceof BlockEntityOwnable ownable) {
-            boolean isOwner = Objects.requireNonNull(Minecraft.getInstance().player).getUUID().equals(ownable.owner);
+            // the one probe builds its lines on the server, so the player comes from the provider
+            boolean isOwner = provider.getPlayer().getUUID().equals(ownable.owner);
             String ownerName = ownable.ownerName;
             if (ownerName.isEmpty()) {
                 ownerName = ownable.owner.toString();

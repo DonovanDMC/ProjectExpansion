@@ -2,6 +2,7 @@ package cool.furry.mc.projectexpansion.events;
 
 import cool.furry.mc.projectexpansion.gui.GUIEMCRefinery;
 import cool.furry.mc.projectexpansion.gui.GUIEmcPipe;
+import cool.furry.mc.projectexpansion.gui.GUIPowerFlower;
 import cool.furry.mc.projectexpansion.registries.Blocks;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -43,6 +44,7 @@ public class ClientEvents {
                 ScreenManager.register(MenuTypes.CONDENSER_MK3_OUTPUT.get(), GUICondenserMK3Output::new);
                 ScreenManager.register(MenuTypes.ARCANE_TRANSMUTATION_TABLET.get(), GUIArcaneTransmutationTablet::new);
                 ScreenManager.register(MenuTypes.EMC_PIPE.get(), GUIEmcPipe::new);
+                ScreenManager.register(MenuTypes.POWER_FLOWER.get(), GUIPowerFlower::new);
                 ScreenManager.register(MenuTypes.EMC_REFINERY.get(), GUIEMCRefinery::new);
                 // the ore is an overlay on stone, and so are an emc storage's output and off sides
                 RenderTypeLookup.setRenderLayer(Blocks.IANTHIUM_ORE.get(), RenderType.cutout());

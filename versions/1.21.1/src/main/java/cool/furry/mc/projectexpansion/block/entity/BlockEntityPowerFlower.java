@@ -4,7 +4,10 @@ import cool.furry.mc.projectexpansion.block.BlockCompactSun;
 import cool.furry.mc.projectexpansion.block.BlockPowerFlower;
 import cool.furry.mc.projectexpansion.config.Config;
 import cool.furry.mc.projectexpansion.registries.BlockEntityTypes;
+import cool.furry.mc.projectexpansion.registries.Capabilities;
 import cool.furry.mc.projectexpansion.util.*;
+import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -14,6 +17,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -21,8 +26,14 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class BlockEntityPowerFlower extends BlockEntityOwnable implements IHasMatter, IHasSunBonus, IEmcStorageBigInteger, IGeneratesEMC {
     public BigInteger emc = BigInteger.ZERO;
+    private PowerFlowerMode mode = PowerFlowerMode.PLAYER;
     public BlockEntityPowerFlower(BlockPos pos, BlockState state) {
         super(BlockEntityTypes.POWER_FLOWER.get(), pos, state);
+    }
+
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(PECapabilities.EMC_STORAGE_CAPABILITY, BlockEntityTypes.POWER_FLOWER.get(), BlockEntityPowerFlower::getStorage);
+        event.registerBlockEntity(Capabilities.BIG_EMC_STORAGE_CAPABILITY, BlockEntityTypes.POWER_FLOWER.get(), BlockEntityPowerFlower::getStorage);
     }
 
     @Override
@@ -30,12 +41,14 @@ public class BlockEntityPowerFlower extends BlockEntityOwnable implements IHasMa
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains(TagNames.STORED_EMC, Tag.TAG_STRING)) emc = new BigInteger(tag.getString((TagNames.STORED_EMC)));
+        mode = PowerFlowerMode.byName(tag.getString(TagNames.MODE));
     }
 
     @Override
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putString(TagNames.STORED_EMC, emc.toString());
+        tag.putString(TagNames.MODE, mode.getSerializedName());
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
@@ -48,16 +61,54 @@ public class BlockEntityPowerFlower extends BlockEntityOwnable implements IHasMa
         if(hasSunBonus() && getSunBonus() != null) {
             res = res.multiply(BigInteger.valueOf(getSunBonus()));
         }
-        ServerPlayer player = Util.getPlayer(level, owner);
-
-        if (player != null) {
-            PowerFlowerCollector.add(player, emc.add(res));
-            emc = BigInteger.ZERO;
-            markDirty();
-        } else {
-            emc = emc.add(res);
-            markDirty();
+        emc = emc.add(res);
+        switch (mode) {
+            case PLAYER -> {
+                ServerPlayer player = Util.getPlayer(level, owner);
+                if (player != null) {
+                    PowerFlowerCollector.add(player, emc);
+                    emc = BigInteger.ZERO;
+                }
+            }
+            case EJECT -> eject(level, pos);
+            case STORAGE -> {}
         }
+        markDirty();
+    }
+
+    // what nothing around it takes stays in the flower
+    private void eject(Level level, BlockPos pos) {
+        for (Direction side : Direction.values()) {
+            if (emc.signum() <= 0) return;
+            emc = emc.subtract(insertInto(level, pos.relative(side), side.getOpposite(), emc));
+        }
+    }
+
+    private static BigInteger insertInto(Level level, BlockPos pos, Direction side, BigInteger amount) {
+        IEmcStorageBigInteger big = level.getCapability(Capabilities.BIG_EMC_STORAGE_CAPABILITY, pos, side);
+        if (big != null) return big.insertEmcBigInteger(amount, EmcAction.EXECUTE);
+        IEmcStorage storage = level.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, pos, side);
+        if (storage != null) return BigInteger.valueOf(storage.insertEmc(Util.safeLongValue(amount), EmcAction.EXECUTE));
+        return BigInteger.ZERO;
+    }
+
+    public PowerFlowerMode getMode() {
+        return mode;
+    }
+
+    public void setMode(PowerFlowerMode mode) {
+        if (this.mode == mode) return;
+        this.mode = mode;
+        markDirty();
+        if (level == null || level.isClientSide) return;
+        // pipes only look for something to connect to when a neighbor changes
+        level.invalidateCapabilities(worldPosition);
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+    }
+
+    // nothing can take emc that's on its way to the owner
+    private @Nullable IEmcStorageBigInteger getStorage(@Nullable Direction side) {
+        return mode == PowerFlowerMode.PLAYER ? null : this;
     }
 
     @Override
@@ -89,7 +140,13 @@ public class BlockEntityPowerFlower extends BlockEntityOwnable implements IHasMa
         if (toExtract.compareTo(BigInteger.ZERO) < 0) {
             return insertEmcBigInteger(toExtract.negate(), action);
         }
-        return BigInteger.ZERO;
+        if (mode == PowerFlowerMode.PLAYER) return BigInteger.ZERO;
+        BigInteger extracted = emc.min(toExtract);
+        if (action.execute() && extracted.signum() > 0) {
+            emc = emc.subtract(extracted);
+            markDirty();
+        }
+        return extracted;
     }
 
     @Override

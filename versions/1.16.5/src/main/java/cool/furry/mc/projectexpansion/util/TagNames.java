@@ -19,6 +19,7 @@ public class TagNames {
     public static final String PROGRESS = "Progress";
     public static final String INCOMING = "Incoming";
     public static final String RECIPE = "Recipe";
+    public static final String MODE = "Mode";
     public static final String ACTIVE = Constants.NBT_KEY_ACTIVE;
     public static final String X = "X";
     public static final String Y = "Y";

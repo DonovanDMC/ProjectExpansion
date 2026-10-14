@@ -1,0 +1,12 @@
+{
+	"$content": {
+		"gui.projectexpansion.power_flower.stored": "Stored: %s",
+		"gui.projectexpansion.power_flower.mode": "Mode: %s",
+		"gui.projectexpansion.power_flower.mode.player": "Player EMC",
+		"gui.projectexpansion.power_flower.mode.player.description": "Sends EMC to the owner",
+		"gui.projectexpansion.power_flower.mode.storage": "Storage Only",
+		"gui.projectexpansion.power_flower.mode.storage.description": "Keeps EMC for pipes to take",
+		"gui.projectexpansion.power_flower.mode.eject": "Eject",
+		"gui.projectexpansion.power_flower.mode.eject.description": "Pushes EMC into nearby blocks"
+	}
+}

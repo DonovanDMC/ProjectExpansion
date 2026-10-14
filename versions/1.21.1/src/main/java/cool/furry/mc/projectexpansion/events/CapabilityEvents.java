@@ -48,5 +48,6 @@ public class CapabilityEvents {
         BlockEntityEmcPipe.registerCapabilities(event);
         BlockEntityEmcStorage.registerCapabilities(event);
         BlockEntityEMCRefinery.registerCapabilities(event);
+        BlockEntityPowerFlower.registerCapabilities(event);
     }
 }

@@ -441,6 +441,10 @@ public enum Lang implements ILangEntry {
         EMC_PIPE_DISTRIBUTION("emc_pipe", "distribution"),
         EMC_PIPE_LOCKED("emc_pipe", "locked"),
 
+        // Power Flower
+        POWER_FLOWER_STORED("power_flower", "stored"),
+        POWER_FLOWER_MODE("power_flower", "mode"),
+
         // EMC Refinery
         EMC_REFINERY_STORED("emc_refinery", "stored"),
         EMC_REFINERY_COST("emc_refinery", "cost"),

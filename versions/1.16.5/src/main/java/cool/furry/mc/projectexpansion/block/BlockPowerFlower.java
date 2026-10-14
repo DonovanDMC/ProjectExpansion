@@ -3,6 +3,7 @@ package cool.furry.mc.projectexpansion.block;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityOwnable;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityPowerFlower;
 import cool.furry.mc.projectexpansion.config.Config;
+import cool.furry.mc.projectexpansion.gui.container.ContainerPowerFlower;
 import cool.furry.mc.projectexpansion.util.*;
 import moze_intel.projecte.gameObjs.EnumMatterType;
 import moze_intel.projecte.gameObjs.blocks.IMatterBlock;
@@ -15,6 +16,8 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -31,6 +34,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
@@ -125,6 +129,11 @@ public class BlockPowerFlower extends Block implements IHasMatter, IMatterBlock,
         if (level.isClientSide) return ActionResultType.SUCCESS;
         BlockEntityPowerFlower blockEntity = WorldHelper.getTileEntity(BlockEntityPowerFlower.class, level, pos);
         if (blockEntity == null) return ActionResultType.FAIL;
+        // only the owner gets the settings, anyone else is told who that is
+        if (blockEntity.owner.equals(player.getUUID()) && player instanceof ServerPlayerEntity) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, new SimpleNamedContainerProvider((id, inventory, p) -> new ContainerPowerFlower(id, inventory, blockEntity), getName()), pos);
+            return ActionResultType.CONSUME;
+        }
         blockEntity.handleActivation(player, BlockEntityOwnable.ActivationType.DISPLAY_NAME);
         return ActionResultType.PASS;
     }

@@ -35,6 +35,7 @@ public class MenuTypes {
 
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerEMCRefinery>> EMC_REFINERY = registerBlockEntity("emc_refinery", BlockEntityEMCRefinery.class, ContainerEMCRefinery::new);
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerEmcPipe>> EMC_PIPE = Registry.register("emc_pipe", () -> IMenuTypeExtension.create(ContainerEmcPipe::fromNetwork));
+    public static final DeferredHolder<MenuType<?>, MenuType<ContainerPowerFlower>> POWER_FLOWER = Registry.register("power_flower", () -> IMenuTypeExtension.create(ContainerPowerFlower::fromNetwork));
 
     public static <CONTAINER extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<CONTAINER>> register(String name, IContainerFactory<CONTAINER> factory) {
         return Registry.register(name, () -> new MenuType<>(factory, FeatureFlags.VANILLA_SET));

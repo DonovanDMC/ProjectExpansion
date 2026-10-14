@@ -9,6 +9,7 @@ import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Input;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Output;
 import cool.furry.mc.projectexpansion.gui.GUIEMCRefinery;
 import cool.furry.mc.projectexpansion.gui.GUIEmcPipe;
+import cool.furry.mc.projectexpansion.gui.GUIPowerFlower;
 import cool.furry.mc.projectexpansion.net.PacketHandler;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketOpenTransmutationTablet;
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketToggleEmcLock;
@@ -36,6 +37,7 @@ public class ClientEvents {
             event.enqueueWork(() -> {
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_1.get(), GUICollector.Tier1::new);
                 MenuScreens.register(MenuTypes.EMC_PIPE.get(), GUIEmcPipe::new);
+                MenuScreens.register(MenuTypes.POWER_FLOWER.get(), GUIPowerFlower::new);
                 MenuScreens.register(MenuTypes.EMC_REFINERY.get(), GUIEMCRefinery::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_2.get(), GUICollector.Tier2::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_3.get(), GUICollector.Tier3::new);
