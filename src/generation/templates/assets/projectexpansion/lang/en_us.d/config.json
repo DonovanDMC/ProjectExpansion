@@ -4,6 +4,8 @@
   "projectexpansion.configuration.fullNumberNames": "Full Number Names",
   "projectexpansion.configuration.emcDisplay": "EMC Display",
   "projectexpansion.configuration.emcDisplayPosition": "EMC Display Position",
+  "projectexpansion.configuration.emcDisplayOffsetX": "EMC Display X Offset",
+  "projectexpansion.configuration.emcDisplayOffsetY": "EMC Display Y Offset",
   "configuration.projectexpansion.emc_display_position.top_left": "Top Left",
   "configuration.projectexpansion.emc_display_position.top_right": "Top Right",
   "configuration.projectexpansion.emc_display_position.bottom_left": "Bottom Left",

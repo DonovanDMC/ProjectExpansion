@@ -450,6 +450,12 @@ public enum Lang implements ILangEntry {
         EMC_REFINERY_COST("emc_refinery", "cost"),
         EMC_REFINERY_TIME("emc_refinery", "time"),
         REFINING("refining"),
+
+        // EMC Display Editor
+        EMC_DISPLAY_EDITOR("emc_display_editor"),
+        EMC_DISPLAY_EDITOR_HELP("emc_display_editor", "help"),
+        EMC_DISPLAY_EDITOR_RESET("emc_display_editor", "reset"),
+        EMC_DISPLAY_EDITOR_EDIT("emc_display_editor", "edit"),
         ;
 
         private String key;

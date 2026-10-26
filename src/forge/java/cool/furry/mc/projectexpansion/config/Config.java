@@ -2,6 +2,7 @@ package cool.furry.mc.projectexpansion.config;
 
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.gui.EMCDisplay.EmcDisplayPosition;
+import cool.furry.mc.projectexpansion.gui.EmcDisplayLayout;
 import cool.furry.mc.projectexpansion.util.Lang;
 import cool.furry.mc.projectexpansion.util.SearchType;
 import moze_intel.projecte.utils.text.ILangEntry;
@@ -18,8 +19,10 @@ public final class Config {
         public final ForgeConfigSpec Spec;
         public final ForgeConfigSpec.ConfigValue<Boolean> formatEMC = Builder.comment("If EMC should be formatted as M/B/T/etc").define("formatEMC", true);
         public final ForgeConfigSpec.ConfigValue<Boolean> fullNumberNames = Builder.comment("If full number names (Million/Billion/Trillion) should be used instead of abbreviations").define("fullNumberNames", true);
-        public final ForgeConfigSpec.ConfigValue<Boolean> emcDisplay = Builder.comment("Displays your current emc and gained emc per second in the top left corner.").define("emcDisplay", true);
-        public final ForgeConfigSpec.ConfigValue<EmcDisplayPosition> emcDisplayPosition = Builder.comment("The Position of the emc display.").defineEnum("emcDisplayPosition", EmcDisplayPosition.TOP_LEFT);
+        public final ForgeConfigSpec.ConfigValue<Boolean> emcDisplay = Builder.comment("Displays your current emc and gained emc per second on screen.").define("emcDisplay", true);
+        public final ForgeConfigSpec.ConfigValue<EmcDisplayPosition> emcDisplayPosition = Builder.comment("The corner the emc display is positioned from. Use /px emcdisplay to drag it around.").defineEnum("emcDisplayPosition", EmcDisplayPosition.TOP_LEFT);
+        public final ForgeConfigSpec.ConfigValue<Integer> emcDisplayOffsetX = Builder.comment("How far the emc display is from the left or right edge of the screen.").defineInRange("emcDisplayOffsetX", EmcDisplayLayout.DEFAULT_OFFSET, 0, Integer.MAX_VALUE);
+        public final ForgeConfigSpec.ConfigValue<Integer> emcDisplayOffsetY = Builder.comment("How far the emc display is from the top or bottom edge of the screen.").defineInRange("emcDisplayOffsetY", EmcDisplayLayout.DEFAULT_OFFSET, 0, Integer.MAX_VALUE);
         public final ForgeConfigSpec.ConfigValue<Boolean> enableLearnedTooltip = Builder.comment("If a tooltip should be shown on items which can be learned, denoting if the item has been learned or not. Note: ProjectE's client.shiftEmcToolTips applies to this.").define("enableLearnedTooltip", true);
         public final ForgeConfigSpec.ConfigValue<Boolean> alchemicalCollectionSound = Builder.comment("If a sound should be played when something is collected with Alchemical Collection.").define("alchemicalCollectionSound", true);
         public final ForgeConfigSpec.ConfigValue<SearchType> searchType = Builder.defineEnum("searchType", SearchType.NORMAL);

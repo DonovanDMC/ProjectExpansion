@@ -3,6 +3,7 @@ package cool.furry.mc.projectexpansion.events;
 import com.mojang.blaze3d.platform.InputConstants;
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.client.Keybinds;
+import cool.furry.mc.projectexpansion.commands.CommandEmcDisplay;
 import cool.furry.mc.projectexpansion.gui.GUIArcaneTransmutationTablet;
 import cool.furry.mc.projectexpansion.gui.GUICollector;
 import cool.furry.mc.projectexpansion.gui.GUICondenserMK3Input;
@@ -22,6 +23,7 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -83,6 +85,11 @@ public class ClientEvents {
 
             PacketHandler.sendToServer(new PacketToggleEmcLock(screen.getMenu().containerId, slot.index));
             event.setCanceled(true);
+        }
+
+        @SubscribeEvent
+        public static void registerClientCommands(RegisterClientCommandsEvent event) {
+            CommandEmcDisplay.register(event.getDispatcher());
         }
     }
 }

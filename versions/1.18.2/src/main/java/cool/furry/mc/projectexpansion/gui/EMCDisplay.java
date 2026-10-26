@@ -30,8 +30,6 @@ import java.math.BigInteger;
 @Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class EMCDisplay {
     public static final Overlay INSTANCE = new Overlay();
-    public static final int PADDING_X = 2;
-    public static final int PADDING_Y = 2;
     private static BigInteger emc = BigInteger.ZERO;
     private static final BigInteger[] history = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
     private static @Nullable BigInteger lastEMC = null;
@@ -71,6 +69,13 @@ public class EMCDisplay {
         }
     }
 
+    public static String getText() {
+        BigInteger avg = history[0].add(history[1]).divide(BigInteger.valueOf(history.length));
+        String str = EMCFormat.format(emc);
+        if (!avg.equals(BigInteger.ZERO)) str += " " + (avg.compareTo(BigInteger.ZERO) > 0 ? (ChatFormatting.GREEN + "+") : (ChatFormatting.RED + "-")) + EMCFormat.format(avg.abs()) + "/s";
+        return String.format("EMC: %s", str);
+    }
+
     private static void reset() {
         emc = BigInteger.ZERO;
         lastEMC = null;
@@ -100,20 +105,13 @@ public class EMCDisplay {
             GuiGraphics guiGraphics = new GuiGraphics(poseStack);
             if (Config.client.Spec.isLoaded() && !Config.client.emcDisplay.get()) return;
             Minecraft mc = Minecraft.getInstance();
-            BigInteger avg = history[0].add(history[1]).divide(BigInteger.valueOf(history.length));
-            String str = EMCFormat.format(emc);
-            if (!avg.equals(BigInteger.ZERO)) str += " " + (avg.compareTo(BigInteger.ZERO) > 0 ? (ChatFormatting.GREEN + "+") : (ChatFormatting.RED + "-")) + EMCFormat.format(avg.abs()) + "/s";
-            String text = String.format("EMC: %s", str);
-            int x = PADDING_X, y = PADDING_Y, width = mc.getWindow().getGuiScaledWidth(), height = mc.getWindow().getGuiScaledHeight(), fontWidth = mc.font.width(text), fontHeight = mc.font.lineHeight;
-
+            // the editor draws its own copy while it's open
+            if (mc.screen instanceof GUIEmcDisplayEditor) return;
+            String text = getText();
+            int width = mc.getWindow().getGuiScaledWidth(), height = mc.getWindow().getGuiScaledHeight();
             EmcDisplayPosition position = Config.client.emcDisplayPosition.get();
-
-            if (position.isRight()) {
-                x = width - fontWidth - PADDING_X;
-            }
-            if (position.isBottom()) {
-                y = height - fontHeight - PADDING_Y;
-            }
+            int x = EmcDisplayLayout.toScreen(position.isLeft(), Config.client.emcDisplayOffsetX.get(), mc.font.width(text), width);
+            int y = EmcDisplayLayout.toScreen(position.isTop(), Config.client.emcDisplayOffsetY.get(), mc.font.lineHeight, height);
 
             guiGraphics.drawString(mc.font, text, x, y, 0xffffff);
         }
@@ -141,6 +139,13 @@ public class EMCDisplay {
         @Override
         public String getTranslationKey() {
             return this.translation.getTranslationKey();
+        }
+
+        public static EmcDisplayPosition of(boolean top, boolean left) {
+            for (EmcDisplayPosition position : values()) {
+                if (position.top == top && position.left == left) return position;
+            }
+            return TOP_LEFT;
         }
 
         public boolean isTop() {

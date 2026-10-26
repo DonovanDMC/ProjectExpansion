@@ -1,0 +1,8 @@
+{
+	"$content": {
+		"gui.projectexpansion.emc_display_editor": "Edit EMC Display",
+		"gui.projectexpansion.emc_display_editor.help": "Drag the EMC display to move it. Hold Shift to stop it snapping to the center, arrow keys nudge it.",
+		"gui.projectexpansion.emc_display_editor.reset": "Reset",
+		"gui.projectexpansion.emc_display_editor.edit": "Edit Position"
+	}
+}

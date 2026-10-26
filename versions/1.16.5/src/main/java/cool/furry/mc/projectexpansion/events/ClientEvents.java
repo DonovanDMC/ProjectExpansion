@@ -1,6 +1,7 @@
 package cool.furry.mc.projectexpansion.events;
 
 import cool.furry.mc.projectexpansion.gui.GUIEMCRefinery;
+import cool.furry.mc.projectexpansion.gui.GUIEmcDisplayEditor;
 import cool.furry.mc.projectexpansion.gui.GUIEmcPipe;
 import cool.furry.mc.projectexpansion.gui.GUIPowerFlower;
 import cool.furry.mc.projectexpansion.registries.Blocks;
@@ -24,12 +25,15 @@ import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.inventory.container.Slot;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.regex.Pattern;
 
 public class ClientEvents {
     @Mod.EventBusSubscriber(modid = Main.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -57,6 +61,8 @@ public class ClientEvents {
 
     @Mod.EventBusSubscriber(modid = Main.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class GameEvents {
+        private static final Pattern EMC_DISPLAY_COMMAND = Pattern.compile("^/(px|pex|projectexpansion) emcdisplay$", Pattern.CASE_INSENSITIVE);
+
         @SubscribeEvent
         public static void clientTickEvent(TickEvent.ClientTickEvent event) {
             if (event.phase != TickEvent.Phase.START) return;
@@ -85,6 +91,16 @@ public class ClientEvents {
             if (mc.player == null || slot == null || slot.container != mc.player.inventory || !EmcLock.canToggle(slot.getItem())) return;
 
             PacketHandler.sendToServer(new PacketToggleEmcLock(screen.getMenu().containerId, slot.index));
+            event.setCanceled(true);
+        }
+
+        // there are no client commands before 1.18, so the editor's command is caught before it's sent
+        @SubscribeEvent
+        public static void clientChatEvent(ClientChatEvent event) {
+            if (!EMC_DISPLAY_COMMAND.matcher(event.getMessage().trim()).matches()) return;
+            Minecraft mc = Minecraft.getInstance();
+            // the chat screen closes after this, so the editor has to open after that
+            mc.tell(() -> mc.setScreen(new GUIEmcDisplayEditor(null)));
             event.setCanceled(true);
         }
     }
