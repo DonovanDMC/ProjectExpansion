@@ -333,7 +333,8 @@ public class GUIArcaneTransmutationTablet extends PEContainerScreen<ContainerArc
             BigInteger count = emc.equals(BigInteger.ZERO) ? emc : emc.divide(BigInteger.valueOf(value));
             String countFmt = EMCFormat.formatForceShort(count);
             pose.pushPose();
-            pose.translate(slot.x + 17, slot.y + 12, 1000F);
+            // above the item counts but below tooltips
+            pose.translate(slot.x + 17, slot.y + 12, 300F);
             pose.scale(0.5F, 0.5F, 1F);
             graphics.drawString(font, countFmt, -font.width(countFmt), 0, 0xFFFFFF, true);
             pose.popPose();
