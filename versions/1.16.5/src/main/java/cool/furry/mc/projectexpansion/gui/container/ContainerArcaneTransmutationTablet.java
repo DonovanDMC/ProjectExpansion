@@ -549,7 +549,6 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
         return false;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     private boolean transferFromInventory(int i, List<ItemStack> possibilities) {
         for (ItemStack possibility : possibilities) {
             ItemStack fixedp = Util.cleanStack(possibility);
@@ -672,18 +671,19 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
     }
 
     public void transferItems(List<List<ItemStack>> recipe, int max) {
+        boolean[] filled = new boolean[max];
         for (int i = 0; i < max; ++i) {
             if (recipe.get(i) != null && !recipe.get(i).isEmpty()) {
-                transferFromInventory(i, recipe.get(i));
+                filled[i] = transferFromInventory(i, recipe.get(i));
             }
         }
 
+        // only the slots the inventory couldn't fill get ghost items, otherwise each slot gets one of both
         for (int i = 0; i < max; ++i) {
-            if (recipe.get(i) != null && !recipe.get(i).isEmpty()) {
+            if (!filled[i] && recipe.get(i) != null && !recipe.get(i).isEmpty()) {
                 transferFromTablet(i, recipe.get(i));
             }
         }
-
     }
 
     /** @apiNote only call on server */
