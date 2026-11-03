@@ -8,14 +8,17 @@ import cool.furry.mc.projectexpansion.registries.Items;
 import cool.furry.mc.projectexpansion.util.Platform;
 import cool.furry.mc.projectexpansion.util.SunExposureHelper;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -71,10 +74,23 @@ public class ServerEvents {
         return time;
     }
 
+    // pick waits on any chunk the ray passes through that isn't loaded yet (like right after a teleport), so skip until they all are
+    private static boolean isRayLoaded(ServerPlayer player, double distance) {
+        Level level = Platform.level(player);
+        Vec3 eye = player.getEyePosition(0.0f);
+        Vec3 end = eye.add(player.getViewVector(0.0f).scale(distance));
+        // the ray is shorter than a chunk, so the corners of its box cover every chunk it can cross
+        int y = player.blockPosition().getY();
+        int minX = (int) Math.floor(Math.min(eye.x, end.x)), maxX = (int) Math.floor(Math.max(eye.x, end.x));
+        int minZ = (int) Math.floor(Math.min(eye.z, end.z)), maxZ = (int) Math.floor(Math.max(eye.z, end.z));
+        return level.isLoaded(new BlockPos(minX, y, minZ)) && level.isLoaded(new BlockPos(minX, y, maxZ))
+                && level.isLoaded(new BlockPos(maxX, y, minZ)) && level.isLoaded(new BlockPos(maxX, y, maxZ));
+    }
+
     private static void handleSunExposure(TickEvent.ServerTickEvent event, ServerPlayer player) {
         int protectionAmount = SunExposureHelper.getProtectionAmount(player);
         Set<SunExposureTimer> toRemove = new HashSet<>();
-        HitResult result = player.pick(10.0f, 0.0f, false);
+        HitResult result = isRayLoaded(player, 10.0) ? player.pick(10.0f, 0.0f, false) : null;
         DamageSources damage = DamageSources.fromServer(ServerLifecycleHooks.getCurrentServer());
         if(result instanceof BlockHitResult hit) {
             Block block = Platform.level(player).getBlockState(hit.getBlockPos()).getBlock();

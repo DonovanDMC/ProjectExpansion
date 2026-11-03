@@ -12,9 +12,12 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameType;
+import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -71,10 +74,23 @@ public class ServerEvents {
         return time;
     }
 
+    // pick waits on any chunk the ray passes through that isn't loaded yet (like right after a teleport), so skip until they all are
+    private static boolean isRayLoaded(ServerPlayerEntity player, double distance) {
+        World level = player.level;
+        Vector3d eye = player.getEyePosition(0.0f);
+        Vector3d end = eye.add(player.getViewVector(0.0f).scale(distance));
+        // the ray is shorter than a chunk, so the corners of its box cover every chunk it can cross
+        int y = player.blockPosition().getY();
+        int minX = (int) Math.floor(Math.min(eye.x, end.x)), maxX = (int) Math.floor(Math.max(eye.x, end.x));
+        int minZ = (int) Math.floor(Math.min(eye.z, end.z)), maxZ = (int) Math.floor(Math.max(eye.z, end.z));
+        return level.isLoaded(new BlockPos(minX, y, minZ)) && level.isLoaded(new BlockPos(minX, y, maxZ))
+                && level.isLoaded(new BlockPos(maxX, y, minZ)) && level.isLoaded(new BlockPos(maxX, y, maxZ));
+    }
+
     private static void handleSunExposure(TickEvent.ServerTickEvent event, ServerPlayerEntity player) {
         int protectionAmount = SunExposureHelper.getProtectionAmount(player);
         Set<SunExposureTimer> toRemove = new HashSet<>();
-        RayTraceResult result = player.pick(10.0f, 0.0f, false);
+        RayTraceResult result = isRayLoaded(player, 10.0) ? player.pick(10.0f, 0.0f, false) : null;
         DamageSources damage = DamageSources.fromServer(ServerLifecycleHooks.getCurrentServer());
         if(result instanceof BlockRayTraceResult) {
             BlockRayTraceResult hit = ((BlockRayTraceResult) result);
