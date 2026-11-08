@@ -9,15 +9,12 @@ import moze_intel.projecte.gameObjs.container.PEContainer;
 import moze_intel.projecte.gameObjs.container.slots.SlotCondenserLock;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,32 +29,18 @@ public class ContainerCondenserMK3Input extends ContainerBase {
     private @Nullable ItemInfo lastLockInfo;
     private final BlockEntityCondenserMK3.SidedHandler handler;
     final BlockEntityCondenserMK3 blockEntity;
-    public ContainerCondenserMK3Input(int windowId, Inventory playerInv, BlockEntityCondenserMK3 blockEntity) {
-        this(MenuTypes.CONDENSER_MK3_INPUT.get(), windowId, playerInv, blockEntity);
+    public ContainerCondenserMK3Input(int windowId, Inventory playerInv, BlockEntityCondenserMK3 blockEntity, Direction side) {
+        this(MenuTypes.CONDENSER_MK3_INPUT.get(), windowId, playerInv, blockEntity, side);
     }
 
-    public ContainerCondenserMK3Input(MenuType<?> type, int windowId, Inventory playerInv, BlockEntityCondenserMK3 blockEntity) {
+    public ContainerCondenserMK3Input(MenuType<?> type, int windowId, Inventory playerInv, BlockEntityCondenserMK3 blockEntity, Direction side) {
         super(type, windowId, playerInv);
         this.blockEntity = blockEntity;
-        this.handler = getHandler();
+        this.handler = blockEntity.getSidedHandler(side);
         blockEntity.startOpen(this.playerInv.player);
         this.longFields.add(displayEmc);
         this.longFields.add(requiredEmc);
         initSlots();
-    }
-
-    protected @Nullable Direction getDirection() {
-        @Nullable Direction direction = null;
-        HitResult hit = Minecraft.getInstance().hitResult;
-        if (hit != null && hit.getType() == HitResult.Type.BLOCK && hit instanceof BlockHitResult blockHitResult) {
-            direction = blockHitResult.getDirection();
-        }
-
-        return direction;
-    }
-
-    protected BlockEntityCondenserMK3.SidedHandler getHandler() {
-        return blockEntity.getSidedHandler(getDirection());
     }
 
     protected void initSlots() {

@@ -19,11 +19,10 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.tiles.WrappedItemHandler;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -31,11 +30,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -43,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
-public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLike, INamedContainerProvider {
+public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLike {
     public static final Direction OUTPUT_DIRECTION = Direction.DOWN;
     private static final int INPUT_SIZE = 91;
     private static final int OUTPUT_SIZE = 180;
@@ -131,7 +129,8 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
             SidedHandler handler = getSidedHandler(direction);
             handler.checkLockAndUpdate(false);
             handler.displayEmc = handler.getStoredEmc();
-            if (handler.getLockInfo() != null) {
+            // a lock without emc costs nothing, so it would fill the output for free
+            if (handler.getLockInfo() != null && handler.requiredEmc > 0) {
                 handler.condense();
             }
         }
@@ -202,25 +201,21 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
         }
     }
 
-    @Override
     public ITextComponent getDisplayName() {
         return TextComponentUtil.build(PEBlocks.CONDENSER);
     }
 
-    @Override
-    public @Nullable Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
-        @Nullable Direction direction = null;
-        RayTraceResult hit = Minecraft.getInstance().hitResult;
-        if (hit != null && hit.getType() == RayTraceResult.Type.BLOCK && hit instanceof BlockRayTraceResult) {
-            BlockRayTraceResult blockHitResult = ((BlockRayTraceResult) hit);
-            direction = blockHitResult.getDirection();
+    // the bottom opens the output, every other side its own input
+    // which side used to come from the client's crosshair, which a dedicated server doesn't have
+    public void openMenu(ServerPlayerEntity player, Direction side) {
+        if (side == OUTPUT_DIRECTION) {
+            NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, inventory, p) -> new ContainerCondenserMK3Output(windowId, inventory, this), getDisplayName()), worldPosition);
+            return;
         }
-
-        if (direction == OUTPUT_DIRECTION) {
-            return new ContainerCondenserMK3Output(windowId, inventory, this);
-        }
-
-        return new ContainerCondenserMK3Input(windowId, inventory, this);
+        NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, inventory, p) -> new ContainerCondenserMK3Input(windowId, inventory, this, side), getDisplayName()), buf -> {
+            buf.writeBlockPos(worldPosition);
+            buf.writeEnum(side);
+        });
     }
 
     public class SidedHandler implements IEmcStorage {

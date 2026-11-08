@@ -9,6 +9,7 @@ import cool.furry.mc.projectexpansion.block.entity.BlockEntityPowerFlower;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityRelay;
 import cool.furry.mc.projectexpansion.registries.Items;
 import cool.furry.mc.projectexpansion.util.Matter;
+import cool.furry.mc.projectexpansion.util.PowerFlowerMode;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.tile.IEmcStorage;
 import net.minecraft.block.Block;
@@ -223,6 +224,22 @@ public class UpgraderTests {
             setBlock(helper, POS, Objects.requireNonNull(Matter.BASIC.getCollector()));
             check(upgrade(helper, player) == ActionResultType.FAIL, "The collector was upgraded without knowing the next tier");
             checkBlock(helper, Objects.requireNonNull(Matter.BASIC.getCollector()));
+        } finally {
+            removePlayer(player);
+        }
+    }
+
+    @IntegrationTest("empty")
+    public void upgraderKeepsPowerFlowerMode(IntegrationTestHelper helper) {
+        ServerPlayerEntity player = creativePlayer(helper);
+        try {
+            setBlock(helper, POS, Objects.requireNonNull(Matter.BASIC.getPowerFlower()));
+            BlockEntityPowerFlower flower = blockEntity(helper, POS, BlockEntityPowerFlower.class);
+            flower.setOwner(player);
+            flower.setMode(PowerFlowerMode.STORAGE);
+            check(upgrade(helper, player) == ActionResultType.SUCCESS, "Upgrading the power flower didn't succeed");
+            PowerFlowerMode mode = blockEntity(helper, POS, BlockEntityPowerFlower.class).getMode();
+            check(mode == PowerFlowerMode.STORAGE, "The power flower was in storage mode, but " + mode + " after upgrading");
         } finally {
             removePlayer(player);
         }

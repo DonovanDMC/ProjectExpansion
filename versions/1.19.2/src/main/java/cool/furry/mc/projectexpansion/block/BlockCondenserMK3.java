@@ -114,7 +114,7 @@ public class BlockCondenserMK3 extends BaseEntityBlock implements SimpleWaterlog
         }
         BlockEntityCondenserMK3 chest = WorldHelper.getBlockEntity(BlockEntityCondenserMK3.class, level, pos, true);
         if (chest != null) {
-            Platform.openScreen((ServerPlayer) player, chest, pos);
+            chest.openMenu((ServerPlayer) player, rtr.getDirection());
             player.awardStat(Stats.OPEN_CHEST);
             PiglinAi.angerNearbyPiglins(player, true);
         }

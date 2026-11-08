@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,7 +52,7 @@ public class BlockEntityRelay extends BlockEntityEMC implements IHasMatter, IRel
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        bonusEMC = new BigInteger(tag.getString(TagNames.BONUS_EMC));
+        if (tag.contains(TagNames.BONUS_EMC, Tag.TAG_STRING)) bonusEMC = new BigInteger(tag.getString(TagNames.BONUS_EMC));
     }
 
     @Override

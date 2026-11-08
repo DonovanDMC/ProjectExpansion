@@ -5,6 +5,8 @@ import cool.furry.mc.projectexpansion.block.entity.BlockEntityAdvancedAlchemical
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCollector;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCondenserMK3;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityPowerFlower;
+import cool.furry.mc.projectexpansion.gui.container.ContainerCondenserMK3Input;
+import cool.furry.mc.projectexpansion.gui.container.ContainerCondenserMK3Output;
 import cool.furry.mc.projectexpansion.registries.Blocks;
 import cool.furry.mc.projectexpansion.util.AdvancedAlchemicalChest;
 import cool.furry.mc.projectexpansion.util.Matter;
@@ -19,10 +21,14 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import net.minecraftforge.items.IItemHandler;
@@ -149,6 +155,83 @@ public class BlockGameTests {
         blockEntity(helper, pos, BlockEntityAdvancedAlchemicalChest.class).owner = UUID.randomUUID();
         ItemStack left = items(helper, pos, Direction.UP).insertItem(0, new ItemStack(Items.DIAMOND, 4), false);
         check(left.getCount() == 4, "The chest took items for an offline owner");
+        helper.succeed();
+    }
+
+    // a lock with no emc never gets its cost paid, it used to fill the output for free instead
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void condenserMk3IgnoresLockWithoutEmc(GameTestHelper helper) {
+        check(!Platform.emcProxy().hasValue(Items.BEDROCK), "Bedrock has EMC, so it can't be used to test this");
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, Blocks.CONDENSER_MK3.get());
+        blockEntity(helper, pos, BlockEntityCondenserMK3.class).getSidedHandler(Direction.UP).setLockInfoFromPacket(ItemInfo.fromItem(Items.BEDROCK));
+        helper.runAfterDelay(5, () -> {
+            int made = count(items(helper, pos, Direction.DOWN), Items.BEDROCK);
+            check(made == 0, "The condenser made " + made + " bedrock without any EMC");
+            helper.succeed();
+        });
+    }
+
+    private static void useCondenser(GameTestHelper helper, ServerPlayer player, BlockPos pos, Direction side) {
+        BlockPos abs = helper.absolutePos(pos);
+        try {
+            helper.getLevel().getBlockState(abs).use(helper.getLevel(), player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), side, abs, false));
+        } catch (RuntimeException | LinkageError e) {
+            throw new GameTestAssertException("Opening the condenser from " + side + " threw " + e);
+        }
+    }
+
+    // which menu opens used to come from the client's crosshair, which a dedicated server doesn't have
+    @GameTest(template = EMPTY)
+    public static void condenserMk3OpensOnServers(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, Blocks.CONDENSER_MK3.get());
+        try {
+            useCondenser(helper, player, pos, Direction.UP);
+            check(player.containerMenu instanceof ContainerCondenserMK3Input, "Opening it from the top gave " + player.containerMenu);
+            player.closeContainer();
+            useCondenser(helper, player, pos, Direction.DOWN);
+            check(player.containerMenu instanceof ContainerCondenserMK3Output, "Opening it from the bottom gave " + player.containerMenu);
+            player.closeContainer();
+        } finally {
+            removePlayer(player);
+        }
+        helper.succeed();
+    }
+
+    // right clicks the chest with a bag, the same as a player looking at it would
+    private static void clickWithBag(GameTestHelper helper, ServerPlayer player, BlockPos chest, DyeColor color, boolean sneaking) {
+        player.setShiftKeyDown(sneaking);
+        player.setPose(sneaking ? Pose.CROUCHING : Pose.STANDING);
+        ItemStack bag = new ItemStack(PEItems.getBag(color));
+        player.setItemInHand(InteractionHand.MAIN_HAND, bag);
+        BlockPos abs = helper.absolutePos(chest);
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false);
+        helper.getLevel().getBlockState(abs).use(helper.getLevel(), player, InteractionHand.MAIN_HAND, hit);
+    }
+
+    // the tooltip says shift click, which is the only way to set the color
+    @GameTest(template = EMPTY)
+    public static void advancedChestTakesBagColorWhenSneaking(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        ServerPlayer player = mockPlayer(helper);
+        chest(helper, pos, DyeColor.WHITE, player);
+        clickWithBag(helper, player, pos, DyeColor.RED, true);
+        check(helper.getBlockState(pos).is(AdvancedAlchemicalChest.getBlock(DyeColor.RED)), "Sneak clicking the chest with a red bag didn't turn it red");
+        removePlayer(player);
+        helper.succeed();
+    }
+
+    // without sneaking a click opens the chest instead
+    @GameTest(template = EMPTY)
+    public static void advancedChestKeepsColorWithoutSneaking(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        ServerPlayer player = mockPlayer(helper);
+        chest(helper, pos, DyeColor.WHITE, player);
+        clickWithBag(helper, player, pos, DyeColor.RED, false);
+        check(helper.getBlockState(pos).is(AdvancedAlchemicalChest.getBlock(DyeColor.WHITE)), "Clicking the chest with a red bag without sneaking recolored it");
+        removePlayer(player);
         helper.succeed();
     }
 }

@@ -210,8 +210,10 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             }
             FluidActionResult fillResult = FluidUtil.tryFillContainer(inHand, fluidHandler, 1000, player, true);
             if(!fillResult.isSuccess()) return ActionResultType.FAIL;
-            player.inventory.removeItem(player.inventory.selected, 1);
-            ItemHandlerHelper.giveItemToPlayer(player, fillResult.getResult());
+            // the empty bucket comes out of the hand that was used, not always the selected hotbar slot
+            inHand.shrink(1);
+            if (inHand.isEmpty()) player.setItemInHand(hand, fillResult.getResult());
+            else ItemHandlerHelper.giveItemToPlayer(player, fillResult.getResult());
             provider.setEmc(emc.subtract(BigInteger.valueOf(cost)));
             remainingFluid -= 1000;
             markDirty();
@@ -251,9 +253,10 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
             return getMatter().getEMCLinkEMCLimit();
         }
 
+        // emc only goes in, it's handed to the owner straight away so there's never any to take back out
         @Override
         public BigInteger extractEmcBigInteger(BigInteger value, EmcAction action) {
-            return emc.compareTo(BigInteger.ZERO) < 0 ? insertEmcBigInteger(value.negate(), action) : value;
+            return value.signum() < 0 ? insertEmcBigInteger(value.negate(), action) : BigInteger.ZERO;
         }
 
         @Override
@@ -389,7 +392,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
                 long fullCost = ProjectEAPI.getEMCProxy().getValue(itemStack);
                 long bucketCost = ProjectEAPI.getEMCProxy().getValue(net.minecraft.item.Items.BUCKET);
                 if (bucketCost == 0 && fullCost == 0) return 0D;
-                return (fullCost - ((bucketCost * getMatter().getFluidEfficiencyPercentage()) / 100F))  / 1000D;
+                // a fluid worth less than its bucket would otherwise pay out emc for being taken
+                return Math.max(0D, (fullCost - ((bucketCost * getMatter().getFluidEfficiencyPercentage()) / 100F)) / 1000D);
             } catch(ArithmeticException ignore) {
                 return Long.MAX_VALUE;
             }

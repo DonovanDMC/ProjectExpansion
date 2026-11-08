@@ -117,7 +117,7 @@ public class BlockCondenserMK3 extends Block implements IWaterLoggable, IUsableB
         }
         BlockEntityCondenserMK3 chest = WorldHelper.getTileEntity(BlockEntityCondenserMK3.class, level, pos, true);
         if (chest != null) {
-            Common.openContainer((ServerPlayerEntity) player, chest, pos);
+            chest.openMenu((ServerPlayerEntity) player, rtr.getDirection());
             player.awardStat(Stats.OPEN_CHEST);
             PiglinTasks.angerNearbyPiglins(player, true);
         }

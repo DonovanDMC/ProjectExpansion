@@ -7,7 +7,6 @@ import cool.furry.mc.projectexpansion.capability.IAlchemicalBookLocationsProvide
 import cool.furry.mc.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.projectexpansion.net.packets.IPacket;
 import cool.furry.mc.projectexpansion.util.Lang;
-import cool.furry.mc.projectexpansion.util.Util;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.network.PEStreamCodecs;
@@ -25,17 +24,18 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.math.BigInteger;
 
-public record PacketTeleportToLocation(String name, Player player, InteractionHand hand) implements IPacket {
+public record PacketTeleportToLocation(String name, InteractionHand hand) implements IPacket {
     public static final CustomPacketPayload.Type<PacketTeleportToLocation> TYPE = new CustomPacketPayload.Type<>(Main.rl("teleport_to_location"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketTeleportToLocation> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, PacketTeleportToLocation::name,
-            Util.PLAYER_STREAM_CODEC, PacketTeleportToLocation::player,
             PEStreamCodecs.INTERACTION_HAND, PacketTeleportToLocation::hand,
             PacketTeleportToLocation::new
     );
 
     @Override
     public void handle(IPayloadContext context) {
+        // always whoever sent it, these used to say which player they were for so anyone could use someone else's book
+        Player player = context.player();
         ItemStack stack = player.getItemInHand(hand);
         if(stack.getItem() instanceof ItemAlchemicalBook book) {
             try {
@@ -44,6 +44,8 @@ public record PacketTeleportToLocation(String name, Player player, InteractionHa
                 if (knowledgeProvider == null) throw new IllegalStateException("Player does not have knowledge capability");
                 BigInteger emc = knowledgeProvider.getEmc();
                 CapabilityAlchemicalBookLocations.TeleportLocation location = provider.getLocationOrThrow(name);
+                // a teleport that's refused used to be paid for anyway
+                location.checkCanTeleport((ServerPlayer) player, book.getTier().isAcrossDimensions());
                 BigInteger cost = BigInteger.valueOf(location.getCost(stack, player));
                 if(!cost.equals(BigInteger.ZERO)) {
                     if (emc.compareTo(cost) < 0) {
@@ -54,7 +56,7 @@ public record PacketTeleportToLocation(String name, Player player, InteractionHa
                 }
                 GlobalPos pos = GlobalPos.of(player.level().dimension(), player.blockPosition());
                 location.teleportTo((ServerPlayer) player, book.getTier().isAcrossDimensions());
-                if(location.distanceFrom(pos.pos()) > 1) {
+                if(!location.dimension().equals(pos.dimension()) || location.distanceFrom(pos.pos()) > 1) {
                     provider.saveBackLocation(player, pos);
                 }
             } catch (CapabilityAlchemicalBookLocations.BookError error) {

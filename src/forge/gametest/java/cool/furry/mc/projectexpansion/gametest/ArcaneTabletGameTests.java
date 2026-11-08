@@ -248,4 +248,19 @@ public class ArcaneTabletGameTests {
         removePlayer(player);
         helper.succeed();
     }
+
+    // clearing used to turn items with extra data into emc as well, losing the data, closing gives them back
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void arcaneTabletClearKeepsNamedItems(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        ContainerArcaneTransmutationTablet menu = open(player);
+        ItemStack named = new ItemStack(Items.DIAMOND);
+        named.setHoverName(Platform.literal("Named"));
+        grid(menu).get(0).set(named.copy());
+        menu.clearCrafting(false);
+        check(emc(player).signum() == 0, "Clearing turned the named diamond into " + emc(player) + " EMC");
+        check(player.getInventory().items.stream().anyMatch(stack -> Platform.isSameItemSameData(stack, named)), "The named diamond didn't come back");
+        removePlayer(player);
+        helper.succeed();
+    }
 }

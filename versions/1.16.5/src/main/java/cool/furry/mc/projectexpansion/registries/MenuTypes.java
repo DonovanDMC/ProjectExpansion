@@ -14,6 +14,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,7 +31,7 @@ public class MenuTypes {
     public static final RegistryObject<ContainerType<ContainerCollector>> COLLECTOR_TIER_1 = registerBlockEntity("collector_tier_1", BlockEntityCollector.class, ContainerCollector.Tier1::new);
     public static final RegistryObject<ContainerType<ContainerCollector>> COLLECTOR_TIER_2 = registerBlockEntity("collector_tier_2", BlockEntityCollector.class, ContainerCollector.Tier2::new);
     public static final RegistryObject<ContainerType<ContainerCollector>> COLLECTOR_TIER_3 = registerBlockEntity("collector_tier_3", BlockEntityCollector.class, ContainerCollector.Tier3::new);
-    public static final RegistryObject<ContainerType<ContainerCondenserMK3Input>> CONDENSER_MK3_INPUT = registerBlockEntity("condenser_mk3_input", BlockEntityCondenserMK3.class, ContainerCondenserMK3Input::new);
+    public static final RegistryObject<ContainerType<ContainerCondenserMK3Input>> CONDENSER_MK3_INPUT = Registry.register("condenser_mk3_input", () -> IForgeContainerType.create((id, inv, buf) -> new ContainerCondenserMK3Input(id, inv, getBlockEntityFromBuf(buf, BlockEntityCondenserMK3.class), buf.readEnum(Direction.class))));
     public static final RegistryObject<ContainerType<ContainerCondenserMK3Output>> CONDENSER_MK3_OUTPUT = registerBlockEntity("condenser_mk3_output", BlockEntityCondenserMK3.class, ContainerCondenserMK3Output::new);
     public static final RegistryObject<ContainerType<ContainerArcaneTransmutationTablet>> ARCANE_TRANSMUTATION_TABLET = register("arcane_transmutation_tablet", ContainerArcaneTransmutationTablet::fromNetwork);
     public static final RegistryObject<ContainerType<ContainerEMCRefinery>> EMC_REFINERY = registerBlockEntity("emc_refinery", BlockEntityEMCRefinery.class, ContainerEMCRefinery::new);

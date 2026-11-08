@@ -9,6 +9,7 @@ import moze_intel.projecte.gameObjs.registration.impl.ContainerTypeDeferredRegis
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.flag.FeatureFlags;
@@ -29,7 +30,7 @@ public class MenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerCollector>> COLLECTOR_TIER_1 = registerBlockEntity("collector_tier_1", BlockEntityCollector.class, ContainerCollector.Tier1::new);
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerCollector>> COLLECTOR_TIER_2 = registerBlockEntity("collector_tier_2", BlockEntityCollector.class, ContainerCollector.Tier2::new);
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerCollector>> COLLECTOR_TIER_3 = registerBlockEntity("collector_tier_3", BlockEntityCollector.class, ContainerCollector.Tier3::new);
-    public static final DeferredHolder<MenuType<?>, MenuType<ContainerCondenserMK3Input>> CONDENSER_MK3_INPUT = registerBlockEntity("condenser_mk3_input", BlockEntityCondenserMK3.class, ContainerCondenserMK3Input::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<ContainerCondenserMK3Input>> CONDENSER_MK3_INPUT = Registry.register("condenser_mk3_input", () -> IMenuTypeExtension.create((id, inv, buf) -> new ContainerCondenserMK3Input(id, inv, getBlockEntityFromBuf(buf, BlockEntityCondenserMK3.class), buf.readEnum(Direction.class))));
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerCondenserMK3Output>> CONDENSER_MK3_OUTPUT = registerBlockEntity("condenser_mk3_output", BlockEntityCondenserMK3.class, ContainerCondenserMK3Output::new);
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerArcaneTransmutationTablet>> ARCANE_TRANSMUTATION_TABLET = register("arcane_transmutation_tablet", ContainerArcaneTransmutationTablet::fromNetwork);
 

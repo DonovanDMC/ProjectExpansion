@@ -3,7 +3,6 @@ package cool.furry.mc.projectexpansion.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import cool.furry.mc.projectexpansion.gui.GUIEmcDisplayEditor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
@@ -23,8 +22,7 @@ public class CommandEmcDisplay {
 
     // anything the client doesn't know is passed on to the server, so this can share the server's base command
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralCommandNode<CommandSourceStack> baseNode = dispatcher.register(Commands.literal(CommandRegistry.COMMAND_BASE).then(getArguments()));
-        dispatcher.register(Commands.literal("projectexpansion").redirect(baseNode));
-        dispatcher.register(Commands.literal("pex").redirect(baseNode));
+        // each name gets its own copy rather than a redirect, see CommandRegistry
+        for (String name : CommandRegistry.NAMES) dispatcher.register(Commands.literal(name).then(getArguments()));
     }
 }

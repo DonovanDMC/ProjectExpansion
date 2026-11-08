@@ -10,6 +10,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.util.AttributeKey;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -121,6 +122,9 @@ public class TestUtil {
 
     public static void removePlayer(ServerPlayerEntity player) {
         player.server.getPlayerList().deop(player.getGameProfile());
+        // removing them closes what they have open as if they'd died, which drops it all at spawn where they stand
+        player.inventory.setCarried(ItemStack.EMPTY);
+        player.containerMenu = player.inventoryMenu;
         player.server.getPlayerList().remove(player);
     }
 

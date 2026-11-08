@@ -13,12 +13,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.items.CapabilityItemHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -52,8 +50,10 @@ public abstract class AlchemicalCollectionMixin {
         List<ItemInfo> knowledgeAdditions = new ArrayList<>();
         List<ItemStack> newDrops = initialDrops.stream()
             .map(drop -> {
-                ItemInfo info = ProjectEAPI.getEMCProxy().getPersistentInfo(ItemInfo.fromStack(drop));
-                if(proxy.hasValue(info)) {
+                ItemInfo raw = ItemInfo.fromStack(drop);
+                ItemInfo info = ProjectEAPI.getEMCProxy().getPersistentInfo(raw);
+                // anything carrying more than projecte keeps, like a filled shulker box or stored emc, is dropped as it is so that isn't lost
+                if(info.equals(raw) && proxy.hasValue(info)) {
                     addEMC.addAndGet(BigInteger.valueOf(proxy.getSellValue(info)).multiply(BigInteger.valueOf(drop.getCount())));
                     if(!provider.hasKnowledge(info) && !knowledgeAdditions.contains(info)) knowledgeAdditions.add(info);
                     return null;
@@ -62,18 +62,8 @@ public abstract class AlchemicalCollectionMixin {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
+        // a block's inventory is dropped by the block itself, what an item handler reports isn't always real (like an emc link's)
         if (newDrops.size() < initialDrops.size() || addEMC.get().compareTo(BigInteger.ZERO) > 0) {
-            if (blockEntity != null) {
-                blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-                    for (int i = 0; i < handler.getSlots(); i++) {
-                        ItemStack slotStack = handler.getStackInSlot(i);
-                        if (!slotStack.isEmpty()) {
-                            InventoryHelper.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), slotStack);
-                        }
-                    }
-                });
-            }
-
             AlchemicalCollectionCollector.add(player.getUUID(), addEMC.get(), knowledgeAdditions);
             cir.setReturnValue(newDrops);
         }

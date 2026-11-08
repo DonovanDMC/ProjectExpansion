@@ -4,16 +4,24 @@ import com.alcatrazescapee.mcjunitlib.framework.IntegrationTest;
 import com.alcatrazescapee.mcjunitlib.framework.IntegrationTestClass;
 import com.alcatrazescapee.mcjunitlib.framework.IntegrationTestHelper;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.CommandNode;
+import com.mojang.brigadier.tree.RootCommandNode;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityPowerFlower;
+import cool.furry.mc.projectexpansion.commands.CommandRegistry;
 import cool.furry.mc.projectexpansion.commands.CommandReloadEMC;
 import cool.furry.mc.projectexpansion.util.Matter;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 
+import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -156,5 +164,36 @@ public class CommandTests {
             CommandReloadEMC.forceReloadAfterCommands = false;
         }
         check(emcValue(Items.DEAD_BUSH) == original, "A dead bush is worth " + emcValue(Items.DEAD_BUSH) + " after /projecte resetemc, not " + original);
+    }
+
+    // the commands a player's client is sent, built the same way the server builds them
+    private static RootCommandNode<ISuggestionProvider> clientTree(ServerPlayerEntity player) {
+        Commands commands = player.server.getCommands();
+        RootCommandNode<ISuggestionProvider> root = new RootCommandNode<>();
+        Map<CommandNode<CommandSource>, CommandNode<ISuggestionProvider>> map = new HashMap<>();
+        map.put(commands.getDispatcher().getRoot(), root);
+        try {
+            Method fill = Commands.class.getDeclaredMethod("fillUsableCommands", CommandNode.class, CommandNode.class, CommandSource.class, Map.class);
+            fill.setAccessible(true);
+            fill.invoke(commands, commands.getDispatcher().getRoot(), root, player.createCommandSourceStack(), map);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError("Couldn't build the commands sent to players: " + e);
+        }
+        return root;
+    }
+
+    // pex & projectexpansion used to redirect to px, which was lost from what players were sent, so they had no suggestions
+    @IntegrationTest("empty")
+    public void commandNamesReachPlayers(IntegrationTestHelper helper) {
+        ServerPlayerEntity player = mockPlayer(helper);
+        try {
+            RootCommandNode<ISuggestionProvider> root = clientTree(player);
+            for (String name : CommandRegistry.NAMES) {
+                CommandNode<ISuggestionProvider> node = root.getChild(name);
+                check(node != null && node.getChild("dumpfuelmap") != null, "/" + name + " reaches players without its subcommands");
+            }
+        } finally {
+            removePlayer(player);
+        }
     }
 }

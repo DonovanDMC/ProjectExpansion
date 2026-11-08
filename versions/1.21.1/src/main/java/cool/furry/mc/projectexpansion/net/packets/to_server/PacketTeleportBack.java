@@ -7,7 +7,6 @@ import cool.furry.mc.projectexpansion.capability.IAlchemicalBookLocationsProvide
 import cool.furry.mc.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.projectexpansion.net.packets.IPacket;
 import cool.furry.mc.projectexpansion.util.Lang;
-import cool.furry.mc.projectexpansion.util.Util;
 import moze_intel.projecte.network.PEStreamCodecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -19,16 +18,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record PacketTeleportBack(Player player, InteractionHand hand) implements IPacket {
+public record PacketTeleportBack(InteractionHand hand) implements IPacket {
     public static final CustomPacketPayload.Type<PacketTeleportBack> TYPE = new CustomPacketPayload.Type<>(Main.rl("teleport_back"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketTeleportBack> STREAM_CODEC = StreamCodec.composite(
-            Util.PLAYER_STREAM_CODEC, PacketTeleportBack::player,
             PEStreamCodecs.INTERACTION_HAND, PacketTeleportBack::hand,
             PacketTeleportBack::new
     );
 
     @Override
     public void handle(IPayloadContext context) {
+        // always whoever sent it, these used to say which player they were for so anyone could use someone else's book
+        Player player = context.player();
         ItemStack stack = player.getItemInHand(hand);
         if(stack.getItem() instanceof ItemAlchemicalBook book) {
             try {

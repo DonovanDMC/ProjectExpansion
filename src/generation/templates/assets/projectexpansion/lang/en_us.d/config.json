@@ -12,6 +12,7 @@
   "configuration.projectexpansion.emc_display_position.bottom_right": "Bottom Right",
   "projectexpansion.configuration.notifyCommandChanges": "Notify Command Changes",
   "projectexpansion.configuration.notifyKnowledgeBookGains": "Notify Knowledge Book Gains",
+  "projectexpansion.configuration.alchemicalBookDimensionCost": "Alchemical Book Dimension Cost",
   "projectexpansion.configuration.limitEmcLinkVendor": "Limit EMC Link Vendor Output",
   "projectexpansion.configuration.transmutationInterfaceItemCount": "Transmutation Interface Item Count",
   "projectexpansion.configuration.enableFluidEfficiency": "Enable Fluid Efficiency",

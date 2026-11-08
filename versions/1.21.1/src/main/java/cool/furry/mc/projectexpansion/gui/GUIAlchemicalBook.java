@@ -232,7 +232,7 @@ public class GUIAlchemicalBook extends Screen {
             if (name == null) {
                 return;
             }
-            PacketDistributor.sendToServer(new PacketCreateTeleportLocation(name, player, hand));
+            PacketDistributor.sendToServer(new PacketCreateTeleportLocation(name, hand));
         }
 
         private void setName(String name) {
@@ -242,7 +242,7 @@ public class GUIAlchemicalBook extends Screen {
 
     private class ButtonDelete extends Button {
         public ButtonDelete(int x, int y, int w, int h, String name) {
-            super(Button.builder(Component.literal("X"), (button) -> PacketDistributor.sendToServer(new PacketDeleteTeleportLocation(name, player, hand))).pos(x, y).size(w, h));
+            super(Button.builder(Component.literal("X"), (button) -> PacketDistributor.sendToServer(new PacketDeleteTeleportLocation(name, hand))).pos(x, y).size(w, h));
         }
     }
 
@@ -252,7 +252,7 @@ public class GUIAlchemicalBook extends Screen {
         final boolean hasEnoughEMC;
         public ButtonTeleport(int x, int y, int w, int h, CapabilityAlchemicalBookLocations.TeleportLocation location) {
             super(Button.builder(Component.literal(location.name()), (button) -> {
-                PacketDistributor.sendToServer(new PacketTeleportToLocation(location.name(), player, hand));
+                PacketDistributor.sendToServer(new PacketTeleportToLocation(location.name(), hand));
                 player.closeContainer();
             }).pos(x, y).size(w, h));
             this.location = location;
@@ -274,7 +274,7 @@ public class GUIAlchemicalBook extends Screen {
         private @Nullable CapabilityAlchemicalBookLocations.TeleportLocation location;
         private boolean canTeleport;
         public ButtonBack(int x, int y, int w, int h) {
-            super(Button.builder(Lang.GUI.ALCHEMICAL_BOOK_BACK.translate(), (button) -> PacketDistributor.sendToServer(new PacketTeleportBack(player, hand))).pos(x, y).size(w, h));
+            super(Button.builder(Lang.GUI.ALCHEMICAL_BOOK_BACK.translate(), (button) -> PacketDistributor.sendToServer(new PacketTeleportBack(hand))).pos(x, y).size(w, h));
         }
 
         @Override
@@ -321,7 +321,7 @@ public class GUIAlchemicalBook extends Screen {
         ArrayList<Component> tooltips = new ArrayList<>();
         if(canTeleport) {
             tooltips.add(Component.literal(String.format("%d, %d, %d", location.x(), location.y(), location.z())));
-            int distance = (int) location.distanceFrom(player.getOnPos());
+            int distance = (int) location.distanceFrom(player.level(), player.getOnPos());
             if(distance > 0) {
                 tooltips.add(Lang.GUI.ALCHEMICAL_BOOK_DISTANCE.translate(distance));
             }

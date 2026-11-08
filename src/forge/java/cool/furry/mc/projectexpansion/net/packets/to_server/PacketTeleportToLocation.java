@@ -40,7 +40,7 @@ public record PacketTeleportToLocation(String name, InteractionHand hand) implem
                 }
                 GlobalPos pos = GlobalPos.of(Platform.level(player).dimension(), player.blockPosition());
                 location.teleportTo(player, book.getTier().isAcrossDimensions());
-                if(location.distanceFrom(pos.pos()) > 1) {
+                if(!location.dimension().equals(pos.dimension()) || location.distanceFrom(pos.pos()) > 1) {
                     provider.saveBackLocation(player, pos);
                 }
             } catch (CapabilityAlchemicalBookLocations.BookError error) {

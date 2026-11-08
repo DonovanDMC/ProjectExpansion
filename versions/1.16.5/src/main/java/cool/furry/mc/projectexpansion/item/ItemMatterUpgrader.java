@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -100,6 +101,7 @@ public class ItemMatterUpgrader extends Item {
             intBlockEntity.owner = be.owner;
             intBlockEntity.ownerName = be.ownerName;
             intBlockEntity.emc = be.emc;
+            intBlockEntity.setMode(be.getMode());
             newBlockEntity = intBlockEntity;
         }
 
@@ -162,6 +164,7 @@ public class ItemMatterUpgrader extends Item {
         if (blockEntity instanceof BlockEntityEMC && upgraded instanceof BlockEntityEMC) ((BlockEntityEMC) upgraded).takeEmcFrom((BlockEntityEMC) blockEntity);
 
         provider.setEmc(newEmc);
+        if (player instanceof ServerPlayerEntity) provider.syncEmc((ServerPlayerEntity) player);
         player.displayClientMessage(Lang.Items.MATTER_UPGRADER_DONE.translateColored(TextFormatting.WHITE, EMCFormat.format(BigInteger.valueOf(diff))), true);
         return ActionResultType.SUCCESS;
     }

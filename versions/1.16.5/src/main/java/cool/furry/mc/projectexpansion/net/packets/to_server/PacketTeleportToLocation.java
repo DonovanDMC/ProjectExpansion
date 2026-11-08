@@ -75,7 +75,7 @@ public final class PacketTeleportToLocation implements IPacket {
                 }
                 GlobalPos pos = GlobalPos.of(player.level.dimension(), player.blockPosition());
                 location.teleportTo(player, book.getTier().isAcrossDimensions());
-                if(location.distanceFrom(pos.pos()) > 1) {
+                if(!location.dimension().equals(pos.dimension()) || location.distanceFrom(pos.pos()) > 1) {
                     provider.saveBackLocation(player, pos);
                 }
             } catch (CapabilityAlchemicalBookLocations.BookError error) {

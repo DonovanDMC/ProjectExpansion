@@ -586,7 +586,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             // ghost items are thrown away by the clear
             ItemStack stack = craftSlots.getItem(i).copyWithCount(craftSlots.getItem(i).getCount() - ghostCounts[i]);
             if (stack.isEmpty()) continue;
-            if (Util.canConvertWithoutLoss(stack)) {
+            if (Util.canConvertBack(player, stack)) {
                 available = available.add(BigInteger.valueOf(IEMCProxy.INSTANCE.getValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
             } else {
                 inventory.add(stack.copy());
@@ -681,7 +681,7 @@ public class ContainerArcaneTransmutationTablet extends PEHandContainer {
             ItemStack stack = craftSlots.getItem(i);
             if (stack.isEmpty()) continue;
 
-            if (Util.canConvertWithoutLoss(stack)) {
+            if (Util.canConvertBack(player, stack)) {
                 Util.AddKnowledgeResult result = Util.addKnowledge(player, provider, stack);
 
                 if (!result.fail()) {

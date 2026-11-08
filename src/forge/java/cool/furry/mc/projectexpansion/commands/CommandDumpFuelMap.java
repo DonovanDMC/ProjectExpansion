@@ -31,7 +31,7 @@ public class CommandDumpFuelMap {
         List<Item> items = FuelMapper.getFuelMap();
         TableGenerator table = new TableGenerator(TableGenerator.Alignment.CENTER, TableGenerator.Alignment.CENTER, TableGenerator.Alignment.CENTER);
         TableGenerator.Receiver receiver = Util.getPlayer(ctx.getSource()) == null ? TableGenerator.Receiver.CONSOLE : TableGenerator.Receiver.CLIENT;
-        table.addRow(Lang.Commands.DUMP_FUEL_MAP_FUEL.translate(), Lang.Commands.DUMP_FUEL_MAP_FUEL.translate(), Lang.Commands.DUMP_FUEL_MAP_INDEX.translate());
+        table.addRow(Lang.Commands.DUMP_FUEL_MAP_FUEL.translate(), Lang.Commands.DUMP_FUEL_MAP_EMC.translate(), Lang.Commands.DUMP_FUEL_MAP_INDEX.translate());
 
         BigDecimal previous = BigDecimal.ZERO;
         IEMCProxy proxy = Platform.emcProxy();

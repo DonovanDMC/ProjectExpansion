@@ -27,6 +27,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.capabilities.Capability;
@@ -44,6 +45,7 @@ import java.util.function.Supplier;
 // what the shared code needs that differs between versions, every version has its own copy
 public class Platform {
     public static final ResourceKey<Registry<Level>> DIMENSION = Registry.DIMENSION_REGISTRY;
+    public static final ResourceKey<Registry<DimensionType>> DIMENSION_TYPE = Registry.DIMENSION_TYPE_REGISTRY;
     public static final ResourceKey<Registry<Block>> BLOCK = Registry.BLOCK_REGISTRY;
     public static final ResourceKey<Registry<Item>> ITEM = Registry.ITEM_REGISTRY;
     public static final Codec<UUID> UUID_CODEC = UUIDUtil.CODEC;

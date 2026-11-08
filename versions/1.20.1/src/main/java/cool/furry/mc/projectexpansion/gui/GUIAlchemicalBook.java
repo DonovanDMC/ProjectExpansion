@@ -321,7 +321,7 @@ public class GUIAlchemicalBook extends Screen {
         ArrayList<Component> tooltips = new ArrayList<>();
         if(canTeleport) {
             tooltips.add(Component.literal(String.format("%d, %d, %d", location.x(), location.y(), location.z())));
-            int distance = (int) location.distanceFrom(player.getOnPos());
+            int distance = (int) location.distanceFrom(player.level(), player.getOnPos());
             if(distance > 0) {
                 tooltips.add(Lang.GUI.ALCHEMICAL_BOOK_DISTANCE.translate(distance));
             }

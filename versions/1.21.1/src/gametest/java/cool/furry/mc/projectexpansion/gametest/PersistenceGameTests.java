@@ -2,8 +2,10 @@ package cool.furry.mc.projectexpansion.gametest;
 
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCollector;
+import cool.furry.mc.projectexpansion.block.entity.BlockEntityRelay;
 import cool.furry.mc.projectexpansion.registries.Blocks;
 import cool.furry.mc.projectexpansion.util.Matter;
+import cool.furry.mc.projectexpansion.util.TagNames;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -60,6 +62,21 @@ public class PersistenceGameTests {
         edited.setLevel(helper.getLevel());
         CompoundTag saved = reload(edited).saveWithFullMetadata(registries);
         check(lock.equals(saved.getCompound("Up").getCompound("Lock")), "The condenser's lock wasn't kept: " + saved.getCompound("Up"));
+        helper.succeed();
+    }
+
+    // data written before a field existed, or by hand, won't have it
+    @GameTest(template = EMPTY)
+    public static void relayLoadsWithoutStoredEmc(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, Objects.requireNonNull(Matter.BASIC.getRelay()));
+        BlockEntityRelay relay = blockEntity(helper, pos, BlockEntityRelay.class);
+        HolderLookup.Provider registries = helper.getLevel().registryAccess();
+        CompoundTag tag = relay.saveWithFullMetadata(registries);
+        tag.remove(TagNames.STORED_EMC);
+        tag.remove(TagNames.BONUS_EMC);
+        BlockEntity loaded = BlockEntity.loadStatic(relay.getBlockPos(), relay.getBlockState(), tag, registries);
+        check(loaded instanceof BlockEntityRelay loadedRelay && loadedRelay.getStoredEmcBigInteger().signum() == 0, "A relay saved without its EMC didn't load");
         helper.succeed();
     }
 }

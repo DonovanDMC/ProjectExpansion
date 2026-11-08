@@ -21,9 +21,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.lang.reflect.Proxy;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +32,7 @@ import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.check;
 import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.emc;
 import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.knowledge;
 import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.mockPlayer;
+import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.payloadContext;
 import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.removePlayer;
 
 // the arcane transmutation tablet's crafting grid & output slots, in the emc batch as most of it trades in emc
@@ -263,17 +262,28 @@ public class ArcaneTabletGameTests {
         knowledge(player).addKnowledge(new ItemStack(Items.DIAMOND));
         knowledge(player).setEmc(BigInteger.valueOf(value(Items.DIAMOND) * 3));
         ContainerArcaneTransmutationTablet menu = open(player);
-        IPayloadContext context = (IPayloadContext) Proxy.newProxyInstance(IPayloadContext.class.getClassLoader(), new Class<?>[] { IPayloadContext.class }, (proxy, method, args) -> {
-            if (method.getName().equals("player")) return player;
-            throw new UnsupportedOperationException(method.getName());
-        });
-        new SearchUpdatePKT(menu.transmutationInventory.getIndexFromSlot(OUTPUT), new ItemStack(Items.DIAMOND)).handle(context);
+        new SearchUpdatePKT(menu.transmutationInventory.getIndexFromSlot(OUTPUT), new ItemStack(Items.DIAMOND)).handle(payloadContext(player));
         check(menu.getSlot(OUTPUT).getItem().is(Items.DIAMOND), "The output slot has " + menu.getSlot(OUTPUT).getItem() + " instead of a diamond");
 
         menu.quickMoveStack(player, OUTPUT);
         int diamonds = player.getInventory().countItem(Items.DIAMOND);
         check(diamonds == 3, "Shift clicking the output gave " + diamonds + " diamonds instead of 3");
         check(emc(player).signum() == 0, emc(player) + " EMC was left after buying 3 diamonds");
+        removePlayer(player);
+        helper.succeed();
+    }
+
+    // clearing used to turn items with extra data into emc as well, losing the data, closing gives them back
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void arcaneTabletClearKeepsNamedItems(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        ContainerArcaneTransmutationTablet menu = open(player);
+        ItemStack named = new ItemStack(Items.DIAMOND);
+        named.set(DataComponents.CUSTOM_NAME, Component.literal("Named"));
+        grid(menu).get(0).set(named.copy());
+        menu.clearCrafting(false);
+        check(emc(player).signum() == 0, "Clearing turned the named diamond into " + emc(player) + " EMC");
+        check(player.getInventory().items.stream().anyMatch(stack -> ItemStack.isSameItemSameComponents(stack, named)), "The named diamond didn't come back");
         removePlayer(player);
         helper.succeed();
     }

@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -116,7 +117,7 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
             return extractEmcBigInteger(toAccept.negate(), action);
         }
         if (canAcceptEmc()) {
-            return forceInsertEmcBigInteger(getEmcInsertLimitBigInteger().min(toAccept), action);
+            return forceInsertEmcBigInteger(getEmcInsertLimitBigInteger().max(BigInteger.ZERO).min(toAccept), action);
         }
         return BigInteger.ZERO;
     }
@@ -151,7 +152,8 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
         if (toAccept.compareTo(BigInteger.ZERO) < 0) {
             return forceExtractEmcBigInteger(toAccept.negate(), action);
         }
-        BigInteger toAdd = getNeededEmcBigInteger().min(toAccept);
+        // holding more than the max, like after a config change lowers it, leaves no room rather than negative room
+        BigInteger toAdd = getNeededEmcBigInteger().max(BigInteger.ZERO).min(toAccept);
         if (action.execute()) {
             emc = emc.add(toAdd);
             storedEmcChanged();
@@ -227,6 +229,7 @@ public abstract class BlockEntityEMC extends BlockEntityBase implements IEmcStor
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        emc = new BigInteger(tag.getString(TagNames.STORED_EMC));
+        // data from before it stored emc, or written by hand, won't have it
+        if (tag.contains(TagNames.STORED_EMC, Tag.TAG_STRING)) emc = new BigInteger(tag.getString(TagNames.STORED_EMC));
     }
 }

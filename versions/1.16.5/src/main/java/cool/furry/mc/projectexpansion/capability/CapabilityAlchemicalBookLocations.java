@@ -2,6 +2,7 @@ package cool.furry.mc.projectexpansion.capability;
 
 import com.google.common.collect.ImmutableList;
 import cool.furry.mc.projectexpansion.Main;
+import cool.furry.mc.projectexpansion.config.Config;
 import cool.furry.mc.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.projectexpansion.net.PacketHandler;
 import cool.furry.mc.projectexpansion.net.packets.to_client.PacketSyncAlchemicalBookLocations;
@@ -198,20 +199,27 @@ public final class CapabilityAlchemicalBookLocations implements IAlchemicalBookL
             return Math.sqrt(Math.pow(pos.getX() - x, 2) + Math.pow(pos.getY() - y, 2) + Math.pow(pos.getZ() - z, 2));
         }
 
+        // as if both were in the overworld, so going between dimensions is measured like a portal would
+        public double distanceFrom(World level, BlockPos pos) {
+            if (level.dimension().equals(dimension)) return distanceFrom(pos);
+            double from = Util.coordinateScale(level, level.dimension()), to = Util.coordinateScale(level, dimension);
+            return Math.sqrt(Math.pow(pos.getX() * from - x * to, 2) + Math.pow(pos.getY() - y, 2) + Math.pow(pos.getZ() * from - z * to, 2));
+        }
+
         public int getCost(ItemStack stack, PlayerEntity player) {
             if (player.isCreative()) {
                 return 0;
             }
 
-            return getCost(stack, player.blockPosition().below());
+            return getCost(stack, player.level, player.blockPosition().below());
         }
 
-        public int getCost(ItemStack stack, BlockPos pos) {
-            if (!(stack.getItem() instanceof ItemAlchemicalBook)) {
-                return (int) Math.ceil(distanceFrom(pos) * BASIC_DISTANCE_RATIO);
-            }
-            ItemAlchemicalBook book = (ItemAlchemicalBook) stack.getItem();
-            return (int) Math.ceil(distanceFrom(pos) * book.getTier().distanceRatio());
+        public int getCost(ItemStack stack, World level, BlockPos pos) {
+            float ratio = stack.getItem() instanceof ItemAlchemicalBook ? ((ItemAlchemicalBook) stack.getItem()).getTier().distanceRatio() : BASIC_DISTANCE_RATIO;
+            double cost = distanceFrom(level, pos) * ratio;
+            // crossing dimensions costs a set amount on top, free books stay free
+            if (ratio > 0 && !level.dimension().equals(dimension)) cost += Config.server.alchemicalBookDimensionCost.get();
+            return (int) Math.min(Integer.MAX_VALUE, Math.ceil(cost));
         }
 
         // records are immutable

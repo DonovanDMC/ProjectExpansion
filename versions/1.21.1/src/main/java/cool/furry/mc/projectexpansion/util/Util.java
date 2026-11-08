@@ -52,6 +52,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -262,6 +263,17 @@ public class Util {
         public boolean success() { return this == SUCCESS; }
     }
 
+    // a dimension's coordinate scale (8 for the nether), so distances between dimensions can be measured like a portal would
+    public static double coordinateScale(Level level, ResourceKey<Level> dimension) {
+        if (level.dimension().equals(dimension)) return level.dimensionType().coordinateScale();
+        if (level instanceof ServerLevel serverLevel) {
+            ServerLevel other = serverLevel.getServer().getLevel(dimension);
+            if (other != null) return other.dimensionType().coordinateScale();
+        }
+        // the client only knows the dimension types, which usually share an id with their dimension
+        return level.registryAccess().registry(Registries.DIMENSION_TYPE).flatMap(types -> types.getOptional(dimension.location())).map(DimensionType::coordinateScale).orElse(1D);
+    }
+
     public static @Nullable ServerLevel getDimension(ResourceKey<Level> dimension) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         return server == null ? null : server.getLevel(dimension);
@@ -404,6 +416,11 @@ public class Util {
     // converting items back at full value is only fair when there's no covalence loss, otherwise it beats burning them normally
     public static boolean canConvertWithoutLoss(ItemStack stack) {
         return ProjectEConfig.server.difficulty.covalenceLoss.get() >= 1D && IEMCProxy.INSTANCE.hasValue(stack) && !EmcLock.isLocked(stack);
+    }
+
+    // anything with more on it than projecte keeps, like a name or contents, would lose that, so it's left as an item
+    public static boolean canConvertBack(Player player, ItemStack stack) {
+        return canConvertWithoutLoss(stack) && areStacksEqual(player.registryAccess(), stack, cleanStack(stack));
     }
 
     public static ItemStack returnToInventoryOrTransmutation(Inventory playerInv, Player player, IKnowledgeProvider provider, ItemStack stack, boolean ignoreNBT, boolean force) {

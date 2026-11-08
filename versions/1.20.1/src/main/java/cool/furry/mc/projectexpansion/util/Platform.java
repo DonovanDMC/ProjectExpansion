@@ -28,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -43,6 +44,7 @@ import java.util.function.Supplier;
 // what the shared code needs that differs between versions, every version has its own copy
 public class Platform {
     public static final ResourceKey<Registry<Level>> DIMENSION = Registries.DIMENSION;
+    public static final ResourceKey<Registry<DimensionType>> DIMENSION_TYPE = Registries.DIMENSION_TYPE;
     public static final ResourceKey<Registry<Block>> BLOCK = Registries.BLOCK;
     public static final ResourceKey<Registry<Item>> ITEM = Registries.ITEM;
     public static final Codec<UUID> UUID_CODEC = UUIDUtil.CODEC;

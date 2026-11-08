@@ -14,7 +14,6 @@
     "KnowledgeSyncPKTMixin"
   ],
   "mixins": [
-    "AlchemicalBagMixin",
     "AlchemicalCollectionMixin",
     "AlchemicalCollectionToggleMixin",
     "CollectorRecipeCategoryMixin",

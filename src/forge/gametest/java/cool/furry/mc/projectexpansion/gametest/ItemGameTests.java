@@ -1,20 +1,25 @@
 package cool.furry.mc.projectexpansion.gametest;
 
 import cool.furry.mc.projectexpansion.Main;
+import cool.furry.mc.projectexpansion.capability.CapabilityAlchemicalBookLocations;
 import cool.furry.mc.projectexpansion.config.Config;
+import cool.furry.mc.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.projectexpansion.registries.Items;
 import cool.furry.mc.projectexpansion.util.AlchemicalCollectionCollector;
 import cool.furry.mc.projectexpansion.util.OwnerData;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.gametest.GameTestHolder;
@@ -148,6 +153,29 @@ public class ItemGameTests {
         check(emc(player).longValueExact() == 100, "The player has " + emc(player) + " EMC instead of 100");
         check(knowledge(player).hasKnowledge(ItemInfo.fromItem(net.minecraft.world.item.Items.DIAMOND)), "The player didn't learn diamonds");
         removePlayer(player);
+        helper.succeed();
+    }
+
+    // crossing dimensions is measured with each one's coordinate scale like a portal, plus a set amount on top
+    // it used to use the raw coordinates, so it was free or expensive depending on where you stood
+    @GameTest(template = EMPTY)
+    public static void bookCostScalesAcrossDimensions(GameTestHelper helper) {
+        ServerLevel overworld = helper.getLevel();
+        check(overworld.dimension() == Level.OVERWORLD, "The test level isn't the overworld");
+        ItemStack master = new ItemStack(cool.furry.mc.projectexpansion.registries.Items.MASTER_ALCHEMICAL_BOOK.get());
+        ItemStack arcane = new ItemStack(cool.furry.mc.projectexpansion.registries.Items.ARCANE_ALCHEMICAL_BOOK.get());
+        float ratio = ItemAlchemicalBook.Tier.MASTER.distanceRatio();
+        int surcharge = Config.server.alchemicalBookDimensionCost.get();
+        CapabilityAlchemicalBookLocations.TeleportLocation nether = CapabilityAlchemicalBookLocations.TeleportLocation.from("nether", GlobalPos.of(Level.NETHER, new BlockPos(100, 64, 0)), 0);
+        // 800 blocks into the overworld is 100 into the nether, so it's the same place
+        int same = nether.getCost(master, overworld, new BlockPos(800, 64, 0));
+        check(same == surcharge, "Going to the same place in the nether cost " + same + " instead of just the " + surcharge + " for changing dimension");
+        // raw coordinates line up, but through a portal it's 700 blocks
+        int far = nether.getCost(master, overworld, new BlockPos(100, 64, 0));
+        int expected = (int) Math.ceil(700 * ratio + surcharge);
+        check(far == expected, "Going 700 blocks into the nether cost " + far + " instead of " + expected);
+        int free = nether.getCost(arcane, overworld, new BlockPos(100, 64, 0));
+        check(free == 0, "The arcane book cost " + free + " to change dimension");
         helper.succeed();
     }
 }

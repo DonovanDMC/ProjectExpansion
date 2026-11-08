@@ -18,7 +18,6 @@ import moze_intel.projecte.gameObjs.block_entities.WrappedItemHandler;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.text.TextComponentUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -28,7 +27,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -38,8 +37,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -50,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
-public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLike, MenuProvider {
+public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLike {
     public static final ICapabilityProvider<BlockEntityCondenserMK3, @Nullable Direction, IItemHandler> ITEM_HANDLER_CAPABILITY = BlockEntityCondenserMK3::getAutomationSidedItemHandler;
     public static final ICapabilityProvider<BlockEntityCondenserMK3, @Nullable Direction, IEmcStorage> EMC_STORAGE_PROVIDER = BlockEntityCondenserMK3::getSidedHandler;
     public static final Direction OUTPUT_DIRECTION = Direction.DOWN;
@@ -143,7 +140,8 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
             SidedHandler handler = getSidedHandler(direction);
             handler.checkLockAndUpdate(false);
             handler.displayEmc = handler.getStoredEmc();
-            if (handler.getLockInfo() != null) {
+            // a lock without emc costs nothing, so it would fill the output for free
+            if (handler.getLockInfo() != null && handler.requiredEmc > 0) {
                 handler.condense();
             }
         }
@@ -213,24 +211,21 @@ public class BlockEntityCondenserMK3 extends BlockEntityBase implements IChestLi
         }
     }
 
-    @Override
     public Component getDisplayName() {
         return TextComponentUtil.build(PEBlocks.CONDENSER);
     }
 
-    @Override
-    public @Nullable AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-        @Nullable Direction direction = null;
-        HitResult hit = Minecraft.getInstance().hitResult;
-        if (hit != null && hit.getType() == HitResult.Type.BLOCK && hit instanceof BlockHitResult blockHitResult) {
-            direction = blockHitResult.getDirection();
+    // the bottom opens the output, every other side its own input
+    // which side used to come from the client's crosshair, which a dedicated server doesn't have
+    public void openMenu(Player player, Direction side) {
+        if (side == OUTPUT_DIRECTION) {
+            player.openMenu(new SimpleMenuProvider((windowId, inventory, p) -> new ContainerCondenserMK3Output(windowId, inventory, this), getDisplayName()), worldPosition);
+            return;
         }
-
-        if (direction == OUTPUT_DIRECTION) {
-            return new ContainerCondenserMK3Output(windowId, inventory, this);
-        }
-
-        return new ContainerCondenserMK3Input(windowId, inventory, this);
+        player.openMenu(new SimpleMenuProvider((windowId, inventory, p) -> new ContainerCondenserMK3Input(windowId, inventory, this, side), getDisplayName()), buf -> {
+            buf.writeBlockPos(worldPosition);
+            buf.writeEnum(side);
+        });
     }
 
     public class SidedHandler implements IEmcStorage {

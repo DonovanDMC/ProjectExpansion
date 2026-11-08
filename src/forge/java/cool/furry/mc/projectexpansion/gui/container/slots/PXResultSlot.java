@@ -91,7 +91,7 @@ public class PXResultSlot extends ResultSlot {
             // if empty or same as was originally present, skip
             if (stack.isEmpty() || ItemStack.isSameItemSameTags(items.get(i), stack)) continue;
             // if it has a value, move to tablet
-            if (Util.canConvertWithoutLoss(stack)) {
+            if (Util.canConvertBack(stack)) {
                 tablet.transmutationInventory.handleKnowledge(stack);
                 long value = Platform.emcProxy().getValue(stack);
                 tablet.transmutationInventory.addEmc(BigInteger.valueOf(value).multiply(BigInteger.valueOf(stack.getCount())));

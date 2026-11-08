@@ -3,6 +3,7 @@ package cool.furry.mc.projectexpansion.capability;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import cool.furry.mc.projectexpansion.config.Config;
 import cool.furry.mc.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.projectexpansion.net.packets.to_client.PacketSyncAlchemicalBookLocations;
 import cool.furry.mc.projectexpansion.registries.AttachmentTypes;
@@ -100,22 +101,31 @@ public record CapabilityAlchemicalBookLocations(ItemAlchemicalBook.Mode mode, @N
         );
 
         public void teleportTo(ServerPlayer player, boolean acrossDimensions) throws BookError.DimensionNotFoundError, BookError.WrongDimensionError {
-            ResourceKey<Level> dim = player.level().dimension();
+            player.teleportTo(checkCanTeleport(player, acrossDimensions), x, y, z, player.getYRot(), player.getXRot());
+        }
 
+        // separate from teleporting, so a teleport can be paid for only once it's known it'll happen
+        public ServerLevel checkCanTeleport(ServerPlayer player, boolean acrossDimensions) throws BookError.DimensionNotFoundError, BookError.WrongDimensionError {
             ServerLevel level = Util.getDimension(dimension);
             if (level == null) {
                 throw new BookError.DimensionNotFoundError(dimension);
             }
 
-            if (!dim.equals(dimension) && !acrossDimensions) {
+            if (!player.level().dimension().equals(dimension) && !acrossDimensions) {
                 throw new BookError.WrongDimensionError();
             }
-
-            player.teleportTo(level, x, y, z, player.getYRot(), player.getXRot());
+            return level;
         }
 
         public double distanceFrom(BlockPos pos) {
             return Math.sqrt(Math.pow(pos.getX() - x, 2) + Math.pow(pos.getY() - y, 2) + Math.pow(pos.getZ() - z, 2));
+        }
+
+        // as if both were in the overworld, so going between dimensions is measured like a portal would
+        public double distanceFrom(Level level, BlockPos pos) {
+            if (level.dimension().equals(dimension)) return distanceFrom(pos);
+            double from = Util.coordinateScale(level, level.dimension()), to = Util.coordinateScale(level, dimension);
+            return Math.sqrt(Math.pow(pos.getX() * from - x * to, 2) + Math.pow(pos.getY() - y, 2) + Math.pow(pos.getZ() * from - z * to, 2));
         }
 
         public int getCost(ItemStack stack, Player player) {
@@ -123,14 +133,15 @@ public record CapabilityAlchemicalBookLocations(ItemAlchemicalBook.Mode mode, @N
                 return 0;
             }
 
-            return getCost(stack, player.getOnPos());
+            return getCost(stack, player.level(), player.getOnPos());
         }
 
-        public int getCost(ItemStack stack, BlockPos pos) {
-            if (!(stack.getItem() instanceof ItemAlchemicalBook book)) {
-                return (int) Math.ceil(distanceFrom(pos) * BASIC_DISTANCE_RATIO);
-            }
-            return (int) Math.ceil(distanceFrom(pos) * book.getTier().distanceRatio());
+        public int getCost(ItemStack stack, Level level, BlockPos pos) {
+            float ratio = stack.getItem() instanceof ItemAlchemicalBook book ? book.getTier().distanceRatio() : BASIC_DISTANCE_RATIO;
+            double cost = distanceFrom(level, pos) * ratio;
+            // crossing dimensions costs a set amount on top, free books stay free
+            if (ratio > 0 && !level.dimension().equals(dimension)) cost += Config.server.alchemicalBookDimensionCost.get();
+            return (int) Math.min(Integer.MAX_VALUE, Math.ceil(cost));
         }
 
         // records are immutable

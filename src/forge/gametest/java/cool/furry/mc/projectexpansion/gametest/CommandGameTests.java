@@ -1,7 +1,10 @@
 package cool.furry.mc.projectexpansion.gametest;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.CommandNode;
+import com.mojang.brigadier.tree.RootCommandNode;
 import cool.furry.mc.projectexpansion.Main;
+import cool.furry.mc.projectexpansion.commands.CommandRegistry;
 import cool.furry.mc.projectexpansion.commands.CommandReloadEMC;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityPowerFlower;
 import cool.furry.mc.projectexpansion.util.Matter;
@@ -10,9 +13,11 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +25,10 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
+import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -180,6 +188,36 @@ public class CommandGameTests {
             CommandReloadEMC.forceReloadAfterCommands = false;
         }
         check(Platform.emcValue(Items.DEAD_BUSH) == original, "A dead bush is worth " + Platform.emcValue(Items.DEAD_BUSH) + " after /projecte resetemc, not " + original);
+        helper.succeed();
+    }
+
+    // the commands a player's client is sent, built the same way the server builds them
+    @SuppressWarnings("unchecked")
+    private static RootCommandNode<SharedSuggestionProvider> clientTree(ServerPlayer player) {
+        Commands commands = player.server.getCommands();
+        RootCommandNode<SharedSuggestionProvider> root = new RootCommandNode<>();
+        Map<CommandNode<CommandSourceStack>, CommandNode<SharedSuggestionProvider>> map = new HashMap<>();
+        map.put(commands.getDispatcher().getRoot(), root);
+        try {
+            Method fill = Commands.class.getDeclaredMethod("fillUsableCommands", CommandNode.class, CommandNode.class, CommandSourceStack.class, Map.class);
+            fill.setAccessible(true);
+            fill.invoke(commands, commands.getDispatcher().getRoot(), root, player.createCommandSourceStack(), map);
+        } catch (ReflectiveOperationException e) {
+            throw new GameTestAssertException("Couldn't build the commands sent to players: " + e);
+        }
+        return root;
+    }
+
+    // pex & projectexpansion used to redirect to px, which was lost from what players were sent, so they had no suggestions
+    @GameTest(template = EMPTY)
+    public static void commandNamesReachPlayers(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        RootCommandNode<SharedSuggestionProvider> root = clientTree(player);
+        for (String name : CommandRegistry.NAMES) {
+            CommandNode<SharedSuggestionProvider> node = root.getChild(name);
+            check(node != null && node.getChild("dumpfuelmap") != null, "/" + name + " reaches players without its subcommands");
+        }
+        removePlayer(player);
         helper.succeed();
     }
 }

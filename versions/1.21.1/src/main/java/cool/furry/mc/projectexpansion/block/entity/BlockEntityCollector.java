@@ -18,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -170,9 +171,14 @@ public class BlockEntityCollector extends BlockEntityEMC implements IHasMatter, 
     }
 
     private void updateEmc(Level level, BlockPos pos) {
-        BigDecimal gen = getMatter().getCollectorOutputForTicks(Config.server.enableCollectorOptimizations.get() ? 20 : 1);
+        int ticks = Config.server.enableCollectorOptimizations.get() ? 20 : 1;
+        BigDecimal gen = getMatter().getCollectorOutputForTicks(ticks);
+        // like projecte's collectors, a second's output can be moved out each tick
+        // the lower tiers make less than one a tick, which used to round down to never moving any
+        BigInteger transfer = getMatter().getCollectorOutput().multiply(BigInteger.valueOf(ticks));
         if(hasSunBonus() && getSunBonus() != null) {
             gen = gen.multiply(BigDecimal.valueOf(getSunBonus()));
+            transfer = transfer.multiply(BigInteger.valueOf(getSunBonus()));
         }
         final BigDecimal generated = gen; // Thanks Java
         if (!this.hasMaxedEmc()) {
@@ -190,11 +196,10 @@ public class BlockEntityCollector extends BlockEntityEMC implements IHasMatter, 
             if (hasChargeableItem) {
                 IItemEmcHolder emcHolder = upgrading.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
                 if (emcHolder != null) {
-                    BigInteger toAdd = getStoredEmcBigInteger().min(generated.toBigInteger());
-                    if (toAdd.compareTo(BigInteger.ZERO) < 1) return;
-                    BigInteger remaining = Util.stepBigInteger(toAdd, (val) -> emcHolder.insertEmc(upgrading, val, EmcAction.EXECUTE));
-                    BigInteger v = getStoredEmcBigInteger().subtract(remaining);
-                    forceExtractEmcBigInteger(v, EmcAction.EXECUTE);
+                    BigInteger toAdd = getStoredEmcBigInteger().min(transfer);
+                    // insertEmc gives back what was taken, stepBigInteger wants what was left
+                    BigInteger remaining = Util.stepBigInteger(toAdd, (val) -> val - emcHolder.insertEmc(upgrading, val, EmcAction.EXECUTE));
+                    forceExtractEmcBigInteger(toAdd.subtract(remaining), EmcAction.EXECUTE);
                 }
             } else if (hasFuel) {
                 ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(upgrading);
@@ -222,8 +227,7 @@ public class BlockEntityCollector extends BlockEntityEMC implements IHasMatter, 
             } else {
                 BigInteger before = getStoredEmcBigInteger();
                 // Only send EMC when we are not upgrading fuel or charging an item
-                BigInteger toSend = getStoredEmcBigInteger().compareTo(generated.toBigInteger()) < 0 ? getStoredEmcBigInteger() : generated.toBigInteger();
-                sendToAllAcceptors(level, pos, toSend);
+                sendToAllAcceptors(level, pos, getStoredEmcBigInteger().min(transfer));
                 BigInteger after = getStoredEmcBigInteger();
                 sendRelayBonus(level, pos);
                 if (!before.equals(after)) markDirty(level, pos, true);
@@ -317,7 +321,7 @@ public class BlockEntityCollector extends BlockEntityEMC implements IHasMatter, 
         super.loadAdditional(tag, registries);
         input.deserializeNBT(registries, tag.getCompound(TagNames.INPUT));
         auxSlots.deserializeNBT(registries, tag.getCompound(TagNames.AUX_SLOTS));
-        unprocessedEMC = new BigDecimal(tag.getString(TagNames.UNPROCESSED_EMC));
+        if (tag.contains(TagNames.UNPROCESSED_EMC, Tag.TAG_STRING)) unprocessedEMC = new BigDecimal(tag.getString(TagNames.UNPROCESSED_EMC));
     }
 
     @Override

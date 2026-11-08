@@ -4,24 +4,34 @@ import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityEMCLink;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityTransmutationInterface;
 import cool.furry.mc.projectexpansion.registries.Blocks;
+import cool.furry.mc.projectexpansion.registries.Enchantments;
 import cool.furry.mc.projectexpansion.util.EmcLock;
 import cool.furry.mc.projectexpansion.util.Matter;
 import cool.furry.mc.projectexpansion.util.Platform;
+import cool.furry.mc.projectexpansion.util.Util;
 import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import net.minecraftforge.items.IItemHandler;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -231,6 +241,74 @@ public class TransmutationGameTests {
         blockEntity(helper, POS, BlockEntityTransmutationInterface.class).owner = UUID.randomUUID();
         ItemStack left = items(helper).insertItem(0, new ItemStack(Items.DIAMOND, 4), false);
         check(left.getCount() == 4, "The interface took items for an offline owner");
+        helper.succeed();
+    }
+
+    // it only takes emc in, anything asking for emc back used to be told it got all it asked for
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void emcLinkGivesNoEmc(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        BlockEntityEMCLink link = link(helper, Matter.BASIC, player);
+        IEmcStorage storage = link.getCapability(PECapabilities.EMC_STORAGE_CAPABILITY, Direction.UP).resolve().orElseThrow(() -> new GameTestAssertException("No EMC storage at " + POS));
+        long simulated = storage.extractEmc(1000, IEmcStorage.EmcAction.SIMULATE);
+        long extracted = storage.extractEmc(1000, IEmcStorage.EmcAction.EXECUTE);
+        check(simulated == 0 && extracted == 0, "The link gave out " + simulated + " EMC simulated & " + extracted + " for real, without having any");
+        removePlayer(player);
+        helper.succeed();
+    }
+
+    // filling used to take an item from the selected hotbar slot, even with the bucket in the other hand
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void emcLinkFillsBucketsInOffhand(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        BlockEntityEMCLink link = link(helper, Matter.FINAL, player);
+        link.itemStack = new ItemStack(Items.LAVA_BUCKET);
+        knowledge(player).setEmc(BigInteger.valueOf(Platform.emcProxy().getValue(Items.LAVA_BUCKET) * 2));
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND));
+        player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.BUCKET));
+        link.handleActivation(player, InteractionHand.OFF_HAND);
+        check(player.getMainHandItem().is(Items.DIAMOND), "Filling the offhand bucket took the diamond out of the main hand");
+        check(player.getInventory().countItem(Items.LAVA_BUCKET) == 1, "The player didn't get a lava bucket");
+        check(player.getInventory().countItem(Items.BUCKET) == 0, "The empty bucket wasn't used up");
+        removePlayer(player);
+        helper.succeed();
+    }
+
+    // what these offer is only what the owner could buy, breaking them used to drop all of it for free
+    private static int mineWithAlchemicalCollection(GameTestHelper helper, ServerPlayer player, BlockEntity blockEntity, Item counted) {
+        ItemStack tool = new ItemStack(Items.DIAMOND_PICKAXE);
+        tool.enchant(Enchantments.ALCHEMICAL_COLLECTION.get(), 1);
+        Util.setActive(tool, true);
+        player.setItemInHand(InteractionHand.MAIN_HAND, tool);
+        BlockPos pos = helper.absolutePos(POS);
+        Block.getDrops(helper.getLevel().getBlockState(pos), helper.getLevel(), pos, blockEntity, player, tool);
+        List<ItemEntity> drops = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(pos).inflate(2));
+        int count = drops.stream().filter(drop -> drop.getItem().is(counted)).mapToInt(drop -> drop.getItem().getCount()).sum();
+        drops.forEach(ItemEntity::discard);
+        return count;
+    }
+
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void emcLinkAlchemicalCollectionDropsNothingExtra(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        BlockEntityEMCLink link = link(helper, Matter.BASIC, player);
+        link.itemStack = new ItemStack(Items.DIAMOND);
+        knowledge(player).setEmc(BigInteger.valueOf(Platform.emcProxy().getValue(Items.DIAMOND) * 64));
+        int diamonds = mineWithAlchemicalCollection(helper, player, link, Items.DIAMOND);
+        check(diamonds == 0, "Breaking the link dropped " + diamonds + " diamonds it was only offering");
+        removePlayer(player);
+        helper.succeed();
+    }
+
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void interfaceAlchemicalCollectionDropsNothingExtra(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        BlockEntityTransmutationInterface be = transmutationInterface(helper, player);
+        knowledge(player).addKnowledge(ItemInfo.fromItem(Items.DIAMOND));
+        knowledge(player).setEmc(BigInteger.valueOf(Platform.emcProxy().getValue(Items.DIAMOND) * 64));
+        int diamonds = mineWithAlchemicalCollection(helper, player, be, Items.DIAMOND);
+        check(diamonds == 0, "Breaking the interface dropped " + diamonds + " diamonds it was only offering");
+        removePlayer(player);
         helper.succeed();
     }
 }

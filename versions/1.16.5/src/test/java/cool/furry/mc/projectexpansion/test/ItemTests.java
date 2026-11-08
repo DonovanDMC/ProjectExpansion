@@ -3,7 +3,9 @@ package cool.furry.mc.projectexpansion.test;
 import com.alcatrazescapee.mcjunitlib.framework.IntegrationTest;
 import com.alcatrazescapee.mcjunitlib.framework.IntegrationTestClass;
 import com.alcatrazescapee.mcjunitlib.framework.IntegrationTestHelper;
+import cool.furry.mc.projectexpansion.capability.CapabilityAlchemicalBookLocations;
 import cool.furry.mc.projectexpansion.config.Config;
+import cool.furry.mc.projectexpansion.item.ItemAlchemicalBook;
 import cool.furry.mc.projectexpansion.registries.Items;
 import cool.furry.mc.projectexpansion.util.AlchemicalCollectionCollector;
 import cool.furry.mc.projectexpansion.util.OwnerData;
@@ -15,6 +17,9 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 
 import java.math.BigInteger;
@@ -154,5 +159,27 @@ public class ItemTests {
             removePlayer(owner);
             removePlayer(learner);
         }
+    }
+
+    // crossing dimensions is measured with each one's coordinate scale like a portal, plus a set amount on top
+    // it used to use the raw coordinates, so it was free or expensive depending on where you stood
+    @IntegrationTest("empty")
+    public void bookCostScalesAcrossDimensions(IntegrationTestHelper helper) {
+        ServerWorld overworld = helper.getWorld();
+        check(overworld.dimension() == World.OVERWORLD, "The test level isn't the overworld");
+        ItemStack master = new ItemStack(cool.furry.mc.projectexpansion.registries.Items.MASTER_ALCHEMICAL_BOOK.get());
+        ItemStack arcane = new ItemStack(cool.furry.mc.projectexpansion.registries.Items.ARCANE_ALCHEMICAL_BOOK.get());
+        float ratio = ItemAlchemicalBook.Tier.MASTER.distanceRatio();
+        int surcharge = Config.server.alchemicalBookDimensionCost.get();
+        CapabilityAlchemicalBookLocations.TeleportLocation nether = CapabilityAlchemicalBookLocations.TeleportLocation.from("nether", GlobalPos.of(World.NETHER, new BlockPos(100, 64, 0)), 0);
+        // 800 blocks into the overworld is 100 into the nether, so it's the same place
+        int same = nether.getCost(master, overworld, new BlockPos(800, 64, 0));
+        check(same == surcharge, "Going to the same place in the nether cost " + same + " instead of just the " + surcharge + " for changing dimension");
+        // raw coordinates line up, but through a portal it's 700 blocks
+        int far = nether.getCost(master, overworld, new BlockPos(100, 64, 0));
+        int expected = (int) Math.ceil(700 * ratio + surcharge);
+        check(far == expected, "Going 700 blocks into the nether cost " + far + " instead of " + expected);
+        int free = nether.getCost(arcane, overworld, new BlockPos(100, 64, 0));
+        check(free == 0, "The arcane book cost " + free + " to change dimension");
     }
 }

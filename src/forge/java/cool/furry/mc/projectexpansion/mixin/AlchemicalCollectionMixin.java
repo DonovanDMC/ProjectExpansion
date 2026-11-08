@@ -11,7 +11,6 @@ import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -50,8 +49,10 @@ public abstract class AlchemicalCollectionMixin {
         List<ItemInfo> knowledgeAdditions = new ArrayList<>();
         List<ItemStack> newDrops = initialDrops.stream()
             .map(drop -> {
-                ItemInfo info = Platform.emcProxy().getPersistentInfo(ItemInfo.fromStack(drop));
-                if(proxy.hasValue(info)) {
+                ItemInfo raw = ItemInfo.fromStack(drop);
+                ItemInfo info = Platform.emcProxy().getPersistentInfo(raw);
+                // anything carrying more than projecte keeps, like a filled shulker box or stored emc, is dropped as it is so that isn't lost
+                if(info.equals(raw) && proxy.hasValue(info)) {
                     addEMC.addAndGet(BigInteger.valueOf(proxy.getSellValue(info)).multiply(BigInteger.valueOf(drop.getCount())));
                     if(!provider.hasKnowledge(info) && !knowledgeAdditions.contains(info)) knowledgeAdditions.add(info);
                     return null;
@@ -60,18 +61,8 @@ public abstract class AlchemicalCollectionMixin {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
+        // a block's inventory is dropped by the block itself, what an item handler reports isn't always real (like an emc link's)
         if (newDrops.size() < initialDrops.size() || addEMC.get().compareTo(BigInteger.ZERO) > 0) {
-            if (blockEntity != null) {
-                blockEntity.getCapability(Platform.ITEM_HANDLER).ifPresent(handler -> {
-                    for (int i = 0; i < handler.getSlots(); i++) {
-                        ItemStack slotStack = handler.getStackInSlot(i);
-                        if (!slotStack.isEmpty()) {
-                            Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), slotStack);
-                        }
-                    }
-                });
-            }
-
             AlchemicalCollectionCollector.add(player.getUUID(), addEMC.get(), knowledgeAdditions);
             cir.setReturnValue(newDrops);
         }

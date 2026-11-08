@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import java.math.BigInteger;
 
@@ -45,7 +46,7 @@ public class BlockEntityRelay extends BlockEntityEMC implements IHasMatter, IRel
     @Override
     protected void loadData(CompoundNBT tag) {
         super.loadData(tag);
-        bonusEMC = new BigInteger(tag.getString(TagNames.BONUS_EMC));
+        if (tag.contains(TagNames.BONUS_EMC, Constants.NBT.TAG_STRING)) bonusEMC = new BigInteger(tag.getString(TagNames.BONUS_EMC));
     }
 
     @Override

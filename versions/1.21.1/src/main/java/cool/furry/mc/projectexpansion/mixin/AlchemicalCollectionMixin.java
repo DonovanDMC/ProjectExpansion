@@ -8,19 +8,15 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
-import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -53,8 +49,10 @@ public abstract class AlchemicalCollectionMixin {
         List<ItemInfo> knowledgeAdditions = new ArrayList<>();
         List<ItemStack> newDrops = initialDrops.stream()
             .map(drop -> {
-                ItemInfo info = IEMCProxy.INSTANCE.getPersistentInfo(ItemInfo.fromStack(drop));
-                if(proxy.hasValue(info)) {
+                ItemInfo raw = ItemInfo.fromStack(drop);
+                ItemInfo info = IEMCProxy.INSTANCE.getPersistentInfo(raw);
+                // anything carrying more than projecte keeps, like a filled shulker box or stored emc, is dropped as it is so that isn't lost
+                if(info.equals(raw) && proxy.hasValue(info)) {
                     addEMC.addAndGet(BigInteger.valueOf(proxy.getSellValue(info)).multiply(BigInteger.valueOf(drop.getCount())));
                     if(!provider.hasKnowledge(info) && !knowledgeAdditions.contains(info)) knowledgeAdditions.add(info);
                     return null;
@@ -63,17 +61,8 @@ public abstract class AlchemicalCollectionMixin {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
+        // a block's inventory is dropped by the block itself, what an item handler reports isn't always real (like an emc link's)
         if (newDrops.size() < initialDrops.size() || addEMC.get().compareTo(BigInteger.ZERO) > 0) {
-            @Nullable IItemHandler handler = WorldHelper.getCapability(level, Capabilities.ItemHandler.BLOCK, pos, state, blockEntity, null);
-            if (handler != null) {
-                for (int i = 0; i < handler.getSlots(); i++) {
-                    ItemStack slotStack = handler.getStackInSlot(i);
-                    if (!slotStack.isEmpty()) {
-                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), slotStack);
-                    }
-                }
-            }
-
             AlchemicalCollectionCollector.add(player.getUUID(), addEMC.get(), knowledgeAdditions);
             cir.setReturnValue(newDrops);
         }

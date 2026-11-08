@@ -8,6 +8,7 @@ import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -96,6 +97,7 @@ public class ItemMatterUpgrader extends Item {
             intBlockEntity.owner = be.owner;
             intBlockEntity.ownerName = be.ownerName;
             intBlockEntity.emc = be.emc;
+            intBlockEntity.setMode(be.getMode());
             intBlockEntity.saveWithoutMetadata();
             newBlockEntity = intBlockEntity;
         }
@@ -157,6 +159,7 @@ public class ItemMatterUpgrader extends Item {
         if (blockEntity instanceof BlockEntityEMC previous && level.getBlockEntity(pos) instanceof BlockEntityEMC upgraded) upgraded.takeEmcFrom(previous);
 
         provider.setEmc(newEmc);
+        if (player instanceof ServerPlayer serverPlayer) provider.syncEmc(serverPlayer);
         player.displayClientMessage(Lang.Items.MATTER_UPGRADER_DONE.translateColored(ChatFormatting.WHITE, EMCFormat.format(BigInteger.valueOf(diff))), true);
         return InteractionResult.SUCCESS;
     }

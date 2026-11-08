@@ -4,8 +4,10 @@ import com.alcatrazescapee.mcjunitlib.framework.IntegrationTest;
 import com.alcatrazescapee.mcjunitlib.framework.IntegrationTestClass;
 import com.alcatrazescapee.mcjunitlib.framework.IntegrationTestHelper;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCollector;
+import cool.furry.mc.projectexpansion.block.entity.BlockEntityRelay;
 import cool.furry.mc.projectexpansion.registries.Blocks;
 import cool.furry.mc.projectexpansion.util.Matter;
+import cool.furry.mc.projectexpansion.util.TagNames;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Items;
@@ -54,5 +56,18 @@ public class PersistenceTests {
         check(edited != null, "Couldn't load the condenser");
         CompoundNBT saved = reload(edited, state).save(new CompoundNBT());
         check(lock.equals(saved.getCompound("Up").getCompound("Lock")), "The condenser's lock wasn't kept: " + saved.getCompound("Up"));
+    }
+
+    // data written before a field existed, or by hand, won't have it
+    @IntegrationTest("empty")
+    public void relayLoadsWithoutStoredEmc(IntegrationTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        setBlock(helper, pos, Objects.requireNonNull(Matter.BASIC.getRelay()));
+        BlockEntityRelay relay = blockEntity(helper, pos, BlockEntityRelay.class);
+        CompoundNBT tag = relay.save(new CompoundNBT());
+        tag.remove(TagNames.STORED_EMC);
+        tag.remove(TagNames.BONUS_EMC);
+        TileEntity loaded = TileEntity.loadStatic(relay.getBlockState(), tag);
+        check(loaded instanceof BlockEntityRelay && ((BlockEntityRelay) loaded).getStoredEmcBigInteger().signum() == 0, "A relay saved without its EMC didn't load");
     }
 }
