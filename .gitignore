@@ -10,6 +10,7 @@ gradle-app.setting
 .gradletasknamecache
 **/build/
 run/
+run-wiki/
 !gradle-wrapper.jar
 bin/
 src/generated/resources/.cache
