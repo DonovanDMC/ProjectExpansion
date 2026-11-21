@@ -45,6 +45,8 @@ neoForge {
             client()
             gameDirectory = project.file('run-wiki')
             systemProperty 'projectexpansion.wikiImages', project.file('run-wiki/wiki-images').absolutePath
+            // the size scenes are saved at
+            programArguments.addAll('--width', '1920', '--height', '1080')
         }
 
         // applies to all the run configs above
@@ -124,7 +126,7 @@ tasks.named('runWikiImages') {
             return
         }
         // -displayfd picks a free display & prints it, -terminate quits once the game disconnects
-        def xvfb = ['Xvfb', '-displayfd', '1', '-screen', '0', '1280x720x24', '-nolisten', 'tcp', '-terminate'].execute()
+        def xvfb = ['Xvfb', '-displayfd', '1', '-screen', '0', '1920x1080x24', '-nolisten', 'tcp', '-terminate'].execute()
         def display = new BufferedReader(new InputStreamReader(xvfb.inputStream)).readLine()
         if (display == null) throw new GradleException('Xvfb failed to start: ' + xvfb.errorStream.text)
         ext.xvfb = xvfb

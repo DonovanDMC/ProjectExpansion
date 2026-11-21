@@ -18,6 +18,7 @@ import cool.furry.mc.projectexpansion.net.packets.to_server.PacketToggleEmcLock;
 import cool.furry.mc.projectexpansion.registries.Blocks;
 import cool.furry.mc.projectexpansion.registries.MenuTypes;
 import cool.furry.mc.projectexpansion.util.EmcLock;
+import cool.furry.mc.projectexpansion.util.Matter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -47,6 +48,8 @@ public class ClientEvents {
                 ItemBlockRenderTypes.setRenderLayer(Blocks.DEEPSLATE_IANTHIUM_ORE.get(), RenderType.cutout());
                 // same for the overlays on an emc storage's output and off sides
                 Blocks.EMC_STORAGE.values().forEach(block -> ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout()));
+                // and an emc link's star on its base
+                for (Matter matter : Matter.VALUES) ItemBlockRenderTypes.setRenderLayer(matter.getEMCLink(), RenderType.cutout());
                 MenuScreens.register(MenuTypes.EMC_REFINERY.get(), GUIEMCRefinery::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_2.get(), GUICollector.Tier2::new);
                 MenuScreens.register(MenuTypes.COLLECTOR_TIER_3.get(), GUICollector.Tier3::new);

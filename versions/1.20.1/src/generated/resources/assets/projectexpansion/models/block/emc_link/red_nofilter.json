@@ -1,6 +1,8 @@
 {
-	"parent": "minecraft:block/cube_all",
+	"parent": "projectexpansion:block/emc_link/layers",
 	"textures": {
-		"all": "projectexpansion:block/emc_link/red_nofilter"
+		"particle": "projectexpansion:block/emc_link/base_nofilter",
+		"base": "projectexpansion:block/emc_link/base_nofilter",
+		"star": "projectexpansion:block/emc_link/star/red"
 	}
 }

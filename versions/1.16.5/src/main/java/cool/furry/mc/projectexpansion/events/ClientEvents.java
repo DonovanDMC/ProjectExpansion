@@ -18,6 +18,7 @@ import cool.furry.mc.projectexpansion.net.packets.to_server.PacketOpenTransmutat
 import cool.furry.mc.projectexpansion.net.packets.to_server.PacketToggleEmcLock;
 import cool.furry.mc.projectexpansion.registries.MenuTypes;
 import cool.furry.mc.projectexpansion.util.EmcLock;
+import cool.furry.mc.projectexpansion.util.Matter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -52,6 +53,8 @@ public class ClientEvents {
                 // the ore is an overlay on stone, and so are an emc storage's output and off sides
                 RenderTypeLookup.setRenderLayer(Blocks.IANTHIUM_ORE.get(), RenderType.cutout());
                 Blocks.EMC_STORAGE.values().forEach(block -> RenderTypeLookup.setRenderLayer(block.get(), RenderType.cutout()));
+                // an emc link's star is an overlay on its base
+                for (Matter matter : Matter.VALUES) RenderTypeLookup.setRenderLayer(matter.getEMCLink(), RenderType.cutout());
                 // key mappings are registered here before 1.19
                 Keybinds.register();
             });

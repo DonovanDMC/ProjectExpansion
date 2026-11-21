@@ -6,9 +6,11 @@
 	"$let": { "suffix": "filter ? '' : '_nofilter'" },
 	"$output": "emc_link/{{tier}}{{suffix}}",
 	"$content": {
-		"parent": "minecraft:block/cube_all",
+		"parent": "projectexpansion:block/emc_link/layers",
 		"textures": {
-			"all": "{{id(`block/emc_link/${tier}${suffix}`)}}"
+			"particle": "{{id(`block/emc_link/base${suffix}`)}}",
+			"base": "{{id(`block/emc_link/base${suffix}`)}}",
+			"star": "{{id(`block/emc_link/star/${tier}`)}}"
 		}
 	}
 }

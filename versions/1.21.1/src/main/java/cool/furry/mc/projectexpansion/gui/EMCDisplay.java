@@ -106,6 +106,8 @@ public class EMCDisplay {
         public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
             if (Config.client.Spec.isLoaded() && !Config.client.emcDisplay.get()) return;
             Minecraft mc = Minecraft.getInstance();
+            // hidden with the rest of the hud (F1)
+            if (mc.options.hideGui) return;
             // the editor draws its own copy while it's open
             if (mc.screen instanceof GUIEmcDisplayEditor) return;
             String text = getText();

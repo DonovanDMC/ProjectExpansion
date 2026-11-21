@@ -69,6 +69,28 @@ final class WikiRenderer {
         }
     }
 
+    // a world screenshot with its background (the color in its corner) made see through, trimmed down to what's left
+    static void saveKeyed(Path file, NativeImage image) throws IOException {
+        int background = image.getPixelRGBA(0, 0);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                if (close(image.getPixelRGBA(x, y), background)) image.setPixelRGBA(x, y, 0);
+            }
+        }
+        try (NativeImage trimmed = trim(image, false, null)) {
+            Files.createDirectories(file.getParent());
+            trimmed.writeToFile(file);
+        }
+    }
+
+    // a little leeway, in case the color isn't drawn exactly
+    private static boolean close(int a, int b) {
+        for (int shift = 0; shift < 24; shift += 8) {
+            if (Math.abs((a >> shift & 0xFF) - (b >> shift & 0xFF)) > 2) return false;
+        }
+        return true;
+    }
+
     private static NativeImage trim(NativeImage image, boolean onlyOpaque, @Nullable int[] area) {
         int minX = image.getWidth(), minY = image.getHeight(), maxX = -1, maxY = -1;
         for (int y = 0; y < image.getHeight(); y++) {

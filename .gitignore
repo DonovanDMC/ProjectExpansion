@@ -18,3 +18,4 @@ scripts/secrets.sh
 **/node_modules/
 # test reports, see the testReport task
 reports/
+changelogs/

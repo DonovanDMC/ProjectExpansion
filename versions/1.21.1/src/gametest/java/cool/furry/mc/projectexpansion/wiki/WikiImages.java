@@ -1,7 +1,9 @@
 package cool.furry.mc.projectexpansion.wiki;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.brigadier.Command;
 import cool.furry.mc.projectexpansion.Main;
+import cool.furry.mc.projectexpansion.block.BlockEMCRefinery;
 import cool.furry.mc.projectexpansion.block.BlockEmcPipe;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityCondenserMK3;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityEMCRefinery;
@@ -19,15 +21,21 @@ import cool.furry.mc.projectexpansion.registries.Blocks;
 import cool.furry.mc.projectexpansion.registries.Enchantments;
 import cool.furry.mc.projectexpansion.registries.Items;
 import cool.furry.mc.projectexpansion.util.EmcLock;
+import cool.furry.mc.projectexpansion.util.Fuel;
 import cool.furry.mc.projectexpansion.util.Matter;
+import cool.furry.mc.projectexpansion.util.Star;
 import cool.furry.mc.projectexpansion.util.pipe.Distribution;
+import cool.furry.mc.projectexpansion.util.storage.EmcStorageTier;
+import java.util.Optional;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import net.minecraft.client.CloudStatus;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.AccessibilityOnboardingScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -36,8 +44,11 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -47,6 +58,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -59,16 +72,27 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.WorldOptions;
+import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
+import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.level.storage.LevelStorageSource;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.joml.Vector2i;
@@ -78,10 +102,12 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -123,7 +149,19 @@ public final class WikiImages {
             started = true;
             openWorld(mc);
             // the world needs a moment for chunks, recipes & emc values to arrive
-            TASKS.add(new Task("join", () -> mc.player != null && mc.screen == null, () -> {}));
+            TASKS.add(new Task("join", () -> {
+                // flying straight away, there's nothing to stand on
+                if (mc.player != null && !mc.player.getAbilities().flying) {
+                    mc.player.getAbilities().flying = true;
+                    mc.player.onUpdateAbilities();
+                }
+                return mc.player != null && mc.screen == null;
+            }, () -> {}));
+            // up off the bottom of the world, so blocks can be placed around the player
+            TASKS.add(new Task("lift", () -> true, () -> {
+                MinecraftServer server = Objects.requireNonNull(mc.getSingleplayerServer());
+                server.execute(() -> Objects.requireNonNull(server.getPlayerList().getPlayer(Objects.requireNonNull(mc.player).getUUID())).connection.teleport(0.5, 100, 0.5, 0, 0));
+            }));
             waitTicks(100);
             TASKS.add(new Task("queue", () -> true, () -> queueAll(Path.of(dir), true)));
         }
@@ -139,18 +177,29 @@ public final class WikiImages {
     }
 
     private static void openWorld(Minecraft mc) {
+        // a fresh one every run, so nothing from an earlier run shows up
         if (mc.getLevelSource().levelExists(WORLD)) {
-            mc.createWorldOpenFlows().openWorld(WORLD, () -> mc.setScreen(new TitleScreen()));
-            return;
+            try (LevelStorageSource.LevelStorageAccess access = mc.getLevelSource().createAccess(WORLD)) {
+                access.deleteLevel();
+            } catch (Exception e) {
+                throw new IllegalStateException("Couldn't delete the old " + WORLD + " world", e);
+            }
         }
-        // flat, creative & always noon, so nothing changes between runs
+        // an empty sky in creative, scenes are always at noon
         GameRules rules = new GameRules();
         rules.getRule(GameRules.RULE_DAYLIGHT).set(false, null);
         rules.getRule(GameRules.RULE_WEATHER_CYCLE).set(false, null);
         rules.getRule(GameRules.RULE_DOMOBSPAWNING).set(false, null);
         LevelSettings settings = new LevelSettings(WORLD, GameType.CREATIVE, false, Difficulty.PEACEFUL, true, rules, WorldDataConfiguration.DEFAULT);
         mc.createWorldOpenFlows().createFreshLevel(WORLD, settings, new WorldOptions(0, false, false),
-                access -> access.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value().createWorldDimensions(), mc.screen);
+                access -> {
+                    HolderLookup.RegistryLookup<Biome> biomes = access.lookupOrThrow(Registries.BIOME);
+                    FlatLevelGeneratorSettings flat = FlatLevelGeneratorSettings.getDefault(biomes, access.lookupOrThrow(Registries.STRUCTURE_SET), access.lookupOrThrow(Registries.PLACED_FEATURE))
+                            // no layers or villages, nothing at all
+                            .withBiomeAndLayers(List.of(), Optional.of(HolderSet.direct()), biomes.getOrThrow(Biomes.PLAINS));
+                    return access.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value().createWorldDimensions()
+                            .replaceOverworldGenerator(access, new FlatLevelSource(flat));
+                }, mc.screen);
     }
 
     private static void waitTicks(int ticks) {
@@ -233,12 +282,16 @@ public final class WikiImages {
         tooltip(root, "Stars", "final-star-shard-tooltip", () -> new ItemStack(Items.FINAL_STAR_SHARD.get()));
 
         // items, drawn bigger than in an inventory
-        items(root, "Condenser-MK3", "block", 6, () -> List.of(new ItemStack(Blocks.CONDENSER_MK3.get())));
-        items(root, "EMC-Refinery", "block", 6, () -> List.of(new ItemStack(Blocks.EMC_REFINERY.get())));
         items(root, "Ianthium", "items", 3, () -> List.of(
                 new ItemStack(Blocks.IANTHIUM_ORE.get()), new ItemStack(Blocks.DEEPSLATE_IANTHIUM_ORE.get()), new ItemStack(Items.RAW_IANTHIUM.get()),
                 new ItemStack(Blocks.RAW_IANTHIUM_BLOCK.get()), new ItemStack(Items.IANTHIUM_INGOT.get()), new ItemStack(Items.IANTHIUM_NUGGET.get()),
                 new ItemStack(Blocks.IANTHIUM_BLOCK.get())));
+
+        // every star, a row for each size
+        grid(root, "Stars", "all-stars", () -> List.of(
+                Arrays.stream(Star.VALUES).map(star -> new ItemStack(Objects.requireNonNull(star.asMagnumItem()))).toList(),
+                Arrays.stream(Star.VALUES).map(star -> new ItemStack(Objects.requireNonNull(star.asColossalItem()))).toList(),
+                Arrays.stream(Star.VALUES).map(star -> new ItemStack(Objects.requireNonNull(star.asGargantuanItem()))).toList()));
 
         // menus, each set up in its own spot
         menu(root, "EMC-Pipes", "settings-menu", 0, GUIEmcPipe.class, 5, (player, pos) -> {
@@ -287,6 +340,35 @@ public final class WikiImages {
             player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.ARCANE_TRANSMUTATION_TABLET.get()));
             return () -> ((ItemArcaneTransmutationTablet) Items.ARCANE_TRANSMUTATION_TABLET.get()).openContainer(player);
         });
+
+        // blocks placed in the world
+        scenesStart();
+        scene(root, "Arcane-Transmutation-Tablet", "table-placed", (level, pos) -> place(level, pos, Blocks.ARCANE_TRANSMUTATION_TABLE.get().defaultBlockState()));
+        scene(root, "Condenser-MK3", "block", (level, pos) -> place(level, pos, Blocks.CONDENSER_MK3.get().defaultBlockState()));
+        // lit up while refining, with a collector beside it giving it emc
+        scene(root, "EMC-Refinery", "block", (level, pos) -> {
+            place(level, pos, Blocks.EMC_REFINERY.get().defaultBlockState().setValue(BlockEMCRefinery.LIT, true));
+            BlockEntityEMCRefinery refinery = (BlockEntityEMCRefinery) Objects.requireNonNull(level.getBlockEntity(pos));
+            refinery.getItems().setStackInSlot(BlockEntityEMCRefinery.INPUT_SLOT, new ItemStack(Items.RAW_IANTHIUM.get(), 64));
+            place(level, pos.south(), Objects.requireNonNull(Matter.FINAL.getCollector()).defaultBlockState());
+        });
+        scene(root, "EMC-Storage", "all-tiers", (level, pos) -> rows(level, pos, Arrays.stream(EmcStorageTier.VALUES).map(tier -> (Block) Blocks.EMC_STORAGE.get(tier).get()).toList(), 5));
+        scene(root, "Collectors", "all-tiers", (level, pos) -> rows(level, pos, Arrays.stream(Matter.VALUES).map(Matter::getCollector).filter(Objects::nonNull).map(Block.class::cast).toList(), 4));
+        scene(root, "Relays", "all-tiers", (level, pos) -> rows(level, pos, Arrays.stream(Matter.VALUES).map(Matter::getRelay).filter(Objects::nonNull).map(Block.class::cast).toList(), 4));
+        scene(root, "Power-Flowers", "all-tiers", (level, pos) -> rows(level, pos, Arrays.stream(Matter.VALUES).map(Matter::getPowerFlower).filter(Objects::nonNull).map(Block.class::cast).toList(), 4));
+        scene(root, "EMC-Link", "all-tiers", (level, pos) -> rows(level, pos, Arrays.stream(Matter.VALUES).map(Matter::getEMCLink).filter(Objects::nonNull).map(Block.class::cast).toList(), 4));
+        // matter blocks are only in the registry, there's nothing on Matter to get them from
+        scene(root, "Matter-and-Fuel", "matter-blocks", (level, pos) -> rows(level, pos, Arrays.stream(Matter.VALUES)
+                .map(matter -> BuiltInRegistries.BLOCK.getOptional(Main.rl(matter.name().toLowerCase(Locale.ROOT) + "_matter_block")).orElse(null)).filter(Objects::nonNull).toList(), 4));
+        scene(root, "Matter-and-Fuel", "fuel-blocks", (level, pos) -> rows(level, pos, Arrays.stream(Fuel.VALUES).map(Fuel::getBlock).filter(Objects::nonNull).toList(), 4));
+        // a collector sending emc down a line of pipes to a condenser
+        scene(root, "EMC-Pipes", "pipe-network", (level, pos) -> {
+            for (int i = 1; i <= 4; i++) place(level, pos.south(i), Blocks.EMC_PIPE.get().defaultBlockState());
+            place(level, pos, Objects.requireNonNull(Matter.BASIC.getCollector()).defaultBlockState());
+            place(level, pos.south(5), Blocks.CONDENSER_MK3.get().defaultBlockState());
+            BlockEmcPipe.useWrench(level, pos.south(), level.getBlockState(pos.south()), Direction.NORTH, false);
+        });
+        scenesEnd();
 
         TASKS.add(new Task("done", () -> true, () -> {
             Minecraft mc = Minecraft.getInstance();
@@ -433,6 +515,31 @@ public final class WikiImages {
         }));
     }
 
+    // items in slots on a panel, like an inventory
+    private static void grid(Path root, String page, String name, Supplier<List<List<ItemStack>>> rows) {
+        TASKS.add(new Task(page + "/" + name, () -> true, () -> {
+            List<List<ItemStack>> list = rows.get();
+            int columns = list.stream().mapToInt(List::size).max().orElse(0);
+            int width = PAD + columns * SLOT + PAD, height = PAD + list.size() * SLOT + PAD;
+            Path file = file(root, page, name);
+            try {
+                WikiRenderer.save(file, width + 4, height + 4, false, graphics -> {
+                    WikiRenderer.panel(graphics, 2, 2, width, height);
+                    for (int row = 0; row < list.size(); row++) {
+                        for (int column = 0; column < columns; column++) {
+                            int x = 2 + PAD + column * SLOT, y = 2 + PAD + row * SLOT;
+                            WikiRenderer.slot(graphics, x, y, SLOT);
+                            if (column < list.get(row).size()) WikiRenderer.item(graphics, list.get(row).get(column), x + 1, y + 1);
+                        }
+                    }
+                });
+                done(file);
+            } catch (java.io.IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }));
+    }
+
     /*********
      * Menus *
      *********/
@@ -455,7 +562,11 @@ public final class WikiImages {
         }));
         // menus look up their block entity on the client when they open, so it has to have arrived first
         waitTicks(10);
-        TASKS.add(new Task(page + "/" + name + " open", () -> opener[0] != null, () -> Objects.requireNonNull(Minecraft.getInstance().getSingleplayerServer()).execute(opener[0])));
+        int[] setupLeft = { 200 };
+        TASKS.add(new Task(page + "/" + name + " open", () -> opener[0] != null || setupLeft[0]-- <= 0, () -> {
+            if (opener[0] == null) throw new IllegalStateException("Setting up " + page + "/" + name + " failed, see the server's error");
+            Objects.requireNonNull(Minecraft.getInstance().getSingleplayerServer()).execute(opener[0]);
+        }));
         int[] left = { 200 };
         TASKS.add(new Task(page + "/" + name + " opened", () -> screen.isInstance(Minecraft.getInstance().screen) || left[0]-- <= 0, () -> {}));
         waitTicks(settleTicks);
@@ -488,6 +599,143 @@ public final class WikiImages {
             level.removeBlockEntity(pos);
             level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
         }
+    }
+
+    /**********
+     * Scenes *
+     **********/
+
+    // the block under each scene's first block, away from the menus & up in the sky
+    private static BlockPos sceneOrigin = BlockPos.ZERO;
+    // how far around the origin is cleared, and how high
+    private static final int SCENE_RADIUS = 64, SCENE_HEIGHT = 16;
+    // looking down at 45 degrees from the corner towards negative x & z, so north & west faces show
+    private static final float YAW = -45, PITCH = 45;
+    private static final Vec3 LOOK = Vec3.directionFromRotation(PITCH, YAW);
+    // how much of the view the scene takes up
+    private static final double FILL = 0.5;
+    private static final int FOV = 70;
+
+    private static void scenesStart() {
+        TASKS.add(new Task("scenes start", () -> true, () -> {
+            Minecraft mc = Minecraft.getInstance();
+            mc.setScreen(null);
+            sceneOrigin = Objects.requireNonNull(mc.player).blockPosition().offset(100, 40, 100);
+            // no hud, hand or block outline, and nothing that changes from run to run
+            mc.options.hideGui = true;
+            inScene = true;
+            mc.options.cloudStatus().set(CloudStatus.OFF);
+            mc.options.bobView().set(false);
+            mc.options.fovEffectScale().set(0D);
+            mc.options.fov().set(FOV);
+            MinecraftServer server = Objects.requireNonNull(mc.getSingleplayerServer(), "Scenes can only be saved in singleplayer");
+            server.execute(() -> server.overworld().setDayTime(6000));
+        }));
+    }
+
+    private static void scenesEnd() {
+        TASKS.add(new Task("scenes end", () -> true, () -> {
+            Minecraft.getInstance().options.hideGui = false;
+            inScene = false;
+        }));
+    }
+
+    private static boolean inScene;
+
+    // the sky's a color no block uses while saving scenes, so it can be cut out after
+    @SubscribeEvent
+    public static void fogColor(ViewportEvent.ComputeFogColor event) {
+        if (!inScene) return;
+        event.setRed(1);
+        event.setGreen(0);
+        event.setBlue(1);
+    }
+
+    // builds the scene in the empty sky, frames whatever was built from the corner, then saves it without the sky
+    private static void scene(Path root, String page, String name, BiConsumer<ServerLevel, BlockPos> build) {
+        boolean[] built = { false };
+        TASKS.add(new Task(page + "/" + name + " build", () -> true, () -> {
+            Minecraft mc = Minecraft.getInstance();
+            MinecraftServer server = Objects.requireNonNull(mc.getSingleplayerServer(), "Scenes can only be saved in singleplayer");
+            server.execute(() -> {
+                ServerPlayer player = Objects.requireNonNull(server.getPlayerList().getPlayer(Objects.requireNonNull(mc.player).getUUID()));
+                ServerLevel level = player.serverLevel();
+                clearScene(level);
+                build.accept(level, sceneOrigin.above());
+                AABB bounds = sceneBounds(level);
+                Vec3 eye = camera(bounds);
+                player.getAbilities().flying = true;
+                player.onUpdateAbilities();
+                player.setDeltaMovement(Vec3.ZERO);
+                player.connection.teleport(eye.x, eye.y - player.getEyeHeight(), eye.z, YAW, PITCH);
+                built[0] = true;
+            });
+        }));
+        int[] buildLeft = { 200 };
+        TASKS.add(new Task(page + "/" + name + " built", () -> built[0] || buildLeft[0]-- <= 0, () -> {}));
+        // chunks, block entities & lighting need a moment to get to the client and be drawn
+        waitTicks(40);
+        int[] left = { 600 };
+        TASKS.add(new Task(page + "/" + name + " drawn", () -> Minecraft.getInstance().levelRenderer.hasRenderedAllSections() || left[0]-- <= 0, () -> {}));
+        waitTicks(10);
+        TASKS.add(new Task(page + "/" + name, () -> true, () -> {
+            if (!built[0]) throw new IllegalStateException("Building " + page + "/" + name + " failed, see the server's error");
+            Path file = file(root, page, name);
+            try (NativeImage image = Screenshot.takeScreenshot(Minecraft.getInstance().getMainRenderTarget())) {
+                WikiRenderer.saveKeyed(file, image);
+            } catch (java.io.IOException e) {
+                throw new IllegalStateException(e);
+            }
+            done(file);
+        }));
+    }
+
+    // the last scene, without dropping anything that was in it
+    private static void clearScene(ServerLevel level) {
+        BlockState air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int x = -SCENE_RADIUS; x <= SCENE_RADIUS; x++) {
+            for (int z = -SCENE_RADIUS; z <= SCENE_RADIUS; z++) {
+                for (int y = 0; y <= SCENE_HEIGHT; y++) {
+                    pos.setWithOffset(sceneOrigin, x, y, z);
+                    if (level.getBlockState(pos).isAir()) continue;
+                    level.removeBlockEntity(pos);
+                    level.setBlock(pos, air, Block.UPDATE_CLIENTS);
+                }
+            }
+        }
+        level.getEntitiesOfClass(ItemEntity.class, new AABB(sceneOrigin).inflate(SCENE_RADIUS, SCENE_HEIGHT, SCENE_RADIUS)).forEach(Entity::discard);
+    }
+
+    // everything built, using each block's shape so thin blocks are framed tightly
+    private static AABB sceneBounds(ServerLevel level) {
+        AABB bounds = null;
+        for (BlockPos pos : BlockPos.betweenClosed(sceneOrigin.offset(-SCENE_RADIUS, 1, -SCENE_RADIUS), sceneOrigin.offset(SCENE_RADIUS, SCENE_HEIGHT, SCENE_RADIUS))) {
+            BlockState state = level.getBlockState(pos);
+            if (state.isAir()) continue;
+            VoxelShape shape = state.getShape(level, pos);
+            AABB box = shape.isEmpty() ? new AABB(pos) : shape.bounds().move(pos);
+            bounds = bounds == null ? box : bounds.minmax(box);
+        }
+        if (bounds == null) throw new IllegalStateException("The scene is empty");
+        return bounds;
+    }
+
+    // far enough back along the view that the scene's bounding sphere takes up FILL of the view's height
+    private static Vec3 camera(AABB bounds) {
+        double radius = Math.sqrt(bounds.getXsize() * bounds.getXsize() + bounds.getYsize() * bounds.getYsize() + bounds.getZsize() * bounds.getZsize()) / 2;
+        double distance = radius / Math.sin(Math.toRadians(FOV / 2D * FILL));
+        return bounds.getCenter().subtract(LOOK.scale(distance));
+    }
+
+    // shaped to fit its neighbors, like it was placed by a player
+    private static void place(ServerLevel level, BlockPos pos, BlockState state) {
+        level.setBlockAndUpdate(pos, Block.updateFromNeighbourShapes(state, level, pos));
+    }
+
+    // rows that read left to right from the camera, each row further back
+    private static void rows(ServerLevel level, BlockPos pos, List<? extends Block> blocks, int columns) {
+        for (int i = 0; i < blocks.size(); i++) place(level, pos.offset(i / columns, 0, i % columns), blocks.get(i).defaultBlockState());
     }
 
     private static void use(ServerPlayer player, BlockPos pos, Direction side) {
