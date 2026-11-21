@@ -3,25 +3,19 @@ package cool.furry.mc.projectexpansion.net.packets.to_server;
 import cool.furry.mc.projectexpansion.net.packets.IPacket;
 import cool.furry.mc.projectexpansion.util.EmcLock;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Objects;
 
+// slot is in the player's inventory, not the open menu, so it's the same from every screen, including creative's
 public final class PacketToggleEmcLock implements IPacket {
-    private final int containerId;
     private final int slot;
 
-    public PacketToggleEmcLock(int containerId, int slot) {
-        this.containerId = containerId;
+    public PacketToggleEmcLock(int slot) {
         this.slot = slot;
-    }
-
-    public int containerId() {
-        return containerId;
     }
 
     public int slot() {
@@ -33,41 +27,37 @@ public final class PacketToggleEmcLock implements IPacket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PacketToggleEmcLock that = (PacketToggleEmcLock) o;
-        return Objects.equals(containerId, that.containerId) && Objects.equals(slot, that.slot);
+        return slot == that.slot;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(containerId, slot);
+        return Objects.hash(slot);
     }
 
     @Override
     public String toString() {
-        return "PacketToggleEmcLock[containerId=" + containerId + ", slot=" + slot + "]";
+        return "PacketToggleEmcLock[slot=" + slot + "]";
     }
 
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
         if (player == null) return;
-        Container menu = player.containerMenu;
-        if (menu.containerId != containerId || slot < 0 || slot >= menu.slots.size()) return;
-        // only allow toggling items in the player's own inventory
-        Slot target = menu.getSlot(slot);
-        if (target.container != player.inventory) return;
-        ItemStack stack = target.getItem();
+        PlayerInventory inventory = player.inventory;
+        if (slot < 0 || slot >= inventory.getContainerSize()) return;
+        ItemStack stack = inventory.getItem(slot);
         if (!EmcLock.canToggle(stack)) return;
         EmcLock.toggle(stack);
-        target.setChanged();
+        inventory.setChanged();
     }
 
     @Override
     public void encode(PacketBuffer buf) {
-        buf.writeVarInt(containerId);
         buf.writeVarInt(slot);
     }
 
     public static PacketToggleEmcLock decode(PacketBuffer buf) {
-        return new PacketToggleEmcLock(buf.readVarInt(), buf.readVarInt());
+        return new PacketToggleEmcLock(buf.readVarInt());
     }
 }

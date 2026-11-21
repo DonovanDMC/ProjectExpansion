@@ -3,6 +3,7 @@ package cool.furry.mc.projectexpansion.gametest;
 import cool.furry.mc.projectexpansion.Main;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityEMCLink;
 import cool.furry.mc.projectexpansion.block.entity.BlockEntityTransmutationInterface;
+import cool.furry.mc.projectexpansion.net.packets.to_server.PacketToggleEmcLock;
 import cool.furry.mc.projectexpansion.registries.Blocks;
 import cool.furry.mc.projectexpansion.registries.Enchantments;
 import cool.furry.mc.projectexpansion.util.EmcLock;
@@ -43,6 +44,7 @@ import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.check;
 import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.emc;
 import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.knowledge;
 import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.mockPlayer;
+import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.payloadContext;
 import static cool.furry.mc.projectexpansion.gametest.GameTestUtil.removePlayer;
 
 // the emc link & transmutation interface, which both trade with their owner's transmutation
@@ -222,6 +224,26 @@ public class TransmutationGameTests {
         check(left.getCount() == 4, "The interface took EMC locked diamonds");
         check(emc(player).signum() == 0, "The owner got EMC for locked diamonds");
         removePlayer(player);
+        helper.succeed();
+    }
+
+    // the lock key sends the slot in the player's inventory, it used to send the open menu's slot, so it couldn't work in creative's inventory
+    @GameTest(template = EMPTY, batch = "emc")
+    public static void lockKeyTogglesInventorySlot(GameTestHelper helper) {
+        ServerPlayer player = mockPlayer(helper);
+        try {
+            ItemStack diamonds = new ItemStack(Items.DIAMOND, 4);
+            player.getInventory().setItem(20, diamonds);
+            new PacketToggleEmcLock(20).handle(payloadContext(player));
+            check(EmcLock.isLocked(player.getInventory().getItem(20)), "Inventory slot 20 wasn't locked");
+            new PacketToggleEmcLock(20).handle(payloadContext(player));
+            check(!EmcLock.isLocked(player.getInventory().getItem(20)), "Inventory slot 20 wasn't unlocked");
+            // slots past the inventory are ignored, rather than crashing
+            new PacketToggleEmcLock(player.getInventory().getContainerSize()).handle(payloadContext(player));
+            new PacketToggleEmcLock(-1).handle(payloadContext(player));
+        } finally {
+            removePlayer(player);
+        }
         helper.succeed();
     }
 

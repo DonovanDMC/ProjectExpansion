@@ -21,7 +21,6 @@ import cool.furry.mc.projectexpansion.util.EmcLock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.inventory.Slot;
@@ -78,8 +77,7 @@ public class ClientEvents {
         @SubscribeEvent
         public static void mouseButtonPressedEvent(ScreenEvent.MouseClickedEvent.Pre event) {
             if (!Keybinds.REGISTERED || event.getButton() != GLFW.GLFW_MOUSE_BUTTON_LEFT) return;
-            // the creative inventory doesn't use real slots
-            if (!(event.getScreen() instanceof AbstractContainerScreen<?> screen) || screen instanceof CreativeModeInventoryScreen) return;
+            if (!(event.getScreen() instanceof AbstractContainerScreen<?> screen)) return;
 
             // key mappings don't update while a screen is open, so check the key directly
             InputConstants.Key key = Keybinds.TOGGLE_EMC_LOCK.getKey();
@@ -89,7 +87,7 @@ public class ClientEvents {
             Slot slot = screen.getSlotUnderMouse();
             if (mc.player == null || slot == null || slot.container != mc.player.getInventory() || !EmcLock.canToggle(slot.getItem())) return;
 
-            PacketHandler.sendToServer(new PacketToggleEmcLock(screen.getMenu().containerId, slot.index));
+            PacketHandler.sendToServer(new PacketToggleEmcLock(slot.getSlotIndex()));
             event.setCanceled(true);
         }
 

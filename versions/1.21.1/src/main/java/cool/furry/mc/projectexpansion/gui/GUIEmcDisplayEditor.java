@@ -7,11 +7,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class GUIEmcDisplayEditor extends Screen {
@@ -96,8 +98,11 @@ public class GUIEmcDisplayEditor extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(font, title, width / 2, height / 2 - 30, 0xFFFFFF);
-        guiGraphics.drawCenteredString(font, Lang.GUI.EMC_DISPLAY_EDITOR_HELP.translate(), width / 2, height / 2 - 16, 0xA0A0A0);
+        // wrapped, it's wider than the screen at high gui scales
+        List<FormattedCharSequence> help = font.split(Lang.GUI.EMC_DISPLAY_EDITOR_HELP.translate(), width - 20);
+        int helpY = height / 2 - 6 - help.size() * 10;
+        guiGraphics.drawCenteredString(font, title, width / 2, helpY - 14, 0xFFFFFF);
+        for (int i = 0; i < help.size(); i++) guiGraphics.drawCenteredString(font, help.get(i), width / 2, helpY + i * 10, 0xA0A0A0);
 
         String text = EMCDisplay.getText();
         int x = x(), y = y(), w = font.width(text), h = textHeight();
