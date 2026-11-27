@@ -159,7 +159,10 @@ export function discordAnnouncement(modVersion: string, changelog: string, relea
         ].filter(link => link !== null);
         return `* **${minecraft}**: ${found.join(" · ")}`;
     });
-    return [`New release, **${modVersion}**!`, "", "Changelog:", changelog, "", "Downloads:", ...downloads].join("\n");
+    // "**1.18.2**, **1.19.2** & **1.20.1**"
+    const names = releases.map(({ minecraft }) => `**${minecraft}**`);
+    const versions = names.length > 1 ? `${names.slice(0, -1).join(", ")} & ${names.at(-1)}` : names.join("");
+    return [`New release **${modVersion}** for ${versions}`, "", "Changelog:", changelog, "", "Downloads:", ...downloads].join("\n");
 }
 
 // discord messages are capped at 2000 characters, split between lines where possible

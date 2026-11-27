@@ -112,6 +112,13 @@ describe("platforms", () => {
         const text = discordAnnouncement("2.0.0", "* a", [{ minecraft: "1.20.1", published: { curseforge: 1, github: "g" } }, { minecraft: "1.21.1", published: {} }]);
         expect(text).toContain("* **1.20.1**: [CurseForge](<https://www.curseforge.com/minecraft/mc-mods/project-expansion/files/1>) · [GitHub](<g>)");
         expect(text).toContain("* **1.21.1**: ");
+        expect(text).toStartWith("New release **2.0.0** for **1.20.1** & **1.21.1**\n");
+    });
+
+    test("discord announcement names a single version", () => {
+        expect(discordAnnouncement("2.0.0", "* a", [{ minecraft: "1.16.5", published: {} }])).toStartWith("New release **2.0.0** for **1.16.5**\n");
+        const three = discordAnnouncement("2.0.0", "* a", ["1.18.2", "1.19.2", "1.20.1"].map(minecraft => ({ minecraft, published: {} })));
+        expect(three).toStartWith("New release **2.0.0** for **1.18.2**, **1.19.2** & **1.20.1**\n");
     });
 
     test("long messages split between lines", () => {
