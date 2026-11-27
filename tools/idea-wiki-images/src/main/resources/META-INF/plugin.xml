@@ -1,0 +1,15 @@
+<idea-plugin>
+    <id>cool.furry.mc.projectexpansion.wiki-images</id>
+    <name>Project Expansion Wiki Images</name>
+    <vendor>Project Expansion</vendor>
+    <description>Run buttons beside Project Expansion's @WikiImage methods, which save just that image with the wikiImages Gradle run.</description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+    <depends>com.intellij.gradle</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <runLineMarkerContributor language="JAVA" implementationClass="cool.furry.mc.projectexpansion.wikiimages.WikiImageLineMarker"/>
+        <runConfigurationProducer implementation="cool.furry.mc.projectexpansion.wikiimages.WikiImageRunConfigurationProducer"/>
+    </extensions>
+</idea-plugin>

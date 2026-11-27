@@ -1,5 +1,6 @@
 package cool.furry.mc.projectexpansion.wiki;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -69,27 +70,51 @@ final class WikiRenderer {
         }
     }
 
-    // a world screenshot with its background (the color in its corner) made see through, trimmed down to what's left
-    static void saveKeyed(Path file, NativeImage image) throws IOException {
-        int background = image.getPixelRGBA(0, 0);
+    // the game's last frame with its transparency, which a normal screenshot throws away
+    // anything not drawn over is left see through, since the game clears to a transparent color
+    static NativeImage readFrame() {
+        RenderTarget target = Minecraft.getInstance().getMainRenderTarget();
+        NativeImage image = new NativeImage(target.width, target.height, false);
+        RenderSystem.bindTexture(target.getColorTextureId());
+        image.downloadTexture(0, false);
+        image.flipY();
+        return image;
+    }
+
+    // a frame from readFrame trimmed down to what was drawn, crop is {x, y, width, height} in its pixels to cut it to instead
+    // see through things like glass & water are blended over the black it was cleared to, so their color's taken back out of that
+    static void saveCutout(Path file, NativeImage image, int @Nullable [] crop) throws IOException {
         for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                if (close(image.getPixelRGBA(x, y), background)) image.setPixelRGBA(x, y, 0);
-            }
+            for (int x = 0; x < image.getWidth(); x++) image.setPixelRGBA(x, y, unblend(image.getPixelRGBA(x, y)));
         }
-        try (NativeImage trimmed = trim(image, false, null)) {
+        try (NativeImage trimmed = crop == null ? trim(image, false, null) : crop(image, crop)) {
             Files.createDirectories(file.getParent());
             trimmed.writeToFile(file);
         }
     }
 
-    // a little leeway, in case the color isn't drawn exactly
-    private static boolean close(int a, int b) {
-        for (int shift = 0; shift < 24; shift += 8) {
-            if (Math.abs((a >> shift & 0xFF) - (b >> shift & 0xFF)) > 2) return false;
+    private static NativeImage crop(NativeImage image, int[] area) {
+        int x0 = Math.max(0, area[0]), y0 = Math.max(0, area[1]);
+        int x1 = Math.min(image.getWidth(), area[0] + area[2]), y1 = Math.min(image.getHeight(), area[1] + area[3]);
+        NativeImage cropped = new NativeImage(x1 - x0, y1 - y0, false);
+        for (int y = y0; y < y1; y++) {
+            for (int x = x0; x < x1; x++) cropped.setPixelRGBA(x - x0, y - y0, image.getPixelRGBA(x, y));
         }
-        return true;
+        return cropped;
     }
+
+    // a color blended over black, as it was before
+    private static int unblend(int pixel) {
+        int alpha = pixel >>> 24;
+        if (alpha == 0) return 0;
+        if (alpha == 255) return pixel;
+        int color = 0;
+        for (int shift = 0; shift < 24; shift += 8) color |= Math.min(255, (pixel >> shift & 0xFF) * 255 / alpha) << shift;
+        return alpha << 24 | color;
+    }
+
+    // what onlyOpaque keeps, which drops the dark backdrop behind a menu (at most 0xD0) but keeps tooltips (0xF0)
+    private static final int OPAQUE = 0xE0;
 
     private static NativeImage trim(NativeImage image, boolean onlyOpaque, @Nullable int[] area) {
         int minX = image.getWidth(), minY = image.getHeight(), maxX = -1, maxY = -1;
@@ -97,7 +122,7 @@ final class WikiRenderer {
             for (int x = 0; x < image.getWidth(); x++) {
                 int alpha = image.getPixelRGBA(x, y) >>> 24;
                 boolean outside = area != null && (x < area[0] * SCALE || y < area[1] * SCALE || x >= (area[0] + area[2]) * SCALE || y >= (area[1] + area[3]) * SCALE);
-                if (outside || (onlyOpaque ? alpha < 255 : alpha == 0)) {
+                if (outside || (onlyOpaque ? alpha < OPAQUE : alpha == 0)) {
                     image.setPixelRGBA(x, y, 0);
                     continue;
                 }
@@ -137,6 +162,8 @@ final class WikiRenderer {
         graphics.fill(x + 1, y + 1, x + size - 1, y + size - 1, 0xFF8B8B8B);
     }
 
+    // spacing for panels: padding inside the edge, a slot's size, and the gap between parts
+    static final int PAD = 4, SLOT = 18, GAP = 6;
     static final int ARROW_WIDTH = 22, ARROW_HEIGHT = 15;
 
     static void arrow(GuiGraphics graphics, int x, int y) {

@@ -47,6 +47,8 @@ neoForge {
             systemProperty 'projectexpansion.wikiImages', project.file('run-wiki/wiki-images').absolutePath
             // the size scenes are saved at
             programArguments.addAll('--width', '1920', '--height', '1080')
+            // -PwikiOnly=EMC-Link/* to only save some of them
+            if (project.hasProperty('wikiOnly')) systemProperty 'projectexpansion.wikiImages.only', project.property('wikiOnly')
         }
 
         // applies to all the run configs above
@@ -94,10 +96,12 @@ dependencies {
     //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
     runtimeOnly("dev.emi:emi-neoforge:${emi_version}")
-    // runtimeOnly("curse.maven:pipez-443900:${pipez_version}")
-    // runtimeOnly("curse.maven:ae2-223794:${ae2_version}")
-    // runtimeOnly("curse.maven:guideme-1173950:${guideme_version}")
-    // runtimeOnly("curse.maven:itank-256991:${itank_version}")
+    // the wiki images open emi's recipe screen
+    gametestCompileOnly("dev.emi:emi-neoforge:${emi_version}")
+    runtimeOnly("curse.maven:ae2-223794:${ae2_version}")
+    // the wiki images build ae2 networks with its api
+    gametestCompileOnly("curse.maven:ae2-223794:${ae2_version}")
+    runtimeOnly("curse.maven:guideme-1173950:${guideme_version}")
     // runtimeOnly("curse.maven:cloth-config-348521:${cloth_version}")
     runtimeOnly("curse.maven:better-advancements-272515:${ba_version}")
     runtimeOnly("curse.maven:tagtooltips-899941:${tagtooltips_version}")
@@ -116,6 +120,11 @@ dependencies {
     // runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
     //     transitive = false
     // }
+
+    // used for wiki screenshots
+    runtimeOnly("curse.maven:pipez-443900:${pipez_version}")
+    runtimeOnly("maven.modrinth:large-fluid-tank:${large_fluid_tank_version}")
+    runtimeOnly("maven.modrinth:scalable-cats-force:${scalable_cats_force_version}")
 }
 
 // draws on a virtual display (Xvfb) when there is one, so no game window shows up
