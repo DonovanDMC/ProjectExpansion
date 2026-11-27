@@ -107,7 +107,6 @@ if (skipGit) {
 }
 
 // jars, the game tests have to pass for releaseJar to finish
-const started = Date.now();
 if (!skipBuild) {
     const tasks = versions.map(v => `:${v.minecraft}:releaseJar`);
     console.log(`Building ${tasks.join(" ")}`);
@@ -120,9 +119,9 @@ for (const v of versions) {
     const signedPath = join(root, "versions", v.minecraft, "build/libs/signed", name);
     const signed = Bun.file(signedPath), unsigned = Bun.file(join(root, "versions", v.minecraft, "build/libs", name));
     // signing quietly skips without its secrets, so check it actually happened for this jar
+    // an up to date build isn't re-signed, signJar's output already matches the jar it came from then
     if (!await signed.exists()) fail(`${relative(root, signedPath)} is missing, is scripts/secrets.sh set up for signing?`);
     if (await unsigned.exists() && signed.lastModified < unsigned.lastModified) fail(`${relative(root, signedPath)} is older than the jar it was signed from`);
-    if (!skipBuild && signed.lastModified < started) fail(`${relative(root, signedPath)} wasn't rebuilt`);
     jars.set(v.minecraft, signedPath);
 }
 
