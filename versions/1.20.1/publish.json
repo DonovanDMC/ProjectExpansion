@@ -3,6 +3,8 @@
     "releaseType": "release",
     "curseforge": {
         "gameVersions": {
+            "Client": 9638,
+            "Server": 9639,
             "Forge": 7498,
             "NeoForge": 10150,
             "Java 17": 8326,
