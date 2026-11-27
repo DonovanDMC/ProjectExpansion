@@ -131,7 +131,7 @@ public class ItemMatterUpgrader extends Item {
         }
 
         if (upgrade == null || !provider.hasKnowledge(ItemInfo.fromItem(upgrade)) && !player.isCreative()) {
-            player.displayClientMessage(Lang.Items.MATTER_UPGRADER_NOT_LEARNED.translateColored(ChatFormatting.RED, Component.translatable(Objects.requireNonNull(upgrade).toString())), true);
+            player.displayClientMessage(Lang.Items.MATTER_UPGRADER_NOT_LEARNED.translateColored(ChatFormatting.RED, Objects.requireNonNull(upgrade).getDescription()), true);
             return InteractionResult.FAIL;
         }
 

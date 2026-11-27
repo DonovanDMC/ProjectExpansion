@@ -18,7 +18,7 @@
   "command.projectexpansion.book.remove.itemstack_success": "That location has been successfully removed from that book.",
   "command.projectexpansion.book.remove.player_success": "That location has been successfully removed from %s's teleport locations.",
   "command.projectexpansion.book.remove.player_success_self": "That location has been successfully removed from your teleport locations.",
-  "command.projectexpansion.book.remove.player_notifcation": "The location \"%s\" has been removed from your teleport locations by %s.",
+  "command.projectexpansion.book.remove.player_notification": "The location \"%s\" has been removed from your teleport locations by %s.",
   "command.projectexpansion.book.remove.backup": "Location Dump: %s",
   "command.projectexpansion.book.remove.backup_info": "A dump of the location, in case you accidentally removed it.",
   "command.projectexpansion.book.add.duplicate_name": "A location with that name already exists.",
@@ -30,5 +30,5 @@
   "command.projectexpansion.book.reindex.itemstack_success": "That book's teleport locations have successfully been reindexed.",
   "command.projectexpansion.book.reindex.player_success": "%s's teleport locations have successfully been reindexed.",
   "command.projectexpansion.book.reindex.player_success_self": "Your teleport locations have successfully been reindexed..",
-  "command.projectexpansion.book.reindex.player_notifcation": "Your teleport locations were reindexed by %s."
+  "command.projectexpansion.book.reindex.player_notification": "Your teleport locations were reindexed by %s."
 }

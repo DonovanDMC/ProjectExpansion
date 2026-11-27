@@ -182,7 +182,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
                 return InteractionResult.CONSUME;
             }
             setInternalItem(inHand);
-            player.displayClientMessage(Lang.Blocks.EMC_LINK_SET.translateColored(ChatFormatting.GREEN, Platform.literal(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)), true);
+            player.displayClientMessage(Lang.Blocks.EMC_LINK_SET.translateColored(ChatFormatting.GREEN, itemStack.getHoverName().copy().setStyle(ColorStyle.BLUE)), true);
             return InteractionResult.SUCCESS;
         }
 

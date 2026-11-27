@@ -8,7 +8,7 @@
   "command.projectexpansion.knowledge.learn.success": "%s has successfully learned %s.",
   "command.projectexpansion.knowledge.learn.success_self": "You have successfully learned %s.",
   "command.projectexpansion.knowledge.learn.fail": "%s already has knowledge of %s.",
-  "command.projectexpansion.knowledge.learn.failSelf": "You already have knowledge of %s.",
+  "command.projectexpansion.knowledge.learn.fail_self": "You already have knowledge of %s.",
   "command.projectexpansion.knowledge.learn.notification": "You gained knowledge of %s from %s.",
   "command.projectexpansion.knowledge.unlearn.success": "%s has successfully unlearned %s.",
   "command.projectexpansion.knowledge.unlearn.success_self": "You have successfully unlearned %s.",

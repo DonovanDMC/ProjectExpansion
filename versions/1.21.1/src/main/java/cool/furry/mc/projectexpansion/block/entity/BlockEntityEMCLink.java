@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HopperBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -142,7 +143,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
         remainingFluid  = m.getEMCLinkFluidLimit();
     }
 
-    private void setInternalItem(ItemStack stack) {
+    public void setItem(ItemStack stack) {
         itemStack = IEMCProxy.INSTANCE.getPersistentInfo(ItemInfo.fromStack(stack.copyWithCount(1))).createStack();
         markDirty();
     }
@@ -180,7 +181,7 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
                 return InteractionResult.CONSUME;
             }
             if (inHand.isEmpty()) {
-                setInternalItem(ItemStack.EMPTY);
+                setItem(ItemStack.EMPTY);
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_CLEARED.translateColored(ChatFormatting.RED), true);
                 return InteractionResult.SUCCESS;
             }
@@ -195,8 +196,8 @@ public class BlockEntityEMCLink extends BlockEntityNBTFilterable implements IHas
                 player.displayClientMessage(Lang.Blocks.EMC_LINK_EMPTY_HAND.translateColored(ChatFormatting.RED, Component.translatable(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)), true);
                 return InteractionResult.CONSUME;
             }
-            setInternalItem(inHand);
-            player.displayClientMessage(Lang.Blocks.EMC_LINK_SET.translateColored(ChatFormatting.GREEN, Component.literal(itemStack.getItem().toString()).setStyle(ColorStyle.BLUE)), true);
+            setItem(inHand);
+            player.displayClientMessage(Lang.Blocks.EMC_LINK_SET.translateColored(ChatFormatting.GREEN, itemStack.getHoverName().copy().setStyle(ColorStyle.BLUE)), true);
             return InteractionResult.SUCCESS;
         }
 
